@@ -1,0 +1,365 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  Int       @id @default(autoincrement())
+  name                String
+  email               String    @unique
+  emailVerifiedAt     DateTime? @map("email_verified_at")
+  password            String
+  rememberToken       String?   @map("remember_token")
+  currentTeamId       Int?      @map("current_team_id")
+  profilePhotoPath    String?   @map("profile_photo_path") @db.VarChar(2048)
+  isAdmin             Boolean   @default(false) @map("is_admin")
+  createdAt           DateTime  @default(now()) @map("created_at")
+  updatedAt           DateTime  @updatedAt @map("updated_at")
+
+  candidate           Candidate?
+  gardnerTestResult   GardnerTestResult?
+  sessions            Session[]
+
+  @@map("users")
+}
+
+model Session {
+  id           String   @id
+  userId       Int?     @map("user_id")
+  ipAddress    String?  @map("ip_address") @db.VarChar(45)
+  userAgent    String?  @map("user_agent") @db.Text
+  payload      String   @db.LongText
+  lastActivity Int      @map("last_activity")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([lastActivity])
+  @@map("sessions")
+}
+
+model PasswordResetToken {
+  email     String   @id
+  token     String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("password_reset_tokens")
+}
+
+model Candidate {
+  id                       Int       @id @default(autoincrement())
+  userId                   Int?      @unique @map("user_id")
+  step                     Int       @default(1)
+  stepParseGallup          Int       @default(0) @map("step_parse_gallup")
+  fullName                 String?   @map("full_name")
+  surname                  String?
+  name                     String?
+  patronymic               String?
+  email                    String
+  phone                    String
+  gender                   String
+  maritalStatus            String    @map("marital_status")
+  birthDate                DateTime  @map("birth_date") @db.Date
+  birthPlace               String    @map("birth_place")
+  currentCity              String    @map("current_city")
+  readyToRelocate          Boolean   @default(false) @map("ready_to_relocate")
+  instagram                String?
+  photo                    String?
+
+  // Additional Information
+  religion                 String?
+  isPracticing             Boolean?  @map("is_practicing")
+  familyMembers            Json?     @map("family_members")
+  hobbies                  String?   @db.Text
+  interests                String?   @db.Text
+  visitedCountries         Json?     @map("visited_countries")
+  booksPerYear             String?   @map("books_per_year")
+  favoriteSports           Json?     @map("favorite_sports")
+  entertainmentHoursWeekly Int?      @map("entertainment_hours_weekly")
+  educationalHoursWeekly   Int?      @map("educational_hours_weekly")
+  socialMediaHoursWeekly   Int?      @map("social_media_hours_weekly")
+  hasDrivingLicense        Boolean   @default(false) @map("has_driving_license")
+  drivingLicenseType       String?   @map("driving_license_type")
+
+  // Education and Work
+  school                   String
+  universities             Json?
+  languageSkills           Json?     @map("language_skills")
+  computerSkills           String?   @map("computer_skills") @db.Text
+  workExperience           Json?     @map("work_experience")
+  totalExperienceYears     Int       @default(0) @map("total_experience_years")
+  jobSatisfaction          Int?      @map("job_satisfaction")
+  desiredPosition          String    @map("desired_position")
+  activitySphere           String?   @map("activity_sphere")
+  expectedSalary           Decimal   @map("expected_salary") @db.Decimal(12, 2)
+  employerRequirements     String?   @map("employer_requirements") @db.Text
+
+  // Assessments
+  gallupPdf                String?   @map("gallup_pdf")
+  anketaPdf                String?   @map("anketa_pdf")
+  mbtiType                 String?   @map("mbti_type")
+
+  createdAt                DateTime  @default(now()) @map("created_at")
+  updatedAt                DateTime  @updatedAt @map("updated_at")
+
+  user                     User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  additionalInformation    AdditionalInformation?
+  educationWork            EducationWork?
+  assessment               Assessment?
+  files                    CandidateFile[]
+  history                  CandidateHistory[]
+  statuses                 CandidateStatus[]
+  comments                 CandidateComment[]
+  gallupTalents            GallupTalent[]
+  gallupReports            GallupReport[]
+  gallupParseHistory       GallupParseHistory[]
+
+  @@index([userId])
+  @@index([email])
+  @@map("candidates")
+}
+
+model CandidateFile {
+  id          Int      @id @default(autoincrement())
+  candidateId Int      @map("candidate_id")
+  type        String
+  fileName    String   @map("file_name")
+  filePath    String   @map("file_path")
+  fileSize    Int?     @map("file_size")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([candidateId])
+  @@map("candidate_files")
+}
+
+model CandidateHistory {
+  id          Int      @id @default(autoincrement())
+  candidateId Int      @map("candidate_id")
+  field       String
+  oldValue    String?  @map("old_value") @db.Text
+  newValue    String?  @map("new_value") @db.Text
+  changedBy   Int?     @map("changed_by")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([candidateId])
+  @@map("candidate_history")
+}
+
+model CandidateStatus {
+  id          Int      @id @default(autoincrement())
+  candidateId Int      @map("candidate_id")
+  status      String
+  comment     String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([candidateId])
+  @@map("candidate_statuses")
+}
+
+model CandidateComment {
+  id          Int      @id @default(autoincrement())
+  candidateId Int      @map("candidate_id")
+  userId      Int?     @map("user_id")
+  comment     String   @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([candidateId])
+  @@map("candidate_comments")
+}
+
+model AdditionalInformation {
+  id          Int      @id @default(autoincrement())
+  candidateId Int      @unique @map("candidate_id")
+  data        Json?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@map("additional_information")
+}
+
+model EducationWork {
+  id          Int      @id @default(autoincrement())
+  candidateId Int      @unique @map("candidate_id")
+  data        Json?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@map("education_work")
+}
+
+model Assessment {
+  id          Int      @id @default(autoincrement())
+  candidateId Int      @unique @map("candidate_id")
+  data        Json?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@map("assessments")
+}
+
+model GallupTalent {
+  id                Int      @id @default(autoincrement())
+  candidateId       Int      @map("candidate_id")
+  talentName        String   @map("talent_name")
+  talentRank        Int      @map("talent_rank")
+  talentDescription String?  @map("talent_description") @db.Text
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  candidate         Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([candidateId])
+  @@map("gallup_talents")
+}
+
+model GallupReport {
+  id              Int       @id @default(autoincrement())
+  candidateId     Int       @map("candidate_id")
+  type            String
+  filePath        String?   @map("file_path")
+  googleDocsUrl   String?   @map("google_docs_url")
+  googleDocsId    String?   @map("google_docs_id")
+  wordFilePath    String?   @map("word_file_path")
+  status          String    @default("pending")
+  processedAt     DateTime? @map("processed_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  candidate       Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([candidateId])
+  @@index([type])
+  @@map("gallup_reports")
+}
+
+model GallupReportSheet {
+  id              Int      @id @default(autoincrement())
+  name            String
+  type            String
+  spreadsheetId   String   @map("spreadsheet_id")
+  gid             String
+  sheetName       String   @map("sheet_name")
+  shortArea       String?  @map("short_area")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  indices         GallupReportSheetIndex[]
+  values          GallupReportSheetValue[]
+
+  @@map("gallup_report_sheets")
+}
+
+model GallupReportSheetIndex {
+  id        Int      @id @default(autoincrement())
+  sheetId   Int      @map("sheet_id")
+  indexName String   @map("index_name")
+  cellIndex String   @map("cell_index")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  sheet     GallupReportSheet @relation(fields: [sheetId], references: [id], onDelete: Cascade)
+
+  @@index([sheetId])
+  @@map("gallup_report_sheet_indices")
+}
+
+model GallupReportSheetValue {
+  id          Int      @id @default(autoincrement())
+  sheetId     Int      @map("sheet_id")
+  candidateId Int      @map("candidate_id")
+  cellIndex   String   @map("cell_index")
+  value       String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  sheet       GallupReportSheet @relation(fields: [sheetId], references: [id], onDelete: Cascade)
+
+  @@index([sheetId])
+  @@index([candidateId])
+  @@map("gallup_report_sheet_values")
+}
+
+model GallupParseHistory {
+  id          Int       @id @default(autoincrement())
+  candidateId Int       @map("candidate_id")
+  fileName    String    @map("file_name")
+  status      String    @default("processing")
+  errorMessage String?  @map("error_message") @db.Text
+  parsedData  Json?     @map("parsed_data")
+  processedAt DateTime? @map("processed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([candidateId])
+  @@map("gallup_parse_history")
+}
+
+model GardnerTestResult {
+  id                  Int      @id @default(autoincrement())
+  userId              Int      @unique @map("user_id")
+  verbalLinguistic    Int      @map("verbal_linguistic")
+  logicalMathematical Int      @map("logical_mathematical")
+  visualSpatial       Int      @map("visual_spatial")
+  bodilyKinesthetic   Int      @map("bodily_kinesthetic")
+  musicalRhythmic     Int      @map("musical_rhythmic")
+  interpersonal       Int
+  intrapersonal       Int
+  naturalistic        Int
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("gardner_test_results")
+}
+
+model Job {
+  id           BigInt   @id @default(autoincrement())
+  queue        String
+  payload      String   @db.LongText
+  attempts     Int      @default(0) @db.UnsignedTinyInt
+  reservedAt   Int?     @map("reserved_at") @db.UnsignedInt
+  availableAt  Int      @map("available_at") @db.UnsignedInt
+  createdAt    Int      @map("created_at") @db.UnsignedInt
+
+  @@index([queue])
+  @@map("jobs")
+}
+
+model FailedJob {
+  id         BigInt   @id @default(autoincrement())
+  uuid       String   @unique
+  connection String   @db.Text
+  queue      String   @db.Text
+  payload    String   @db.LongText
+  exception  String   @db.LongText
+  failedAt   DateTime @default(now()) @map("failed_at")
+
+  @@map("failed_jobs")
+}
