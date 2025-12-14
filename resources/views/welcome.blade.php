@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'Divergents - Learning Management System')
+@section('title', 'TalentsLab - Система управления обучением')
 
 @section('content')
 <h1>Добро пожаловать</h1>

@@ -1223,6 +1223,11 @@ class CandidateForm extends Component
 
         $errors = [];
 
+        // Проверяем, что добавлен хотя бы один родитель
+        if (empty($this->parents) || count($this->parents) === 0) {
+            $errors['parents'] = 'Добавьте минимум одного родителя';
+        }
+
         // Валидируем родителей
         foreach ($this->parents as $index => $parent) {
             if (empty($parent['relation'])) {
