@@ -195,7 +195,12 @@ class CandidateForm extends Component
         $this->children = [];
         $this->visited_countries = [];
         $this->favorite_sports = '';
-        $this->language_skills = [];
+        // Инициализируем обязательные языки
+        $this->language_skills = [
+            ['language' => 'Казахский', 'level' => ''],
+            ['language' => 'Русский', 'level' => ''],
+            ['language' => 'Английский', 'level' => ''],
+        ];
         $this->work_experience = [];
         $this->computer_skills = '';
 
@@ -312,7 +317,7 @@ class CandidateForm extends Component
         // Education and Work
         $this->school = $this->candidate->school;
         $this->universities = $this->candidate->universities ?? [];
-        $this->language_skills = $this->candidate->language_skills ?? [];
+        $this->language_skills = $this->ensureRequiredLanguages($this->candidate->language_skills ?? []);
         $this->computer_skills = $this->candidate->computer_skills ?? '';
         $this->work_experience = $this->convertWorkExperienceFormat($this->candidate->work_experience ?? []);
         logger()->debug('Work experience loaded:', ['original' => $this->candidate->work_experience, 'converted' => $this->work_experience]);
@@ -1272,6 +1277,40 @@ class CandidateForm extends Component
     }
 
     /**
+     * Обеспечивает наличие обязательных языков в списке
+     */
+    private function ensureRequiredLanguages($existingLanguages)
+    {
+        $requiredLanguages = ['Казахский', 'Русский', 'Английский'];
+        $result = [];
+
+        // Сначала добавляем обязательные языки
+        foreach ($requiredLanguages as $lang) {
+            $found = false;
+            foreach ($existingLanguages as $existing) {
+                if (($existing['language'] ?? '') === $lang) {
+                    $result[] = $existing;
+                    $found = true;
+                    break;
+                }
+            }
+            // Если обязательный язык не найден, добавляем его с пустым уровнем
+            if (!$found) {
+                $result[] = ['language' => $lang, 'level' => ''];
+            }
+        }
+
+        // Затем добавляем остальные языки
+        foreach ($existingLanguages as $existing) {
+            if (!in_array($existing['language'] ?? '', $requiredLanguages)) {
+                $result[] = $existing;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Кастомная валидация языковых навыков
      * Проверяет наличие обязательных языков: Казахский, Русский, Английский
      */
@@ -1283,14 +1322,6 @@ class CandidateForm extends Component
         }
 
         $requiredLanguages = ['Казахский', 'Русский', 'Английский'];
-        $addedLanguages = array_column($this->language_skills, 'language');
-
-        $missingLanguages = [];
-        foreach ($requiredLanguages as $requiredLang) {
-            if (!in_array($requiredLang, $addedLanguages)) {
-                $missingLanguages[] = $requiredLang;
-            }
-        }
 
         // Проверяем, что у каждого обязательного языка указан уровень
         $errors = [];
@@ -1298,13 +1329,9 @@ class CandidateForm extends Component
             if (in_array($skill['language'] ?? '', $requiredLanguages)) {
                 if (empty($skill['level'])) {
                     $language = $skill['language'];
-                    $errors["language_skills.{$index}.level"] = "Необходимо указать уровень владения языком \"{$language}\"";
+                    $errors["language_skills.{$index}.level"] = "Укажите уровень владения языком \"{$language}\"";
                 }
             }
-        }
-
-        if (!empty($missingLanguages)) {
-            $errors['language_skills'] = 'Необходимо добавить следующие языки: ' . implode(', ', $missingLanguages);
         }
 
         if (!empty($errors)) {
