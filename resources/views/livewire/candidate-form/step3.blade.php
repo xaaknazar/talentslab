@@ -424,11 +424,11 @@
                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
                         </svg>
-                        Пример: намазхана, ходить в платке, гибкий график, итд.
+                        Пример: Обучение, возможность для развития, гибкий график, отдельный кабинет, намазхана и т.д
                     </span>
                 </p>
-                <textarea wire:model="employer_requirements" 
-                          rows="3" 
+                <textarea wire:model="employer_requirements"
+                          rows="3"
                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
                 @error('employer_requirements') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>

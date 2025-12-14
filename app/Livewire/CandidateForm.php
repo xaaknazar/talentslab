@@ -261,12 +261,11 @@ class CandidateForm extends Component
         // Basic Information
         $this->full_name = $this->candidate->full_name;
 
-        // Разделяем ФИО на части
+        // Разделяем ФИО на части (сначала Имя, потом Фамилия)
         if ($this->full_name) {
             $nameParts = explode(' ', $this->full_name);
-            $this->last_name = $nameParts[0] ?? '';
-            $this->first_name = $nameParts[1] ?? '';
-            $this->middle_name = $nameParts[2] ?? '';
+            $this->first_name = $nameParts[0] ?? '';
+            $this->last_name = $nameParts[1] ?? '';
         }
 
         $this->email = $this->candidate->email;
@@ -359,10 +358,17 @@ class CandidateForm extends Component
             // 'family_members.*.birth_year' => 'required|integer|min:1900|max:' . date('Y'),
             // 'family_members.*.profession' => ['required', 'string', 'max:255'],
 
-            // Новые правила валидации для категорий семьи - полностью убираем правила
-            'parents' => 'sometimes|array|max:2',
-            'siblings' => 'sometimes|array',
+            // Новые правила валидации для категорий семьи
+            'parents' => 'required|array|min:1|max:2',
+            'parents.*.relation' => 'required|string|in:Отец,Мать',
+            'parents.*.birth_year' => 'required|integer|min:1900|max:' . date('Y'),
+            'parents.*.profession' => 'required|string|max:255',
+            'siblings' => 'required|array',
+            'siblings.*.relation' => 'required|string|in:Брат,Сестра',
+            'siblings.*.birth_year' => 'required|integer|min:1900|max:' . date('Y'),
             'children' => 'sometimes|array',
+            'children.*.name' => 'required_with:children|string|max:255',
+            'children.*.birth_year' => 'required_with:children|integer|min:1900|max:' . date('Y'),
             'hobbies' => ['required', 'string', 'max:1000'],
             'interests' => ['required', 'string', 'max:1000'],
             'visited_countries' => 'required|array|min:1',
@@ -486,6 +492,15 @@ class CandidateForm extends Component
         'visited_countries.*.in' => 'Выберите страну из списка',
         'family_members.required' => 'Добавьте минимум одного члена семьи',
         'family_members.min' => 'Добавьте минимум одного члена семьи',
+        'parents.required' => 'Добавьте минимум одного родителя',
+        'parents.min' => 'Добавьте минимум одного родителя',
+        'parents.max' => 'Можно добавить максимум двух родителей',
+        'parents.*.relation.required' => 'Укажите родство',
+        'parents.*.birth_year.required' => 'Укажите год рождения родителя',
+        'parents.*.profession.required' => 'Укажите профессию родителя',
+        'siblings.required' => 'Поле "Братья и сестры" обязательно (можно оставить пустым, если их нет)',
+        'siblings.*.relation.required' => 'Укажите родство',
+        'siblings.*.birth_year.required' => 'Укажите год рождения',
         'computer_skills.required' => 'Укажите компьютерные навыки',
         'universities.required' => 'Добавьте минимум один университет',
         'language_skills.required' => 'Добавьте минимум один язык',
@@ -1146,6 +1161,9 @@ class CandidateForm extends Component
         // Добавляем кастомную валидацию для семьи
         $this->validateFamilyData();
 
+        // Добавляем кастомную валидацию для языковых навыков
+        $this->validateLanguageSkills();
+
         // Вызываем родительский метод с оригинальными правилами
         return parent::validate($rules, $messages, $attributes);
     }
@@ -1248,6 +1266,47 @@ class CandidateForm extends Component
         }
 
         // Если есть ошибки, выбрасываем исключение валидации
+        if (!empty($errors)) {
+            throw \Illuminate\Validation\ValidationException::withMessages($errors);
+        }
+    }
+
+    /**
+     * Кастомная валидация языковых навыков
+     * Проверяет наличие обязательных языков: Казахский, Русский, Английский
+     */
+    private function validateLanguageSkills()
+    {
+        // Проверяем только если есть языковые навыки
+        if (empty($this->language_skills) || !is_array($this->language_skills)) {
+            return;
+        }
+
+        $requiredLanguages = ['Казахский', 'Русский', 'Английский'];
+        $addedLanguages = array_column($this->language_skills, 'language');
+
+        $missingLanguages = [];
+        foreach ($requiredLanguages as $requiredLang) {
+            if (!in_array($requiredLang, $addedLanguages)) {
+                $missingLanguages[] = $requiredLang;
+            }
+        }
+
+        // Проверяем, что у каждого обязательного языка указан уровень
+        $errors = [];
+        foreach ($this->language_skills as $index => $skill) {
+            if (in_array($skill['language'] ?? '', $requiredLanguages)) {
+                if (empty($skill['level'])) {
+                    $language = $skill['language'];
+                    $errors["language_skills.{$index}.level"] = "Необходимо указать уровень владения языком \"{$language}\"";
+                }
+            }
+        }
+
+        if (!empty($missingLanguages)) {
+            $errors['language_skills'] = 'Необходимо добавить следующие языки: ' . implode(', ', $missingLanguages);
+        }
+
         if (!empty($errors)) {
             throw \Illuminate\Validation\ValidationException::withMessages($errors);
         }
@@ -1464,7 +1523,7 @@ class CandidateForm extends Component
                 $this->candidate->step = $this->currentStep;
                 // Сохраняем базовую информацию если есть, иначе оставляем null
                 if ($this->last_name || $this->first_name) {
-                    $this->candidate->full_name = trim($this->last_name . ' ' . $this->first_name . ' ' . $this->middle_name);
+                    $this->candidate->full_name = trim($this->first_name . ' ' . $this->last_name);
                 } else {
                     $this->candidate->full_name = null; // Явно устанавливаем null
                 }
@@ -1652,8 +1711,8 @@ class CandidateForm extends Component
             }
 
             // Basic Information
-            // Объединяем ФИО
-            $this->candidate->full_name = trim($this->last_name . ' ' . $this->first_name . ' ' . $this->middle_name);
+            // Объединяем ФИО (сначала Имя, потом Фамилия)
+            $this->candidate->full_name = trim($this->first_name . ' ' . $this->last_name);
             $this->candidate->email = $this->email;
             $this->candidate->phone = $this->phone;
             $this->candidate->gender = $this->gender;
@@ -1788,7 +1847,7 @@ class CandidateForm extends Component
 
         // Базовые данные всегда сохраняем, если они есть
         if ($this->last_name || $this->first_name) {
-            $this->candidate->full_name = trim($this->last_name . ' ' . $this->first_name . ' ' . $this->middle_name);
+            $this->candidate->full_name = trim($this->first_name . ' ' . $this->last_name);
         } else {
             $this->candidate->full_name = null; // Явно устанавливаем null если имя не введено
         }

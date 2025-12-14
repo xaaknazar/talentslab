@@ -104,20 +104,7 @@
 
         <!-- ФИО -->
         <div class="col-span-1 lg:col-span-2">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <!-- Фамилия -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">
-                        Фамилия <span class="text-gray-500">(на кириллице)</span><span class="text-red-500">*</span>
-                    </label>
-                    <input type="text"
-                           id="last-name-input"
-                           wire:model="last_name"
-                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                           placeholder="Иванов">
-                    @error('last_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                </div>
-
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <!-- Имя -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700">
@@ -131,17 +118,17 @@
                     @error('first_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
 
-                <!-- Отчество -->
+                <!-- Фамилия -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700">
-                        Отчество <span class="text-gray-500">(на кириллице)</span>
+                        Фамилия <span class="text-gray-500">(на кириллице)</span><span class="text-red-500">*</span>
                     </label>
                     <input type="text"
-                           id="middle-name-input"
-                           wire:model="middle_name"
+                           id="last-name-input"
+                           wire:model="last_name"
                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                           placeholder="Иванович">
-                    @error('middle_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                           placeholder="Иванов">
+                    @error('last_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
             </div>
         </div>
@@ -231,7 +218,7 @@
                    id="birth-place-input"
                    wire:model="birth_place"
                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                   placeholder="г. Москва">
+                   placeholder="Москва">
             @error('birth_place') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
 
@@ -244,7 +231,7 @@
                    id="current-city-input"
                    wire:model="current_city"
                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                   placeholder="г. Москва">
+                   placeholder="Москва">
             @error('current_city') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
 
