@@ -296,60 +296,60 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Книг в год -->
             <div>
-                <label class="block text-sm text-gray-700 mb-1.5">Количество книг в год</label>
-                <div class="flex items-center gap-3">
+                <label class="block text-sm font-medium text-gray-700">Количество книг в год</label>
+                <div class="flex items-center gap-3 mt-1">
                     <input type="number"
                            wire:model="books_per_year_min"
                            min="0"
                            max="100"
                            placeholder="от"
-                           class="w-20 px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-500">
+                           class="w-20 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
                     <span class="text-gray-400">—</span>
                     <input type="number"
                            wire:model="books_per_year_max"
                            min="0"
                            max="100"
                            placeholder="до"
-                           class="w-20 px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-500">
+                           class="w-20 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
                 </div>
-                @error('books_per_year_min') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                @error('books_per_year_max') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                @error('books_per_year_min') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                @error('books_per_year_max') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
 
             <!-- Развлекательные видео -->
             <div>
-                <label class="block text-sm text-gray-700 mb-1.5">Развлекательные видео (часов в неделю)</label>
+                <label class="block text-sm font-medium text-gray-700">Развлекательные видео (часов в неделю)</label>
                 <input type="number"
                        wire:model="entertainment_hours_weekly"
                        min="0"
                        max="168"
                        placeholder="0"
-                       class="w-24 px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-500">
-                @error('entertainment_hours_weekly') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                       class="mt-1 w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                @error('entertainment_hours_weekly') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
 
             <!-- Образовательные видео -->
             <div>
-                <label class="block text-sm text-gray-700 mb-1.5">Образовательные видео (часов в неделю)</label>
+                <label class="block text-sm font-medium text-gray-700">Образовательные видео (часов в неделю)</label>
                 <input type="number"
                        wire:model="educational_hours_weekly"
                        min="0"
                        max="168"
                        placeholder="0"
-                       class="w-24 px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-500">
-                @error('educational_hours_weekly') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                       class="mt-1 w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                @error('educational_hours_weekly') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
 
             <!-- Социальные сети -->
             <div>
-                <label class="block text-sm text-gray-700 mb-1.5">Соц. сети (часов в неделю)</label>
+                <label class="block text-sm font-medium text-gray-700">Соц. сети (часов в неделю)</label>
                 <input type="number"
                        wire:model="social_media_hours_weekly"
                        min="0"
                        max="168"
                        placeholder="0"
-                       class="w-24 px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:border-gray-500">
-                @error('social_media_hours_weekly') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                       class="mt-1 w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                @error('social_media_hours_weekly') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
         </div>
     </div>
