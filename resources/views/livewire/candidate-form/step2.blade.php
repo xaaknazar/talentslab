@@ -13,7 +13,7 @@
                 </label>
                 <select wire:model="has_driving_license" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                     <option value="">Выберите ответ</option>
-                    <option value="1">Да</option>
+                    <option value="1">Есть</option>
                     <option value="0">Нет</option>
                 </select>
                 @error('has_driving_license') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
