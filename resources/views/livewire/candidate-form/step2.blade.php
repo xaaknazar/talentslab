@@ -296,43 +296,30 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             <!-- Количество книг читаемых в год -->
             <div>
-                <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700 min-h-[3rem] flex items-center">Количество книг читаемых в год</label>
-                    <div class="flex justify-center">
-                        <span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-md">
-                            @if($books_per_year_min == $books_per_year_max)
-                                {{ $books_per_year_min }} {{ $books_per_year_min == 1 ? 'книга' : 'книг' }}
-                            @else
-                                {{ $books_per_year_min }}-{{ $books_per_year_max }} книг
-                            @endif
-                        </span>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Книг в год</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">От</label>
+                        <input type="number"
+                               wire:model="books_per_year_min"
+                               name="books_per_year_min"
+                               min="0"
+                               max="100"
+                               step="1"
+                               placeholder="0"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center">
                     </div>
-                </div>
-                <div class="relative mt-4 dual-range-container">
-                    <!-- Фоновый трек -->
-                    <div class="absolute top-1/2 left-0 w-full h-2 bg-gray-200 rounded-lg transform -translate-y-1/2"></div>
-                    <!-- Активный диапазон -->
-                    <div class="absolute top-1/2 h-2 bg-blue-600 rounded-lg transform -translate-y-1/2 active-range"></div>
-                    
-                    <!-- Минимальный слайдер -->
-                    <input type="range" 
-                           wire:model.live="books_per_year_min"
-                           name="books_per_year_min"
-                           min="0" 
-                           max="100" 
-                           step="1"
-                           class="absolute w-full h-2 bg-transparent appearance-none cursor-pointer range-slider range-min"
-                           style="z-index: 1;">
-                    
-                    <!-- Максимальный слайдер -->
-                    <input type="range" 
-                           wire:model.live="books_per_year_max"
-                           name="books_per_year_max"
-                           min="0" 
-                           max="100" 
-                           step="1"
-                           class="absolute w-full h-2 bg-transparent appearance-none cursor-pointer range-slider range-max"
-                           style="z-index: 2;">
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">До</label>
+                        <input type="number"
+                               wire:model="books_per_year_max"
+                               name="books_per_year_max"
+                               min="0"
+                               max="100"
+                               step="1"
+                               placeholder="0"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center">
+                    </div>
                 </div>
                 @error('books_per_year_min') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
                 @error('books_per_year_max') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
@@ -340,100 +327,43 @@
 
             <!-- Развлекательные видео -->
             <div>
-                <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700 min-h-[3rem] flex items-center">Количество часов затрачиваемых при просмотре развлекательных видео (в неделю)</label>
-                    <div class="flex justify-end">
-                        <span class="px-2 py-1 bg-indigo-100 text-indigo-800 text-sm font-medium rounded-md">{{ $entertainment_hours_weekly ?? 0 }}</span>
-                    </div>
-                </div>
-                <div class="relative mt-2">
-                    <input type="range" 
-                           wire:model="entertainment_hours_weekly"
-                           name="entertainment_hours_weekly"
-                           value="{{ $entertainment_hours_weekly ?? 0 }}"
-                           min="0" 
-                           max="168" 
-                           step="1"
-                           class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer
-                                  [&::-webkit-slider-thumb]:w-4
-                                  [&::-webkit-slider-thumb]:h-4
-                                  [&::-webkit-slider-thumb]:appearance-none
-                                  [&::-webkit-slider-thumb]:bg-indigo-600
-                                  [&::-webkit-slider-thumb]:rounded-full
-                                  [&::-webkit-slider-thumb]:cursor-pointer
-                                  [&::-moz-range-thumb]:w-4
-                                  [&::-moz-range-thumb]:h-4
-                                  [&::-moz-range-thumb]:appearance-none
-                                  [&::-moz-range-thumb]:bg-indigo-600
-                                  [&::-moz-range-thumb]:rounded-full
-                                  [&::-moz-range-thumb]:cursor-pointer">
-                </div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Развлекательные видео (часов в неделю)</label>
+                <input type="number"
+                       wire:model="entertainment_hours_weekly"
+                       name="entertainment_hours_weekly"
+                       min="0"
+                       max="168"
+                       step="1"
+                       placeholder="0"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-center">
                 @error('entertainment_hours_weekly') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
             </div>
 
             <!-- Образовательные видео -->
             <div>
-                <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700 min-h-[3rem] flex items-center">Количество часов затрачиваемых при просмотре образовательных видео (в неделю)</label>
-                    <div class="flex justify-end">
-                        <span class="px-2 py-1 bg-emerald-100 text-emerald-800 text-sm font-medium rounded-md">{{ $educational_hours_weekly ?? 0 }}</span>
-                    </div>
-                </div>
-                <div class="relative mt-2">
-                    <input type="range" 
-                           wire:model="educational_hours_weekly"
-                           name="educational_hours_weekly"
-                           value="{{ $educational_hours_weekly ?? 0 }}"
-                           min="0" 
-                           max="168" 
-                           step="1"
-                           class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer
-                                  [&::-webkit-slider-thumb]:w-4
-                                  [&::-webkit-slider-thumb]:h-4
-                                  [&::-webkit-slider-thumb]:appearance-none
-                                  [&::-webkit-slider-thumb]:bg-emerald-600
-                                  [&::-webkit-slider-thumb]:rounded-full
-                                  [&::-webkit-slider-thumb]:cursor-pointer
-                                  [&::-moz-range-thumb]:w-4
-                                  [&::-moz-range-thumb]:h-4
-                                  [&::-moz-range-thumb]:appearance-none
-                                  [&::-moz-range-thumb]:bg-emerald-600
-                                  [&::-moz-range-thumb]:rounded-full
-                                  [&::-moz-range-thumb]:cursor-pointer">
-                </div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Образовательные видео (часов в неделю)</label>
+                <input type="number"
+                       wire:model="educational_hours_weekly"
+                       name="educational_hours_weekly"
+                       min="0"
+                       max="168"
+                       step="1"
+                       placeholder="0"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-center">
                 @error('educational_hours_weekly') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
             </div>
 
             <!-- Социальные сети -->
             <div>
-                <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700 min-h-[3rem] flex items-center">Количество часов затрачиваемых на соц. сети (в неделю)</label>
-                    <div class="flex justify-end">
-                        <span class="px-2 py-1 bg-purple-100 text-purple-800 text-sm font-medium rounded-md">{{ $social_media_hours_weekly ?? 0 }}</span>
-                    </div>
-                </div>
-                <div class="relative mt-2">
-                    <input type="range" 
-                           wire:model="social_media_hours_weekly"
-                           name="social_media_hours_weekly"
-                           value="{{ $social_media_hours_weekly ?? 0 }}"
-                           min="0" 
-                           max="168" 
-                           step="1"
-                           class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer
-                                  [&::-webkit-slider-thumb]:w-4
-                                  [&::-webkit-slider-thumb]:h-4
-                                  [&::-webkit-slider-thumb]:appearance-none
-                                  [&::-webkit-slider-thumb]:bg-purple-600
-                                  [&::-webkit-slider-thumb]:rounded-full
-                                  [&::-webkit-slider-thumb]:cursor-pointer
-                                  [&::-moz-range-thumb]:w-4
-                                  [&::-moz-range-thumb]:h-4
-                                  [&::-moz-range-thumb]:appearance-none
-                                  [&::-moz-range-thumb]:bg-purple-600
-                                  [&::-moz-range-thumb]:rounded-full
-                                  [&::-moz-range-thumb]:cursor-pointer">
-                </div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Соц. сети (часов в неделю)</label>
+                <input type="number"
+                       wire:model="social_media_hours_weekly"
+                       name="social_media_hours_weekly"
+                       min="0"
+                       max="168"
+                       step="1"
+                       placeholder="0"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-center">
                 @error('social_media_hours_weekly') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
             </div>
         </div>
@@ -506,105 +436,6 @@
     }
 </style>
 
-<style>
-/* Dual Range Slider Styles */
-.dual-range-container {
-    height: 20px;
-    position: relative;
-}
-
-.range-slider {
-    -webkit-appearance: none;
-    appearance: none;
-    height: 2px;
-    background: transparent;
-    outline: none;
-    pointer-events: none;
-}
-
-.range-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #3b82f6;
-    cursor: pointer;
-    pointer-events: all;
-    border: 2px solid white;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    transition: all 0.2s ease;
-}
-
-.range-slider::-webkit-slider-thumb:hover {
-    transform: scale(1.1);
-    background: #2563eb;
-}
-
-.range-slider::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #3b82f6;
-    cursor: pointer;
-    pointer-events: all;
-    border: 2px solid white;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    transition: all 0.2s ease;
-}
-
-.range-slider::-moz-range-thumb:hover {
-    transform: scale(1.1);
-    background: #2563eb;
-}
-
-.active-range {
-    background: linear-gradient(90deg, #3b82f6, #1d4ed8);
-    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    function updateDualRangeSlider() {
-        const container = document.querySelector('.dual-range-container');
-        if (!container) return;
-        
-        const minSlider = container.querySelector('.range-min');
-        const maxSlider = container.querySelector('.range-max');
-        const activeRange = container.querySelector('.active-range');
-        
-        if (!minSlider || !maxSlider || !activeRange) return;
-        
-        const min = parseInt(minSlider.min);
-        const max = parseInt(minSlider.max);
-        const minVal = parseInt(minSlider.value);
-        const maxVal = parseInt(maxSlider.value);
-        
-        // Вычисляем позицию и ширину активного диапазона
-        const leftPercent = ((minVal - min) / (max - min)) * 100;
-        const rightPercent = ((maxVal - min) / (max - min)) * 100;
-        
-        activeRange.style.left = leftPercent + '%';
-        activeRange.style.width = (rightPercent - leftPercent) + '%';
-    }
-    
-    // Обновляем слайдер при загрузке и изменениях
-    updateDualRangeSlider();
-    
-    // Слушаем изменения Livewire
-    document.addEventListener('livewire:updated', updateDualRangeSlider);
-    
-    // Слушаем события input для мгновенного обновления ТОЛЬКО для слайдеров
-    document.addEventListener('input', function(e) {
-        // Проверяем что это слайдер и не блокируем другие поля
-        if (e.target && e.target.classList && e.target.classList.contains('range-slider')) {
-            updateDualRangeSlider();
-        }
-        // НЕ останавливаем распространение события для других полей!
-    }, false); // passive: false для лучшей совместимости
-});
-</script>
 
 <script>
 // Отладочный скрипт для проверки Livewire синхронизации
