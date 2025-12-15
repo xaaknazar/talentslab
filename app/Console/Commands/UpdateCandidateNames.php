@@ -48,11 +48,16 @@ class UpdateCandidateNames extends Command
             }
 
             // Разделяем ФИО на части
-            $nameParts = explode(' ', trim($oldName));
+            // Сначала убираем множественные пробелы
+            $cleanName = preg_replace('/\s+/', ' ', trim($oldName));
+            $nameParts = array_filter(explode(' ', $cleanName), function($part) {
+                return !empty(trim($part));
+            });
+            $nameParts = array_values($nameParts); // Переиндексируем массив
 
             // Если уже в правильном формате (2 слова), пропускаем
             if (count($nameParts) == 2) {
-                $this->info("Пропущен кандидат ID {$candidate->id}: уже в формате 'Имя Фамилия' - {$oldName}");
+                $this->info("Пропущен кандидат ID {$candidate->id}: уже в формате 'Имя Фамилия' - {$cleanName}");
                 $skipped++;
                 continue;
             }
@@ -61,7 +66,7 @@ class UpdateCandidateNames extends Command
             if (count($nameParts) >= 3) {
                 $surname = $nameParts[0];  // Фамилия
                 $name = $nameParts[1];     // Имя
-                // Отчество игнорируем
+                // Отчество (nameParts[2]) игнорируем
 
                 $newName = trim($name . ' ' . $surname);  // "Имя Фамилия"
 
@@ -76,7 +81,7 @@ class UpdateCandidateNames extends Command
             }
             // Если 1 слово - просто оставляем как есть
             elseif (count($nameParts) == 1) {
-                $this->warn("Пропущен кандидат ID {$candidate->id}: только одно слово - {$oldName}");
+                $this->warn("Пропущен кандидат ID {$candidate->id}: только одно слово - {$cleanName}");
                 $skipped++;
             }
         }
