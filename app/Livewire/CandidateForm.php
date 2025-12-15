@@ -480,7 +480,7 @@ class CandidateForm extends Component
         'favorite_sports.cyrillic' => 'Поле "Любимые виды спорта" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
         'school.cyrillic' => 'Поле "Школа" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
         'desired_position.cyrillic' => 'Поле "Желаемая должность" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
-        'employer_requirements.cyrillic' => 'Поле "Требования к работодателю" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
+        'employer_requirements.cyrillic' => 'Поле "Пожелания на рабочем месте" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
         'family_members.*.profession.cyrillic' => 'Поле "Профессия" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
 
         // Дополнительные сообщения для обязательных полей
@@ -511,7 +511,7 @@ class CandidateForm extends Component
         'language_skills.required' => 'Добавьте минимум один язык',
         'work_experience.required' => 'Добавьте минимум одно место работы',
         'job_satisfaction.required' => 'Укажите уровень удовлетворенности работой',
-        'employer_requirements.required' => 'Укажите требования к работодателю',
+        'employer_requirements.required' => 'Укажите пожелания на рабочем месте',
     ];
 
     protected $validationAttributes = [
@@ -588,7 +588,7 @@ class CandidateForm extends Component
         'desired_position' => 'Желаемая должность',
         'activity_sphere' => 'Сфера деятельности',
         'expected_salary' => 'Ожидаемая зарплата',
-        'employer_requirements' => 'Требования к работодателю',
+        'employer_requirements' => 'Пожелания на рабочем месте',
 
         // Шаг 4
         'gallup_pdf' => 'Gallup PDF',

@@ -416,9 +416,9 @@
                 @error('computer_skills') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
 
-            <!-- Требования к работодателю -->
+            <!-- Пожелания на рабочем месте -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">Требования к работодателю <span class="text-red-500">*</span></label>
+                <label class="block text-sm font-medium text-gray-700">Пожелания на рабочем месте <span class="text-red-500">*</span></label>
                 <p class="text-xs text-gray-500 mt-1 mb-2">
                     <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">

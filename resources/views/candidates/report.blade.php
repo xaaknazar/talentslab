@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Отчет о кандидате - {{ $candidate->full_name }}</title>
+    <title>Отчет о кандидате - {{ $candidate->first_name }} {{ $candidate->last_name }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         @media print {
@@ -121,7 +121,7 @@
         <div class="p-6 border-b border-gray-200">
             <div class="flex items-start gap-8">
                 <div class="flex-1">
-                    <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ $candidate->full_name }}</h1>
+                    <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ $candidate->first_name }} {{ $candidate->last_name }}</h1>
                      <div class="text-base mb-6">
                          <div class="mb-4">
                              <span class="font-medium text-gray-800">{{ $candidate->current_city }}</span>
@@ -414,6 +414,12 @@
             <div class="mb-8">
                 <h2 class="section-header text-sm font-medium text-gray-500 p-3 mb-4">Компьютерные навыки</h2>
                 <p class="text-base text-gray-800">{{ $candidate->computer_skills ?: 'Не указано' }}</p>
+            </div>
+
+            <!-- Пожелания на рабочем месте -->
+            <div class="mb-8">
+                <h2 class="section-header text-sm font-medium text-gray-500 p-3 mb-4">Пожелания на рабочем месте</h2>
+                <p class="text-base text-gray-800">{{ $candidate->employer_requirements ?: 'Не указано' }}</p>
             </div>
 
             <!-- Психометрические данные -->
