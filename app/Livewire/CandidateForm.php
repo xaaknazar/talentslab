@@ -195,12 +195,7 @@ class CandidateForm extends Component
         $this->children = [];
         $this->visited_countries = [];
         $this->favorite_sports = '';
-        // Инициализируем обязательные языки
-        $this->language_skills = [
-            ['language' => 'Казахский', 'level' => ''],
-            ['language' => 'Русский', 'level' => ''],
-            ['language' => 'Английский', 'level' => ''],
-        ];
+        $this->language_skills = [];
         $this->work_experience = [];
         $this->computer_skills = '';
 
@@ -317,7 +312,7 @@ class CandidateForm extends Component
         // Education and Work
         $this->school = $this->candidate->school;
         $this->universities = $this->candidate->universities ?? [];
-        $this->language_skills = $this->ensureRequiredLanguages($this->candidate->language_skills ?? []);
+        $this->language_skills = $this->candidate->language_skills ?? [];
         $this->computer_skills = $this->candidate->computer_skills ?? '';
         $this->work_experience = $this->convertWorkExperienceFormat($this->candidate->work_experience ?? []);
         logger()->debug('Work experience loaded:', ['original' => $this->candidate->work_experience, 'converted' => $this->work_experience]);
@@ -368,7 +363,7 @@ class CandidateForm extends Component
             'parents.*.relation' => 'required|string|in:Отец,Мать',
             'parents.*.birth_year' => 'required|integer|min:1900|max:' . date('Y'),
             'parents.*.profession' => 'required|string|max:255',
-            'siblings' => 'required|array',
+            'siblings' => 'sometimes|array',
             'siblings.*.relation' => 'required|string|in:Брат,Сестра',
             'siblings.*.birth_year' => 'required|integer|min:1900|max:' . date('Y'),
             'children' => 'sometimes|array',
@@ -1165,9 +1160,6 @@ class CandidateForm extends Component
 
         // Добавляем кастомную валидацию для семьи
         $this->validateFamilyData();
-
-        // Добавляем кастомную валидацию для языковых навыков
-        $this->validateLanguageSkills();
 
         // Вызываем родительский метод с оригинальными правилами
         return parent::validate($rules, $messages, $attributes);
