@@ -549,17 +549,19 @@ body {
 .password-toggle {
     position: absolute;
     right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
     background: none;
     border: none;
     cursor: pointer;
-    padding: 5px;
+    padding: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #6b7280;
     transition: all 0.3s ease;
     border-radius: 6px;
-    z-index: 10;
+    z-index: 100;
 }
 
 .password-toggle:hover {
@@ -579,7 +581,7 @@ body {
 }
 
 .password-toggle:hover .password-icon {
-    transform: scale(1.1);
+    transform: translateY(0) scale(1.1);
 }
 
 /* Dark theme support for password toggle */

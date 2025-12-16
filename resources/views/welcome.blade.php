@@ -1,10 +1,10 @@
 @extends('layouts.auth')
 
-@section('title', 'TalentsLab - Система управления обучением')
+@section('title', 'TalentsLab - CV Database')
 
 @section('content')
 <h1>Добро пожаловать!</h1>
-<p>Войдите в систему управления обучением Talents Lab</p>
+<p>Войдите в онлайн платформу TalentsLab</p>
 
 @if (session('status'))
     <div class="success-message">

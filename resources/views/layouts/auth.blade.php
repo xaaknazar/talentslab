@@ -41,28 +41,14 @@
                 <!-- Right Panel - Branding -->
                 <div class="right-panel">
                     <div class="logos-container">
-                        <img src="{{ asset('logos/talents_lab_logo.png') }}" alt="Talents Lab Logo" class="brand-logo">
+                        <img src="{{ asset('logos/divergents_logo.png') }}" alt="Divergents Logo" class="brand-logo brand-logo-left">
+                        <img src="{{ asset('logos/talents_lab_logo.png') }}" alt="Talents Lab Logo" class="brand-logo brand-logo-right">
                     </div>
                     <p class="brand-description">
-{{--                        Добро пожаловать!<br>--}}
-                        Войдите на онлайн-портал Talents Lab — современную платформу с базой резюме
+                        Talents Lab — современная онлайн-платформа с базой данных резюме, отражающих целостный психометрический портрет личности.
+                        <br><br>
+                        Пройдя анкетирование, вы сформируете резюме и сможете подобрать вакансию, максимально соответствующую вашим способностям и потенциалу.
                     </p>
-
-                    <div class="features-list">
-                        <div class="feature-item">
-                            <div class="feature-icon">📋</div>
-                            <span>Создание и управление анкетами</span>
-                        </div>
-                        <div class="feature-item">
-                            <div class="feature-icon">🧠</div>
-                            <span>Психометрические тесты для оценки потенциала кандидатов</span>
-                        </div>
-
-                        <div class="feature-item">
-                            <div class="feature-icon">🎯</div>
-                            <span>Индивидуальный подбор вакансий на основе способностей</span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

@@ -41,6 +41,9 @@
                                     ⚠️ Чтобы посмотреть резюме, необходимо пройти тест Гарднера.
                                 </p>
                            @endif
+                            @if($lastUpdate)
+                                <p class="mt-2 text-sm text-gray-500">обновлено {{ $lastUpdate }}</p>
+                            @endif
                         @else
                         <p class="text-gray-600 mb-4">Заполните резюме для участия в отборе.</p>
                         <a href="{{ route('candidate.form') }}" class="inline-flex items-center px-4 py-2 bg-orange-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-600 active:bg-orange-700 focus:outline-none focus:border-orange-700 focus:ring focus:ring-orange-200 disabled:opacity-25 transition">
