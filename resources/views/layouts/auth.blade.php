@@ -16,19 +16,6 @@
         @stack('styles')
     </head>
     <body>
-        <!-- Animated Background Stars -->
-        <div class="stars"></div>
-
-        <!-- Light Rays Effect -->
-        <div class="light-rays"></div>
-
-        <!-- Floating Shapes -->
-        <div class="floating-shapes">
-            <div class="shape"></div>
-            <div class="shape"></div>
-            <div class="shape"></div>
-        </div>
-
         <div class="container">
             <div class="main-card">
                 <!-- Left Panel - Auth Form -->
@@ -54,49 +41,9 @@
         </div>
 
         <script>
-            // Create animated stars
-            function createStars() {
-                const starsContainer = document.querySelector('.stars');
-                const numberOfStars = 120;
-
-                for (let i = 0; i < numberOfStars; i++) {
-                    const star = document.createElement('div');
-                    star.className = 'star';
-                    star.style.left = Math.random() * 100 + '%';
-                    star.style.top = Math.random() * 100 + '%';
-                    star.style.animationDelay = Math.random() * 3 + 's';
-                    starsContainer.appendChild(star);
-                }
-            }
-
-            // Form interactions
+            // Simple form enhancement
             document.addEventListener('DOMContentLoaded', function() {
-                createStars();
-
-                // Add glow effect to inputs on focus
-                const inputs = document.querySelectorAll('.form-input');
-                inputs.forEach(input => {
-                    input.addEventListener('focus', function() {
-                        this.parentElement.style.transform = 'scale(1.02)';
-                    });
-
-                    input.addEventListener('blur', function() {
-                        this.parentElement.style.transform = 'scale(1)';
-                    });
-                });
-
-                // Add parallax effect to logo
-                const logo = document.querySelector('.brand-logo');
-                let mouseX = 0, mouseY = 0;
-
-                document.addEventListener('mousemove', function(e) {
-                    mouseX = (e.clientX / window.innerWidth) * 100;
-                    mouseY = (e.clientY / window.innerHeight) * 100;
-
-                    if (logo) {
-                        logo.style.transform = `translate(${mouseX * 0.02}px, ${mouseY * 0.02}px) scale(1.02)`;
-                    }
-                });
+                // No unnecessary animations - keep it clean and fast
             });
         </script>
 
