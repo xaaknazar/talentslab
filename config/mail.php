@@ -113,8 +113,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'noreply@yourdomain.com'),
-        'name' => env('MAIL_FROM_NAME', 'Divergents'),
+        'address' => env('MAIL_FROM_ADDRESS', 'noreply@talentslab.org'),
+        'name' => env('MAIL_FROM_NAME', 'TalentsLab'),
     ],
 
 ];
