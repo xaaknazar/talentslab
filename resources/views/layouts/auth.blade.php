@@ -41,8 +41,7 @@
                 <!-- Right Panel - Branding -->
                 <div class="right-panel">
                     <div class="logos-container">
-                        <img src="{{ asset('logos/divergents_logo.png') }}" alt="Divergents Logo" class="brand-logo brand-logo-left">
-                        <img src="{{ asset('logos/talents_lab_logo.png') }}" alt="Talents Lab Logo" class="brand-logo brand-logo-right">
+                        <img src="{{ asset('logos/talents_lab_logo.png') }}" alt="Talents Lab Logo" class="brand-logo">
                     </div>
                     <p class="brand-description">
 {{--                        Добро пожаловать!<br>--}}

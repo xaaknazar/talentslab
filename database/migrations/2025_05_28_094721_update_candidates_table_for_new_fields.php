@@ -16,7 +16,6 @@ return new class extends Migration
             $table->dropColumn([
                 'surname',
                 'name',
-                'patronymic',
                 'driving_license_type',
                 'gallup_pdf',
                 'mbti_type'
@@ -37,7 +36,6 @@ return new class extends Migration
             // Восстанавливаем старые колонки
             $table->string('surname')->nullable();
             $table->string('name')->nullable();
-            $table->string('patronymic')->nullable();
             $table->string('driving_license_type')->nullable();
             $table->string('gallup_pdf')->nullable();
             $table->string('mbti_type')->nullable();

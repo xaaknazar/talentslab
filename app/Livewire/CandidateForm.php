@@ -30,7 +30,6 @@ class CandidateForm extends Component
     public $full_name;
     public $last_name;
     public $first_name;
-    public $middle_name;
     public $email;
     public $phone;
     public $gender;
@@ -345,7 +344,6 @@ class CandidateForm extends Component
         // Step 1 validation rules
             'last_name' => ['required', 'string', 'max:255', new CyrillicRule()],
             'first_name' => ['required', 'string', 'max:255', new CyrillicRule()],
-            'middle_name' => ['nullable', 'string', 'max:255', new CyrillicRule()],
         'email' => 'required|email|max:255',
             // Универсальный международный формат: допускает +, цифры, пробелы, дефисы и скобки; 8-15 цифр всего
             'phone' => ['required', 'string', 'regex:/^(?=(?:.*\d){8,15})\+?[\d\s\-\(\)]{7,20}$/'],
@@ -450,7 +448,6 @@ class CandidateForm extends Component
         'last_name.max' => 'Фамилия не должна превышать 255 символов',
         'first_name.required' => 'Имя обязательно для заполнения',
         'first_name.max' => 'Имя не должно превышать 255 символов',
-        'middle_name.max' => 'Отчество не должно превышать 255 символов',
         'birth_place.required' => 'Место рождения обязательно для заполнения',
         'current_city.required' => 'Введите текущий город',
         'email.required' => 'Email обязателен для заполнения',
@@ -523,7 +520,6 @@ class CandidateForm extends Component
         // Шаг 1
         'last_name' => 'Фамилия',
         'first_name' => 'Имя',
-        'middle_name' => 'Отчество',
         'email' => 'Email',
         'phone' => 'Телефон',
         'gender' => 'Пол',
@@ -723,7 +719,7 @@ class CandidateForm extends Component
         // Извлекаем основное поле из составного имени (например, "universities.0.name" -> "universities")
         $baseField = explode('.', $field)[0];
 
-        $step1Fields = ['last_name', 'first_name', 'middle_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
+        $step1Fields = ['last_name', 'first_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
         $step2Fields = ['religion', 'is_practicing', 'family_members', 'parents', 'siblings', 'children', 'hobbies', 'interests', 'visited_countries', 'books_per_year_min', 'books_per_year_max', 'favorite_sports', 'entertainment_hours_weekly', 'educational_hours_weekly', 'social_media_hours_weekly', 'has_driving_license', 'newCountry'];
         $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary', 'employer_requirements'];
         $step4Fields = ['gallup_pdf', 'mbti_type'];
@@ -827,7 +823,6 @@ class CandidateForm extends Component
             1 => [
                 'last_name' => $allRules['last_name'],
                 'first_name' => $allRules['first_name'],
-                'middle_name' => $allRules['middle_name'],
                 'email' => $allRules['email'],
                 'phone' => $allRules['phone'],
                 'gender' => $allRules['gender'],
@@ -908,7 +903,7 @@ class CandidateForm extends Component
     {
         $baseField = explode('.', $field)[0];
 
-        $step1Fields = ['last_name', 'first_name', 'middle_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
+        $step1Fields = ['last_name', 'first_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
         $step2Fields = ['religion', 'is_practicing', 'family_members', 'parents', 'siblings', 'children', 'hobbies', 'interests', 'visited_countries', 'books_per_year_min', 'books_per_year_max', 'favorite_sports', 'entertainment_hours_weekly', 'educational_hours_weekly', 'social_media_hours_weekly', 'has_driving_license', 'newCountry'];
         $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary', 'employer_requirements'];
         $step4Fields = ['gallup_pdf', 'mbti_type'];

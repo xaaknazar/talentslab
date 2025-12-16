@@ -15,7 +15,6 @@ return new class extends Migration
             // Basic Information
             $table->string('surname')->nullable()->change();
             $table->string('name')->nullable()->change();
-            $table->string('patronymic')->nullable()->change();
             $table->string('email')->nullable()->change();
             $table->string('phone')->nullable()->change();
             $table->string('gender')->nullable()->change();
@@ -66,7 +65,6 @@ return new class extends Migration
             // Basic Information
             $table->string('surname')->nullable(false)->change();
             $table->string('name')->nullable(false)->change();
-            $table->string('patronymic')->nullable(false)->change();
             $table->string('email')->nullable(false)->change();
             $table->string('phone')->nullable(false)->change();
             $table->string('gender')->nullable(false)->change();
