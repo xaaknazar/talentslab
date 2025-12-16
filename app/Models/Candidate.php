@@ -18,7 +18,6 @@ class Candidate extends Model
         'step',
         'step_parse_gallup',
         'full_name',
-        'patronymic',
         'email',
         'phone',
         'gender',

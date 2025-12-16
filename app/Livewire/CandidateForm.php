@@ -30,7 +30,6 @@ class CandidateForm extends Component
     public $full_name;
     public $last_name;
     public $first_name;
-    public $middle_name;
     public $email;
     public $phone;
     public $gender;
@@ -66,6 +65,9 @@ class CandidateForm extends Component
 
     // Step 3: Education and Work
     public $school;
+    public $school_name;
+    public $school_city;
+    public $school_graduation_year;
     public $universities = [];
     public $language_skills = [];
     public $computer_skills;
@@ -310,7 +312,13 @@ class CandidateForm extends Component
         $this->has_driving_license = $this->candidate->has_driving_license;
 
         // Education and Work
-        $this->school = $this->candidate->school;
+        // Разбираем поле school на три части
+        if ($this->candidate->school) {
+            $schoolParts = array_map('trim', explode('/', $this->candidate->school));
+            $this->school_name = $schoolParts[0] ?? '';
+            $this->school_city = $schoolParts[1] ?? '';
+            $this->school_graduation_year = $schoolParts[2] ?? '';
+        }
         $this->universities = $this->candidate->universities ?? [];
         $this->language_skills = $this->candidate->language_skills ?? [];
         $this->computer_skills = $this->candidate->computer_skills ?? '';
@@ -336,7 +344,6 @@ class CandidateForm extends Component
         // Step 1 validation rules
             'last_name' => ['required', 'string', 'max:255', new CyrillicRule()],
             'first_name' => ['required', 'string', 'max:255', new CyrillicRule()],
-            'middle_name' => ['nullable', 'string', 'max:255', new CyrillicRule()],
         'email' => 'required|email|max:255',
             // Универсальный международный формат: допускает +, цифры, пробелы, дефисы и скобки; 8-15 цифр всего
             'phone' => ['required', 'string', 'regex:/^(?=(?:.*\d){8,15})\+?[\d\s\-\(\)]{7,20}$/'],
@@ -363,7 +370,7 @@ class CandidateForm extends Component
             'parents.*.relation' => 'required|string|in:Отец,Мать',
             'parents.*.birth_year' => 'required|integer|min:1900|max:' . date('Y'),
             'parents.*.profession' => 'required|string|max:255',
-            'siblings' => 'required|array',
+            'siblings' => 'sometimes|array',
             'siblings.*.relation' => 'required|string|in:Брат,Сестра',
             'siblings.*.birth_year' => 'required|integer|min:1900|max:' . date('Y'),
             'children' => 'sometimes|array',
@@ -382,7 +389,9 @@ class CandidateForm extends Component
             'has_driving_license' => 'required|boolean',
 
             // Step 3 validation rules
-            'school' => ['required', 'string', 'max:255'],
+            'school_name' => ['required', 'string', 'max:255'],
+            'school_city' => ['required', 'string', 'max:255'],
+            'school_graduation_year' => 'required|integer|min:1970|max:2035',
             'universities' => 'nullable|array|min:0',
             'universities.*.name' => 'required|string|max:255',
             'universities.*.graduation_year' => 'required|integer|min:1950',
@@ -439,7 +448,6 @@ class CandidateForm extends Component
         'last_name.max' => 'Фамилия не должна превышать 255 символов',
         'first_name.required' => 'Имя обязательно для заполнения',
         'first_name.max' => 'Имя не должно превышать 255 символов',
-        'middle_name.max' => 'Отчество не должно превышать 255 символов',
         'birth_place.required' => 'Место рождения обязательно для заполнения',
         'current_city.required' => 'Введите текущий город',
         'email.required' => 'Email обязателен для заполнения',
@@ -473,9 +481,8 @@ class CandidateForm extends Component
         'hobbies.cyrillic' => 'Поле "Хобби" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
         'interests.cyrillic' => 'Поле "Интересы" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
         'favorite_sports.cyrillic' => 'Поле "Любимые виды спорта" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
-        'school.cyrillic' => 'Поле "Школа" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
         'desired_position.cyrillic' => 'Поле "Желаемая должность" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
-        'employer_requirements.cyrillic' => 'Поле "Требования к работодателю" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
+        'employer_requirements.cyrillic' => 'Поле "Пожелания на рабочем месте" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
         'family_members.*.profession.cyrillic' => 'Поле "Профессия" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
 
         // Дополнительные сообщения для обязательных полей
@@ -506,14 +513,13 @@ class CandidateForm extends Component
         'language_skills.required' => 'Добавьте минимум один язык',
         'work_experience.required' => 'Добавьте минимум одно место работы',
         'job_satisfaction.required' => 'Укажите уровень удовлетворенности работой',
-        'employer_requirements.required' => 'Укажите требования к работодателю',
+        'employer_requirements.required' => 'Укажите пожелания на рабочем месте',
     ];
 
     protected $validationAttributes = [
         // Шаг 1
         'last_name' => 'Фамилия',
         'first_name' => 'Имя',
-        'middle_name' => 'Отчество',
         'email' => 'Email',
         'phone' => 'Телефон',
         'gender' => 'Пол',
@@ -559,7 +565,9 @@ class CandidateForm extends Component
         'social_media_hours_weekly' => 'Часы соцсетей в неделю',
 
         // Шаг 3
-        'school' => 'Школа',
+        'school_name' => 'Название школы',
+        'school_city' => 'Город (школа)',
+        'school_graduation_year' => 'Год окончания (школа)',
         'universities' => 'Университеты',
         'universities.*.name' => 'Название университета',
         'universities.*.graduation_year' => 'Год окончания',
@@ -583,7 +591,7 @@ class CandidateForm extends Component
         'desired_position' => 'Желаемая должность',
         'activity_sphere' => 'Сфера деятельности',
         'expected_salary' => 'Ожидаемая зарплата',
-        'employer_requirements' => 'Требования к работодателю',
+        'employer_requirements' => 'Пожелания на рабочем месте',
 
         // Шаг 4
         'gallup_pdf' => 'Gallup PDF',
@@ -711,9 +719,9 @@ class CandidateForm extends Component
         // Извлекаем основное поле из составного имени (например, "universities.0.name" -> "universities")
         $baseField = explode('.', $field)[0];
 
-        $step1Fields = ['last_name', 'first_name', 'middle_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
+        $step1Fields = ['last_name', 'first_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
         $step2Fields = ['religion', 'is_practicing', 'family_members', 'parents', 'siblings', 'children', 'hobbies', 'interests', 'visited_countries', 'books_per_year_min', 'books_per_year_max', 'favorite_sports', 'entertainment_hours_weekly', 'educational_hours_weekly', 'social_media_hours_weekly', 'has_driving_license', 'newCountry'];
-        $step3Fields = ['school', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary', 'employer_requirements'];
+        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary', 'employer_requirements'];
         $step4Fields = ['gallup_pdf', 'mbti_type'];
 
         return match($this->currentStep) {
@@ -815,7 +823,6 @@ class CandidateForm extends Component
             1 => [
                 'last_name' => $allRules['last_name'],
                 'first_name' => $allRules['first_name'],
-                'middle_name' => $allRules['middle_name'],
                 'email' => $allRules['email'],
                 'phone' => $allRules['phone'],
                 'gender' => $allRules['gender'],
@@ -848,7 +855,9 @@ class CandidateForm extends Component
                 'has_driving_license' => $allRules['has_driving_license'],
             ],
             3 => [
-                'school' => $allRules['school'],
+                'school_name' => $allRules['school_name'],
+                'school_city' => $allRules['school_city'],
+                'school_graduation_year' => $allRules['school_graduation_year'],
                 'universities' => $allRules['universities'],
                 'universities.*.name' => $allRules['universities.*.name'],
                 'universities.*.graduation_year' => $allRules['universities.*.graduation_year'],
@@ -894,9 +903,9 @@ class CandidateForm extends Component
     {
         $baseField = explode('.', $field)[0];
 
-        $step1Fields = ['last_name', 'first_name', 'middle_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
+        $step1Fields = ['last_name', 'first_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
         $step2Fields = ['religion', 'is_practicing', 'family_members', 'parents', 'siblings', 'children', 'hobbies', 'interests', 'visited_countries', 'books_per_year_min', 'books_per_year_max', 'favorite_sports', 'entertainment_hours_weekly', 'educational_hours_weekly', 'social_media_hours_weekly', 'has_driving_license', 'newCountry'];
-        $step3Fields = ['school', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary', 'employer_requirements'];
+        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary', 'employer_requirements'];
         $step4Fields = ['gallup_pdf', 'mbti_type'];
 
         if (in_array($baseField, $step1Fields, true)) return 1;
@@ -1161,9 +1170,6 @@ class CandidateForm extends Component
         // Добавляем кастомную валидацию для семьи
         $this->validateFamilyData();
 
-        // Добавляем кастомную валидацию для языковых навыков
-        $this->validateLanguageSkills();
-
         // Вызываем родительский метод с оригинальными правилами
         return parent::validate($rules, $messages, $attributes);
     }
@@ -1217,6 +1223,11 @@ class CandidateForm extends Component
         ]);
 
         $errors = [];
+
+        // Проверяем, что добавлен хотя бы один родитель
+        if (empty($this->parents) || count($this->parents) === 0) {
+            $errors['parents'] = 'Добавьте минимум одного родителя';
+        }
 
         // Валидируем родителей
         foreach ($this->parents as $index => $parent) {
@@ -1272,6 +1283,40 @@ class CandidateForm extends Component
     }
 
     /**
+     * Обеспечивает наличие обязательных языков в списке
+     */
+    private function ensureRequiredLanguages($existingLanguages)
+    {
+        $requiredLanguages = ['Казахский', 'Русский', 'Английский'];
+        $result = [];
+
+        // Сначала добавляем обязательные языки
+        foreach ($requiredLanguages as $lang) {
+            $found = false;
+            foreach ($existingLanguages as $existing) {
+                if (($existing['language'] ?? '') === $lang) {
+                    $result[] = $existing;
+                    $found = true;
+                    break;
+                }
+            }
+            // Если обязательный язык не найден, добавляем его с пустым уровнем
+            if (!$found) {
+                $result[] = ['language' => $lang, 'level' => ''];
+            }
+        }
+
+        // Затем добавляем остальные языки
+        foreach ($existingLanguages as $existing) {
+            if (!in_array($existing['language'] ?? '', $requiredLanguages)) {
+                $result[] = $existing;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Кастомная валидация языковых навыков
      * Проверяет наличие обязательных языков: Казахский, Русский, Английский
      */
@@ -1283,14 +1328,6 @@ class CandidateForm extends Component
         }
 
         $requiredLanguages = ['Казахский', 'Русский', 'Английский'];
-        $addedLanguages = array_column($this->language_skills, 'language');
-
-        $missingLanguages = [];
-        foreach ($requiredLanguages as $requiredLang) {
-            if (!in_array($requiredLang, $addedLanguages)) {
-                $missingLanguages[] = $requiredLang;
-            }
-        }
 
         // Проверяем, что у каждого обязательного языка указан уровень
         $errors = [];
@@ -1298,13 +1335,9 @@ class CandidateForm extends Component
             if (in_array($skill['language'] ?? '', $requiredLanguages)) {
                 if (empty($skill['level'])) {
                     $language = $skill['language'];
-                    $errors["language_skills.{$index}.level"] = "Необходимо указать уровень владения языком \"{$language}\"";
+                    $errors["language_skills.{$index}.level"] = "Укажите уровень владения языком \"{$language}\"";
                 }
             }
-        }
-
-        if (!empty($missingLanguages)) {
-            $errors['language_skills'] = 'Необходимо добавить следующие языки: ' . implode(', ', $missingLanguages);
         }
 
         if (!empty($errors)) {
@@ -1756,7 +1789,10 @@ class CandidateForm extends Component
             $this->candidate->has_driving_license = $this->has_driving_license;
 
             // Education and Work
-            $this->candidate->school = $this->school;
+            // Объединяем поля школы в формат "Название / Город / Год"
+            if ($this->school_name && $this->school_city && $this->school_graduation_year) {
+                $this->candidate->school = trim($this->school_name) . ' / ' . trim($this->school_city) . ' / ' . $this->school_graduation_year;
+            }
             $this->candidate->universities = $this->universities;
 
             // Фильтруем пустые языковые навыки
@@ -1896,7 +1932,10 @@ class CandidateForm extends Component
         if ($this->has_driving_license !== null) $this->candidate->has_driving_license = $this->has_driving_license;
 
         // Образование и работа
-        if ($this->school) $this->candidate->school = $this->school;
+        // Объединяем поля школы в формат "Название / Город / Год"
+        if ($this->school_name && $this->school_city && $this->school_graduation_year) {
+            $this->candidate->school = trim($this->school_name) . ' / ' . trim($this->school_city) . ' / ' . $this->school_graduation_year;
+        }
         if (!empty($this->universities)) $this->candidate->universities = $this->universities;
 
         // Фильтруем пустые языковые навыки

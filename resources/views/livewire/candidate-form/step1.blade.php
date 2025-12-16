@@ -113,7 +113,7 @@
                     <input type="text"
                            id="first-name-input"
                            wire:model="first_name"
-                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 capitalize"
                            placeholder="Иван">
                     @error('first_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
@@ -126,7 +126,7 @@
                     <input type="text"
                            id="last-name-input"
                            wire:model="last_name"
-                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 capitalize"
                            placeholder="Иванов">
                     @error('last_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
@@ -217,7 +217,7 @@
             <input type="text"
                    id="birth-place-input"
                    wire:model="birth_place"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 capitalize"
                    placeholder="Москва">
             @error('birth_place') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
@@ -230,7 +230,7 @@
             <input type="text"
                    id="current-city-input"
                    wire:model="current_city"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 capitalize"
                    placeholder="Москва">
             @error('current_city') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>

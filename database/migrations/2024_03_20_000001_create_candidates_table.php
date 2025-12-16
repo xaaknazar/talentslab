@@ -14,7 +14,6 @@ return new class extends Migration
             // Basic Information
             $table->string('surname');
             $table->string('name');
-            $table->string('patronymic')->nullable();
             $table->string('email');
             $table->string('phone');
             $table->string('gender');

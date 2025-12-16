@@ -5,22 +5,46 @@
     <div class="grid grid-cols-1 gap-6">
         <!-- Школа -->
         <div>
-            <label class="block text-sm font-medium text-gray-700">
-                Школа <span class="text-red-500">*</span>
-            </label>
-            <p class="text-xs text-gray-500 mt-1 mb-2">
-                <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
-                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                    </svg>
-                    Формат: Название школы / город / год окончания
-                </span>
-            </p>
-            <input type="text" 
-                   wire:model="school" 
-                   placeholder="Например: Школа №25 / Алматы / 2018"
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-            @error('school') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+            <label class="block text-sm font-medium text-gray-700 mb-3">Школа <span class="text-red-500">*</span></label>
+            <div class="p-4 bg-gray-50 rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">
+                            Название школы <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text"
+                               wire:model="school_name"
+                               placeholder="Школа №25"
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        @error('school_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">
+                            Город <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text"
+                               wire:model="school_city"
+                               placeholder="Актау"
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        @error('school_city') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">
+                            Год окончания <span class="text-red-500">*</span>
+                        </label>
+                        <select wire:model="school_graduation_year"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <option value="" selected disabled>Выберите год</option>
+                            @for($year = 1970; $year <= 2035; $year++)
+                                <option value="{{ $year }}">{{ $year }}</option>
+                            @endfor
+                        </select>
+                        @error('school_graduation_year') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Университеты -->
@@ -416,9 +440,9 @@
                 @error('computer_skills') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
 
-            <!-- Требования к работодателю -->
+            <!-- Пожелания на рабочем месте -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">Требования к работодателю <span class="text-red-500">*</span></label>
+                <label class="block text-sm font-medium text-gray-700">Пожелания на рабочем месте <span class="text-red-500">*</span></label>
                 <p class="text-xs text-gray-500 mt-1 mb-2">
                     <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">

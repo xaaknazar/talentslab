@@ -1,10 +1,10 @@
 @extends('layouts.auth')
 
-@section('title', 'Divergents - Learning Management System')
+@section('title', 'TalentsLab - CV Database')
 
 @section('content')
-<h1>Добро пожаловать</h1>
-<p>Войдите в систему управления обучением Talents Lab</p>
+<h1>Добро пожаловать!</h1>
+<p>Войдите в онлайн платформу TalentsLab</p>
 
 @if (session('status'))
     <div class="success-message">
@@ -19,7 +19,7 @@
             Привет, {{ Auth::user()->name }}! 👋
         </div>
         <a href="{{ url('/dashboard') }}" class="btn-auth btn-dashboard">
-            Перейти в панель управления
+            Войти
         </a>
     @else
         <!-- Login Form -->
