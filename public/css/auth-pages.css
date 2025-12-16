@@ -6,9 +6,13 @@
     box-sizing: border-box;
 }
 
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    min-height: 100vh;
     background: #0f284b;
     display: flex;
     align-items: center;
@@ -17,7 +21,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 /* Animated Background Arrows */
@@ -29,6 +33,7 @@ body {
     height: 100%;
     pointer-events: none;
     z-index: 1;
+    overflow: hidden;
 }
 
 .arrow {
@@ -102,6 +107,10 @@ body {
     justify-content: center;
     background: #ffffff;
     position: relative;
+}
+
+.auth-section {
+    width: 100%;
 }
 
 .auth-section h1 {
@@ -472,12 +481,15 @@ body {
 /* Mobile Styles */
 @media (max-width: 768px) {
     body {
-        align-items: flex-start;
-        padding: 20px 0;
+        height: auto;
+        min-height: 100vh;
     }
 
     .container {
         padding: 20px;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
     }
 
     .main-card {
