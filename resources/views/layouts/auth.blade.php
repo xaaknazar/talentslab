@@ -16,6 +16,12 @@
         @stack('styles')
     </head>
     <body>
+        <!-- Animated Background with Arrows -->
+        <div class="animated-bg" id="arrowsContainer"></div>
+
+        <!-- Gradient Overlay -->
+        <div class="gradient-overlay"></div>
+
         <div class="container">
             <div class="main-card">
                 <!-- Left Panel - Auth Form -->
@@ -36,14 +42,42 @@
                         <br><br>
                         Пройдя анкетирование, вы сформируете резюме и сможете подобрать вакансию, максимально соответствующую вашим способностям и потенциалу.
                     </p>
+
+                    <!-- Decorative Elements -->
+                    <div class="decorative-circle"></div>
+                    <div class="decorative-circle-2"></div>
                 </div>
             </div>
         </div>
 
         <script>
-            // Simple form enhancement
+            // Create animated arrows going up
+            function createAnimatedArrows() {
+                const container = document.getElementById('arrowsContainer');
+                const arrowCount = 25; // Number of arrows
+
+                for (let i = 0; i < arrowCount; i++) {
+                    const arrow = document.createElement('div');
+                    arrow.className = 'arrow';
+                    arrow.innerHTML = '↑'; // Up arrow symbol
+
+                    // Random horizontal position
+                    arrow.style.left = Math.random() * 100 + '%';
+
+                    // Random animation duration (10-20 seconds)
+                    const duration = 10 + Math.random() * 10;
+                    arrow.style.animationDuration = duration + 's';
+
+                    // Random delay for staggered start
+                    const delay = Math.random() * 10;
+                    arrow.style.animationDelay = delay + 's';
+
+                    container.appendChild(arrow);
+                }
+            }
+
             document.addEventListener('DOMContentLoaded', function() {
-                // No unnecessary animations - keep it clean and fast
+                createAnimatedArrows();
             });
         </script>
 
