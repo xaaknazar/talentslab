@@ -268,16 +268,6 @@
                             <span class="text-xs text-gray-800">{{ $candidate->interests ?: 'Не указано' }}</span>
                         </div>
                         <div>
-                            <span class="block text-xs font-medium text-gray-600 mb-1">Любимые развлечения:</span>
-                            <span class="text-xs text-gray-800">
-                                @if($candidate->entertainment_hours_weekly)
-                                    {{ $candidate->entertainment_hours_weekly }} часов в неделю
-                                @else
-                                    Не указано
-                                @endif
-                            </span>
-                        </div>
-                        <div>
                             <span class="block text-xs font-medium text-gray-600 mb-1">Любимые виды спорта:</span>
                             <span class="text-xs text-gray-800">
                                 @if($candidate->favorite_sports)

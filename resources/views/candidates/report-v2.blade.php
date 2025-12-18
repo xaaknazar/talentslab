@@ -576,16 +576,6 @@ if (! function_exists('mb_ucfirst')) {
                             {{ $interests }}
                         </span>
                     </div>
-                    <div class="flex">
-                        <span class="w-60 text-base text-gray-600">Любимые развлечения:</span>
-                        <span class="text-base font-medium">
-                            @if($candidate->entertainment_hours_weekly)
-                                {{ $candidate->entertainment_hours_weekly }} час{{ $candidate->entertainment_hours_weekly == 1 ? '' : ($candidate->entertainment_hours_weekly < 5 ? 'а' : 'ов') }} в неделю
-                            @else
-                                Не указано
-                            @endif
-                        </span>
-                    </div>
                     <div class="flex items-start">
                         <span class="w-60 text-base text-gray-600">Любимые виды спорта:</span>
                         <span class="text-base font-medium flex-1">
