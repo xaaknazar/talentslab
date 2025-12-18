@@ -12,7 +12,7 @@
                         ['step' => 1, 'title' => 'Основная информация'],
                         ['step' => 2, 'title' => 'Дополнительная информация'],
                         ['step' => 3, 'title' => 'Образование и работа'],
-                        ['step' => 4, 'title' => 'Тесты']
+                        ['step' => 4, 'title' => 'Психометрический портрет']
                     ] as $stepInfo)
                     <button type="button" 
                             wire:click="$set('currentStep', {{ $stepInfo['step'] }})"
@@ -51,9 +51,9 @@
                 <div class="flex items-center space-x-2 w-full">
                     @foreach([
                         ['step' => 1, 'title' => 'Основная информация'],
-                        ['step' => 2, 'title' => 'Дополнительная информация'], 
+                        ['step' => 2, 'title' => 'Дополнительная информация'],
                         ['step' => 3, 'title' => 'Образование и работа'],
-                        ['step' => 4, 'title' => 'Тесты']
+                        ['step' => 4, 'title' => 'Психометрический портрет']
                     ] as $index => $stepInfo)
                     <!-- Step -->
                     <div class="flex items-center {{ $index === 3 ? '' : 'flex-1' }}">

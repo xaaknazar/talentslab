@@ -300,6 +300,37 @@
                     </svg>
                     Добавить место работы
                 </button>
+
+                <!-- Общий стаж работы и Удовлетворенность работой -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
+                    <!-- Общий стаж работы -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">
+                            Общий стаж работы (лет) <span class="text-red-500">*</span>
+                        </label>
+                        <input type="number"
+                               wire:model="total_experience_years"
+                               min="0"
+                               max="50"
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                               placeholder="0">
+                        @error('total_experience_years') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
+                    </div>
+
+                    <!-- Удовлетворенность работой -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">
+                            Удовлетворенность текущей работой (1-5) <span class="text-red-500">*</span>
+                        </label>
+                        <input type="number"
+                               wire:model="job_satisfaction"
+                               min="1"
+                               max="5"
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                               placeholder="1">
+                        @error('job_satisfaction') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -392,33 +423,53 @@
 
 
 
-            <!-- Ожидаемая зарплата -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700">
-                    Ожидаемая зарплата (тенге) <span class="text-red-500">*</span>
-                </label>
-                <div class="relative mt-1">
-                    <input type="text" 
-                           id="expected_salary_formatted"
-                           class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 pr-12"
-                           placeholder="500 000"
-                           autocomplete="off"
-                           oninput="formatSalary(this)"
-                           onpaste="handleSalaryPaste(event)"
-                           onkeypress="return allowOnlyNumbers(event)"
-                           onfocus="initializeSalaryField()"
-                           onblur="initializeSalaryField()">
-                    <input type="hidden" 
-                           wire:model="expected_salary" 
-                           id="expected_salary_hidden">
-                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                        <span class="text-gray-500 sm:text-sm">₸</span>
+            <!-- Ожидаемая зарплата (диапазон) -->
+            <div class="grid grid-cols-2 gap-3">
+                <!-- От -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">
+                        Зарплата от (тенге) <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative mt-1">
+                        <input type="text"
+                               id="expected_salary_from_formatted"
+                               class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 pr-12"
+                               placeholder="500 000"
+                               autocomplete="off"
+                               oninput="formatSalaryFrom(this)"
+                               onkeypress="return allowOnlyNumbers(event)">
+                        <input type="hidden"
+                               wire:model="expected_salary_from"
+                               id="expected_salary_from_hidden">
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <span class="text-gray-500 sm:text-sm">₸</span>
+                        </div>
                     </div>
+                    @error('expected_salary_from') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
-                
 
-                <p class="mt-1 text-xs text-gray-500">Введите сумму без копеек, например: 500 000</p>
-                @error('expected_salary') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                <!-- До -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">
+                        Зарплата до (тенге) <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative mt-1">
+                        <input type="text"
+                               id="expected_salary_to_formatted"
+                               class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 pr-12"
+                               placeholder="800 000"
+                               autocomplete="off"
+                               oninput="formatSalaryTo(this)"
+                               onkeypress="return allowOnlyNumbers(event)">
+                        <input type="hidden"
+                               wire:model="expected_salary_to"
+                               id="expected_salary_to_hidden">
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <span class="text-gray-500 sm:text-sm">₸</span>
+                        </div>
+                    </div>
+                    @error('expected_salary_to') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </div>
             </div>
         </div>
         <!-- Компьютерные навыки и Требования к работодателю в одном ряду -->
@@ -456,92 +507,6 @@
                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
                 @error('employer_requirements') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
-        </div>
-
-        
-
-        <!-- Опыт работы, удовлетворенность и зарплата в одном ряду -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <!-- Общий стаж работы -->
-            <div>
-                <div class="flex items-center justify-between">
-                    <label class="block text-sm font-medium text-gray-700">
-                        Общий стаж работы (лет) <span class="text-red-500">*</span>
-                    </label>
-                    <span id="experience-display" class="px-2 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-md">
-                        @if($total_experience_years && $total_experience_years > 0)
-                            {{ $total_experience_years }}
-                        @else
-                            0
-                        @endif
-                    </span>
-                </div>
-                <div class="relative mt-2">
-                    <input type="range" 
-                           id="experience-slider"
-                           wire:model="total_experience_years"
-                           name="total_experience_years"
-                           min="0" 
-                           max="50" 
-                           step="1"
-                           value="{{ $total_experience_years ?? 0 }}"
-                           class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer
-                                  [&::-webkit-slider-thumb]:w-4
-                                  [&::-webkit-slider-thumb]:h-4
-                                  [&::-webkit-slider-thumb]:appearance-none
-                                  [&::-webkit-slider-thumb]:bg-green-600
-                                  [&::-webkit-slider-thumb]:rounded-full
-                                  [&::-webkit-slider-thumb]:cursor-pointer
-                                  [&::-moz-range-thumb]:w-4
-                                  [&::-moz-range-thumb]:h-4
-                                  [&::-moz-range-thumb]:appearance-none
-                                  [&::-moz-range-thumb]:bg-green-600
-                                  [&::-moz-range-thumb]:rounded-full
-                                  [&::-moz-range-thumb]:cursor-pointer">
-                </div>
-                @error('total_experience_years') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
-            </div>
-
-            <!-- Удовлетворенность работой -->
-            <div>
-                <div class="flex items-center justify-between">
-                    <label class="block text-sm font-medium text-gray-700">
-                        Удовлетворенность текущей работой (1-5)
-                    </label>
-                    <span id="satisfaction-display" class="px-2 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-md">
-                        @if($job_satisfaction && $job_satisfaction > 1)
-                            {{ $job_satisfaction }}
-                        @else
-                            1
-                        @endif
-                    </span>
-                </div>
-                <div class="relative mt-2">
-                    <input type="range" 
-                           wire:model="job_satisfaction"
-                           name="job_satisfaction"
-                           value="{{ $job_satisfaction ?? 1 }}"
-                           min="1" 
-                           max="5" 
-                           step="1"
-                           class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer
-                                  [&::-webkit-slider-thumb]:w-4
-                                  [&::-webkit-slider-thumb]:h-4
-                                  [&::-webkit-slider-thumb]:appearance-none
-                                  [&::-webkit-slider-thumb]:bg-blue-600
-                                  [&::-webkit-slider-thumb]:rounded-full
-                                  [&::-webkit-slider-thumb]:cursor-pointer
-                                  [&::-moz-range-thumb]:w-4
-                                  [&::-moz-range-thumb]:h-4
-                                  [&::-moz-range-thumb]:appearance-none
-                                  [&::-moz-range-thumb]:bg-blue-600
-                                  [&::-moz-range-thumb]:rounded-full
-                                  [&::-moz-range-thumb]:cursor-pointer">
-                </div>
-                @error('job_satisfaction') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
-            </div>
-
-
         </div>
     </div>
 </div>
@@ -677,6 +642,50 @@ window.formatSalary = function(input) {
     if (hiddenInput) {
         hiddenInput.value = numericValue;
         // Уведомляем Livewire
+        hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+};
+
+// Функция для форматирования минимальной зарплаты
+window.formatSalaryFrom = function(input) {
+    // Получаем только цифры
+    let numericValue = input.value.replace(/\D/g, '');
+
+    // Форматируем с пробелами
+    let formatted = '';
+    if (numericValue) {
+        formatted = numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    }
+
+    // Устанавливаем отформатированное значение
+    input.value = formatted;
+
+    // Обновляем скрытое поле
+    const hiddenInput = document.getElementById('expected_salary_from_hidden');
+    if (hiddenInput) {
+        hiddenInput.value = numericValue;
+        hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+};
+
+// Функция для форматирования максимальной зарплаты
+window.formatSalaryTo = function(input) {
+    // Получаем только цифры
+    let numericValue = input.value.replace(/\D/g, '');
+
+    // Форматируем с пробелами
+    let formatted = '';
+    if (numericValue) {
+        formatted = numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    }
+
+    // Устанавливаем отформатированное значение
+    input.value = formatted;
+
+    // Обновляем скрытое поле
+    const hiddenInput = document.getElementById('expected_salary_to_hidden');
+    if (hiddenInput) {
+        hiddenInput.value = numericValue;
         hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
     }
 };

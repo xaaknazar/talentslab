@@ -109,10 +109,6 @@
                             </svg>
                             Добавить родителя
                         </button>
-                    @else
-                        <div class="mt-4 text-sm text-gray-500">
-                            Максимум 2 родителя (текущее количество: {{ count($parents) }})
-                        </div>
                     @endif
                 </div>
             </div>

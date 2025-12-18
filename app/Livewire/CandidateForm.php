@@ -77,6 +77,8 @@ class CandidateForm extends Component
     public $desired_position;
     public $activity_sphere;
     public $expected_salary;
+    public $expected_salary_from;
+    public $expected_salary_to;
     public $employer_requirements;
 
     // Step 4: Tests
@@ -207,6 +209,8 @@ class CandidateForm extends Component
         $this->total_experience_years = 0;
         $this->job_satisfaction = 1;
         $this->expected_salary = 0;
+        $this->expected_salary_from = 0;
+        $this->expected_salary_to = 0;
 
         // Устанавливаем email из авторизованного пользователя
         $this->email = auth()->user()->email;
@@ -329,6 +333,8 @@ class CandidateForm extends Component
         $this->desired_position = $this->candidate->desired_position;
         $this->activity_sphere = $this->candidate->activity_sphere;
         $this->expected_salary = $this->candidate->expected_salary;
+        $this->expected_salary_from = $this->candidate->expected_salary_from ?? 0;
+        $this->expected_salary_to = $this->candidate->expected_salary_to ?? 0;
         $this->employer_requirements = $this->candidate->employer_requirements;
 
         // Tests
@@ -382,7 +388,7 @@ class CandidateForm extends Component
             'visited_countries.*' => 'required|string|in:' . implode(',', collect($this->countries)->pluck('name_ru')->all()),
             'books_per_year_min' => 'required|integer|min:0|max:100',
             'books_per_year_max' => 'required|integer|min:0|max:100|gte:books_per_year_min',
-            'favorite_sports' => ['required', 'string', 'max:1000', new CyrillicRule()],
+            'favorite_sports' => ['required', 'string', 'max:1000'],
             'entertainment_hours_weekly' => 'required|integer|min:0|max:168',
             'educational_hours_weekly' => 'required|integer|min:0|max:168',
             'social_media_hours_weekly' => 'required|integer|min:0|max:168',
@@ -417,8 +423,9 @@ class CandidateForm extends Component
             'job_satisfaction' => 'required|integer|min:1|max:5',
             'desired_position' => ['required', 'string', 'max:255'],
             'activity_sphere' => ['required', 'string', 'max:255'],
-            'expected_salary' => 'required|numeric|min:0|max:999999999999',
-            'employer_requirements' => ['required', 'string', 'max:2000', new CyrillicRule()],
+            'expected_salary_from' => 'required|numeric|min:0|max:999999999999',
+            'expected_salary_to' => 'required|numeric|min:0|max:999999999999|gte:expected_salary_from',
+            'employer_requirements' => ['required', 'string', 'max:2000'],
 
             // Step 4 validation rules
             'gallup_pdf' => [
@@ -467,10 +474,15 @@ class CandidateForm extends Component
         'gallup_pdf.max' => 'Размер файла не должен превышать 10MB',
         'mbti_type.required' => 'Необходимо выбрать тип личности MBTI',
         'mbti_type.in' => 'Выбран некорректный тип личности MBTI',
-        'expected_salary.required' => 'Ожидаемая зарплата обязательна для заполнения',
-        'expected_salary.numeric' => 'Ожидаемая зарплата должна быть числом',
-        'expected_salary.min' => 'Ожидаемая зарплата должна быть больше 0',
-        'expected_salary.max' => 'Ожидаемая зарплата не может превышать 999,999,999,999 тенге',
+        'expected_salary_from.required' => 'Минимальная зарплата обязательна для заполнения',
+        'expected_salary_from.numeric' => 'Минимальная зарплата должна быть числом',
+        'expected_salary_from.min' => 'Минимальная зарплата должна быть больше 0',
+        'expected_salary_from.max' => 'Минимальная зарплата не может превышать 999,999,999,999 тенге',
+        'expected_salary_to.required' => 'Максимальная зарплата обязательна для заполнения',
+        'expected_salary_to.numeric' => 'Максимальная зарплата должна быть числом',
+        'expected_salary_to.min' => 'Максимальная зарплата должна быть больше 0',
+        'expected_salary_to.max' => 'Максимальная зарплата не может превышать 999,999,999,999 тенге',
+        'expected_salary_to.gte' => 'Максимальная зарплата должна быть больше или равна минимальной',
         'desired_position.required' => 'Желаемая должность обязательна для заполнения',
         'desired_position.max' => 'Желаемая должность не должна превышать 255 символов',
         'activity_sphere.required' => 'Сфера деятельности обязательна для заполнения',
@@ -590,7 +602,8 @@ class CandidateForm extends Component
         'job_satisfaction' => 'Удовлетворенность работой',
         'desired_position' => 'Желаемая должность',
         'activity_sphere' => 'Сфера деятельности',
-        'expected_salary' => 'Ожидаемая зарплата',
+        'expected_salary_from' => 'Минимальная зарплата',
+        'expected_salary_to' => 'Максимальная зарплата',
         'employer_requirements' => 'Пожелания на рабочем месте',
 
         // Шаг 4
@@ -721,7 +734,7 @@ class CandidateForm extends Component
 
         $step1Fields = ['last_name', 'first_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
         $step2Fields = ['religion', 'is_practicing', 'family_members', 'parents', 'siblings', 'children', 'hobbies', 'interests', 'visited_countries', 'books_per_year_min', 'books_per_year_max', 'favorite_sports', 'entertainment_hours_weekly', 'educational_hours_weekly', 'social_media_hours_weekly', 'has_driving_license', 'newCountry'];
-        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary', 'employer_requirements'];
+        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary_from', 'expected_salary_to', 'employer_requirements'];
         $step4Fields = ['gallup_pdf', 'mbti_type'];
 
         return match($this->currentStep) {
@@ -875,7 +888,8 @@ class CandidateForm extends Component
                 'total_experience_years' => $allRules['total_experience_years'],
                 'job_satisfaction' => $allRules['job_satisfaction'],
                 'desired_position' => $allRules['desired_position'],
-                'expected_salary' => $allRules['expected_salary'],
+                'expected_salary_from' => $allRules['expected_salary_from'],
+                'expected_salary_to' => $allRules['expected_salary_to'],
                 'employer_requirements' => $allRules['employer_requirements'],
             ],
             4 => [
@@ -905,7 +919,7 @@ class CandidateForm extends Component
 
         $step1Fields = ['last_name', 'first_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
         $step2Fields = ['religion', 'is_practicing', 'family_members', 'parents', 'siblings', 'children', 'hobbies', 'interests', 'visited_countries', 'books_per_year_min', 'books_per_year_max', 'favorite_sports', 'entertainment_hours_weekly', 'educational_hours_weekly', 'social_media_hours_weekly', 'has_driving_license', 'newCountry'];
-        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary', 'employer_requirements'];
+        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary_from', 'expected_salary_to', 'employer_requirements'];
         $step4Fields = ['gallup_pdf', 'mbti_type'];
 
         if (in_array($baseField, $step1Fields, true)) return 1;
@@ -1811,6 +1825,8 @@ class CandidateForm extends Component
             $this->candidate->desired_position = $this->desired_position;
             $this->candidate->activity_sphere = $this->activity_sphere;
             $this->candidate->expected_salary = $this->expected_salary;
+            $this->candidate->expected_salary_from = $this->expected_salary_from;
+            $this->candidate->expected_salary_to = $this->expected_salary_to;
             $this->candidate->employer_requirements = $this->employer_requirements;
 
             // Handle Gallup PDF upload
@@ -1960,6 +1976,8 @@ class CandidateForm extends Component
         if ($this->desired_position) $this->candidate->desired_position = $this->desired_position;
         if ($this->activity_sphere) $this->candidate->activity_sphere = $this->activity_sphere;
         if ($this->expected_salary !== null) $this->candidate->expected_salary = $this->expected_salary;
+        if ($this->expected_salary_from !== null) $this->candidate->expected_salary_from = $this->expected_salary_from;
+        if ($this->expected_salary_to !== null) $this->candidate->expected_salary_to = $this->expected_salary_to;
         if ($this->employer_requirements !== null) $this->candidate->employer_requirements = $this->employer_requirements;
 
         // Handle Gallup PDF upload
