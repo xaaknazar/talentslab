@@ -651,10 +651,7 @@ function shouldValidateCyrillic(input) {
     const cyrillicFields = [
         // Step 1 (по ID)
         'last-name-input', 'first-name-input', 'middle-name-input',
-        'birth-place-input', 'current-city-input',
-
-        // Step 2 и 3 (по wire:model)
-        'favorite_sports', 'employer_requirements'
+        'birth-place-input', 'current-city-input'
     ];
 
     // Проверяем по ID
