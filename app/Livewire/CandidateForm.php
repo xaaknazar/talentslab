@@ -850,8 +850,15 @@ class CandidateForm extends Component
 
                 // Добавляем новые правила валидации для категорий семьи
                 'parents' => $allRules['parents'],
+                'parents.*.relation' => $allRules['parents.*.relation'],
+                'parents.*.birth_year' => $allRules['parents.*.birth_year'],
+                'parents.*.profession' => $allRules['parents.*.profession'],
                 'siblings' => $allRules['siblings'],
+                'siblings.*.relation' => $allRules['siblings.*.relation'],
+                'siblings.*.birth_year' => $allRules['siblings.*.birth_year'],
                 'children' => $allRules['children'],
+                'children.*.name' => $allRules['children.*.name'],
+                'children.*.birth_year' => $allRules['children.*.birth_year'],
 
                 'hobbies' => $allRules['hobbies'],
                 'interests' => $allRules['interests'],
@@ -886,6 +893,7 @@ class CandidateForm extends Component
                 'total_experience_years' => $allRules['total_experience_years'],
                 'job_satisfaction' => $allRules['job_satisfaction'],
                 'desired_position' => $allRules['desired_position'],
+                'activity_sphere' => $allRules['activity_sphere'],
                 'expected_salary_from' => $allRules['expected_salary_from'],
                 'expected_salary_to' => $allRules['expected_salary_to'],
                 'employer_requirements' => $allRules['employer_requirements'],
