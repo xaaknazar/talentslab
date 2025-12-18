@@ -1,4 +1,48 @@
 @if($currentStep === 2)
+<!-- КРИТИЧЕСКИЙ ПАТЧ: отключаем валидацию кириллицы для favorite_sports -->
+<script>
+// Переопределяем функцию shouldValidateCyrillic ДО загрузки основного скрипта
+(function() {
+    // Сохраняем оригинальную функцию если она уже существует
+    const originalDefine = Object.getOwnPropertyDescriptor(window, 'shouldValidateCyrillic');
+
+    Object.defineProperty(window, 'shouldValidateCyrillic', {
+        configurable: true,
+        enumerable: true,
+        get: function() {
+            return function(input) {
+                const wireModel = input.getAttribute('wire:model');
+                const id = input.id;
+
+                // НИКОГДА не проверяем favorite_sports
+                if (wireModel === 'favorite_sports' || id === 'favorite-sports-input') {
+                    return false;
+                }
+
+                // Для остальных полей используем стандартную логику
+                const cyrillicFields = [
+                    'last-name-input',
+                    'first-name-input',
+                    'birth-place-input',
+                    'current-city-input'
+                ];
+
+                if (id && cyrillicFields.includes(id)) return true;
+                if (wireModel && cyrillicFields.includes(wireModel)) return true;
+
+                return false;
+            };
+        },
+        set: function(value) {
+            // Игнорируем попытки перезаписать функцию
+            console.log('🛡️ Попытка перезаписать shouldValidateCyrillic заблокирована');
+        }
+    });
+
+    console.log('✅ Функция shouldValidateCyrillic защищена от перезаписи');
+})();
+</script>
+
 <div class="step">
     <h2 class="text-2xl font-bold mb-6">Дополнительная информация</h2>
 
@@ -625,54 +669,39 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<!-- Патч: отключаем JavaScript валидацию кириллицы для favorite_sports -->
+<!-- Дополнительный патч: удаляем обработчики и ошибки -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🔧 Патч: отключаем валидацию кириллицы для favorite_sports');
-
-    // Переопределяем функцию shouldValidateCyrillic
-    if (window.shouldValidateCyrillic) {
-        const originalShouldValidateCyrillic = window.shouldValidateCyrillic;
-
-        window.shouldValidateCyrillic = function(input) {
-            const wireModel = input.getAttribute('wire:model');
-
-            // Не проверяем favorite_sports
-            if (wireModel === 'favorite_sports') {
-                console.log('✅ Пропускаем валидацию кириллицы для favorite_sports');
-                return false;
-            }
-
-            // Для остальных полей используем оригинальную функцию
-            return originalShouldValidateCyrillic ? originalShouldValidateCyrillic(input) : false;
-        };
-    }
-
-    // Удаляем обработчики с поля favorite_sports если они уже установлены
-    setTimeout(() => {
+(function() {
+    function cleanFavoriteSportsField() {
         const favoritesSportsField = document.querySelector('textarea[wire\\:model="favorite_sports"]');
-        if (favoritesSportsField) {
-            console.log('🧹 Очищаем обработчики с favorite_sports');
+        if (!favoritesSportsField) return;
 
-            // Убираем маркер инициализации
-            delete favoritesSportsField.dataset.cyrillicInit;
+        // Убираем маркер инициализации
+        delete favoritesSportsField.dataset.cyrillicInit;
 
-            // Убираем ошибку если она есть
-            const errorElement = document.getElementById('favorite_sports-cyrillic-error');
-            if (errorElement) {
-                errorElement.style.display = 'none';
-            }
+        // Убираем ошибку если она есть
+        const errorElement = document.getElementById('favorite_sports-cyrillic-error');
+        if (errorElement) {
+            errorElement.remove(); // Полностью удаляем элемент
+        }
 
-            // Убираем красные границы
-            favoritesSportsField.classList.remove('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
-            favoritesSportsField.classList.add('border-gray-300', 'focus:border-blue-500', 'focus:ring-blue-500');
+        // Убираем красные границы
+        favoritesSportsField.classList.remove('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
+        favoritesSportsField.classList.add('border-gray-300', 'focus:border-blue-500', 'focus:ring-blue-500');
 
-            console.log('✅ Поле favorite_sports освобождено от валидации кириллицы');
+        // Клонируем элемент, чтобы удалить все обработчики событий
+        const newField = favoritesSportsField.cloneNode(true);
+        favoritesSportsField.parentNode.replaceChild(newField, favoritesSportsField);
 
+        console.log('✅ Поле favorite_sports полностью очищено от валидации кириллицы');
+
+        // Ищем новое поле после клонирования
+        const newFavoriteSportsField = document.querySelector('textarea[wire\\:model="favorite_sports"]');
+        if (newFavoriteSportsField) {
             // Добавляем обработчик для первой заглавной буквы (sentence case)
             let isProcessing = false;
 
-            favoritesSportsField.addEventListener('input', function(e) {
+            newFavoriteSportsField.addEventListener('input', function(e) {
                 if (isProcessing) return;
 
                 const input = e.target;
@@ -701,7 +730,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
             console.log('✅ Добавлен обработчик sentence case для favorite_sports');
         }
-    }, 500);
-});
+    }
+
+    // Вызываем очистку при загрузке и периодически
+    document.addEventListener('DOMContentLoaded', cleanFavoriteSportsField);
+    setTimeout(cleanFavoriteSportsField, 500);
+    setTimeout(cleanFavoriteSportsField, 1000);
+    setTimeout(cleanFavoriteSportsField, 2000);
+
+    // Переочищаем после обновлений Livewire
+    if (window.Livewire) {
+        Livewire.hook('message.processed', () => {
+            setTimeout(cleanFavoriteSportsField, 100);
+        });
+    }
+
+    console.log('✅ Система очистки favorite_sports активирована');
+})();
 </script>
  
