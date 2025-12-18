@@ -1283,4 +1283,50 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 500);
 });
 </script>
+
+<!-- Автоформатирование для поля Компьютерные навыки -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔧 Инициализация автоформатирования для computer_skills');
+
+    setTimeout(() => {
+        const computerSkillsField = document.querySelector('textarea[wire\\:model="computer_skills"]');
+
+        if (computerSkillsField) {
+            console.log('✅ Найдено поле computer_skills');
+
+            let isProcessing = false;
+
+            computerSkillsField.addEventListener('input', function(e) {
+                if (isProcessing) return;
+
+                const input = e.target;
+                const cursorPosition = input.selectionStart;
+                let value = input.value;
+
+                // Автоматически добавляем пробел после запятой, если его нет
+                const newValue = value.replace(/,(?!\s)/g, ', ');
+
+                if (value !== newValue) {
+                    isProcessing = true;
+
+                    input.value = newValue;
+
+                    // Корректируем позицию курсора
+                    const addedSpaces = (newValue.match(/,\s/g) || []).length - (value.match(/,\s/g) || []).length;
+                    const newCursorPosition = cursorPosition + addedSpaces;
+                    input.setSelectionRange(newCursorPosition, newCursorPosition);
+
+                    // Отправляем событие для Livewire
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+
+                    isProcessing = false;
+                }
+            });
+
+            console.log('✅ Автоформатирование для computer_skills активировано');
+        }
+    }, 500);
+});
+</script>
  
