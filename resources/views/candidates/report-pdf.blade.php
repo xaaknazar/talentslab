@@ -100,7 +100,7 @@
                                  <span class="text-sm font-medium">{{ $candidate->gender ?: 'Не указано' }}</span>
                              </div>
                              <div class="flex">
-                                 <span class="w-28 text-sm text-gray-600">Религия:</span>
+                                 <span class="w-28 text-sm text-gray-600">Вероисповедание:</span>
                                  <span class="text-sm font-medium">{{ $candidate->religion ?: 'Не указано' }}</span>
                              </div>
                              <div class="flex">
@@ -291,28 +291,6 @@
                                 @endif
                             </span>
                         </div>
-                    </div>
-                    <div class="space-y-2">
-                        <div>
-                            <span class="block text-xs font-medium text-gray-600 mb-1">Кол-во книг в год:</span>
-                            <span class="text-xs text-gray-800">{{ $candidate->books_per_year ?? 'Не указано' }}</span>
-                        </div>
-                        <div>
-                            <span class="block text-xs font-medium text-gray-600 mb-1">Водительские права:</span>
-                            <span class="text-xs text-gray-800">{{ $candidate->has_driving_license ? 'Есть' : 'Нет' }}</span>
-                        </div>
-                        <div>
-                            <span class="block text-xs font-medium text-gray-600 mb-1">Религиозная практика:</span>
-                            <span class="text-xs text-gray-800">{{ $candidate->is_practicing ? 'Да' : 'Нет' }}</span>
-                        </div>
-                        <div>
-                            <span class="block text-xs font-medium text-gray-600 mb-1">Часы на обр. видео в неделю:</span>
-                            <span class="text-xs text-gray-800">{{ $candidate->educational_hours_weekly ?? 'Не указано' }}</span>
-                        </div>
-                        <div>
-                            <span class="block text-xs font-medium text-gray-600 mb-1">Часы на соц. сети в неделю:</span>
-                            <span class="text-xs text-gray-800">{{ $candidate->social_media_hours_weekly ?? 'Не указано' }}</span>
-                        </div>
                         <div>
                             <span class="block text-xs font-medium text-gray-600 mb-1">Посещенные страны:</span>
                             <span class="text-xs text-gray-800">
@@ -326,6 +304,36 @@
                                     Не указано
                                 @endif
                             </span>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-medium text-gray-600 mb-1">Кол-во книг в год:</span>
+                            <span class="text-xs text-gray-800">{{ $candidate->books_per_year ?? 'Не указано' }}</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div>
+                            <span class="block text-xs font-medium text-gray-600 mb-1">Вероисповедание:</span>
+                            <span class="text-xs text-gray-800">{{ $candidate->religion ?: 'Не указано' }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-medium text-gray-600 mb-1">Рел. практика:</span>
+                            <span class="text-xs text-gray-800">{{ $candidate->is_practicing ? 'Да' : 'Нет' }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-medium text-gray-600 mb-1">Часы на разв. видео в неделю:</span>
+                            <span class="text-xs text-gray-800">{{ $candidate->entertainment_hours_weekly ?? 'Не указано' }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-medium text-gray-600 mb-1">Часы на обра. видео в неделю:</span>
+                            <span class="text-xs text-gray-800">{{ $candidate->educational_hours_weekly ?? 'Не указано' }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-medium text-gray-600 mb-1">Часы на соц. сети в неделю:</span>
+                            <span class="text-xs text-gray-800">{{ $candidate->social_media_hours_weekly ?? 'Не указано' }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-medium text-gray-600 mb-1">Водительские права:</span>
+                            <span class="text-xs text-gray-800">{{ $candidate->has_driving_license ? 'Есть' : 'Нет' }}</span>
                         </div>
                     </div>
                 </div>
