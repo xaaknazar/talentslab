@@ -504,7 +504,7 @@
                 </p>
                 <textarea wire:model="employer_requirements"
                           rows="3"
-                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 capitalize"></textarea>
                 @error('employer_requirements') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
         </div>
