@@ -1,4 +1,45 @@
 @if($currentStep === 3)
+<!-- КРИТИЧЕСКИЙ ПАТЧ: отключаем валидацию кириллицы для employer_requirements -->
+<script>
+// Переопределяем функцию shouldValidateCyrillic ДО загрузки основного скрипта
+(function() {
+    Object.defineProperty(window, 'shouldValidateCyrillic', {
+        configurable: true,
+        enumerable: true,
+        get: function() {
+            return function(input) {
+                const wireModel = input.getAttribute('wire:model');
+                const id = input.id;
+
+                // НИКОГДА не проверяем employer_requirements
+                if (wireModel === 'employer_requirements') {
+                    return false;
+                }
+
+                // Для остальных полей используем стандартную логику
+                const cyrillicFields = [
+                    'last-name-input',
+                    'first-name-input',
+                    'birth-place-input',
+                    'current-city-input'
+                ];
+
+                if (id && cyrillicFields.includes(id)) return true;
+                if (wireModel && cyrillicFields.includes(wireModel)) return true;
+
+                return false;
+            };
+        },
+        set: function(value) {
+            // Игнорируем попытки перезаписать функцию
+            console.log('🛡️ Попытка перезаписать shouldValidateCyrillic заблокирована (step3)');
+        }
+    });
+
+    console.log('✅ Функция shouldValidateCyrillic защищена от перезаписи (step3)');
+})();
+</script>
+
 <div class="step">
     <h2 class="text-2xl font-bold mb-6">Образование и работа</h2>
 
@@ -504,7 +545,7 @@
                 </p>
                 <textarea wire:model="employer_requirements"
                           rows="3"
-                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 capitalize"></textarea>
+                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
                 @error('employer_requirements') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
         </div>
@@ -1236,52 +1277,48 @@ function initLanguageSelect2System() {
 }
 </script>
 
-<!-- Патч: отключаем JavaScript валидацию кириллицы для employer_requirements -->
+<!-- Дополнительный патч: удаляем обработчики и ошибки для employer_requirements -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🔧 Патч: отключаем валидацию кириллицы для employer_requirements');
+(function() {
+    function cleanEmployerRequirementsField() {
+        const employerReqField = document.querySelector('textarea[wire\\:model="employer_requirements"]');
+        if (!employerReqField) return;
 
-    // Переопределяем функцию shouldValidateCyrillic
-    if (window.shouldValidateCyrillic) {
-        const originalShouldValidateCyrillic = window.shouldValidateCyrillic;
+        // Убираем маркер инициализации
+        delete employerReqField.dataset.cyrillicInit;
 
-        window.shouldValidateCyrillic = function(input) {
-            const wireModel = input.getAttribute('wire:model');
+        // Убираем ошибку если она есть
+        const errorElement = document.getElementById('employer_requirements-cyrillic-error');
+        if (errorElement) {
+            errorElement.remove(); // Полностью удаляем элемент
+        }
 
-            // Не проверяем employer_requirements
-            if (wireModel === 'employer_requirements') {
-                console.log('✅ Пропускаем валидацию кириллицы для employer_requirements');
-                return false;
-            }
+        // Убираем красные границы
+        employerReqField.classList.remove('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
+        employerReqField.classList.add('border-gray-300', 'focus:border-blue-500', 'focus:ring-blue-500');
 
-            // Для остальных полей используем оригинальную функцию
-            return originalShouldValidateCyrillic ? originalShouldValidateCyrillic(input) : false;
-        };
+        // Клонируем элемент, чтобы удалить все обработчики событий
+        const newField = employerReqField.cloneNode(true);
+        employerReqField.parentNode.replaceChild(newField, employerReqField);
+
+        console.log('✅ Поле employer_requirements полностью очищено от валидации кириллицы');
     }
 
-    // Удаляем обработчики с поля employer_requirements если они уже установлены
-    setTimeout(() => {
-        const employerReqField = document.querySelector('textarea[wire\\:model="employer_requirements"]');
-        if (employerReqField) {
-            console.log('🧹 Очищаем обработчики с employer_requirements');
+    // Вызываем очистку при загрузке и периодически
+    document.addEventListener('DOMContentLoaded', cleanEmployerRequirementsField);
+    setTimeout(cleanEmployerRequirementsField, 500);
+    setTimeout(cleanEmployerRequirementsField, 1000);
+    setTimeout(cleanEmployerRequirementsField, 2000);
 
-            // Убираем маркер инициализации
-            delete employerReqField.dataset.cyrillicInit;
+    // Переочищаем после обновлений Livewire
+    if (window.Livewire) {
+        Livewire.hook('message.processed', () => {
+            setTimeout(cleanEmployerRequirementsField, 100);
+        });
+    }
 
-            // Убираем ошибку если она есть
-            const errorElement = document.getElementById('employer_requirements-cyrillic-error');
-            if (errorElement) {
-                errorElement.style.display = 'none';
-            }
-
-            // Убираем красные границы
-            employerReqField.classList.remove('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
-            employerReqField.classList.add('border-gray-300', 'focus:border-blue-500', 'focus:ring-blue-500');
-
-            console.log('✅ Поле employer_requirements освобождено от валидации кириллицы');
-        }
-    }, 500);
-});
+    console.log('✅ Система очистки employer_requirements активирована');
+})();
 </script>
 
 <!-- Автоформатирование для поля Компьютерные навыки -->
