@@ -1897,21 +1897,19 @@ class CandidateForm extends Component
             }
         }
 
-        // Базовые данные всегда сохраняем, если они есть
-        if ($this->last_name || $this->first_name) {
-            $this->candidate->full_name = trim($this->first_name . ' ' . $this->last_name);
-        } else {
-            $this->candidate->full_name = null; // Явно устанавливаем null если имя не введено
-        }
-        if ($this->email) $this->candidate->email = $this->email;
-        if ($this->phone) $this->candidate->phone = $this->phone;
-        if ($this->gender) $this->candidate->gender = $this->gender;
-        if ($this->marital_status) $this->candidate->marital_status = $this->marital_status;
-        if ($this->birth_date) $this->candidate->birth_date = $this->birth_date;
-        if ($this->birth_place) $this->candidate->birth_place = $this->birth_place;
-        if ($this->current_city) $this->candidate->current_city = $this->current_city;
-        if ($this->ready_to_relocate !== null) $this->candidate->ready_to_relocate = $this->ready_to_relocate;
-        if ($this->instagram) $this->candidate->instagram = $this->instagram;
+        // Базовые данные всегда сохраняем
+        $this->candidate->full_name = ($this->last_name || $this->first_name)
+            ? trim($this->first_name . ' ' . $this->last_name)
+            : null;
+        $this->candidate->email = $this->email;
+        $this->candidate->phone = $this->phone;
+        $this->candidate->gender = $this->gender;
+        $this->candidate->marital_status = $this->marital_status;
+        $this->candidate->birth_date = $this->birth_date;
+        $this->candidate->birth_place = $this->birth_place;
+        $this->candidate->current_city = $this->current_city;
+        $this->candidate->ready_to_relocate = $this->ready_to_relocate;
+        $this->candidate->instagram = $this->instagram;
 
         // Фото обрабатываем отдельно
         if ($this->photo && !is_string($this->photo)) {
@@ -1923,8 +1921,8 @@ class CandidateForm extends Component
         }
 
         // Дополнительная информация
-        if ($this->religion !== null) $this->candidate->religion = $this->religion;
-        if ($this->is_practicing !== null) $this->candidate->is_practicing = $this->is_practicing;
+        $this->candidate->religion = $this->religion;
+        $this->candidate->is_practicing = $this->is_practicing;
 
         // Сохраняем новую структуру семьи
         $familyStructure = $this->buildFamilyStructure();
@@ -1937,48 +1935,53 @@ class CandidateForm extends Component
         // Всегда сохраняем структуру семьи, даже если она пустая
         $this->candidate->family_members = $familyStructure;
 
-        if ($this->hobbies !== null) $this->candidate->hobbies = $this->hobbies;
-        if ($this->interests !== null) $this->candidate->interests = $this->interests;
-        if (!empty($this->visited_countries)) $this->candidate->visited_countries = $this->visited_countries;
-        if ($this->books_per_year !== null) $this->candidate->books_per_year = $this->books_per_year;
-        if (!empty($this->favorite_sports)) $this->candidate->favorite_sports = $this->favorite_sports;
-        if ($this->entertainment_hours_weekly !== null) $this->candidate->entertainment_hours_weekly = $this->entertainment_hours_weekly;
-        if ($this->educational_hours_weekly !== null) $this->candidate->educational_hours_weekly = $this->educational_hours_weekly;
-        if ($this->social_media_hours_weekly !== null) $this->candidate->social_media_hours_weekly = $this->social_media_hours_weekly;
-        if ($this->has_driving_license !== null) $this->candidate->has_driving_license = $this->has_driving_license;
+        $this->candidate->hobbies = $this->hobbies;
+        $this->candidate->interests = $this->interests;
+        $this->candidate->visited_countries = $this->visited_countries ?? [];
+        $this->candidate->books_per_year = $this->books_per_year;
+        $this->candidate->favorite_sports = $this->favorite_sports;
+        $this->candidate->entertainment_hours_weekly = $this->entertainment_hours_weekly;
+        $this->candidate->educational_hours_weekly = $this->educational_hours_weekly;
+        $this->candidate->social_media_hours_weekly = $this->social_media_hours_weekly;
+        $this->candidate->has_driving_license = $this->has_driving_license;
 
         // Образование и работа
         // Объединяем поля школы в формат "Название / Город / Год"
-        if ($this->school_name && $this->school_city && $this->school_graduation_year) {
-            $this->candidate->school = trim($this->school_name) . ' / ' . trim($this->school_city) . ' / ' . $this->school_graduation_year;
-        }
-        if (!empty($this->universities)) $this->candidate->universities = $this->universities;
+        $this->candidate->school = ($this->school_name && $this->school_city && $this->school_graduation_year)
+            ? trim($this->school_name) . ' / ' . trim($this->school_city) . ' / ' . $this->school_graduation_year
+            : null;
+
+        // Фильтруем и сохраняем университеты
+        $this->candidate->universities = !empty($this->universities)
+            ? $this->universities
+            : [];
 
         // Фильтруем пустые языковые навыки
-        if (!empty($this->language_skills)) {
-            $filteredLanguageSkills = array_filter($this->language_skills, function($skill) {
+        $filteredLanguageSkills = !empty($this->language_skills)
+            ? array_values(array_filter($this->language_skills, function($skill) {
                 return !empty($skill['language']) && !empty($skill['level']);
-            });
-            $this->candidate->language_skills = array_values($filteredLanguageSkills);
-        }
+            }))
+            : [];
+        $this->candidate->language_skills = $filteredLanguageSkills;
 
-        if ($this->computer_skills !== null) $this->candidate->computer_skills = $this->computer_skills;
+        $this->candidate->computer_skills = $this->computer_skills;
 
         // Фильтруем пустые записи опыта работы
-        if (!empty($this->work_experience)) {
-            $filteredWorkExperience = array_filter($this->work_experience, function($experience) {
+        $filteredWorkExperience = !empty($this->work_experience)
+            ? array_values(array_filter($this->work_experience, function($experience) {
                 return !empty($experience['years']) || !empty($experience['company']) || !empty($experience['city']) || !empty($experience['position']);
-            });
-            $this->candidate->work_experience = array_values($filteredWorkExperience);
-        }
-        if ($this->total_experience_years !== null) $this->candidate->total_experience_years = $this->total_experience_years;
-        if ($this->job_satisfaction !== null) $this->candidate->job_satisfaction = $this->job_satisfaction;
-        if ($this->desired_position) $this->candidate->desired_position = $this->desired_position;
-        if ($this->activity_sphere) $this->candidate->activity_sphere = $this->activity_sphere;
-        if ($this->expected_salary !== null) $this->candidate->expected_salary = $this->expected_salary;
-        if ($this->expected_salary_from !== null) $this->candidate->expected_salary_from = $this->expected_salary_from;
-        if ($this->expected_salary_to !== null) $this->candidate->expected_salary_to = $this->expected_salary_to;
-        if ($this->employer_requirements !== null) $this->candidate->employer_requirements = $this->employer_requirements;
+            }))
+            : [];
+        $this->candidate->work_experience = $filteredWorkExperience;
+
+        $this->candidate->total_experience_years = $this->total_experience_years;
+        $this->candidate->job_satisfaction = $this->job_satisfaction;
+        $this->candidate->desired_position = $this->desired_position;
+        $this->candidate->activity_sphere = $this->activity_sphere;
+        $this->candidate->expected_salary = $this->expected_salary;
+        $this->candidate->expected_salary_from = $this->expected_salary_from;
+        $this->candidate->expected_salary_to = $this->expected_salary_to;
+        $this->candidate->employer_requirements = $this->employer_requirements;
 
         // Handle Gallup PDF upload
         if ($this->gallup_pdf && !is_string($this->gallup_pdf)) {
@@ -1989,10 +1992,8 @@ class CandidateForm extends Component
             $this->candidate->gallup_pdf = $gallupPath;
         }
 
-        // Save MBTI type if set
-        if ($this->mbti_type) {
-            $this->candidate->mbti_type = $this->mbti_type;
-        }
+        // Save MBTI type
+        $this->candidate->mbti_type = $this->mbti_type;
 
         // Обновляем текущий шаг
         // Не изменяем шаг, если анкета уже завершена (step >= 5)
