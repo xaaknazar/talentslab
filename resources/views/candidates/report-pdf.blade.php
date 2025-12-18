@@ -357,7 +357,29 @@
                 <h2 class="section-header text-sm font-medium text-gray-500 p-2 mb-3">Психометрические данные</h2>
                 <div class="flex">
                     <span class="text-xs text-gray-600 w-32">Тип личности по MBTI:</span>
-                    <span class="text-xs font-medium text-blue-600">{{ $candidate->mbti_type ?: 'Не указано' }}</span>
+                    <span class="text-xs font-medium text-blue-600">
+                        @php
+                            $mbtiTypes = [
+                                'INTJ' => 'INTJ - Архитектор',
+                                'INTP' => 'INTP - Мыслитель',
+                                'ENTJ' => 'ENTJ - Командир',
+                                'ENTP' => 'ENTP - Полемист',
+                                'INFJ' => 'INFJ - Активист',
+                                'INFP' => 'INFP - Посредник',
+                                'ENFJ' => 'ENFJ - Тренер',
+                                'ENFP' => 'ENFP - Борец',
+                                'ISTJ' => 'ISTJ - Логист',
+                                'ISFJ' => 'ISFJ - Защитник',
+                                'ESTJ' => 'ESTJ - Менеджер',
+                                'ESFJ' => 'ESFJ - Консул',
+                                'ISTP' => 'ISTP - Виртуоз',
+                                'ISFP' => 'ISFP - Авантюрист',
+                                'ESTP' => 'ESTP - Делец',
+                                'ESFP' => 'ESFP - Развлекатель',
+                            ];
+                        @endphp
+                        {{ $candidate->mbti_type ? ($mbtiTypes[$candidate->mbti_type] ?? $candidate->mbti_type) : 'Не указано' }}
+                    </span>
                 </div>
             </div>
         </div>
