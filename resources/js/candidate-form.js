@@ -648,10 +648,12 @@ function shouldValidateCyrillic(input) {
     const id = input.id;
 
     // Список полей, которые должны проверяться на кириллицу
+    // Только: Фамилия, Имя, Место рождения, Текущий город
     const cyrillicFields = [
-        // Step 1 (по ID)
-        'last-name-input', 'first-name-input', 'middle-name-input',
-        'birth-place-input', 'current-city-input'
+        'last-name-input',  // Фамилия
+        'first-name-input', // Имя
+        'birth-place-input', // Место рождения
+        'current-city-input' // Текущий город проживания
     ];
 
     // Проверяем по ID
@@ -661,11 +663,6 @@ function shouldValidateCyrillic(input) {
 
     // Проверяем по wire:model
     if (wireModel && cyrillicFields.includes(wireModel)) {
-        return true;
-    }
-
-    // Проверяем динамические поля (члены семьи)
-    if (wireModel && wireModel.includes('family_members') && wireModel.includes('profession')) {
         return true;
     }
 
