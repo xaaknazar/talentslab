@@ -485,9 +485,9 @@
                         Пример: Word, Excel, PowerPoint, Photoshop, 1C, итд.
                     </span>
                 </p>
-                <textarea wire:model="computer_skills" 
-                          rows="3" 
-                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                <textarea wire:model="computer_skills"
+                          rows="3"
+                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 capitalize"></textarea>
                 @error('computer_skills') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
 

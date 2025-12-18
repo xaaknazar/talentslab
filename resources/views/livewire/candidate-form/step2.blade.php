@@ -282,7 +282,7 @@
             <!-- Спорт -->
             <div>
                 <label class="block text-sm font-medium text-gray-700">Любимые виды спорта</label>
-                <textarea wire:model="favorite_sports" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 capitalize"></textarea>
+                <textarea wire:model="favorite_sports" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" id="favorite-sports-input"></textarea>
                 @error('favorite_sports') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
         </div>
@@ -668,6 +668,38 @@ document.addEventListener('DOMContentLoaded', function() {
             favoritesSportsField.classList.add('border-gray-300', 'focus:border-blue-500', 'focus:ring-blue-500');
 
             console.log('✅ Поле favorite_sports освобождено от валидации кириллицы');
+
+            // Добавляем обработчик для первой заглавной буквы (sentence case)
+            let isProcessing = false;
+
+            favoritesSportsField.addEventListener('input', function(e) {
+                if (isProcessing) return;
+
+                const input = e.target;
+                const cursorPosition = input.selectionStart;
+                const value = input.value;
+
+                if (value.length > 0) {
+                    isProcessing = true;
+
+                    // Делаем первую букву заглавной, остальные маленькими
+                    const sentenceCaseValue = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+
+                    if (value !== sentenceCaseValue) {
+                        input.value = sentenceCaseValue;
+
+                        // Восстанавливаем позицию курсора
+                        input.setSelectionRange(cursorPosition, cursorPosition);
+
+                        // Отправляем событие для Livewire
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+
+                    isProcessing = false;
+                }
+            });
+
+            console.log('✅ Добавлен обработчик sentence case для favorite_sports');
         }
     }, 500);
 });
