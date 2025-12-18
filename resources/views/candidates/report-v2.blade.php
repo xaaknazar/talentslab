@@ -542,20 +542,6 @@ if (! function_exists('mb_ucfirst')) {
             <div class="mb-8">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Прочая информация</h2>
                 <div class="space-y-1">
-                    @if($isFullReport)
-                    <div class="flex">
-                        <span class="w-60 text-base text-gray-600">Религия:</span>
-                        <span class="text-base font-medium">{{ $candidate->religion ?: 'Не указано' }}</span>
-                    </div>
-                    <div class="flex">
-                        <span class="w-60 text-base text-gray-600">Рел. практика:</span>
-                        <span class="text-base font-medium">{{ $candidate->is_practicing ? 'Да' : 'Нет' }}</span>
-                    </div>
-                    @endif
-                    <div class="flex">
-                        <span class="w-60 text-base text-gray-600">Водительские права:</span>
-                        <span class="text-base font-medium">{{ $candidate->has_driving_license ? 'Есть' : 'Нет' }}</span>
-                    </div>
                     <div class="flex items-start">
                         <span class="w-60 text-base text-gray-600">Хобби:</span>
                         <span class="text-base font-medium flex-1">
@@ -590,6 +576,16 @@ if (! function_exists('mb_ucfirst')) {
                             {{ $interests }}
                         </span>
                     </div>
+                    <div class="flex">
+                        <span class="w-60 text-base text-gray-600">Любимые развлечения:</span>
+                        <span class="text-base font-medium">
+                            @if($candidate->entertainment_hours_weekly)
+                                {{ $candidate->entertainment_hours_weekly }} час{{ $candidate->entertainment_hours_weekly == 1 ? '' : ($candidate->entertainment_hours_weekly < 5 ? 'а' : 'ов') }} в неделю
+                            @else
+                                Не указано
+                            @endif
+                        </span>
+                    </div>
                     <div class="flex items-start">
                         <span class="w-60 text-base text-gray-600">Любимые виды спорта:</span>
                         <span class="text-base font-medium flex-1">
@@ -622,6 +618,16 @@ if (! function_exists('mb_ucfirst')) {
                         <span class="w-60 text-base text-gray-600">Кол-во книг в год:</span>
                         <span class="text-base font-medium">{{ $candidate->books_per_year ?? 'Не указано' }}</span>
                     </div>
+                    @if($isFullReport)
+                    <div class="flex">
+                        <span class="w-60 text-base text-gray-600">Вероисповедание:</span>
+                        <span class="text-base font-medium">{{ $candidate->religion ?: 'Не указано' }}</span>
+                    </div>
+                    <div class="flex">
+                        <span class="w-60 text-base text-gray-600">Рел. практика:</span>
+                        <span class="text-base font-medium">{{ $candidate->is_practicing ? 'Да' : 'Нет' }}</span>
+                    </div>
+                    @endif
                     <div class="flex">
                         <span class="w-60 text-base text-gray-600">Часы на разв. видео в неделю:</span>
                         <span class="text-base font-medium">
@@ -651,6 +657,10 @@ if (! function_exists('mb_ucfirst')) {
                                 Не указано
                             @endif
                         </span>
+                    </div>
+                    <div class="flex">
+                        <span class="w-60 text-base text-gray-600">Водительские права:</span>
+                        <span class="text-base font-medium">{{ $candidate->has_driving_license ? 'Есть' : 'Нет' }}</span>
                     </div>
                     <div class="flex items-start">
                         <span class="w-60 text-base text-gray-600">Пожелания на рабочем месте:</span>
