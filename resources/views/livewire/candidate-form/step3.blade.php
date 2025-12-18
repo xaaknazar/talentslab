@@ -1235,4 +1235,52 @@ function initLanguageSelect2System() {
     console.log('✅ Language Select2 system loaded and ready');
 }
 </script>
+
+<!-- Патч: отключаем JavaScript валидацию кириллицы для employer_requirements -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔧 Патч: отключаем валидацию кириллицы для employer_requirements');
+
+    // Переопределяем функцию shouldValidateCyrillic
+    if (window.shouldValidateCyrillic) {
+        const originalShouldValidateCyrillic = window.shouldValidateCyrillic;
+
+        window.shouldValidateCyrillic = function(input) {
+            const wireModel = input.getAttribute('wire:model');
+
+            // Не проверяем employer_requirements
+            if (wireModel === 'employer_requirements') {
+                console.log('✅ Пропускаем валидацию кириллицы для employer_requirements');
+                return false;
+            }
+
+            // Для остальных полей используем оригинальную функцию
+            return originalShouldValidateCyrillic ? originalShouldValidateCyrillic(input) : false;
+        };
+    }
+
+    // Удаляем обработчики с поля employer_requirements если они уже установлены
+    setTimeout(() => {
+        const employerReqField = document.querySelector('textarea[wire\\:model="employer_requirements"]');
+        if (employerReqField) {
+            console.log('🧹 Очищаем обработчики с employer_requirements');
+
+            // Убираем маркер инициализации
+            delete employerReqField.dataset.cyrillicInit;
+
+            // Убираем ошибку если она есть
+            const errorElement = document.getElementById('employer_requirements-cyrillic-error');
+            if (errorElement) {
+                errorElement.style.display = 'none';
+            }
+
+            // Убираем красные границы
+            employerReqField.classList.remove('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
+            employerReqField.classList.add('border-gray-300', 'focus:border-blue-500', 'focus:ring-blue-500');
+
+            console.log('✅ Поле employer_requirements освобождено от валидации кириллицы');
+        }
+    }, 500);
+});
+</script>
  

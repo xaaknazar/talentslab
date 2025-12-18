@@ -624,4 +624,52 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ Select2 script loaded and ready');
 });
 </script>
+
+<!-- Патч: отключаем JavaScript валидацию кириллицы для favorite_sports -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔧 Патч: отключаем валидацию кириллицы для favorite_sports');
+
+    // Переопределяем функцию shouldValidateCyrillic
+    if (window.shouldValidateCyrillic) {
+        const originalShouldValidateCyrillic = window.shouldValidateCyrillic;
+
+        window.shouldValidateCyrillic = function(input) {
+            const wireModel = input.getAttribute('wire:model');
+
+            // Не проверяем favorite_sports
+            if (wireModel === 'favorite_sports') {
+                console.log('✅ Пропускаем валидацию кириллицы для favorite_sports');
+                return false;
+            }
+
+            // Для остальных полей используем оригинальную функцию
+            return originalShouldValidateCyrillic ? originalShouldValidateCyrillic(input) : false;
+        };
+    }
+
+    // Удаляем обработчики с поля favorite_sports если они уже установлены
+    setTimeout(() => {
+        const favoritesSportsField = document.querySelector('textarea[wire\\:model="favorite_sports"]');
+        if (favoritesSportsField) {
+            console.log('🧹 Очищаем обработчики с favorite_sports');
+
+            // Убираем маркер инициализации
+            delete favoritesSportsField.dataset.cyrillicInit;
+
+            // Убираем ошибку если она есть
+            const errorElement = document.getElementById('favorite_sports-cyrillic-error');
+            if (errorElement) {
+                errorElement.style.display = 'none';
+            }
+
+            // Убираем красные границы
+            favoritesSportsField.classList.remove('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
+            favoritesSportsField.classList.add('border-gray-300', 'focus:border-blue-500', 'focus:ring-blue-500');
+
+            console.log('✅ Поле favorite_sports освобождено от валидации кириллицы');
+        }
+    }, 500);
+});
+</script>
  
