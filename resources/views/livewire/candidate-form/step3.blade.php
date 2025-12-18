@@ -1302,6 +1302,42 @@ function initLanguageSelect2System() {
         employerReqField.parentNode.replaceChild(newField, employerReqField);
 
         console.log('✅ Поле employer_requirements полностью очищено от валидации кириллицы');
+
+        // Ищем новое поле после клонирования
+        const newEmployerReqField = document.querySelector('textarea[wire\\:model="employer_requirements"]');
+        if (newEmployerReqField) {
+            // Добавляем обработчик для первой заглавной буквы (sentence case)
+            let isProcessing = false;
+
+            newEmployerReqField.addEventListener('input', function(e) {
+                if (isProcessing) return;
+
+                const input = e.target;
+                const cursorPosition = input.selectionStart;
+                const value = input.value;
+
+                if (value.length > 0) {
+                    isProcessing = true;
+
+                    // Делаем первую букву заглавной, остальные маленькими
+                    const sentenceCaseValue = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+
+                    if (value !== sentenceCaseValue) {
+                        input.value = sentenceCaseValue;
+
+                        // Восстанавливаем позицию курсора
+                        input.setSelectionRange(cursorPosition, cursorPosition);
+
+                        // Отправляем событие для Livewire
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+
+                    isProcessing = false;
+                }
+            });
+
+            console.log('✅ Добавлен обработчик sentence case для employer_requirements');
+        }
     }
 
     // Вызываем очистку при загрузке и периодически
