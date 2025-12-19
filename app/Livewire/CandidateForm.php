@@ -77,6 +77,9 @@ class CandidateForm extends Component
     public $desired_position;
     public $activity_sphere;
     public $expected_salary;
+    public $expected_salary_from;
+    public $expected_salary_to;
+    public $salary_currency = 'KZT'; // по умолчанию тенге
     public $employer_requirements;
 
     // Step 4: Tests
@@ -382,7 +385,7 @@ class CandidateForm extends Component
             'visited_countries.*' => 'required|string|in:' . implode(',', collect($this->countries)->pluck('name_ru')->all()),
             'books_per_year_min' => 'required|integer|min:0|max:100',
             'books_per_year_max' => 'required|integer|min:0|max:100|gte:books_per_year_min',
-            'favorite_sports' => ['required', 'string', 'max:1000', new CyrillicRule()],
+            'favorite_sports' => ['required', 'string', 'max:1000'],
             'entertainment_hours_weekly' => 'required|integer|min:0|max:168',
             'educational_hours_weekly' => 'required|integer|min:0|max:168',
             'social_media_hours_weekly' => 'required|integer|min:0|max:168',
@@ -417,8 +420,11 @@ class CandidateForm extends Component
             'job_satisfaction' => 'required|integer|min:1|max:5',
             'desired_position' => ['required', 'string', 'max:255'],
             'activity_sphere' => ['required', 'string', 'max:255'],
-            'expected_salary' => 'required|numeric|min:0|max:999999999999',
-            'employer_requirements' => ['required', 'string', 'max:2000', new CyrillicRule()],
+            'expected_salary' => 'nullable|numeric|min:0|max:999999999999',
+            'expected_salary_from' => 'required|numeric|min:0|max:999999999999',
+            'expected_salary_to' => 'required|numeric|min:0|max:999999999999|gte:expected_salary_from',
+            'salary_currency' => 'required|string|in:KZT,USD',
+            'employer_requirements' => ['required', 'string', 'max:2000'],
 
             // Step 4 validation rules
             'gallup_pdf' => [

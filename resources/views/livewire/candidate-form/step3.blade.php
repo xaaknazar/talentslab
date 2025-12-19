@@ -392,33 +392,69 @@
 
 
 
-            <!-- Ожидаемая зарплата -->
+            <!-- Ожидаемая зарплата (диапазон) -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">
-                    Ожидаемая зарплата (тенге) <span class="text-red-500">*</span>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Ожидаемая заработная плата <span class="text-red-500">*</span>
                 </label>
-                <div class="relative mt-1">
-                    <input type="text" 
-                           id="expected_salary_formatted"
-                           class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 pr-12"
-                           placeholder="500 000"
-                           autocomplete="off"
-                           oninput="formatSalary(this)"
-                           onpaste="handleSalaryPaste(event)"
-                           onkeypress="return allowOnlyNumbers(event)"
-                           onfocus="initializeSalaryField()"
-                           onblur="initializeSalaryField()">
-                    <input type="hidden" 
-                           wire:model="expected_salary" 
-                           id="expected_salary_hidden">
-                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                        <span class="text-gray-500 sm:text-sm">₸</span>
+
+                <!-- Выбор валюты -->
+                <div class="mb-3">
+                    <label class="block text-xs font-medium text-gray-600 mb-1">Валюта</label>
+                    <select wire:model="salary_currency"
+                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="KZT">₸ (тенге)</option>
+                        <option value="USD">$ (доллар)</option>
+                    </select>
+                    @error('salary_currency') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </div>
+
+                <!-- Диапазон зарплаты -->
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">От <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <input type="text"
+                                   id="salary_from_formatted"
+                                   class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 pr-8"
+                                   placeholder="400 000"
+                                   autocomplete="off"
+                                   oninput="formatSalaryFrom(this)"
+                                   onpaste="handleSalaryPasteFrom(event)"
+                                   onkeypress="return allowOnlyNumbers(event)">
+                            <input type="hidden"
+                                   wire:model="expected_salary_from"
+                                   id="salary_from_hidden">
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                <span class="text-gray-500 text-xs" x-text="@js($salary_currency) === 'USD' ? '$' : '₸'">₸</span>
+                            </div>
+                        </div>
+                        @error('expected_salary_from') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">До <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <input type="text"
+                                   id="salary_to_formatted"
+                                   class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 pr-8"
+                                   placeholder="500 000"
+                                   autocomplete="off"
+                                   oninput="formatSalaryTo(this)"
+                                   onpaste="handleSalaryPasteTo(event)"
+                                   onkeypress="return allowOnlyNumbers(event)">
+                            <input type="hidden"
+                                   wire:model="expected_salary_to"
+                                   id="salary_to_hidden">
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                <span class="text-gray-500 text-xs" x-text="@js($salary_currency) === 'USD' ? '$' : '₸'">₸</span>
+                            </div>
+                        </div>
+                        @error('expected_salary_to') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
                 </div>
-                
 
-                <p class="mt-1 text-xs text-gray-500">Введите сумму без копеек, например: 500 000</p>
-                @error('expected_salary') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                <p class="mt-1 text-xs text-gray-500">Введите диапазон зарплаты, например: 400 000 - 500 000</p>
             </div>
         </div>
         <!-- Компьютерные навыки и Требования к работодателю в одном ряду -->
@@ -654,24 +690,71 @@ window.toggleCurrentWork = function(index) {
 }
 
 // Глобальные функции для форматирования зарплаты
-window.formatSalary = function(input) {
-    console.log('formatSalary called with:', input.value);
-    
+// Функция форматирования зарплаты "от"
+window.formatSalaryFrom = function(input) {
     // Получаем только цифры
     let numericValue = input.value.replace(/\D/g, '');
-    console.log('Numeric value:', numericValue);
-    
+
     // Форматируем с пробелами
     let formatted = '';
     if (numericValue) {
         formatted = numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
     }
-    
-    console.log('Formatted value:', formatted);
-    
+
     // Устанавливаем отформатированное значение
     input.value = formatted;
-    
+
+    // Обновляем скрытое поле
+    const hiddenInput = document.getElementById('salary_from_hidden');
+    if (hiddenInput) {
+        hiddenInput.value = numericValue;
+        // Уведомляем Livewire
+        hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+};
+
+// Функция форматирования зарплаты "до"
+window.formatSalaryTo = function(input) {
+    // Получаем только цифры
+    let numericValue = input.value.replace(/\D/g, '');
+
+    // Форматируем с пробелами
+    let formatted = '';
+    if (numericValue) {
+        formatted = numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    }
+
+    // Устанавливаем отформатированное значение
+    input.value = formatted;
+
+    // Обновляем скрытое поле
+    const hiddenInput = document.getElementById('salary_to_hidden');
+    if (hiddenInput) {
+        hiddenInput.value = numericValue;
+        // Уведомляем Livewire
+        hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+};
+
+// Старая функция formatSalary (оставляем для совместимости)
+window.formatSalary = function(input) {
+    console.log('formatSalary called with:', input.value);
+
+    // Получаем только цифры
+    let numericValue = input.value.replace(/\D/g, '');
+    console.log('Numeric value:', numericValue);
+
+    // Форматируем с пробелами
+    let formatted = '';
+    if (numericValue) {
+        formatted = numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    }
+
+    console.log('Formatted value:', formatted);
+
+    // Устанавливаем отформатированное значение
+    input.value = formatted;
+
     // Обновляем скрытое поле
     const hiddenInput = document.getElementById('expected_salary_hidden');
     if (hiddenInput) {
@@ -701,18 +784,44 @@ window.allowOnlyNumbers = function(event) {
     return false;
 };
 
+// Обработчик вставки для "от"
+window.handleSalaryPasteFrom = function(event) {
+    event.preventDefault();
+    const paste = (event.clipboardData || window.clipboardData).getData('text');
+    const numericOnly = paste.replace(/\D/g, '');
+
+    if (numericOnly) {
+        const input = event.target;
+        input.value = numericOnly;
+        window.formatSalaryFrom(input);
+    }
+};
+
+// Обработчик вставки для "до"
+window.handleSalaryPasteTo = function(event) {
+    event.preventDefault();
+    const paste = (event.clipboardData || window.clipboardData).getData('text');
+    const numericOnly = paste.replace(/\D/g, '');
+
+    if (numericOnly) {
+        const input = event.target;
+        input.value = numericOnly;
+        window.formatSalaryTo(input);
+    }
+};
+
 window.handleSalaryPaste = function(event) {
     event.preventDefault();
     console.log('Paste event triggered');
-    
+
     // Получаем вставляемый текст
     const paste = (event.clipboardData || window.clipboardData).getData('text');
     console.log('Pasted text:', paste);
-    
+
     // Извлекаем только цифры
     const numericOnly = paste.replace(/\D/g, '');
     console.log('Numeric from paste:', numericOnly);
-    
+
     if (numericOnly) {
         // Устанавливаем значение и форматируем
         const input = event.target;

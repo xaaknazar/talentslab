@@ -54,6 +54,9 @@ class Candidate extends Model
         'desired_position',
         'activity_sphere',
         'expected_salary',
+        'expected_salary_from',
+        'expected_salary_to',
+        'salary_currency',
         'employer_requirements',
 
         // Assessments
@@ -81,6 +84,9 @@ class Candidate extends Model
         'total_experience_years' => 'integer',
         'job_satisfaction' => 'integer',
         'expected_salary' => 'decimal:2',
+        'expected_salary_from' => 'decimal:2',
+        'expected_salary_to' => 'decimal:2',
+        'salary_currency' => 'string',
     ];
 
     public function user(): BelongsTo
