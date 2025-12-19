@@ -427,7 +427,7 @@
                 <h2 class="section-header text-sm font-medium text-gray-500 p-3 mb-4">Психометрические данные</h2>
                 <div class="flex">
                     <span class="text-base text-gray-600 w-40">Тип личности по MBTI:</span>
-                    <span class="text-base font-medium text-blue-600">{{ $candidate->mbti_type ?: 'Не указано' }}</span>
+                    <span class="text-base font-medium text-blue-600">{{ $candidate->mbti_full_name ?: 'Не указано' }}</span>
                 </div>
             </div>
 

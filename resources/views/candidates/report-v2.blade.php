@@ -724,7 +724,7 @@ if (! function_exists('mb_ucfirst')) {
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Психометрические данные</h2>
                 <div class="flex">
                     <span class="text-base text-gray-600 w-60">Тип личности по MBTI:</span>
-                    <span class="text-base font-medium text-blue-600">{{ $candidate->mbti_type ?: 'Не указано' }}</span>
+                    <span class="text-base font-medium text-blue-600">{{ $candidate->mbti_full_name ?: 'Не указано' }}</span>
                 </div>
             </div>
 

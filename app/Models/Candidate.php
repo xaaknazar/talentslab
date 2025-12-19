@@ -99,6 +99,37 @@ class Candidate extends Model
         return $this->hasOne(AdditionalInformation::class);
     }
 
+    /**
+     * Получить полное описание MBTI типа
+     */
+    public function getMbtiFullNameAttribute(): ?string
+    {
+        if (!$this->mbti_type) {
+            return null;
+        }
+
+        $mbtiTypes = [
+            'INTJ' => 'INTJ - Архитектор',
+            'INTP' => 'INTP - Мыслитель',
+            'ENTJ' => 'ENTJ - Командир',
+            'ENTP' => 'ENTP - Полемист',
+            'INFJ' => 'INFJ - Активист',
+            'INFP' => 'INFP - Посредник',
+            'ENFJ' => 'ENFJ - Тренер',
+            'ENFP' => 'ENFP - Борец',
+            'ISTJ' => 'ISTJ - Логист',
+            'ISFJ' => 'ISFJ - Защитник',
+            'ESTJ' => 'ESTJ - Менеджер',
+            'ESFJ' => 'ESFJ - Консул',
+            'ISTP' => 'ISTP - Виртуоз',
+            'ISFP' => 'ISFP - Авантюрист',
+            'ESTP' => 'ESTP - Делец',
+            'ESFP' => 'ESFP - Развлекатель',
+        ];
+
+        return $mbtiTypes[$this->mbti_type] ?? $this->mbti_type;
+    }
+
     public function educationWork(): HasOne
     {
         return $this->hasOne(EducationWork::class);
