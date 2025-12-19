@@ -82,7 +82,7 @@
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">
-                                        Профессия <span class="text-red-500">*</span>
+                                        Профессия (родителя) <span class="text-red-500">*</span>
                                     </label>
                                     <input type="text" 
                                            wire:model.live.debounce.500ms="parents.{{ $index }}.profession" 
@@ -109,10 +109,6 @@
                             </svg>
                             Добавить родителя
                         </button>
-                    @else
-                        <div class="mt-4 text-sm text-gray-500">
-                            Максимум 2 родителя (текущее количество: {{ count($parents) }})
-                        </div>
                     @endif
                 </div>
             </div>
@@ -225,13 +221,13 @@
         <!-- Хобби и интересы -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-                <label class="block text-sm font-medium text-gray-700">Хобби</label>
+                <label class="block text-sm font-medium text-gray-700">Хобби <span class="text-red-500">*</span></label>
                 <textarea wire:model="hobbies" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
                 @error('hobbies') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700">Интересы</label>
+                <label class="block text-sm font-medium text-gray-700">Интересы <span class="text-red-500">*</span></label>
                 <textarea wire:model="interests" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
                 @error('interests') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
@@ -241,7 +237,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Посещенные страны -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Посещенные страны</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Посещенные страны <span class="text-red-500">*</span></label>
                 
                 <!-- Выбранные страны (badges) -->
                 @if(count($visited_countries) > 0)
@@ -286,7 +282,7 @@
 
             <!-- Спорт -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">Любимые виды спорта</label>
+                <label class="block text-sm font-medium text-gray-700">Любимые виды спорта <span class="text-red-500">*</span></label>
                 <textarea wire:model="favorite_sports" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
                 @error('favorite_sports') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>

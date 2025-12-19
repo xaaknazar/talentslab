@@ -54,6 +54,9 @@ class Candidate extends Model
         'desired_position',
         'activity_sphere',
         'expected_salary',
+        'expected_salary_from',
+        'expected_salary_to',
+        'salary_currency',
         'employer_requirements',
 
         // Assessments
@@ -81,6 +84,9 @@ class Candidate extends Model
         'total_experience_years' => 'integer',
         'job_satisfaction' => 'integer',
         'expected_salary' => 'decimal:2',
+        'expected_salary_from' => 'decimal:2',
+        'expected_salary_to' => 'decimal:2',
+        'salary_currency' => 'string',
     ];
 
     public function user(): BelongsTo
@@ -91,6 +97,37 @@ class Candidate extends Model
     public function additionalInformation(): HasOne
     {
         return $this->hasOne(AdditionalInformation::class);
+    }
+
+    /**
+     * Получить полное описание MBTI типа
+     */
+    public function getMbtiFullNameAttribute(): ?string
+    {
+        if (!$this->mbti_type) {
+            return null;
+        }
+
+        $mbtiTypes = [
+            'INTJ' => 'INTJ - Архитектор',
+            'INTP' => 'INTP - Мыслитель',
+            'ENTJ' => 'ENTJ - Командир',
+            'ENTP' => 'ENTP - Полемист',
+            'INFJ' => 'INFJ - Активист',
+            'INFP' => 'INFP - Посредник',
+            'ENFJ' => 'ENFJ - Тренер',
+            'ENFP' => 'ENFP - Борец',
+            'ISTJ' => 'ISTJ - Логист',
+            'ISFJ' => 'ISFJ - Защитник',
+            'ESTJ' => 'ESTJ - Менеджер',
+            'ESFJ' => 'ESFJ - Консул',
+            'ISTP' => 'ISTP - Виртуоз',
+            'ISFP' => 'ISFP - Авантюрист',
+            'ESTP' => 'ESTP - Делец',
+            'ESFP' => 'ESFP - Развлекатель',
+        ];
+
+        return $mbtiTypes[$this->mbti_type] ?? $this->mbti_type;
     }
 
     public function educationWork(): HasOne

@@ -1,6 +1,6 @@
 @if($currentStep === 4)
 <div class="step">
-    <h2 class="text-2xl font-bold mb-6">Тесты и подтверждение</h2>
+    <h2 class="text-2xl font-bold mb-6">Психометрический портрет</h2>
 
     <!-- Контейнер для PDF и MBTI в одну строку -->
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8 mb-8">
