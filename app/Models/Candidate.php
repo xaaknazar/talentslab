@@ -156,43 +156,6 @@ class Candidate extends Model
         return 'Не указано';
     }
 
-    /**
-     * Автоматическая капитализация компьютерных навыков (каждое слово)
-     */
-    public function setComputerSkillsAttribute($value)
-    {
-        if (!$value) {
-            $this->attributes['computer_skills'] = $value;
-            return;
-        }
-
-        // Capitalize each word
-        $this->attributes['computer_skills'] = mb_convert_case(trim($value), MB_CASE_TITLE, 'UTF-8');
-    }
-
-    /**
-     * Автоматическая капитализация любимых видов спорта (только первая буква)
-     */
-    public function setFavoriteSportsAttribute($value)
-    {
-        if (!$value) {
-            $this->attributes['favorite_sports'] = $value;
-            return;
-        }
-
-        $trimmed = trim($value);
-        if ($trimmed === '') {
-            $this->attributes['favorite_sports'] = $trimmed;
-            return;
-        }
-
-        // Capitalize only first letter
-        $lower = mb_strtolower($trimmed, 'UTF-8');
-        $first = mb_strtoupper(mb_substr($lower, 0, 1, 'UTF-8'), 'UTF-8');
-        $rest = mb_substr($lower, 1, null, 'UTF-8');
-        $this->attributes['favorite_sports'] = $first . $rest;
-    }
-
     public function educationWork(): HasOne
     {
         return $this->hasOne(EducationWork::class);
