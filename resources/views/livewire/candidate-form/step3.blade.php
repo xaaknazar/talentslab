@@ -5,7 +5,7 @@
     <div class="grid grid-cols-1 gap-6">
         <!-- Школа -->
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-3">Школа <span class="text-red-500">*</span></label>
+            <label class="block text-base font-medium text-gray-700 mb-3">Школа <span class="text-red-500">*</span></label>
             <div class="p-4 bg-gray-50 rounded-lg">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
@@ -49,7 +49,7 @@
 
         <!-- Университеты -->
         <div>
-            <label class="block text-sm font-medium text-gray-700">Университет | Колледж</label>
+            <label class="block text-base font-medium text-gray-700">Университет | Колледж</label>
             <div class="space-y-4">
                 @foreach($universities as $index => $university)
                     <div class="p-4 bg-gray-50 rounded-lg">
@@ -112,40 +112,40 @@
                     </div>
                 @endforeach
 
-                <button type="button" 
-                        wire:click="addUniversity" 
-                        class="group mt-4 inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-opacity-50">
-                    <svg class="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button type="button"
+                        wire:click="addUniversity"
+                        class="mt-4 inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-medium text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
-                    Добавить университет
+                    Добавить
                 </button>
             </div>
         </div>
 
         <!-- Опыт работы -->
         <div>
-            <label class="block text-sm font-medium text-gray-700">Опыт работы</label>
+            <label class="block text-base font-medium text-gray-700">Опыт работы</label>
             <div class="space-y-4">
                 @foreach($work_experience as $index => $experience)
                     <div class="p-4 bg-gray-50 rounded-lg">
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <!-- Левая колонка: Период работы -->
-                            <div>                                
+                            <div>
                                 <!-- Период работы с select'ами -->
-                                <div class="bg-gradient-to-r from-blue-50 to-green-50 p-4 rounded-lg">
+                                <div class="bg-white border border-gray-200 p-4 rounded-lg">
                                     <div class="flex items-center justify-between mb-4">
-                                        <span class="text-sm font-medium text-gray-600">Период работы</span>
-                                        <span id="period-display-{{ $index }}" class="px-3 py-1 bg-white text-gray-800 text-sm font-medium rounded-full shadow-sm">
+                                        <span class="text-sm font-medium text-gray-700">Период работы</span>
+                                        <span id="period-display-{{ $index }}" class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded">
                                             {{ $experience['years'] ?? 'Выберите период' }}
                                         </span>
                                     </div>
-                                    
+
                                     <!-- Начало работы -->
                                     <div class="mb-4">
                                         <div class="flex items-center justify-between mb-2">
-                                            <label class="text-sm font-medium text-blue-700">Начало работы</label>
-                                            <span id="start-display-{{ $index }}" class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">
+                                            <label class="text-sm font-medium text-gray-700">Начало работы</label>
+                                            <span id="start-display-{{ $index }}" class="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded">
                                                 не выбрано
                                             </span>
                                         </div>
@@ -190,8 +190,8 @@
                                     <!-- Окончание работы -->
                                     <div class="mb-3">
                                         <div class="flex items-center justify-between mb-2">
-                                            <label class="text-sm font-medium text-green-700">Окончание работы</label>
-                                            <span id="end-display-{{ $index }}" class="px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">
+                                            <label class="text-sm font-medium text-gray-700">Окончание работы</label>
+                                            <span id="end-display-{{ $index }}" class="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded">
                                                 не выбрано
                                             </span>
                                         </div>
@@ -200,8 +200,8 @@
                                         <div class="grid grid-cols-2 gap-2" id="end-period-selects-{{ $index }}">
                                             <!-- Месяц окончания -->
                                             <div>
-                                                <select wire:model="work_experience.{{ $index }}.end_month" 
-                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm"
+                                                <select wire:model="work_experience.{{ $index }}.end_month"
+                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
                                                         onchange="updatePeriodDisplay({{ $index }})">
                                                     <option value="" selected disabled>Месяц</option>
                                                     <option value="0">Январь</option>
@@ -221,8 +221,8 @@
                                             
                                             <!-- Год окончания -->
                                             <div>
-                                                <select wire:model="work_experience.{{ $index }}.end_year" 
-                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm"
+                                                <select wire:model="work_experience.{{ $index }}.end_year"
+                                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
                                                         onchange="updatePeriodDisplay({{ $index }})">
                                                     <option value="" selected disabled>Год</option>
                                                     @for($year = 1990; $year <= 2025; $year++)
@@ -292,20 +292,55 @@
                     </div>
                 @endforeach
 
-                <button type="button" 
-                        wire:click="addWorkExperience" 
-                        class="group mt-4 inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-indigo-300 focus:ring-opacity-50">
-                    <svg class="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                <button type="button"
+                        wire:click="addWorkExperience"
+                        class="mt-4 inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-medium text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
-                    Добавить место работы
+                    Добавить
                 </button>
+            </div>
+        </div>
+
+        <!-- Общий стаж и удовлетворенность работой -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <!-- Общий стаж работы -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Общий стаж работы (лет) <span class="text-red-500">*</span>
+                </label>
+                <input type="number"
+                       wire:model="total_experience_years"
+                       name="total_experience_years"
+                       min="0"
+                       max="50"
+                       step="1"
+                       placeholder="Например: 5"
+                       class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                @error('total_experience_years') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
+            </div>
+
+            <!-- Удовлетворенность текущей работой -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Удовлетворенность текущей работой (1-5)
+                </label>
+                <input type="number"
+                       wire:model="job_satisfaction"
+                       name="job_satisfaction"
+                       min="1"
+                       max="5"
+                       step="1"
+                       placeholder="От 1 до 5"
+                       class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                @error('job_satisfaction') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
             </div>
         </div>
 
         <!-- Языковые навыки -->
         <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700">Языковые навыки <span class="text-red-500">*</span></label>
+            <label class="block text-base font-medium text-gray-700">Языковые навыки <span class="text-red-500">*</span></label>
             <div class="space-y-4">
                 @foreach($language_skills as $index => $skill)
                     <div class="p-4 bg-gray-50 rounded-lg">
@@ -349,13 +384,13 @@
                     </div>
                 @endforeach
 
-                <button type="button" 
-                        wire:click="addLanguage" 
-                        class="group mt-4 inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-purple-300 focus:ring-opacity-50">
-                    <svg class="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                <button type="button"
+                        wire:click="addLanguage"
+                        class="mt-4 inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-medium text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
-                    Добавить язык
+                    Добавить
                 </button>
             </div>
         </div>
@@ -365,7 +400,7 @@
 
             <!-- Сфера деятельности -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">
+                <label class="block text-base font-medium text-gray-700">
                     Сфера деятельности <span class="text-red-500">*</span>
                 </label>
                 <select wire:model="activity_sphere" 
@@ -380,7 +415,7 @@
 
             <!-- Желаемая должность -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">
+                <label class="block text-base font-medium text-gray-700">
                     Желаемая должность <span class="text-red-500">*</span>
                 </label>
                 <input type="text" 
@@ -394,7 +429,7 @@
 
             <!-- Ожидаемая зарплата (диапазон) -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+                <label class="block text-base font-medium text-gray-700 mb-2">
                     Ожидаемая заработная плата <span class="text-red-500">*</span>
                 </label>
 
@@ -413,43 +448,33 @@
                 <div class="grid grid-cols-2 gap-2">
                     <div>
                         <label class="block text-xs font-medium text-gray-600 mb-1">От <span class="text-red-500">*</span></label>
-                        <div class="relative">
-                            <input type="text"
-                                   id="salary_from_formatted"
-                                   class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 pr-8"
-                                   placeholder="400 000"
-                                   autocomplete="off"
-                                   oninput="formatSalaryFrom(this)"
-                                   onpaste="handleSalaryPasteFrom(event)"
-                                   onkeypress="return allowOnlyNumbers(event)">
-                            <input type="hidden"
-                                   wire:model="expected_salary_from"
-                                   id="salary_from_hidden">
-                            <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                                <span class="text-gray-500 text-xs" x-text="@js($salary_currency) === 'USD' ? '$' : '₸'">₸</span>
-                            </div>
-                        </div>
+                        <input type="text"
+                               id="salary_from_formatted"
+                               class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                               placeholder="400 000"
+                               autocomplete="off"
+                               oninput="formatSalaryFrom(this)"
+                               onpaste="handleSalaryPasteFrom(event)"
+                               onkeypress="return allowOnlyNumbers(event)">
+                        <input type="hidden"
+                               wire:model="expected_salary_from"
+                               id="salary_from_hidden">
                         @error('expected_salary_from') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
 
                     <div>
                         <label class="block text-xs font-medium text-gray-600 mb-1">До <span class="text-red-500">*</span></label>
-                        <div class="relative">
-                            <input type="text"
-                                   id="salary_to_formatted"
-                                   class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 pr-8"
-                                   placeholder="500 000"
-                                   autocomplete="off"
-                                   oninput="formatSalaryTo(this)"
-                                   onpaste="handleSalaryPasteTo(event)"
-                                   onkeypress="return allowOnlyNumbers(event)">
-                            <input type="hidden"
-                                   wire:model="expected_salary_to"
-                                   id="salary_to_hidden">
-                            <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                                <span class="text-gray-500 text-xs" x-text="@js($salary_currency) === 'USD' ? '$' : '₸'">₸</span>
-                            </div>
-                        </div>
+                        <input type="text"
+                               id="salary_to_formatted"
+                               class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                               placeholder="500 000"
+                               autocomplete="off"
+                               oninput="formatSalaryTo(this)"
+                               onpaste="handleSalaryPasteTo(event)"
+                               onkeypress="return allowOnlyNumbers(event)">
+                        <input type="hidden"
+                               wire:model="expected_salary_to"
+                               id="salary_to_hidden">
                         @error('expected_salary_to') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
                 </div>
@@ -461,7 +486,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <!-- Компьютерные навыки -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">Компьютерные навыки <span class="text-red-500">*</span></label>
+                <label class="block text-base font-medium text-gray-700">Компьютерные навыки <span class="text-red-500">*</span></label>
                 <p class="text-xs text-gray-500 mt-1 mb-2">
                     <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -470,15 +495,16 @@
                         Пример: Word, Excel, PowerPoint, Photoshop, 1C, итд.
                     </span>
                 </p>
-                <textarea wire:model="computer_skills" 
-                          rows="3" 
+                <textarea wire:model="computer_skills"
+                          rows="3"
+                          oninput="capitalizeAfterComma(this)"
                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
                 @error('computer_skills') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
 
             <!-- Пожелания на рабочем месте -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">Пожелания на рабочем месте <span class="text-red-500">*</span></label>
+                <label class="block text-base font-medium text-gray-700">Пожелания на рабочем месте <span class="text-red-500">*</span></label>
                 <p class="text-xs text-gray-500 mt-1 mb-2">
                     <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -493,98 +519,37 @@
                 @error('employer_requirements') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
         </div>
-
-        
-
-        <!-- Опыт работы, удовлетворенность и зарплата в одном ряду -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <!-- Общий стаж работы -->
-            <div>
-                <div class="flex items-center justify-between">
-                    <label class="block text-sm font-medium text-gray-700">
-                        Общий стаж работы (лет) <span class="text-red-500">*</span>
-                    </label>
-                    <span id="experience-display" class="px-2 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-md">
-                        @if($total_experience_years && $total_experience_years > 0)
-                            {{ $total_experience_years }}
-                        @else
-                            0
-                        @endif
-                    </span>
-                </div>
-                <div class="relative mt-2">
-                    <input type="range" 
-                           id="experience-slider"
-                           wire:model="total_experience_years"
-                           name="total_experience_years"
-                           min="0" 
-                           max="50" 
-                           step="1"
-                           value="{{ $total_experience_years ?? 0 }}"
-                           class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer
-                                  [&::-webkit-slider-thumb]:w-4
-                                  [&::-webkit-slider-thumb]:h-4
-                                  [&::-webkit-slider-thumb]:appearance-none
-                                  [&::-webkit-slider-thumb]:bg-green-600
-                                  [&::-webkit-slider-thumb]:rounded-full
-                                  [&::-webkit-slider-thumb]:cursor-pointer
-                                  [&::-moz-range-thumb]:w-4
-                                  [&::-moz-range-thumb]:h-4
-                                  [&::-moz-range-thumb]:appearance-none
-                                  [&::-moz-range-thumb]:bg-green-600
-                                  [&::-moz-range-thumb]:rounded-full
-                                  [&::-moz-range-thumb]:cursor-pointer">
-                </div>
-                @error('total_experience_years') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
-            </div>
-
-            <!-- Удовлетворенность работой -->
-            <div>
-                <div class="flex items-center justify-between">
-                    <label class="block text-sm font-medium text-gray-700">
-                        Удовлетворенность текущей работой (1-5)
-                    </label>
-                    <span id="satisfaction-display" class="px-2 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-md">
-                        @if($job_satisfaction && $job_satisfaction > 1)
-                            {{ $job_satisfaction }}
-                        @else
-                            1
-                        @endif
-                    </span>
-                </div>
-                <div class="relative mt-2">
-                    <input type="range" 
-                           wire:model="job_satisfaction"
-                           name="job_satisfaction"
-                           value="{{ $job_satisfaction ?? 1 }}"
-                           min="1" 
-                           max="5" 
-                           step="1"
-                           class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer
-                                  [&::-webkit-slider-thumb]:w-4
-                                  [&::-webkit-slider-thumb]:h-4
-                                  [&::-webkit-slider-thumb]:appearance-none
-                                  [&::-webkit-slider-thumb]:bg-blue-600
-                                  [&::-webkit-slider-thumb]:rounded-full
-                                  [&::-webkit-slider-thumb]:cursor-pointer
-                                  [&::-moz-range-thumb]:w-4
-                                  [&::-moz-range-thumb]:h-4
-                                  [&::-moz-range-thumb]:appearance-none
-                                  [&::-moz-range-thumb]:bg-blue-600
-                                  [&::-moz-range-thumb]:rounded-full
-                                  [&::-moz-range-thumb]:cursor-pointer">
-                </div>
-                @error('job_satisfaction') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
-            </div>
-
-
-        </div>
     </div>
 </div>
 @endif 
 
 
 <script>
+// Функция для капитализации первой буквы после запятой
+window.capitalizeAfterComma = function(textarea) {
+    let text = textarea.value;
+    let cursorPosition = textarea.selectionStart;
+
+    // Капитализация после запятой: ", a" -> ", A"
+    let newText = text.replace(/,\s*([a-zа-яё])/gi, function(match, letter) {
+        return ', ' + letter.toUpperCase();
+    });
+
+    // Капитализация первой буквы, если она строчная
+    if (newText.length > 0) {
+        newText = newText.charAt(0).toUpperCase() + newText.slice(1);
+    }
+
+    // Обновляем значение только если оно изменилось
+    if (text !== newText) {
+        textarea.value = newText;
+        textarea.setSelectionRange(cursorPosition, cursorPosition);
+
+        // Триггерим событие input для Livewire
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+};
+
 // Массивы месяцев на русском языке
 const months = [
     'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'

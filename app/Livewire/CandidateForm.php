@@ -377,7 +377,7 @@ class CandidateForm extends Component
             'siblings.*.relation' => 'required|string|in:Брат,Сестра',
             'siblings.*.birth_year' => 'required|integer|min:1900|max:' . date('Y'),
             'children' => 'sometimes|array',
-            'children.*.name' => 'required_with:children|string|max:255',
+            'children.*.gender' => 'required_with:children|string|in:М,Ж',
             'children.*.birth_year' => 'required_with:children|integer|min:1900|max:' . date('Y'),
             'hobbies' => ['required', 'string', 'max:1000'],
             'interests' => ['required', 'string', 'max:1000'],
@@ -477,6 +477,14 @@ class CandidateForm extends Component
         'expected_salary.numeric' => 'Ожидаемая зарплата должна быть числом',
         'expected_salary.min' => 'Ожидаемая зарплата должна быть больше 0',
         'expected_salary.max' => 'Ожидаемая зарплата не может превышать 999,999,999,999 тенге',
+        'expected_salary_from.required' => 'Зарплата от обязательна для заполнения',
+        'expected_salary_from.numeric' => 'Зарплата от должна быть числом',
+        'expected_salary_from.min' => 'Зарплата от должна быть больше 0',
+        'expected_salary_to.required' => 'Зарплата до обязательна для заполнения',
+        'expected_salary_to.numeric' => 'Зарплата до должна быть числом',
+        'expected_salary_to.min' => 'Зарплата до должна быть больше 0',
+        'expected_salary_to.gte' => 'Зарплата до должна быть больше или равна зарплате от',
+        'salary_currency.required' => 'Валюта обязательна для заполнения',
         'desired_position.required' => 'Желаемая должность обязательна для заполнения',
         'desired_position.max' => 'Желаемая должность не должна превышать 255 символов',
         'activity_sphere.required' => 'Сфера деятельности обязательна для заполнения',
@@ -486,9 +494,7 @@ class CandidateForm extends Component
         // Сообщения для CyrillicRule
         'hobbies.cyrillic' => 'Поле "Хобби" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
         'interests.cyrillic' => 'Поле "Интересы" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
-        'favorite_sports.cyrillic' => 'Поле "Любимые виды спорта" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
         'desired_position.cyrillic' => 'Поле "Желаемая должность" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
-        'employer_requirements.cyrillic' => 'Поле "Пожелания на рабочем месте" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
         'family_members.*.profession.cyrillic' => 'Поле "Профессия" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
 
         // Дополнительные сообщения для обязательных полей
@@ -557,7 +563,7 @@ class CandidateForm extends Component
         'siblings.*.birth_year' => 'Год рождения',
 
         'children' => 'Дети',
-        'children.*.name' => 'Имя ребенка',
+        'children.*.gender' => 'Пол ребенка',
         'children.*.birth_year' => 'Год рождения',
         'hobbies' => 'Хобби',
         'interests' => 'Интересы',
@@ -985,7 +991,7 @@ class CandidateForm extends Component
     public function addChild()
     {
         $this->children[] = [
-            'name' => '',
+            'gender' => '',
             'birth_year' => ''
         ];
     }
@@ -1194,7 +1200,7 @@ class CandidateForm extends Component
         unset($modifiedRules['parents.*.profession']);
         unset($modifiedRules['siblings.*.relation']);
         unset($modifiedRules['siblings.*.birth_year']);
-        unset($modifiedRules['children.*.name']);
+        unset($modifiedRules['children.*.gender']);
         unset($modifiedRules['children.*.birth_year']);
 
         // Добавляем правила для каждого конкретного элемента
@@ -1210,7 +1216,7 @@ class CandidateForm extends Component
         }
 
         foreach ($this->children as $index => $child) {
-            $modifiedRules["children.{$index}.name"] = 'required|string|max:255';
+            $modifiedRules["children.{$index}.gender"] = 'required|string|in:М,Ж';
             $modifiedRules["children.{$index}.birth_year"] = 'required|integer|min:1900|max:' . date('Y');
         }
 
@@ -1271,8 +1277,8 @@ class CandidateForm extends Component
 
         // Валидируем детей
         foreach ($this->children as $index => $child) {
-            if (empty($child['name'])) {
-                $errors["children.{$index}.name"] = 'Поле Имя ребенка обязательно.';
+            if (empty($child['gender'])) {
+                $errors["children.{$index}.gender"] = 'Поле Пол ребенка обязательно.';
             }
 
             if (empty($child['birth_year'])) {

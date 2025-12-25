@@ -130,6 +130,32 @@ class Candidate extends Model
         return $mbtiTypes[$this->mbti_type] ?? $this->mbti_type;
     }
 
+    /**
+     * Получить форматированную строку с диапазоном зарплаты
+     */
+    public function getFormattedSalaryRangeAttribute(): string
+    {
+        // Проверяем новые поля (диапазон)
+        if ($this->expected_salary_from && $this->expected_salary_to) {
+            // Форматируем числа с точками в качестве разделителей тысяч
+            $from = number_format($this->expected_salary_from, 0, ',', '.');
+            $to = number_format($this->expected_salary_to, 0, ',', '.');
+
+            // Определяем символ валюты
+            $currencySymbol = ($this->salary_currency === 'USD') ? '$' : '₸';
+
+            return "{$from}-{$to}{$currencySymbol}";
+        }
+
+        // Fallback: проверяем старое поле для обратной совместимости
+        if ($this->expected_salary && $this->expected_salary > 0) {
+            $formatted = number_format($this->expected_salary, 0, ',', '.');
+            return "{$formatted} тг.";
+        }
+
+        return 'Не указано';
+    }
+
     public function educationWork(): HasOne
     {
         return $this->hasOne(EducationWork::class);

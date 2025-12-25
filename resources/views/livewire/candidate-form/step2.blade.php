@@ -8,7 +8,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <!-- Водительские права -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">
+                <label class="block text-base font-medium text-gray-700">
                     Водительские права <span class="text-red-500">*</span>
                 </label>
                 <select wire:model="has_driving_license" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -18,10 +18,10 @@
                 </select>
                 @error('has_driving_license') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
-            
+
             <!-- Религия -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">
+                <label class="block text-base font-medium text-gray-700">
                     Вероисповедание <span class="text-red-500">*</span>
                 </label>
                 <select wire:model="religion" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -34,7 +34,7 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700">Практикующий</label>
+                <label class="block text-base font-medium text-gray-700">Практикующий</label>
                 <select wire:model="is_practicing" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                     <option value="">Выберите ответ</option>
                     <option value="1">Да</option>
@@ -48,7 +48,7 @@
         <div class="space-y-6">
             <!-- Родители -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-3">Родители</label>
+                <label class="block text-base font-medium text-gray-700 mb-3">Родители</label>
                 <div class="space-y-4">
                     @foreach($parents as $index => $parent)
                         <div wire:key="parent-{{ $index }}" class="p-4 bg-gray-50 rounded-lg">
@@ -100,14 +100,13 @@
                     @endforeach
 
                     @if(count($parents) < 2)
-                        <!-- Основная кнопка с @this вызовом -->
-                        <button type="button" 
+                        <button type="button"
                                 onclick="@this.call('addParent')"
-                                class="group mt-4 inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-green-300 focus:ring-opacity-50">
-                            <svg class="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="mt-4 inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-medium text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                             </svg>
-                            Добавить родителя
+                            Добавить
                         </button>
                     @endif
                 </div>
@@ -115,7 +114,7 @@
 
             <!-- Братья и сестры -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-3">Братья и сестры</label>
+                <label class="block text-base font-medium text-gray-700 mb-3">Братья и сестры</label>
                 <div class="space-y-4">
                     @foreach($siblings as $index => $sibling)
                         <div wire:key="sibling-{{ $index }}" class="p-4 bg-gray-50 rounded-lg">
@@ -124,7 +123,7 @@
                                     <label class="block text-sm font-medium text-gray-700">
                                         Родство <span class="text-red-500">*</span>
                                     </label>
-                                    <select wire:model.live="siblings.{{ $index }}.relation" 
+                                    <select wire:model.live="siblings.{{ $index }}.relation"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                         <option value="">Выберите</option>
                                         <option value="Брат">Брат</option>
@@ -137,7 +136,7 @@
                                     <label class="block text-sm font-medium text-gray-700">
                                         Год рождения <span class="text-red-500">*</span>
                                     </label>
-                                    <select wire:model.live="siblings.{{ $index }}.birth_year" 
+                                    <select wire:model.live="siblings.{{ $index }}.birth_year"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                         <option value="">Год рождения</option>
                                         @foreach($familyYears as $year)
@@ -155,40 +154,42 @@
                         </div>
                     @endforeach
 
-                    <button type="button" 
+                    <button type="button"
                             onclick="@this.call('addSibling')"
-                            class="group mt-4 inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-green-300 focus:ring-opacity-50">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            class="mt-4 inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-medium text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
-                        Добавить брата/сестру
+                        Добавить
                     </button>
                 </div>
             </div>
 
             <!-- Дети -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-3">Дети</label>
+                <label class="block text-base font-medium text-gray-700 mb-3">Дети</label>
                 <div class="space-y-4">
                     @foreach($children as $index => $child)
                         <div wire:key="child-{{ $index }}" class="p-4 bg-gray-50 rounded-lg">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">
-                                        Имя ребенка <span class="text-red-500">*</span>
+                                        Пол <span class="text-red-500">*</span>
                                     </label>
-                                    <input type="text" 
-                                           wire:model.live.debounce.500ms="children.{{ $index }}.name" 
-                                           placeholder="Имя ребенка"
-                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                    @error("children.{$index}.name") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                    <select wire:model.live="children.{{ $index }}.gender"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                        <option value="">Выберите</option>
+                                        <option value="М">Сын</option>
+                                        <option value="Ж">Дочь</option>
+                                    </select>
+                                    @error("children.{$index}.gender") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">
                                         Год рождения <span class="text-red-500">*</span>
                                     </label>
-                                    <select wire:model.live="children.{{ $index }}.birth_year" 
+                                    <select wire:model.live="children.{{ $index }}.birth_year"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                         <option value="">Год рождения</option>
                                         @foreach($familyYears as $year)
@@ -206,13 +207,13 @@
                         </div>
                     @endforeach
 
-                    <button type="button" 
+                    <button type="button"
                             onclick="@this.call('addChild')"
-                            class="group mt-4 inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-green-300 focus:ring-opacity-50">
-                        <svg class="w-5 h-5 mr-2 group-hover:bounce transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            class="mt-4 inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-medium text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
-                        Добавить ребенка
+                        Добавить
                     </button>
                 </div>
             </div>
@@ -221,13 +222,13 @@
         <!-- Хобби и интересы -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-                <label class="block text-sm font-medium text-gray-700">Хобби <span class="text-red-500">*</span></label>
+                <label class="block text-base font-medium text-gray-700">Хобби <span class="text-red-500">*</span></label>
                 <textarea wire:model="hobbies" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
                 @error('hobbies') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700">Интересы <span class="text-red-500">*</span></label>
+                <label class="block text-base font-medium text-gray-700">Интересы <span class="text-red-500">*</span></label>
                 <textarea wire:model="interests" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
                 @error('interests') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
@@ -237,7 +238,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Посещенные страны -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Посещенные страны <span class="text-red-500">*</span></label>
+                <label class="block text-base font-medium text-gray-700 mb-2">Посещенные страны <span class="text-red-500">*</span></label>
                 
                 <!-- Выбранные страны (badges) -->
                 @if(count($visited_countries) > 0)
@@ -282,7 +283,7 @@
 
             <!-- Спорт -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">Любимые виды спорта <span class="text-red-500">*</span></label>
+                <label class="block text-base font-medium text-gray-700">Любимые виды спорта <span class="text-red-500">*</span></label>
                 <textarea wire:model="favorite_sports" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
                 @error('favorite_sports') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
@@ -292,7 +293,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Книг в год -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">Количество книг в год</label>
+                <label class="block text-base font-medium text-gray-700">Количество книг в год</label>
                 <div class="flex items-center gap-3 mt-1">
                     <input type="number"
                            wire:model="books_per_year_min"
@@ -314,7 +315,7 @@
 
             <!-- Развлекательные видео -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">Развлекательные видео (часов в неделю)</label>
+                <label class="block text-base font-medium text-gray-700">Развлекательные видео (часов в неделю)</label>
                 <input type="number"
                        wire:model="entertainment_hours_weekly"
                        min="0"
@@ -326,7 +327,7 @@
 
             <!-- Образовательные видео -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">Образовательные видео (часов в неделю)</label>
+                <label class="block text-base font-medium text-gray-700">Образовательные видео (часов в неделю)</label>
                 <input type="number"
                        wire:model="educational_hours_weekly"
                        min="0"
@@ -338,7 +339,7 @@
 
             <!-- Социальные сети -->
             <div>
-                <label class="block text-sm font-medium text-gray-700">Соц. сети (часов в неделю)</label>
+                <label class="block text-base font-medium text-gray-700">Соц. сети (часов в неделю)</label>
                 <input type="number"
                        wire:model="social_media_hours_weekly"
                        min="0"
