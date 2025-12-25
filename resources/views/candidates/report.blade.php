@@ -203,20 +203,21 @@
                 @if($hasFamily)
                     <div class="space-y-4">
                         <!-- Дети -->
-                        @if(!empty($family['children']))
-                            <div>
-                                <h3 class="text-base font-medium text-gray-700 mb-2">Дети:</h3>
-                                <div class="ml-4">
-                                    @foreach($family['children'] as $index => $child)
-                                        <span class="text-base">
-                                            <span class="font-medium">{{ $child['name'] ?? 'Не указано' }}</span> - 
-                                            <span class="font-medium">{{ $child['birth_year'] ?? 'Не указано' }}</span>
-                                        </span>
-                                        @if(!$loop->last)<br>@endif
-                                    @endforeach
-                                </div>
+                        <div>
+                            <h3 class="text-base font-medium text-gray-700 mb-2">Дети:</h3>
+                            <div class="ml-4">
+                                <span class="text-base font-medium">
+                                    @if(!empty($family['children']) && count($family['children']) > 0)
+                                        {{ count($family['children']) }}
+                                        @foreach($family['children'] as $child)
+                                            ({{ $child['gender'] ?? 'М' }}{{ $child['birth_year'] ?? '' }})
+                                        @endforeach
+                                    @else
+                                        Детей нет
+                                    @endif
+                                </span>
                             </div>
-                        @endif
+                        </div>
 
                         <!-- Родители -->
                         @if(!empty($family['parents']))

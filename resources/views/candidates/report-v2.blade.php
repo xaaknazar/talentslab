@@ -413,13 +413,13 @@ if (! function_exists('mb_ucfirst')) {
                          <div class="flex items-start">
                              <span class="w-60 text-base text-gray-600">Дети:</span>
                              <span class="text-base font-medium flex-1">
-                                 @if(!empty($family['children']))
+                                 @if(!empty($family['children']) && count($family['children']) > 0)
+                                     {{ count($family['children']) }}
                                      @foreach($family['children'] as $child)
-                                         <span>{{ $child['name'] ?? 'Не указано' }} - {{ $child['birth_year'] ?? 'Не указано' }}</span>
-                                         @if(!$loop->last)<br>@endif
+                                         ({{ $child['gender'] ?? 'М' }}{{ $child['birth_year'] ?? '' }})
                                      @endforeach
                                  @else
-                                     Не указано
+                                     Детей нет
                                  @endif
                              </span>
                          </div>
