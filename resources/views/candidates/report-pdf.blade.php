@@ -81,7 +81,7 @@
                              </div>
                              <div class="flex">
                                  <span class="w-28 text-sm text-gray-600">Ожидаемая заработная плата:</span>
-                                 <span class="text-sm font-medium">{{ number_format($candidate->expected_salary) }} тг.</span>
+                                 <span class="text-sm font-medium">{{ $candidate->formatted_salary_range }}</span>
                              </div>
                              <div class="flex">
                                  <span class="w-28 text-sm text-gray-600">Дата рождения:</span>

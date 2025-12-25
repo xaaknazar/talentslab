@@ -386,7 +386,7 @@ if (! function_exists('mb_ucfirst')) {
                         </div>
                          <div class="flex">
                              <span class="w-60 text-base text-gray-600">Ожидаемая заработная плата:</span>
-                             <span class="text-base font-medium">{{ number_format($candidate->expected_salary) }} тг</span>
+                             <span class="text-base font-medium">{{ $candidate->formatted_salary_range }}</span>
                          </div>
                          <div class="flex">
                              <span class="w-60 text-base text-gray-600">Дата рождения:</span>
@@ -542,20 +542,7 @@ if (! function_exists('mb_ucfirst')) {
             <div class="mb-8">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Прочая информация</h2>
                 <div class="space-y-1">
-                    @if($isFullReport)
-                    <div class="flex">
-                        <span class="w-60 text-base text-gray-600">Религия:</span>
-                        <span class="text-base font-medium">{{ $candidate->religion ?: 'Не указано' }}</span>
-                    </div>
-                    <div class="flex">
-                        <span class="w-60 text-base text-gray-600">Рел. практика:</span>
-                        <span class="text-base font-medium">{{ $candidate->is_practicing ? 'Да' : 'Нет' }}</span>
-                    </div>
-                    @endif
-                    <div class="flex">
-                        <span class="w-60 text-base text-gray-600">Водительские права:</span>
-                        <span class="text-base font-medium">{{ $candidate->has_driving_license ? 'Есть' : 'Нет' }}</span>
-                    </div>
+                    <!-- 1. Хобби -->
                     <div class="flex items-start">
                         <span class="w-60 text-base text-gray-600">Хобби:</span>
                         <span class="text-base font-medium flex-1">
@@ -573,6 +560,7 @@ if (! function_exists('mb_ucfirst')) {
                             {{ $hobbies }}
                         </span>
                     </div>
+                    <!-- 2. Интересы -->
                     <div class="flex items-start">
                         <span class="w-60 text-base text-gray-600">Интересы:</span>
                         <span class="text-base font-medium flex-1">
@@ -590,6 +578,7 @@ if (! function_exists('mb_ucfirst')) {
                             {{ $interests }}
                         </span>
                     </div>
+                    <!-- 3. Любимые виды спорта -->
                     <div class="flex items-start">
                         <span class="w-60 text-base text-gray-600">Любимые виды спорта:</span>
                         <span class="text-base font-medium flex-1">
@@ -604,6 +593,7 @@ if (! function_exists('mb_ucfirst')) {
                             @endif
                         </span>
                     </div>
+                    <!-- 4. Посещенные страны -->
                     <div class="flex items-start">
                         <span class="w-60 text-base text-gray-600">Посещенные страны:</span>
                         <span class="text-base font-medium flex-1">
@@ -618,10 +608,23 @@ if (! function_exists('mb_ucfirst')) {
                             @endif
                         </span>
                     </div>
+                    <!-- 5. Кол-во книг в год -->
                     <div class="flex">
                         <span class="w-60 text-base text-gray-600">Кол-во книг в год:</span>
                         <span class="text-base font-medium">{{ $candidate->books_per_year ?? 'Не указано' }}</span>
                     </div>
+                    <!-- 6-7. Вероисповедание и Рел. практика -->
+                    @if($isFullReport)
+                    <div class="flex">
+                        <span class="w-60 text-base text-gray-600">Религия:</span>
+                        <span class="text-base font-medium">{{ $candidate->religion ?: 'Не указано' }}</span>
+                    </div>
+                    <div class="flex">
+                        <span class="w-60 text-base text-gray-600">Рел. практика:</span>
+                        <span class="text-base font-medium">{{ $candidate->is_practicing ? 'Да' : 'Нет' }}</span>
+                    </div>
+                    @endif
+                    <!-- 8. Часы на разв. видео в неделю -->
                     <div class="flex">
                         <span class="w-60 text-base text-gray-600">Часы на разв. видео в неделю:</span>
                         <span class="text-base font-medium">
@@ -632,6 +635,7 @@ if (! function_exists('mb_ucfirst')) {
                             @endif
                         </span>
                     </div>
+                    <!-- 9. Часы на обра. видео в неделю -->
                     <div class="flex">
                         <span class="w-60 text-base text-gray-600">Часы на обра. видео в неделю:</span>
                         <span class="text-base font-medium">
@@ -642,6 +646,7 @@ if (! function_exists('mb_ucfirst')) {
                             @endif
                         </span>
                     </div>
+                    <!-- 10. Часы на соц. сети в неделю -->
                     <div class="flex">
                         <span class="w-60 text-base text-gray-600">Часы на соц. сети в неделю:</span>
                         <span class="text-base font-medium">
@@ -652,6 +657,12 @@ if (! function_exists('mb_ucfirst')) {
                             @endif
                         </span>
                     </div>
+                    <!-- 11. Водительские права -->
+                    <div class="flex">
+                        <span class="w-60 text-base text-gray-600">Водительские права:</span>
+                        <span class="text-base font-medium">{{ $candidate->has_driving_license ? 'Есть' : 'Нет' }}</span>
+                    </div>
+                    <!-- 12. Пожелания на рабочем месте -->
                     <div class="flex items-start">
                         <span class="w-60 text-base text-gray-600">Пожелания на рабочем месте:</span>
                         <span class="text-base font-medium flex-1">
@@ -669,6 +680,7 @@ if (! function_exists('mb_ucfirst')) {
                             {{ $workplace }}
                         </span>
                     </div>
+                    <!-- 13. Компьютерные навыки -->
                     @if($candidate->computer_skills)
                     <div class="flex items-start">
                         <span class="w-60 text-base text-gray-600">Компьютерные навыки:</span>
