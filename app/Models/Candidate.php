@@ -135,18 +135,25 @@ class Candidate extends Model
      */
     public function getFormattedSalaryRangeAttribute(): string
     {
-        if (!$this->expected_salary_from || !$this->expected_salary_to) {
-            return 'Не указано';
+        // Проверяем новые поля (диапазон)
+        if ($this->expected_salary_from && $this->expected_salary_to) {
+            // Форматируем числа с точками в качестве разделителей тысяч
+            $from = number_format($this->expected_salary_from, 0, ',', '.');
+            $to = number_format($this->expected_salary_to, 0, ',', '.');
+
+            // Определяем символ валюты
+            $currencySymbol = ($this->salary_currency === 'USD') ? '$' : '₸';
+
+            return "{$from}-{$to}{$currencySymbol}";
         }
 
-        // Форматируем числа с точками в качестве разделителей тысяч
-        $from = number_format($this->expected_salary_from, 0, ',', '.');
-        $to = number_format($this->expected_salary_to, 0, ',', '.');
+        // Fallback: проверяем старое поле для обратной совместимости
+        if ($this->expected_salary && $this->expected_salary > 0) {
+            $formatted = number_format($this->expected_salary, 0, ',', '.');
+            return "{$formatted} тг.";
+        }
 
-        // Определяем символ валюты
-        $currencySymbol = ($this->salary_currency === 'USD') ? '$' : '₸';
-
-        return "{$from}-{$to}{$currencySymbol}";
+        return 'Не указано';
     }
 
     /**
