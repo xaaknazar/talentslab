@@ -654,7 +654,7 @@ function shouldValidateCyrillic(input) {
         'birth-place-input', 'current-city-input',
 
         // Step 2 и 3 (по wire:model)
-        'favorite_sports', 'employer_requirements'
+        'favorite_sports'
     ];
 
     // Проверяем по ID
