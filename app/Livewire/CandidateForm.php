@@ -79,7 +79,6 @@ class CandidateForm extends Component
     public $expected_salary;
     public $expected_salary_from;
     public $expected_salary_to;
-    public $salary_currency = 'KZT'; // по умолчанию тенге
     public $employer_requirements;
 
     // Step 4: Tests
@@ -334,7 +333,6 @@ class CandidateForm extends Component
         $this->expected_salary = $this->candidate->expected_salary;
         $this->expected_salary_from = $this->candidate->expected_salary_from;
         $this->expected_salary_to = $this->candidate->expected_salary_to;
-        $this->salary_currency = $this->candidate->salary_currency ?? 'KZT';
         $this->employer_requirements = $this->candidate->employer_requirements;
 
         // Tests
@@ -426,7 +424,6 @@ class CandidateForm extends Component
             'expected_salary' => 'nullable|numeric|min:0|max:999999999999',
             'expected_salary_from' => 'required|numeric|min:0|max:999999999999',
             'expected_salary_to' => 'required|numeric|min:0|max:999999999999|gte:expected_salary_from',
-            'salary_currency' => 'required|string|in:KZT,USD',
             'employer_requirements' => ['required', 'string', 'max:2000'],
 
             // Step 4 validation rules
@@ -487,7 +484,6 @@ class CandidateForm extends Component
         'expected_salary_to.numeric' => 'Зарплата до должна быть числом',
         'expected_salary_to.min' => 'Зарплата до должна быть больше 0',
         'expected_salary_to.gte' => 'Зарплата до должна быть больше или равна зарплате от',
-        'salary_currency.required' => 'Валюта обязательна для заполнения',
         'desired_position.required' => 'Желаемая должность обязательна для заполнения',
         'desired_position.max' => 'Желаемая должность не должна превышать 255 символов',
         'activity_sphere.required' => 'Сфера деятельности обязательна для заполнения',
@@ -1828,7 +1824,6 @@ class CandidateForm extends Component
             $this->candidate->expected_salary = $this->expected_salary;
             $this->candidate->expected_salary_from = $this->expected_salary_from;
             $this->candidate->expected_salary_to = $this->expected_salary_to;
-            $this->candidate->salary_currency = $this->salary_currency;
             $this->candidate->employer_requirements = $this->employer_requirements;
 
             // Handle Gallup PDF upload
@@ -1980,7 +1975,6 @@ class CandidateForm extends Component
         if ($this->expected_salary !== null) $this->candidate->expected_salary = $this->expected_salary;
         if ($this->expected_salary_from !== null) $this->candidate->expected_salary_from = $this->expected_salary_from;
         if ($this->expected_salary_to !== null) $this->candidate->expected_salary_to = $this->expected_salary_to;
-        if ($this->salary_currency !== null) $this->candidate->salary_currency = $this->salary_currency;
         if ($this->employer_requirements !== null) $this->candidate->employer_requirements = $this->employer_requirements;
 
         // Handle Gallup PDF upload
