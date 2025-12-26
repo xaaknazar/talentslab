@@ -386,7 +386,7 @@ class CandidateForm extends Component
             'visited_countries.*' => 'required|string|in:' . implode(',', collect($this->countries)->pluck('name_ru')->all()),
             'books_per_year_min' => 'required|integer|min:0|max:100',
             'books_per_year_max' => 'required|integer|min:0|max:100|gte:books_per_year_min',
-            'favorite_sports' => ['required', 'string', 'max:1000'],
+            'favorite_sports' => ['required', 'string', 'max:1000', new CyrillicRule()],
             'entertainment_hours_weekly' => 'required|integer|min:0|max:168',
             'educational_hours_weekly' => 'required|integer|min:0|max:168',
             'social_media_hours_weekly' => 'required|integer|min:0|max:168',
@@ -493,6 +493,7 @@ class CandidateForm extends Component
         // Сообщения для CyrillicRule
         'hobbies.cyrillic' => 'Поле "Хобби" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
         'interests.cyrillic' => 'Поле "Интересы" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
+        'favorite_sports.cyrillic' => 'Поле "Любимые виды спорта" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
         'desired_position.cyrillic' => 'Поле "Желаемая должность" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
         'family_members.*.profession.cyrillic' => 'Поле "Профессия" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
 
