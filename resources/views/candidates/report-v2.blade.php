@@ -667,7 +667,7 @@ if (! function_exists('mb_ucfirst')) {
                         <span class="w-60 text-base text-gray-600">Пожелания на рабочем месте:</span>
                         <span class="text-base font-medium flex-1">
                             @php
-                                $workplace = trim($candidate->workplace_preferences ?? '');
+                                $workplace = trim($candidate->employer_requirements ?? '');
                                 if ($workplace !== '') {
                                     $wLower = mb_strtolower($workplace, 'UTF-8');
                                     $wFirst = mb_strtoupper(mb_substr($wLower, 0, 1, 'UTF-8'), 'UTF-8');
@@ -723,12 +723,6 @@ if (! function_exists('mb_ucfirst')) {
                 @else
                     <p class="text-base text-gray-500">Языковые навыки не указаны</p>
                 @endif
-            </div>
-
-            <!-- Пожелания на рабочем месте -->
-            <div class="mb-8">
-                <h2 class="text-xl font-bold text-gray-800 mb-2">Пожелания на рабочем месте</h2>
-                <p class="text-base text-gray-800">{{ $candidate->employer_requirements ?: 'Не указано' }}</p>
             </div>
 
             <!-- Психометрические данные -->
