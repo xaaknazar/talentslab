@@ -332,6 +332,9 @@ class CandidateForm extends Component
         $this->desired_position = $this->candidate->desired_position;
         $this->activity_sphere = $this->candidate->activity_sphere;
         $this->expected_salary = $this->candidate->expected_salary;
+        $this->expected_salary_from = $this->candidate->expected_salary_from;
+        $this->expected_salary_to = $this->candidate->expected_salary_to;
+        $this->salary_currency = $this->candidate->salary_currency ?? 'KZT';
         $this->employer_requirements = $this->candidate->employer_requirements;
 
         // Tests
@@ -1823,6 +1826,9 @@ class CandidateForm extends Component
             $this->candidate->desired_position = $this->desired_position;
             $this->candidate->activity_sphere = $this->activity_sphere;
             $this->candidate->expected_salary = $this->expected_salary;
+            $this->candidate->expected_salary_from = $this->expected_salary_from;
+            $this->candidate->expected_salary_to = $this->expected_salary_to;
+            $this->candidate->salary_currency = $this->salary_currency;
             $this->candidate->employer_requirements = $this->employer_requirements;
 
             // Handle Gallup PDF upload
@@ -1972,6 +1978,9 @@ class CandidateForm extends Component
         if ($this->desired_position) $this->candidate->desired_position = $this->desired_position;
         if ($this->activity_sphere) $this->candidate->activity_sphere = $this->activity_sphere;
         if ($this->expected_salary !== null) $this->candidate->expected_salary = $this->expected_salary;
+        if ($this->expected_salary_from !== null) $this->candidate->expected_salary_from = $this->expected_salary_from;
+        if ($this->expected_salary_to !== null) $this->candidate->expected_salary_to = $this->expected_salary_to;
+        if ($this->salary_currency !== null) $this->candidate->salary_currency = $this->salary_currency;
         if ($this->employer_requirements !== null) $this->candidate->employer_requirements = $this->employer_requirements;
 
         // Handle Gallup PDF upload

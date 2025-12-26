@@ -725,10 +725,10 @@ if (! function_exists('mb_ucfirst')) {
                 @endif
             </div>
 
-            <!-- Компьютерные навыки -->
+            <!-- Пожелания на рабочем месте -->
             <div class="mb-8">
-                <h2 class="text-xl font-bold text-gray-800 mb-2"></h2>
-                <p class="text-base text-gray-800"></p>
+                <h2 class="text-xl font-bold text-gray-800 mb-2">Пожелания на рабочем месте</h2>
+                <p class="text-base text-gray-800">{{ $candidate->employer_requirements ?: 'Не указано' }}</p>
             </div>
 
             <!-- Психометрические данные -->
