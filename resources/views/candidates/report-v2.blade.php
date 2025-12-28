@@ -799,8 +799,8 @@ if (! function_exists('mb_ucfirst')) {
                                     <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 28px; height: 28px;">
                                 </div>
                                 <div style="text-align: center; height: 32px; display: flex; flex-direction: column; justify-content: flex-start;">
-                                    <span style="font-size: 8px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</span>
-                                    <span style="font-size: 8px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</span>
+                                    <span style="font-size: 10px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</span>
+                                    <span style="font-size: 10px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</span>
                                 </div>
                             </div>
                         @endforeach
