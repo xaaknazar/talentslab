@@ -725,17 +725,18 @@ if (! function_exists('mb_ucfirst')) {
             @php
                 $results = $candidate->user->gardnerTestResult->results;
 
-                // Маппинг типов интеллекта на цвета и эмодзи
+                // Маппинг типов интеллекта на цвета и эмодзи (используем изображения для PDF совместимости)
+                $twemojiBase = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/';
                 $intelligenceConfig = [
-                    'Лингвистический интеллект' => ['color' => '#e06666', 'emoji' => '㊗️'],
-                    'Логико-математический интеллект' => ['color' => '#ea9999', 'emoji' => '🧠'],
-                    'Музыкальный интеллект' => ['color' => '#3c78d8', 'emoji' => '🎶'],
-                    'Телесно-кинестетический интеллект' => ['color' => '#f6b26b', 'emoji' => '✋🏻'],
-                    'Пространственный интеллект' => ['color' => '#38761d', 'emoji' => '👁️'],
-                    'Межличностный интеллект' => ['color' => '#073763', 'emoji' => '👥'],
-                    'Внутриличностный интеллект' => ['color' => '#c9daf8', 'emoji' => '💭'],
-                    'Натуралистический интеллект' => ['color' => '#f1c232', 'emoji' => '🌻'],
-                    'Экзистенциальный интеллект' => ['color' => '#6d9eeb', 'emoji' => '🙏🏻'],
+                    'Лингвистический интеллект' => ['color' => '#e06666', 'emoji' => '㊗️', 'img' => $twemojiBase . '3297.svg'],
+                    'Логико-математический интеллект' => ['color' => '#ea9999', 'emoji' => '🧠', 'img' => $twemojiBase . '1f9e0.svg'],
+                    'Музыкальный интеллект' => ['color' => '#3c78d8', 'emoji' => '🎶', 'img' => $twemojiBase . '1f3b6.svg'],
+                    'Телесно-кинестетический интеллект' => ['color' => '#f6b26b', 'emoji' => '✋🏻', 'img' => $twemojiBase . '270b-1f3fb.svg'],
+                    'Пространственный интеллект' => ['color' => '#38761d', 'emoji' => '👁️', 'img' => $twemojiBase . '1f441.svg'],
+                    'Межличностный интеллект' => ['color' => '#073763', 'emoji' => '👥', 'img' => $twemojiBase . '1f465.svg'],
+                    'Внутриличностный интеллект' => ['color' => '#c9daf8', 'emoji' => '💭', 'img' => $twemojiBase . '1f4ad.svg'],
+                    'Натуралистический интеллект' => ['color' => '#f1c232', 'emoji' => '🌻', 'img' => $twemojiBase . '1f33b.svg'],
+                    'Экзистенциальный интеллект' => ['color' => '#6d9eeb', 'emoji' => '🙏🏻', 'img' => $twemojiBase . '1f64f-1f3fb.svg'],
                 ];
 
                 // Порядок отображения
@@ -760,7 +761,7 @@ if (! function_exists('mb_ucfirst')) {
                             @php
                                 $percentage = $results[$type] ?? '0%';
                                 $numericValue = (int) str_replace('%', '', $percentage);
-                                $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓'];
+                                $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
                                 $barHeight = round($numericValue * 2.4); // 100% = 240px
                             @endphp
                             <div style="flex: 1; max-width: 70px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 30 ? '8' : '2' }}px;">
@@ -772,11 +773,13 @@ if (! function_exists('mb_ucfirst')) {
                     <div style="display: flex; justify-content: space-between; gap: 8px; margin-top: 12px;">
                         @foreach($orderedTypes as $type)
                             @php
-                                $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓'];
+                                $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
                                 $shortName = str_replace(' интеллект', '', $type);
                             @endphp
                             <div style="flex: 1; max-width: 70px; display: flex; flex-direction: column; align-items: center;">
-                                <div style="font-size: 28px; height: 36px; display: flex; align-items: center; justify-content: center;">{{ $config['emoji'] }}</div>
+                                <div style="height: 36px; display: flex; align-items: center; justify-content: center;">
+                                    <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 28px; height: 28px;">
+                                </div>
                                 <div style="text-align: center; height: 32px; display: flex; flex-direction: column; justify-content: flex-start;">
                                     <span style="font-size: 8px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</span>
                                     <span style="font-size: 8px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</span>
