@@ -1567,7 +1567,9 @@ class CandidateForm extends Component
                 $this->candidate->step = $this->currentStep;
                 // Сохраняем базовую информацию если есть, иначе оставляем null
                 if ($this->last_name || $this->first_name) {
-                    $this->candidate->full_name = trim($this->first_name . ' ' . $this->last_name);
+                    $firstName = mb_strtoupper(mb_substr($this->first_name, 0, 1, 'UTF-8'), 'UTF-8') . mb_strtolower(mb_substr($this->first_name, 1, null, 'UTF-8'), 'UTF-8');
+                    $lastName = mb_strtoupper(mb_substr($this->last_name, 0, 1, 'UTF-8'), 'UTF-8') . mb_strtolower(mb_substr($this->last_name, 1, null, 'UTF-8'), 'UTF-8');
+                    $this->candidate->full_name = trim($firstName . ' ' . $lastName);
                 } else {
                     $this->candidate->full_name = null; // Явно устанавливаем null
                 }
@@ -1755,8 +1757,10 @@ class CandidateForm extends Component
             }
 
             // Basic Information
-            // Объединяем ФИО (сначала Имя, потом Фамилия)
-            $this->candidate->full_name = trim($this->first_name . ' ' . $this->last_name);
+            // Объединяем ФИО (сначала Имя, потом Фамилия) с капитализацией
+            $firstName = mb_strtoupper(mb_substr($this->first_name, 0, 1, 'UTF-8'), 'UTF-8') . mb_strtolower(mb_substr($this->first_name, 1, null, 'UTF-8'), 'UTF-8');
+            $lastName = mb_strtoupper(mb_substr($this->last_name, 0, 1, 'UTF-8'), 'UTF-8') . mb_strtolower(mb_substr($this->last_name, 1, null, 'UTF-8'), 'UTF-8');
+            $this->candidate->full_name = trim($firstName . ' ' . $lastName);
             $this->candidate->email = $this->email;
             $this->candidate->phone = $this->phone;
             $this->candidate->gender = $this->gender;
@@ -1896,7 +1900,9 @@ class CandidateForm extends Component
 
         // Базовые данные всегда сохраняем, если они есть
         if ($this->last_name || $this->first_name) {
-            $this->candidate->full_name = trim($this->first_name . ' ' . $this->last_name);
+            $firstName = mb_strtoupper(mb_substr($this->first_name, 0, 1, 'UTF-8'), 'UTF-8') . mb_strtolower(mb_substr($this->first_name, 1, null, 'UTF-8'), 'UTF-8');
+            $lastName = mb_strtoupper(mb_substr($this->last_name, 0, 1, 'UTF-8'), 'UTF-8') . mb_strtolower(mb_substr($this->last_name, 1, null, 'UTF-8'), 'UTF-8');
+            $this->candidate->full_name = trim($firstName . ' ' . $lastName);
         } else {
             $this->candidate->full_name = null; // Явно устанавливаем null если имя не введено
         }
