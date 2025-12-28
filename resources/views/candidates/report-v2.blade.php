@@ -739,13 +739,17 @@ if (! function_exists('mb_ucfirst')) {
                     'Экзистенциальный интеллект' => ['color' => '#6d9eeb', 'textColor' => 'black', 'emoji' => '🙏🏻', 'img' => $twemojiBase . '1f64f-1f3fb.svg'],
                 ];
 
-                // Порядок отображения
-                $orderedTypes = [
+                // Первый ряд (5 типов)
+                $row1Types = [
                     'Лингвистический интеллект',
                     'Логико-математический интеллект',
                     'Музыкальный интеллект',
                     'Телесно-кинестетический интеллект',
                     'Пространственный интеллект',
+                ];
+
+                // Второй ряд (4 типа)
+                $row2Types = [
                     'Межличностный интеллект',
                     'Внутриличностный интеллект',
                     'Натуралистический интеллект',
@@ -755,52 +759,99 @@ if (! function_exists('mb_ucfirst')) {
             <div class="mb-4">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Виды интеллектов Гарднера</h2>
                 <div class="bg-gray-100 rounded-lg p-6">
-                    <!-- График с осью Y -->
-                    <div style="display: flex; align-items: flex-end; height: 240px;">
-                        <!-- Ось Y с отметками -->
-                        <div style="width: 24px; height: 240px; display: flex; flex-direction: column; justify-content: space-between; position: relative; margin-right: 8px;">
+                    <!-- Первый ряд -->
+                    <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
+                        <!-- Ось Y -->
+                        <div style="width: 28px; height: 180px; position: relative; margin-right: 8px;">
                             @foreach([100, 75, 50, 25, 0] as $mark)
-                                <div style="position: absolute; bottom: {{ $mark * 2.4 }}px; right: 0; transform: translateY(50%); font-size: 6px; color: #666; text-align: right; width: 20px;">{{ $mark }}</div>
+                                <div style="position: absolute; bottom: {{ $mark * 1.8 }}px; right: 0; transform: translateY(50%); font-size: 8px; color: #666; text-align: right; width: 24px;">{{ $mark }}</div>
                             @endforeach
                         </div>
-                        <!-- Столбцы графика с линиями (100 = 240px, 0 = 0px) -->
-                        <div style="flex: 1; position: relative; height: 240px;">
-                            <!-- Горизонтальные линии -->
+                        <!-- Столбцы первого ряда -->
+                        <div style="flex: 1; position: relative; height: 180px;">
                             @foreach([100, 75, 50, 25, 0] as $mark)
-                                <div style="position: absolute; bottom: {{ $mark * 2.4 }}px; left: 0; right: 0; border-bottom: 1px solid #d1d5db; z-index: 0;"></div>
+                                <div style="position: absolute; bottom: {{ $mark * 1.8 }}px; left: 0; right: 0; border-bottom: 1px solid #d1d5db; z-index: 0;"></div>
                             @endforeach
-                            <!-- Столбцы -->
-                            <div style="display: flex; align-items: flex-end; justify-content: space-between; height: 240px; gap: 8px; position: relative; z-index: 1;">
-                                @foreach($orderedTypes as $type)
+                            <div style="display: flex; align-items: flex-end; justify-content: space-around; height: 180px; gap: 12px; position: relative; z-index: 1;">
+                                @foreach($row1Types as $type)
                                     @php
                                         $percentage = $results[$type] ?? '0%';
                                         $numericValue = (int) str_replace('%', '', $percentage);
                                         $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'textColor' => 'white', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
-                                        $barHeight = round($numericValue * 2.4); // 100% = 240px
+                                        $barHeight = round($numericValue * 1.8); // 100% = 180px
                                         $textColor = $config['textColor'] ?? 'white';
                                         $textShadow = $textColor === 'white' ? '1px 1px 2px rgba(0,0,0,0.3)' : 'none';
                                     @endphp
-                                    <div style="flex: 1; max-width: 70px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 30 ? '8' : '2' }}px;">
+                                    <div style="flex: 1; max-width: 100px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 30 ? '8' : '2' }}px;">
                                         <span style="font-size: 16px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}</span>
                                     </div>
                                 @endforeach
                             </div>
                         </div>
                     </div>
-                    <!-- Подписи под столбцами -->
-                    <div style="display: flex; justify-content: space-between; gap: 8px; margin-top: 12px; margin-left: 32px;">
-                        @foreach($orderedTypes as $type)
+                    <!-- Подписи первого ряда -->
+                    <div style="display: flex; justify-content: space-around; gap: 12px; margin-left: 36px; margin-bottom: 24px;">
+                        @foreach($row1Types as $type)
                             @php
                                 $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
                                 $shortName = str_replace(' интеллект', '', $type);
                             @endphp
-                            <div style="flex: 1; max-width: 70px; display: flex; flex-direction: column; align-items: center;">
+                            <div style="flex: 1; max-width: 100px; display: flex; flex-direction: column; align-items: center;">
                                 <div style="height: 36px; display: flex; align-items: center; justify-content: center;">
                                     <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 28px; height: 28px;">
                                 </div>
-                                <div style="text-align: center; height: 32px; display: flex; flex-direction: column; justify-content: flex-start;">
-                                    <span style="font-size: 10px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</span>
-                                    <span style="font-size: 10px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</span>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.3;">{{ $shortName }}</div>
+                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.3;">интеллект</div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <!-- Второй ряд -->
+                    <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
+                        <!-- Ось Y -->
+                        <div style="width: 28px; height: 180px; position: relative; margin-right: 8px;">
+                            @foreach([100, 75, 50, 25, 0] as $mark)
+                                <div style="position: absolute; bottom: {{ $mark * 1.8 }}px; right: 0; transform: translateY(50%); font-size: 8px; color: #666; text-align: right; width: 24px;">{{ $mark }}</div>
+                            @endforeach
+                        </div>
+                        <!-- Столбцы второго ряда -->
+                        <div style="flex: 1; position: relative; height: 180px;">
+                            @foreach([100, 75, 50, 25, 0] as $mark)
+                                <div style="position: absolute; bottom: {{ $mark * 1.8 }}px; left: 0; right: 0; border-bottom: 1px solid #d1d5db; z-index: 0;"></div>
+                            @endforeach
+                            <div style="display: flex; align-items: flex-end; justify-content: space-around; height: 180px; gap: 12px; position: relative; z-index: 1;">
+                                @foreach($row2Types as $type)
+                                    @php
+                                        $percentage = $results[$type] ?? '0%';
+                                        $numericValue = (int) str_replace('%', '', $percentage);
+                                        $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'textColor' => 'white', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
+                                        $barHeight = round($numericValue * 1.8); // 100% = 180px
+                                        $textColor = $config['textColor'] ?? 'white';
+                                        $textShadow = $textColor === 'white' ? '1px 1px 2px rgba(0,0,0,0.3)' : 'none';
+                                    @endphp
+                                    <div style="flex: 1; max-width: 120px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 30 ? '8' : '2' }}px;">
+                                        <span style="font-size: 16px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Подписи второго ряда -->
+                    <div style="display: flex; justify-content: space-around; gap: 12px; margin-left: 36px;">
+                        @foreach($row2Types as $type)
+                            @php
+                                $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
+                                $shortName = str_replace(' интеллект', '', $type);
+                            @endphp
+                            <div style="flex: 1; max-width: 120px; display: flex; flex-direction: column; align-items: center;">
+                                <div style="height: 36px; display: flex; align-items: center; justify-content: center;">
+                                    <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 28px; height: 28px;">
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.3;">{{ $shortName }}</div>
+                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.3;">интеллект</div>
                                 </div>
                             </div>
                         @endforeach
