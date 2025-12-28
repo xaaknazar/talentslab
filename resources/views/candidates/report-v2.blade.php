@@ -754,14 +754,14 @@ if (! function_exists('mb_ucfirst')) {
             <div class="mb-4">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Виды интеллектов Гарднера</h2>
                 <div class="bg-gray-100 rounded-lg p-6">
-                    <!-- Столбцы графика (100 = 220px, 0 = 0px) -->
-                    <div style="display: flex; align-items: flex-end; justify-content: space-between; height: 220px; gap: 8px;">
+                    <!-- Столбцы графика (100 = 240px, 0 = 0px) -->
+                    <div style="display: flex; align-items: flex-end; justify-content: space-between; height: 240px; gap: 8px;">
                         @foreach($orderedTypes as $type)
                             @php
                                 $percentage = $results[$type] ?? '0%';
                                 $numericValue = (int) str_replace('%', '', $percentage);
                                 $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓'];
-                                $barHeight = round($numericValue * 2.2); // 100% = 220px
+                                $barHeight = round($numericValue * 2.4); // 100% = 240px
                             @endphp
                             <div style="flex: 1; max-width: 70px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 30 ? '8' : '2' }}px;">
                                 <span style="font-size: 16px; font-weight: bold; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">{{ $numericValue }}</span>
