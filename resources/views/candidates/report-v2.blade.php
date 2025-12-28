@@ -728,15 +728,15 @@ if (! function_exists('mb_ucfirst')) {
                 // Маппинг типов интеллекта на цвета и эмодзи (используем изображения для PDF совместимости)
                 $twemojiBase = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/';
                 $intelligenceConfig = [
-                    'Лингвистический интеллект' => ['color' => '#e06666', 'emoji' => '㊗️', 'img' => $twemojiBase . '3297.svg'],
-                    'Логико-математический интеллект' => ['color' => '#ea9999', 'emoji' => '🧠', 'img' => $twemojiBase . '1f9e0.svg'],
-                    'Музыкальный интеллект' => ['color' => '#3c78d8', 'emoji' => '🎶', 'img' => $twemojiBase . '1f3b6.svg'],
-                    'Телесно-кинестетический интеллект' => ['color' => '#f6b26b', 'emoji' => '✋🏻', 'img' => $twemojiBase . '270b-1f3fb.svg'],
-                    'Пространственный интеллект' => ['color' => '#38761d', 'emoji' => '👁️', 'img' => $twemojiBase . '1f441.svg'],
-                    'Межличностный интеллект' => ['color' => '#073763', 'emoji' => '👥', 'img' => $twemojiBase . '1f465.svg'],
-                    'Внутриличностный интеллект' => ['color' => '#c9daf8', 'emoji' => '💭', 'img' => $twemojiBase . '1f4ad.svg'],
-                    'Натуралистический интеллект' => ['color' => '#f1c232', 'emoji' => '🌻', 'img' => $twemojiBase . '1f33b.svg'],
-                    'Экзистенциальный интеллект' => ['color' => '#6d9eeb', 'emoji' => '🙏🏻', 'img' => $twemojiBase . '1f64f-1f3fb.svg'],
+                    'Лингвистический интеллект' => ['color' => '#e06666', 'textColor' => 'black', 'emoji' => '㊗️', 'img' => $twemojiBase . '3297.svg'],
+                    'Логико-математический интеллект' => ['color' => '#ea9999', 'textColor' => 'black', 'emoji' => '🧠', 'img' => $twemojiBase . '1f9e0.svg'],
+                    'Музыкальный интеллект' => ['color' => '#3c78d8', 'textColor' => 'white', 'emoji' => '🎶', 'img' => $twemojiBase . '1f3b6.svg'],
+                    'Телесно-кинестетический интеллект' => ['color' => '#f6b26b', 'textColor' => 'black', 'emoji' => '✋🏻', 'img' => $twemojiBase . '270b-1f3fb.svg'],
+                    'Пространственный интеллект' => ['color' => '#38761d', 'textColor' => 'white', 'emoji' => '👁️', 'img' => $twemojiBase . '1f441.svg'],
+                    'Межличностный интеллект' => ['color' => '#073763', 'textColor' => 'white', 'emoji' => '👥', 'img' => $twemojiBase . '1f465.svg'],
+                    'Внутриличностный интеллект' => ['color' => '#a6bee7', 'textColor' => 'black', 'emoji' => '💭', 'img' => $twemojiBase . '1f4ad.svg'],
+                    'Натуралистический интеллект' => ['color' => '#f1c232', 'textColor' => 'black', 'emoji' => '🌻', 'img' => $twemojiBase . '1f33b.svg'],
+                    'Экзистенциальный интеллект' => ['color' => '#6d9eeb', 'textColor' => 'black', 'emoji' => '🙏🏻', 'img' => $twemojiBase . '1f64f-1f3fb.svg'],
                 ];
 
                 // Порядок отображения
@@ -755,22 +755,40 @@ if (! function_exists('mb_ucfirst')) {
             <div class="mb-4">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Виды интеллектов Гарднера</h2>
                 <div class="bg-gray-100 rounded-lg p-6">
-                    <!-- Столбцы графика (100 = 240px, 0 = 0px) -->
-                    <div style="display: flex; align-items: flex-end; justify-content: space-between; height: 240px; gap: 8px;">
-                        @foreach($orderedTypes as $type)
-                            @php
-                                $percentage = $results[$type] ?? '0%';
-                                $numericValue = (int) str_replace('%', '', $percentage);
-                                $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
-                                $barHeight = round($numericValue * 2.4); // 100% = 240px
-                            @endphp
-                            <div style="flex: 1; max-width: 70px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 30 ? '8' : '2' }}px;">
-                                <span style="font-size: 16px; font-weight: bold; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">{{ $numericValue }}</span>
+                    <!-- График с осью Y -->
+                    <div style="display: flex; align-items: flex-end; height: 240px;">
+                        <!-- Ось Y с отметками -->
+                        <div style="width: 24px; height: 240px; display: flex; flex-direction: column; justify-content: space-between; position: relative; margin-right: 8px;">
+                            @foreach([100, 75, 50, 25, 0] as $mark)
+                                <div style="position: absolute; bottom: {{ $mark * 2.4 }}px; right: 0; transform: translateY(50%); font-size: 4px; color: #666; text-align: right; width: 20px;">{{ $mark }}</div>
+                            @endforeach
+                        </div>
+                        <!-- Столбцы графика с линиями (100 = 240px, 0 = 0px) -->
+                        <div style="flex: 1; position: relative; height: 240px;">
+                            <!-- Горизонтальные линии -->
+                            @foreach([100, 75, 50, 25, 0] as $mark)
+                                <div style="position: absolute; bottom: {{ $mark * 2.4 }}px; left: 0; right: 0; border-bottom: 1px solid #d1d5db; z-index: 0;"></div>
+                            @endforeach
+                            <!-- Столбцы -->
+                            <div style="display: flex; align-items: flex-end; justify-content: space-between; height: 240px; gap: 8px; position: relative; z-index: 1;">
+                                @foreach($orderedTypes as $type)
+                                    @php
+                                        $percentage = $results[$type] ?? '0%';
+                                        $numericValue = (int) str_replace('%', '', $percentage);
+                                        $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'textColor' => 'white', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
+                                        $barHeight = round($numericValue * 2.4); // 100% = 240px
+                                        $textColor = $config['textColor'] ?? 'white';
+                                        $textShadow = $textColor === 'white' ? '1px 1px 2px rgba(0,0,0,0.3)' : 'none';
+                                    @endphp
+                                    <div style="flex: 1; max-width: 70px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 30 ? '8' : '2' }}px;">
+                                        <span style="font-size: 16px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}</span>
+                                    </div>
+                                @endforeach
                             </div>
-                        @endforeach
+                        </div>
                     </div>
                     <!-- Подписи под столбцами -->
-                    <div style="display: flex; justify-content: space-between; gap: 8px; margin-top: 12px;">
+                    <div style="display: flex; justify-content: space-between; gap: 8px; margin-top: 12px; margin-left: 32px;">
                         @foreach($orderedTypes as $type)
                             @php
                                 $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
