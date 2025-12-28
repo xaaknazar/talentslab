@@ -760,7 +760,7 @@ if (! function_exists('mb_ucfirst')) {
                         <!-- Ось Y с отметками -->
                         <div style="width: 24px; height: 240px; display: flex; flex-direction: column; justify-content: space-between; position: relative; margin-right: 8px;">
                             @foreach([100, 75, 50, 25, 0] as $mark)
-                                <div style="position: absolute; bottom: {{ $mark * 2.4 }}px; right: 0; transform: translateY(50%); font-size: 4px; color: #666; text-align: right; width: 20px;">{{ $mark }}</div>
+                                <div style="position: absolute; bottom: {{ $mark * 2.4 }}px; right: 0; transform: translateY(50%); font-size: 6px; color: #666; text-align: right; width: 20px;">{{ $mark }}</div>
                             @endforeach
                         </div>
                         <!-- Столбцы графика с линиями (100 = 240px, 0 = 0px) -->
