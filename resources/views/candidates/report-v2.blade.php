@@ -684,22 +684,8 @@ if (! function_exists('mb_ucfirst')) {
                     @if($candidate->computer_skills)
                     <div class="flex items-start">
                         <span class="w-60 text-base text-gray-600">Компьютерные навыки:</span>
-                        <span class="text-base font-medium flex-1">
-                            @php
-                                $computer = trim($candidate->computer_skills ?? '');
-                                if ($computer !== '') {
-                                    $cLower = mb_strtolower($computer, 'UTF-8');
-                                    $cFirst = mb_strtoupper(mb_substr($cLower, 0, 1, 'UTF-8'), 'UTF-8');
-                                    $cRest = mb_substr($cLower, 1, null, 'UTF-8');
-                                    $computer = $cFirst . $cRest;
-                                } else {
-                                    $computer = 'Не указано';
-                                }
-                            @endphp
-                            {{ $computer }}
-                        </span>
+                        <span class="text-base font-medium flex-1">{{ $candidate->computer_skills }}</span>
                     </div>
-                    @else
                     @endif
                 </div>
             </div>
