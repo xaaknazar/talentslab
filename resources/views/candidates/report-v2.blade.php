@@ -754,31 +754,28 @@ if (! function_exists('mb_ucfirst')) {
             <div class="mb-4">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Виды интеллектов Гарднера</h2>
                 <div class="bg-gray-100 rounded-lg p-6">
-                    <!-- График -->
-                    <div style="display: flex; align-items: flex-end; justify-content: space-between; height: 220px; gap: 8px; padding-bottom: 10px; border-bottom: 1px solid #e5e7eb;">
+                    <!-- График со столбцами -->
+                    <div style="display: flex; align-items: flex-end; justify-content: space-between; height: 250px; gap: 12px;">
                         @foreach($orderedTypes as $type)
                             @php
                                 $percentage = $results[$type] ?? '0%';
                                 $numericValue = (int) str_replace('%', '', $percentage);
                                 $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓'];
-                                $barHeight = max($numericValue * 2, 10);
-                            @endphp
-                            <div style="display: flex; flex-direction: column; align-items: center; flex: 1;">
-                                <span style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">{{ $numericValue }}</span>
-                                <div style="width: 100%; max-width: 50px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 4px 4px 0 0;"></div>
-                            </div>
-                        @endforeach
-                    </div>
-                    <!-- Подписи -->
-                    <div style="display: flex; justify-content: space-between; gap: 8px; margin-top: 12px;">
-                        @foreach($orderedTypes as $type)
-                            @php
-                                $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓'];
+                                $barHeight = max($numericValue * 2.2, 30);
                                 $shortName = str_replace(' интеллект', '', $type);
                             @endphp
-                            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center;">
-                                <span style="font-size: 20px;">{{ $config['emoji'] }}</span>
-                                <span style="font-size: 10px; color: #4b5563; margin-top: 4px; line-height: 1.2;">{{ $shortName }}</span>
+                            <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                                <!-- Столбец с числом внутри -->
+                                <div style="width: 100%; max-width: 60px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: 8px;">
+                                    <span style="font-size: 16px; font-weight: bold; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">{{ $numericValue }}</span>
+                                </div>
+                                <!-- Эмодзи под столбцом -->
+                                <div style="margin-top: 10px; font-size: 24px;">{{ $config['emoji'] }}</div>
+                                <!-- Подпись в 2 строки -->
+                                <div style="text-align: center; margin-top: 6px; line-height: 1.2;">
+                                    <span style="font-size: 9px; color: #4b5563; display: block;">{{ $shortName }}</span>
+                                    <span style="font-size: 9px; color: #4b5563;">интеллект</span>
+                                </div>
                             </div>
                         @endforeach
                     </div>
