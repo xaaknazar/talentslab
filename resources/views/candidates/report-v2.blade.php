@@ -776,10 +776,10 @@ if (! function_exists('mb_ucfirst')) {
                                 $shortName = str_replace(' интеллект', '', $type);
                             @endphp
                             <div style="flex: 1; max-width: 70px; display: flex; flex-direction: column; align-items: center;">
-                                <div style="font-size: 22px; height: 30px; display: flex; align-items: center; justify-content: center;">{{ $config['emoji'] }}</div>
-                                <div style="text-align: center; height: 36px; display: flex; flex-direction: column; justify-content: flex-start;">
-                                    <span style="font-size: 10px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</span>
-                                    <span style="font-size: 10px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</span>
+                                <div style="font-size: 28px; height: 36px; display: flex; align-items: center; justify-content: center;">{{ $config['emoji'] }}</div>
+                                <div style="text-align: center; height: 32px; display: flex; flex-direction: column; justify-content: flex-start;">
+                                    <span style="font-size: 8px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</span>
+                                    <span style="font-size: 8px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</span>
                                 </div>
                             </div>
                         @endforeach
