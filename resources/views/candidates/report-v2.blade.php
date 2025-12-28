@@ -754,27 +754,32 @@ if (! function_exists('mb_ucfirst')) {
             <div class="mb-4">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Виды интеллектов Гарднера</h2>
                 <div class="bg-gray-100 rounded-lg p-6">
-                    <!-- График со столбцами -->
-                    <div style="display: flex; align-items: flex-end; justify-content: space-between; height: 250px; gap: 12px;">
+                    <!-- Столбцы графика -->
+                    <div style="display: flex; align-items: flex-end; justify-content: space-between; height: 220px; gap: 8px;">
                         @foreach($orderedTypes as $type)
                             @php
                                 $percentage = $results[$type] ?? '0%';
                                 $numericValue = (int) str_replace('%', '', $percentage);
                                 $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓'];
-                                $barHeight = max($numericValue * 2.2, 30);
+                                $barHeight = max($numericValue * 2, 25);
+                            @endphp
+                            <div style="flex: 1; max-width: 70px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: 8px;">
+                                <span style="font-size: 16px; font-weight: bold; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">{{ $numericValue }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+                    <!-- Подписи под столбцами -->
+                    <div style="display: flex; justify-content: space-between; gap: 8px; margin-top: 12px;">
+                        @foreach($orderedTypes as $type)
+                            @php
+                                $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓'];
                                 $shortName = str_replace(' интеллект', '', $type);
                             @endphp
-                            <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
-                                <!-- Столбец с числом внутри -->
-                                <div style="width: 100%; max-width: 60px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: 8px;">
-                                    <span style="font-size: 16px; font-weight: bold; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">{{ $numericValue }}</span>
-                                </div>
-                                <!-- Эмодзи под столбцом -->
-                                <div style="margin-top: 10px; font-size: 24px;">{{ $config['emoji'] }}</div>
-                                <!-- Подпись в 2 строки -->
-                                <div style="text-align: center; margin-top: 6px; line-height: 1.2;">
-                                    <span style="font-size: 9px; color: #4b5563; display: block;">{{ $shortName }}</span>
-                                    <span style="font-size: 9px; color: #4b5563;">интеллект</span>
+                            <div style="flex: 1; max-width: 70px; display: flex; flex-direction: column; align-items: center;">
+                                <div style="font-size: 22px; height: 30px; display: flex; align-items: center; justify-content: center;">{{ $config['emoji'] }}</div>
+                                <div style="text-align: center; height: 36px; display: flex; flex-direction: column; justify-content: flex-start;">
+                                    <span style="font-size: 10px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</span>
+                                    <span style="font-size: 10px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</span>
                                 </div>
                             </div>
                         @endforeach
