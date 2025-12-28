@@ -801,8 +801,8 @@ if (! function_exists('mb_ucfirst')) {
                                     <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 28px; height: 28px;">
                                 </div>
                                 <div style="text-align: center;">
-                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.3;">{{ $shortName }}</div>
-                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.3;">интеллект</div>
+                                    <div style="font-size: 13px; font-weight: bold; color: #374151; line-height: 1.3;">{{ $shortName }}</div>
+                                    <div style="font-size: 13px; font-weight: bold; color: #374151; line-height: 1.3;">интеллект</div>
                                 </div>
                             </div>
                         @endforeach
@@ -850,8 +850,8 @@ if (! function_exists('mb_ucfirst')) {
                                     <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 28px; height: 28px;">
                                 </div>
                                 <div style="text-align: center;">
-                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.3;">{{ $shortName }}</div>
-                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.3;">интеллект</div>
+                                    <div style="font-size: 13px; font-weight: bold; color: #374151; line-height: 1.3;">{{ $shortName }}</div>
+                                    <div style="font-size: 13px; font-weight: bold; color: #374151; line-height: 1.3;">интеллект</div>
                                 </div>
                             </div>
                         @endforeach
