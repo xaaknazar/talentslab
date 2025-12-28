@@ -720,49 +720,58 @@ if (! function_exists('mb_ucfirst')) {
                 </div>
             </div>
 
-            <!-- Тест Гарднера -->
+            <!-- Виды интеллектов Гарднера -->
             @if($candidate->user && $candidate->user->gardnerTestResult)
             @php
-                // Находим доминирующий тип интеллекта
                 $results = $candidate->user->gardnerTestResult->results;
-                $maxPercentage = 0;
-                $dominantType = '';
 
-                foreach($results as $type => $percentage) {
-                    $numericPercentage = (int) str_replace('%', '', $percentage);
-                    if ($numericPercentage > $maxPercentage) {
-                        $maxPercentage = $numericPercentage;
-                        $dominantType = $type;
-                    }
-                }
+                // Маппинг типов интеллекта на цвета и эмодзи
+                $intelligenceConfig = [
+                    'Лингвистический интеллект' => ['color' => '#e06666', 'emoji' => '㊗️'],
+                    'Логико-математический интеллект' => ['color' => '#ea9999', 'emoji' => '🧠'],
+                    'Музыкальный интеллект' => ['color' => '#3c78d8', 'emoji' => '🎶'],
+                    'Телесно-кинестетический интеллект' => ['color' => '#f6b26b', 'emoji' => '✋🏻'],
+                    'Пространственный интеллект' => ['color' => '#38761d', 'emoji' => '👁️'],
+                    'Межличностный интеллект' => ['color' => '#073763', 'emoji' => '👥'],
+                    'Внутриличностный интеллект' => ['color' => '#c9daf8', 'emoji' => '💭'],
+                    'Натуралистический интеллект' => ['color' => '#f1c232', 'emoji' => '🌻'],
+                    'Экзистенциальный интеллект' => ['color' => '#6d9eeb', 'emoji' => '🙏🏻'],
+                ];
+
+                // Порядок отображения
+                $orderedTypes = [
+                    'Лингвистический интеллект',
+                    'Логико-математический интеллект',
+                    'Музыкальный интеллект',
+                    'Телесно-кинестетический интеллект',
+                    'Пространственный интеллект',
+                    'Межличностный интеллект',
+                    'Внутриличностный интеллект',
+                    'Натуралистический интеллект',
+                    'Экзистенциальный интеллект',
+                ];
             @endphp
             <div class="mb-4">
-                <h2 class="text-xl font-bold text-gray-800 mb-2">Тест типов интеллекта (Гарднер)</h2>
-                <div class="grid grid-cols-2 gap-6">
-                    @foreach($candidate->user->gardnerTestResult->results as $intelligenceType => $percentage)
-                    @php
-                        $isDominant = ($intelligenceType === $dominantType);
-                        $bgClass = $isDominant ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200';
-                        $textClass = $isDominant ? 'text-green-800' : 'text-gray-700';
-                        $barClass = $isDominant ? 'bg-green-500' : 'bg-blue-500';
-                        $percentageClass = $isDominant ? 'text-green-700 font-extrabold' : 'text-blue-600 font-bold';
-                    @endphp
-                    <div class="flex items-center justify-between p-3 {{ $bgClass }} rounded border-2 {{ $isDominant ? 'shadow-md' : '' }}">
-                        <div class="flex flex-col">
-                            <span class="text-base font-medium {{ $textClass }}">{{ $intelligenceType }}</span>
-                        </div>
-                        <div class="flex items-center">
-                            <div class="w-24 h-2 bg-gray-200 rounded-full mr-3">
-                                <div class="h-2 {{ $barClass }} rounded-full" style="width: {{ $percentage }}"></div>
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Виды интеллектов Гарднера</h2>
+                <div class="bg-gray-100 rounded-lg p-6">
+                    <div class="flex items-end justify-between gap-2" style="height: 280px;">
+                        @foreach($orderedTypes as $type)
+                            @php
+                                $percentage = $results[$type] ?? '0%';
+                                $numericValue = (int) str_replace('%', '', $percentage);
+                                $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓'];
+                                $barHeight = $numericValue * 2; // масштаб для высоты
+                                $shortName = str_replace(' интеллект', '', $type);
+                            @endphp
+                            <div class="flex flex-col items-center flex-1">
+                                <span class="text-sm font-bold mb-1">{{ $numericValue }}</span>
+                                <div class="w-full rounded-t-md flex items-end justify-center" style="background-color: {{ $config['color'] }}; height: {{ $barHeight }}px; min-height: 20px;">
+                                </div>
+                                <div class="mt-2 text-2xl">{{ $config['emoji'] }}</div>
+                                <div class="text-xs text-center text-gray-600 mt-1 leading-tight" style="max-width: 70px;">{{ $shortName }}</div>
                             </div>
-                            <span class="text-base {{ $percentageClass }}">{{ $percentage }}</span>
-                        </div>
+                        @endforeach
                     </div>
-                    @endforeach
-                </div>
-                <div class="mt-4 text-xs text-gray-500">
-                    <p>Тест пройден: {{ $candidate->user->gardnerTestResult->created_at->format('d.m.Y в H:i') }}</p>
-                    <p class="mt-1"><span class="text-green-600 font-medium">Доминирующий тип:</span> {{ $dominantType }} ({{ $maxPercentage }}%)</p>
                 </div>
             </div>
             @endif
