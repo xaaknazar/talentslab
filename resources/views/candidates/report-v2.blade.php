@@ -793,16 +793,12 @@ if (! function_exists('mb_ucfirst')) {
                     <div style="display: flex; justify-content: space-around; gap: 12px; margin-left: 36px; margin-bottom: 24px;">
                         @foreach($row1Types as $type)
                             @php
-                                $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
                                 $shortName = str_replace(' интеллект', '', $type);
                             @endphp
                             <div style="flex: 1; max-width: 120px; display: flex; flex-direction: column; align-items: center;">
-                                <div style="height: 36px; display: flex; align-items: center; justify-content: center;">
-                                    <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 28px; height: 28px;">
-                                </div>
                                 <div style="text-align: center;">
-                                    <div style="font-size: 13px; font-weight: bold; color: #374151; line-height: 1.3;">{{ $shortName }}</div>
-                                    <div style="font-size: 13px; font-weight: bold; color: #374151; line-height: 1.3;">интеллект</div>
+                                    <div style="font-size: 15px; font-weight: bold; color: #374151; line-height: 1.3;">{{ $shortName }}</div>
+                                    <div style="font-size: 15px; font-weight: bold; color: #374151; line-height: 1.3;">интеллект</div>
                                 </div>
                             </div>
                         @endforeach
@@ -842,16 +838,12 @@ if (! function_exists('mb_ucfirst')) {
                     <div style="display: flex; justify-content: space-around; gap: 12px; margin-left: 36px;">
                         @foreach($row2Types as $type)
                             @php
-                                $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
                                 $shortName = str_replace(' интеллект', '', $type);
                             @endphp
                             <div style="flex: 1; max-width: 120px; display: flex; flex-direction: column; align-items: center;">
-                                <div style="height: 36px; display: flex; align-items: center; justify-content: center;">
-                                    <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 28px; height: 28px;">
-                                </div>
                                 <div style="text-align: center;">
-                                    <div style="font-size: 13px; font-weight: bold; color: #374151; line-height: 1.3;">{{ $shortName }}</div>
-                                    <div style="font-size: 13px; font-weight: bold; color: #374151; line-height: 1.3;">интеллект</div>
+                                    <div style="font-size: 15px; font-weight: bold; color: #374151; line-height: 1.3;">{{ $shortName }}</div>
+                                    <div style="font-size: 15px; font-weight: bold; color: #374151; line-height: 1.3;">интеллект</div>
                                 </div>
                             </div>
                         @endforeach
