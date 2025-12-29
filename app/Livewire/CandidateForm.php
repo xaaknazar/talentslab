@@ -79,7 +79,6 @@ class CandidateForm extends Component
     public $expected_salary;
     public $expected_salary_from;
     public $expected_salary_to;
-    public $salary_currency = 'KZT'; // по умолчанию тенге
     public $employer_requirements;
 
     // Step 4: Tests
@@ -332,6 +331,8 @@ class CandidateForm extends Component
         $this->desired_position = $this->candidate->desired_position;
         $this->activity_sphere = $this->candidate->activity_sphere;
         $this->expected_salary = $this->candidate->expected_salary;
+        $this->expected_salary_from = $this->candidate->expected_salary_from;
+        $this->expected_salary_to = $this->candidate->expected_salary_to;
         $this->employer_requirements = $this->candidate->employer_requirements;
 
         // Tests
@@ -423,7 +424,6 @@ class CandidateForm extends Component
             'expected_salary' => 'nullable|numeric|min:0|max:999999999999',
             'expected_salary_from' => 'required|numeric|min:0|max:999999999999',
             'expected_salary_to' => 'required|numeric|min:0|max:999999999999|gte:expected_salary_from',
-            'salary_currency' => 'required|string|in:KZT,USD',
             'employer_requirements' => ['required', 'string', 'max:2000'],
 
             // Step 4 validation rules
@@ -484,7 +484,6 @@ class CandidateForm extends Component
         'expected_salary_to.numeric' => 'Зарплата до должна быть числом',
         'expected_salary_to.min' => 'Зарплата до должна быть больше 0',
         'expected_salary_to.gte' => 'Зарплата до должна быть больше или равна зарплате от',
-        'salary_currency.required' => 'Валюта обязательна для заполнения',
         'desired_position.required' => 'Желаемая должность обязательна для заполнения',
         'desired_position.max' => 'Желаемая должность не должна превышать 255 символов',
         'activity_sphere.required' => 'Сфера деятельности обязательна для заполнения',
@@ -1568,7 +1567,9 @@ class CandidateForm extends Component
                 $this->candidate->step = $this->currentStep;
                 // Сохраняем базовую информацию если есть, иначе оставляем null
                 if ($this->last_name || $this->first_name) {
-                    $this->candidate->full_name = trim($this->first_name . ' ' . $this->last_name);
+                    $firstName = mb_strtoupper(mb_substr($this->first_name, 0, 1, 'UTF-8'), 'UTF-8') . mb_strtolower(mb_substr($this->first_name, 1, null, 'UTF-8'), 'UTF-8');
+                    $lastName = mb_strtoupper(mb_substr($this->last_name, 0, 1, 'UTF-8'), 'UTF-8') . mb_strtolower(mb_substr($this->last_name, 1, null, 'UTF-8'), 'UTF-8');
+                    $this->candidate->full_name = trim($firstName . ' ' . $lastName);
                 } else {
                     $this->candidate->full_name = null; // Явно устанавливаем null
                 }
@@ -1756,8 +1757,10 @@ class CandidateForm extends Component
             }
 
             // Basic Information
-            // Объединяем ФИО (сначала Имя, потом Фамилия)
-            $this->candidate->full_name = trim($this->first_name . ' ' . $this->last_name);
+            // Объединяем ФИО (сначала Имя, потом Фамилия) с капитализацией
+            $firstName = mb_strtoupper(mb_substr($this->first_name, 0, 1, 'UTF-8'), 'UTF-8') . mb_strtolower(mb_substr($this->first_name, 1, null, 'UTF-8'), 'UTF-8');
+            $lastName = mb_strtoupper(mb_substr($this->last_name, 0, 1, 'UTF-8'), 'UTF-8') . mb_strtolower(mb_substr($this->last_name, 1, null, 'UTF-8'), 'UTF-8');
+            $this->candidate->full_name = trim($firstName . ' ' . $lastName);
             $this->candidate->email = $this->email;
             $this->candidate->phone = $this->phone;
             $this->candidate->gender = $this->gender;
@@ -1823,6 +1826,8 @@ class CandidateForm extends Component
             $this->candidate->desired_position = $this->desired_position;
             $this->candidate->activity_sphere = $this->activity_sphere;
             $this->candidate->expected_salary = $this->expected_salary;
+            $this->candidate->expected_salary_from = $this->expected_salary_from;
+            $this->candidate->expected_salary_to = $this->expected_salary_to;
             $this->candidate->employer_requirements = $this->employer_requirements;
 
             // Handle Gallup PDF upload
@@ -1895,7 +1900,9 @@ class CandidateForm extends Component
 
         // Базовые данные всегда сохраняем, если они есть
         if ($this->last_name || $this->first_name) {
-            $this->candidate->full_name = trim($this->first_name . ' ' . $this->last_name);
+            $firstName = mb_strtoupper(mb_substr($this->first_name, 0, 1, 'UTF-8'), 'UTF-8') . mb_strtolower(mb_substr($this->first_name, 1, null, 'UTF-8'), 'UTF-8');
+            $lastName = mb_strtoupper(mb_substr($this->last_name, 0, 1, 'UTF-8'), 'UTF-8') . mb_strtolower(mb_substr($this->last_name, 1, null, 'UTF-8'), 'UTF-8');
+            $this->candidate->full_name = trim($firstName . ' ' . $lastName);
         } else {
             $this->candidate->full_name = null; // Явно устанавливаем null если имя не введено
         }
@@ -1972,6 +1979,8 @@ class CandidateForm extends Component
         if ($this->desired_position) $this->candidate->desired_position = $this->desired_position;
         if ($this->activity_sphere) $this->candidate->activity_sphere = $this->activity_sphere;
         if ($this->expected_salary !== null) $this->candidate->expected_salary = $this->expected_salary;
+        if ($this->expected_salary_from !== null) $this->candidate->expected_salary_from = $this->expected_salary_from;
+        if ($this->expected_salary_to !== null) $this->candidate->expected_salary_to = $this->expected_salary_to;
         if ($this->employer_requirements !== null) $this->candidate->employer_requirements = $this->employer_requirements;
 
         // Handle Gallup PDF upload

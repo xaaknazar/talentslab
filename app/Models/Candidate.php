@@ -56,7 +56,6 @@ class Candidate extends Model
         'expected_salary',
         'expected_salary_from',
         'expected_salary_to',
-        'salary_currency',
         'employer_requirements',
 
         // Assessments
@@ -86,7 +85,6 @@ class Candidate extends Model
         'expected_salary' => 'decimal:2',
         'expected_salary_from' => 'decimal:2',
         'expected_salary_to' => 'decimal:2',
-        'salary_currency' => 'string',
     ];
 
     public function user(): BelongsTo
@@ -137,20 +135,17 @@ class Candidate extends Model
     {
         // Проверяем новые поля (диапазон)
         if ($this->expected_salary_from && $this->expected_salary_to) {
-            // Форматируем числа с точками в качестве разделителей тысяч
-            $from = number_format($this->expected_salary_from, 0, ',', '.');
-            $to = number_format($this->expected_salary_to, 0, ',', '.');
+            // Форматируем числа с пробелами в качестве разделителей тысяч
+            $from = number_format($this->expected_salary_from, 0, ',', ' ');
+            $to = number_format($this->expected_salary_to, 0, ',', ' ');
 
-            // Определяем символ валюты
-            $currencySymbol = ($this->salary_currency === 'USD') ? '$' : '₸';
-
-            return "{$from}-{$to}{$currencySymbol}";
+            return "{$from}-{$to}₸";
         }
 
         // Fallback: проверяем старое поле для обратной совместимости
         if ($this->expected_salary && $this->expected_salary > 0) {
-            $formatted = number_format($this->expected_salary, 0, ',', '.');
-            return "{$formatted} тг.";
+            $formatted = number_format($this->expected_salary, 0, ',', ' ');
+            return "{$formatted}₸";
         }
 
         return 'Не указано';

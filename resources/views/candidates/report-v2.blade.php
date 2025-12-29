@@ -667,7 +667,7 @@ if (! function_exists('mb_ucfirst')) {
                         <span class="w-60 text-base text-gray-600">Пожелания на рабочем месте:</span>
                         <span class="text-base font-medium flex-1">
                             @php
-                                $workplace = trim($candidate->workplace_preferences ?? '');
+                                $workplace = trim($candidate->employer_requirements ?? '');
                                 if ($workplace !== '') {
                                     $wLower = mb_strtolower($workplace, 'UTF-8');
                                     $wFirst = mb_strtoupper(mb_substr($wLower, 0, 1, 'UTF-8'), 'UTF-8');
@@ -684,22 +684,8 @@ if (! function_exists('mb_ucfirst')) {
                     @if($candidate->computer_skills)
                     <div class="flex items-start">
                         <span class="w-60 text-base text-gray-600">Компьютерные навыки:</span>
-                        <span class="text-base font-medium flex-1">
-                            @php
-                                $computer = trim($candidate->computer_skills ?? '');
-                                if ($computer !== '') {
-                                    $cLower = mb_strtolower($computer, 'UTF-8');
-                                    $cFirst = mb_strtoupper(mb_substr($cLower, 0, 1, 'UTF-8'), 'UTF-8');
-                                    $cRest = mb_substr($cLower, 1, null, 'UTF-8');
-                                    $computer = $cFirst . $cRest;
-                                } else {
-                                    $computer = 'Не указано';
-                                }
-                            @endphp
-                            {{ $computer }}
-                        </span>
+                        <span class="text-base font-medium flex-1">{{ $candidate->computer_skills }}</span>
                     </div>
-                    @else
                     @endif
                 </div>
             </div>
@@ -725,12 +711,6 @@ if (! function_exists('mb_ucfirst')) {
                 @endif
             </div>
 
-            <!-- Компьютерные навыки -->
-            <div class="mb-8">
-                <h2 class="text-xl font-bold text-gray-800 mb-2"></h2>
-                <p class="text-base text-gray-800"></p>
-            </div>
-
             <!-- Психометрические данные -->
             <div class="mb-8">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Психометрические данные</h2>
@@ -740,49 +720,142 @@ if (! function_exists('mb_ucfirst')) {
                 </div>
             </div>
 
-            <!-- Тест Гарднера -->
+            <!-- Виды интеллектов Гарднера -->
             @if($candidate->user && $candidate->user->gardnerTestResult)
             @php
-                // Находим доминирующий тип интеллекта
                 $results = $candidate->user->gardnerTestResult->results;
-                $maxPercentage = 0;
-                $dominantType = '';
 
-                foreach($results as $type => $percentage) {
-                    $numericPercentage = (int) str_replace('%', '', $percentage);
-                    if ($numericPercentage > $maxPercentage) {
-                        $maxPercentage = $numericPercentage;
-                        $dominantType = $type;
-                    }
-                }
+                // Маппинг типов интеллекта на цвета и эмодзи (используем изображения для PDF совместимости)
+                $twemojiBase = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/';
+                $intelligenceConfig = [
+                    'Лингвистический интеллект' => ['color' => '#e06666', 'textColor' => 'black', 'emoji' => '㊗️', 'img' => $twemojiBase . '3297.svg'],
+                    'Логико-математический интеллект' => ['color' => '#ea9999', 'textColor' => 'black', 'emoji' => '🧠', 'img' => $twemojiBase . '1f9e0.svg'],
+                    'Музыкальный интеллект' => ['color' => '#3c78d8', 'textColor' => 'white', 'emoji' => '🎶', 'img' => $twemojiBase . '1f3b6.svg'],
+                    'Телесно-кинестетический интеллект' => ['color' => '#f6b26b', 'textColor' => 'black', 'emoji' => '✋🏻', 'img' => $twemojiBase . '270b-1f3fb.svg'],
+                    'Пространственный интеллект' => ['color' => '#38761d', 'textColor' => 'white', 'emoji' => '👁️', 'img' => $twemojiBase . '1f441.svg'],
+                    'Межличностный интеллект' => ['color' => '#073763', 'textColor' => 'white', 'emoji' => '👥', 'img' => $twemojiBase . '1f465.svg'],
+                    'Внутриличностный интеллект' => ['color' => '#a6bee7', 'textColor' => 'black', 'emoji' => '💭', 'img' => $twemojiBase . '1f4ad.svg'],
+                    'Натуралистический интеллект' => ['color' => '#f1c232', 'textColor' => 'black', 'emoji' => '🌻', 'img' => $twemojiBase . '1f33b.svg'],
+                    'Экзистенциальный интеллект' => ['color' => '#6d9eeb', 'textColor' => 'black', 'emoji' => '🙏🏻', 'img' => $twemojiBase . '1f64f-1f3fb.svg'],
+                ];
+
+                // Первый ряд (5 типов)
+                $row1Types = [
+                    'Лингвистический интеллект',
+                    'Логико-математический интеллект',
+                    'Музыкальный интеллект',
+                    'Телесно-кинестетический интеллект',
+                    'Пространственный интеллект',
+                ];
+
+                // Второй ряд (4 типа)
+                $row2Types = [
+                    'Межличностный интеллект',
+                    'Внутриличностный интеллект',
+                    'Натуралистический интеллект',
+                    'Экзистенциальный интеллект',
+                ];
             @endphp
             <div class="mb-4">
-                <h2 class="text-xl font-bold text-gray-800 mb-2">Тест типов интеллекта (Гарднер)</h2>
-                <div class="grid grid-cols-2 gap-6">
-                    @foreach($candidate->user->gardnerTestResult->results as $intelligenceType => $percentage)
-                    @php
-                        $isDominant = ($intelligenceType === $dominantType);
-                        $bgClass = $isDominant ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200';
-                        $textClass = $isDominant ? 'text-green-800' : 'text-gray-700';
-                        $barClass = $isDominant ? 'bg-green-500' : 'bg-blue-500';
-                        $percentageClass = $isDominant ? 'text-green-700 font-extrabold' : 'text-blue-600 font-bold';
-                    @endphp
-                    <div class="flex items-center justify-between p-3 {{ $bgClass }} rounded border-2 {{ $isDominant ? 'shadow-md' : '' }}">
-                        <div class="flex flex-col">
-                            <span class="text-base font-medium {{ $textClass }}">{{ $intelligenceType }}</span>
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Виды интеллектов Гарднера</h2>
+                <div class="bg-gray-100 rounded-lg p-6">
+                    <!-- Первый ряд -->
+                    <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
+                        <!-- Ось Y -->
+                        <div style="width: 28px; height: 180px; position: relative; margin-right: 8px;">
+                            @foreach([100, 75, 50, 25, 0] as $mark)
+                                <div style="position: absolute; bottom: {{ $mark * 1.8 }}px; right: 0; transform: translateY(50%); font-size: 8px; color: #666; text-align: right; width: 24px;">{{ $mark }}</div>
+                            @endforeach
                         </div>
-                        <div class="flex items-center">
-                            <div class="w-24 h-2 bg-gray-200 rounded-full mr-3">
-                                <div class="h-2 {{ $barClass }} rounded-full" style="width: {{ $percentage }}"></div>
+                        <!-- Столбцы первого ряда -->
+                        <div style="flex: 1; position: relative; height: 180px;">
+                            @foreach([100, 75, 50, 25, 0] as $mark)
+                                <div style="position: absolute; bottom: {{ $mark * 1.8 }}px; left: 0; right: 0; border-bottom: 1px solid #d1d5db; z-index: 0;"></div>
+                            @endforeach
+                            <div style="display: flex; align-items: flex-end; justify-content: center; height: 180px; position: relative; z-index: 1;">
+                                @foreach($row1Types as $type)
+                                    @php
+                                        $percentage = $results[$type] ?? '0%';
+                                        $numericValue = (int) str_replace('%', '', $percentage);
+                                        $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'textColor' => 'white', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
+                                        $barHeight = max(round($numericValue * 1.8), 28);
+                                        $textColor = $config['textColor'] ?? 'white';
+                                        $textShadow = $textColor === 'white' ? '1px 1px 2px rgba(0,0,0,0.3)' : 'none';
+                                    @endphp
+                                    <div style="width: 90px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px; margin: 0 14px;">
+                                        <span style="font-size: 20px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
+                                    </div>
+                                @endforeach
                             </div>
-                            <span class="text-base {{ $percentageClass }}">{{ $percentage }}</span>
                         </div>
                     </div>
-                    @endforeach
-                </div>
-                <div class="mt-4 text-xs text-gray-500">
-                    <p>Тест пройден: {{ $candidate->user->gardnerTestResult->created_at->format('d.m.Y в H:i') }}</p>
-                    <p class="mt-1"><span class="text-green-600 font-medium">Доминирующий тип:</span> {{ $dominantType }} ({{ $maxPercentage }}%)</p>
+                    <!-- Подписи первого ряда -->
+                    <div style="display: flex; justify-content: center; margin-left: 36px; margin-bottom: 24px;">
+                        @foreach($row1Types as $type)
+                            @php
+                                $shortName = str_replace(' интеллект', '', $type);
+                                $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
+                            @endphp
+                            <div style="width: 90px; display: flex; flex-direction: column; align-items: center; margin: 0 14px;">
+                                <div style="height: 28px; display: flex; align-items: center; justify-content: center;">
+                                    <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 22px; height: 22px;">
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</div>
+                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <!-- Второй ряд -->
+                    <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
+                        <!-- Ось Y -->
+                        <div style="width: 28px; height: 180px; position: relative; margin-right: 8px;">
+                            @foreach([100, 75, 50, 25, 0] as $mark)
+                                <div style="position: absolute; bottom: {{ $mark * 1.8 }}px; right: 0; transform: translateY(50%); font-size: 8px; color: #666; text-align: right; width: 24px;">{{ $mark }}</div>
+                            @endforeach
+                        </div>
+                        <!-- Столбцы второго ряда -->
+                        <div style="flex: 1; position: relative; height: 180px;">
+                            @foreach([100, 75, 50, 25, 0] as $mark)
+                                <div style="position: absolute; bottom: {{ $mark * 1.8 }}px; left: 0; right: 0; border-bottom: 1px solid #d1d5db; z-index: 0;"></div>
+                            @endforeach
+                            <div style="display: flex; align-items: flex-end; justify-content: center; height: 180px; position: relative; z-index: 1;">
+                                @foreach($row2Types as $type)
+                                    @php
+                                        $percentage = $results[$type] ?? '0%';
+                                        $numericValue = (int) str_replace('%', '', $percentage);
+                                        $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'textColor' => 'white', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
+                                        $barHeight = max(round($numericValue * 1.8), 28);
+                                        $textColor = $config['textColor'] ?? 'white';
+                                        $textShadow = $textColor === 'white' ? '1px 1px 2px rgba(0,0,0,0.3)' : 'none';
+                                    @endphp
+                                    <div style="width: 90px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px; margin: 0 18px;">
+                                        <span style="font-size: 20px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Подписи второго ряда -->
+                    <div style="display: flex; justify-content: center; margin-left: 36px;">
+                        @foreach($row2Types as $type)
+                            @php
+                                $shortName = str_replace(' интеллект', '', $type);
+                                $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
+                            @endphp
+                            <div style="width: 90px; display: flex; flex-direction: column; align-items: center; margin: 0 18px;">
+                                <div style="height: 28px; display: flex; align-items: center; justify-content: center;">
+                                    <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 22px; height: 22px;">
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</div>
+                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
             @endif
