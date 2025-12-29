@@ -509,13 +509,6 @@ if (! function_exists('mb_ucfirst')) {
 
                <div class="clear-both"></div>
             </div>
-
-            <!-- Дата заполнения - нижний колонтитул страницы 1 -->
-            @if($isFullReport)
-            <div style="text-align: right; padding: 16px 0; margin-top: 20px;">
-                <span style="color: #9ca3af; font-size: 12px;">Дата заполнения: {{ $candidate->created_at->format('d.m.Y') }}</span>
-            </div>
-            @endif
         </div>
 
         <!-- Main Content -->
@@ -731,6 +724,13 @@ if (! function_exists('mb_ucfirst')) {
                 @endif
             </div>
 
+            <!-- Дата заполнения -->
+            @if($isFullReport)
+            <div style="text-align: right; padding: 8px 0; margin-bottom: 16px;">
+                <span style="color: #9ca3af; font-size: 12px;">Дата заполнения: {{ $candidate->created_at->format('d.m.Y') }}</span>
+            </div>
+            @endif
+
             <!-- Психометрические данные -->
             <div class="mb-8">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Психометрические данные</h2>
@@ -802,8 +802,8 @@ if (! function_exists('mb_ucfirst')) {
                                         $textColor = $config['textColor'] ?? 'white';
                                         $textShadow = $textColor === 'white' ? '1px 1px 2px rgba(0,0,0,0.3)' : 'none';
                                     @endphp
-                                    <div style="width: 90px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px; margin: 0 16px;">
-                                        <span style="font-size: 22px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
+                                    <div style="width: 110px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px; margin: 0 24px;">
+                                        <span style="font-size: 26px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
                                     </div>
                                 @endforeach
                             </div>
@@ -816,13 +816,13 @@ if (! function_exists('mb_ucfirst')) {
                                 $shortName = str_replace(' интеллект', '', $type);
                                 $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
                             @endphp
-                            <div style="width: 90px; display: flex; flex-direction: column; align-items: center; margin: 0 16px;">
+                            <div style="width: 110px; display: flex; flex-direction: column; align-items: center; margin: 0 24px;">
                                 <div style="height: 28px; display: flex; align-items: center; justify-content: center;">
-                                    <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 22px; height: 22px;">
+                                    <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 24px; height: 24px;">
                                 </div>
                                 <div style="text-align: center;">
-                                    <div style="font-size: 13px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</div>
-                                    <div style="font-size: 13px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</div>
+                                    <div style="font-size: 15px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</div>
+                                    <div style="font-size: 15px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</div>
                                 </div>
                             </div>
                         @endforeach
@@ -851,8 +851,8 @@ if (! function_exists('mb_ucfirst')) {
                                         $textColor = $config['textColor'] ?? 'white';
                                         $textShadow = $textColor === 'white' ? '1px 1px 2px rgba(0,0,0,0.3)' : 'none';
                                     @endphp
-                                    <div style="width: 90px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px; margin: 0 28px;">
-                                        <span style="font-size: 22px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
+                                    <div style="width: 110px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px; margin: 0 36px;">
+                                        <span style="font-size: 26px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
                                     </div>
                                 @endforeach
                             </div>
@@ -865,13 +865,13 @@ if (! function_exists('mb_ucfirst')) {
                                 $shortName = str_replace(' интеллект', '', $type);
                                 $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
                             @endphp
-                            <div style="width: 90px; display: flex; flex-direction: column; align-items: center; margin: 0 28px;">
+                            <div style="width: 110px; display: flex; flex-direction: column; align-items: center; margin: 0 36px;">
                                 <div style="height: 28px; display: flex; align-items: center; justify-content: center;">
-                                    <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 22px; height: 22px;">
+                                    <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 24px; height: 24px;">
                                 </div>
                                 <div style="text-align: center;">
-                                    <div style="font-size: 13px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</div>
-                                    <div style="font-size: 13px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</div>
+                                    <div style="font-size: 15px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</div>
+                                    <div style="font-size: 15px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</div>
                                 </div>
                             </div>
                         @endforeach
