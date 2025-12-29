@@ -461,7 +461,7 @@ if (! function_exists('mb_ucfirst')) {
                             <div style="font-size: 14px; font-weight: 500; color: #111827;">
                                 @if(!empty($family['parents']))
                                     @foreach($family['parents'] as $parent)
-                                        {{ $parent['relation'] ?? 'Не указано' }} - {{ $parent['birth_year'] ?? 'Не указано' }}{{ !empty($parent['profession']) ? ' - ' . $parent['profession'] : '' }}{{ !$loop->last ? ', ' : '' }}
+                                        <div style="margin-bottom: 2px;">{{ $parent['relation'] ?? 'Не указано' }} - {{ $parent['birth_year'] ?? 'Не указано' }}{{ !empty($parent['profession']) ? ' - ' . $parent['profession'] : '' }}</div>
                                     @endforeach
                                 @else
                                     Не указано
