@@ -346,10 +346,6 @@ if (! function_exists('mb_ucfirst')) {
                                 <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4cd.svg" alt="📍" style="width: 16px; height: 16px; margin-right: 6px;">
                                 {{ $candidate->current_city }}
                             </span>
-                            <span class="font-medium text-gray-800" style="display: inline-flex; align-items: center; margin-right: 24px;">
-                                <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4de.svg" alt="📞" style="width: 16px; height: 16px; margin-right: 6px;">
-                                {{ $candidate->phone }}
-                            </span>
                             <span class="font-medium text-gray-800" style="display: inline-flex; align-items: center;">
                                 <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4e7.svg" alt="📧" style="width: 16px; height: 16px; margin-right: 6px;">
                                 {{ $candidate->email }}
@@ -357,8 +353,8 @@ if (! function_exists('mb_ucfirst')) {
                         </div>
                         <div style="display: flex; flex-wrap: wrap; align-items: center;">
                             <span class="font-medium text-gray-800" style="display: inline-flex; align-items: center; margin-right: 24px;">
-                                <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4c5.svg" alt="📅" style="width: 16px; height: 16px; margin-right: 6px;">
-                                Дата заполнения: {{ $candidate->created_at->format('d.m.Y') }}
+                                <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4de.svg" alt="📞" style="width: 16px; height: 16px; margin-right: 6px;">
+                                {{ $candidate->phone }}
                             </span>
                             @if($candidate->instagram)
                                 <span class="font-medium text-gray-800" style="display: inline-flex; align-items: center;">
@@ -513,6 +509,13 @@ if (! function_exists('mb_ucfirst')) {
 
                <div class="clear-both"></div>
             </div>
+
+            <!-- Дата заполнения - нижний колонтитул страницы 1 -->
+            @if($isFullReport)
+            <div style="text-align: right; padding: 16px 0; margin-top: 20px;">
+                <span style="color: #9ca3af; font-size: 12px;">Дата заполнения: {{ $candidate->created_at->format('d.m.Y') }}</span>
+            </div>
+            @endif
         </div>
 
         <!-- Main Content -->
