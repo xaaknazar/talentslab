@@ -344,7 +344,7 @@ if (! function_exists('mb_ucfirst')) {
                         <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 8px;">
                             <span class="font-medium text-gray-800" style="display: inline-flex; align-items: center; margin-right: 24px;">
                                 <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4cd.svg" alt="📍" style="width: 16px; height: 16px; margin-right: 6px;">
-                                {{ $candidate->current_city }} ({{ $candidate->ready_to_relocate ? 'Готов к переезду' : 'Не готов к переезду' }})
+                                {{ $candidate->current_city }}
                             </span>
                             <span class="font-medium text-gray-800" style="display: inline-flex; align-items: center; margin-right: 24px;">
                                 <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4de.svg" alt="📞" style="width: 16px; height: 16px; margin-right: 6px;">
