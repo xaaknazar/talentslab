@@ -461,7 +461,7 @@ if (! function_exists('mb_ucfirst')) {
                             <div style="font-size: 14px; font-weight: 500; color: #111827;">
                                 @if(!empty($family['parents']))
                                     @foreach($family['parents'] as $parent)
-                                        {{ $parent['relation'] ?? 'Не указано' }} - {{ $parent['birth_year'] ?? 'Не указано' }}@if(!empty($parent['profession'])) - {{ $parent['profession'] }}@endif{{-- --}}@if(!$loop->last), @endif
+                                        {{ $parent['relation'] ?? 'Не указано' }} - {{ $parent['birth_year'] ?? 'Не указано' }}{{ !empty($parent['profession']) ? ' - ' . $parent['profession'] : '' }}{{ !$loop->last ? ', ' : '' }}
                                     @endforeach
                                 @else
                                     Не указано
@@ -485,7 +485,7 @@ if (! function_exists('mb_ucfirst')) {
                             <div style="font-size: 14px; font-weight: 500; color: #111827;">
                                 @if($candidate->universities && count($candidate->universities) > 0)
                                     @foreach($candidate->universities as $index => $university)
-                                        {{ $university['name'] ?? 'Не указано' }} / {{ $university['speciality'] ?? 'Не указано' }} / {{ $university['graduation_year'] ?? 'Не указано' }}@if(!empty($university['gpa'])) / {{ $university['gpa'] }}@endif{{-- --}}@if(!$loop->last)<br>@endif
+                                        {{ $university['name'] ?? 'Не указано' }} / {{ $university['speciality'] ?? 'Не указано' }} / {{ $university['graduation_year'] ?? 'Не указано' }}{{ !empty($university['gpa']) ? ' / ' . $university['gpa'] : '' }}{!! !$loop->last ? '<br>' : '' !!}
                                     @endforeach
                                 @else
                                     Не указано
