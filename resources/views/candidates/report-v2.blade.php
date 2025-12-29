@@ -772,7 +772,7 @@ if (! function_exists('mb_ucfirst')) {
                             @foreach([100, 75, 50, 25, 0] as $mark)
                                 <div style="position: absolute; bottom: {{ $mark * 1.8 }}px; left: 0; right: 0; border-bottom: 1px solid #d1d5db; z-index: 0;"></div>
                             @endforeach
-                            <div style="display: flex; align-items: flex-end; justify-content: center; height: 180px; gap: 24px; position: relative; z-index: 1;">
+                            <div style="display: flex; align-items: flex-end; justify-content: center; height: 180px; position: relative; z-index: 1;">
                                 @foreach($row1Types as $type)
                                     @php
                                         $percentage = $results[$type] ?? '0%';
@@ -782,7 +782,7 @@ if (! function_exists('mb_ucfirst')) {
                                         $textColor = $config['textColor'] ?? 'white';
                                         $textShadow = $textColor === 'white' ? '1px 1px 2px rgba(0,0,0,0.3)' : 'none';
                                     @endphp
-                                    <div style="width: 90px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px;">
+                                    <div style="width: 90px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px; margin: 0 12px;">
                                         <span style="font-size: 20px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
                                     </div>
                                 @endforeach
@@ -790,13 +790,13 @@ if (! function_exists('mb_ucfirst')) {
                         </div>
                     </div>
                     <!-- Подписи первого ряда -->
-                    <div style="display: flex; justify-content: center; gap: 24px; margin-left: 36px; margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: center; margin-left: 36px; margin-bottom: 24px;">
                         @foreach($row1Types as $type)
                             @php
                                 $shortName = str_replace(' интеллект', '', $type);
                                 $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
                             @endphp
-                            <div style="width: 90px; display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 90px; display: flex; flex-direction: column; align-items: center; margin: 0 12px;">
                                 <div style="height: 28px; display: flex; align-items: center; justify-content: center;">
                                     <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 22px; height: 22px;">
                                 </div>
@@ -821,7 +821,7 @@ if (! function_exists('mb_ucfirst')) {
                             @foreach([100, 75, 50, 25, 0] as $mark)
                                 <div style="position: absolute; bottom: {{ $mark * 1.8 }}px; left: 0; right: 0; border-bottom: 1px solid #d1d5db; z-index: 0;"></div>
                             @endforeach
-                            <div style="display: flex; align-items: flex-end; justify-content: center; height: 180px; gap: 32px; position: relative; z-index: 1;">
+                            <div style="display: flex; align-items: flex-end; justify-content: center; height: 180px; position: relative; z-index: 1;">
                                 @foreach($row2Types as $type)
                                     @php
                                         $percentage = $results[$type] ?? '0%';
@@ -831,7 +831,7 @@ if (! function_exists('mb_ucfirst')) {
                                         $textColor = $config['textColor'] ?? 'white';
                                         $textShadow = $textColor === 'white' ? '1px 1px 2px rgba(0,0,0,0.3)' : 'none';
                                     @endphp
-                                    <div style="width: 90px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px;">
+                                    <div style="width: 90px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px; margin: 0 16px;">
                                         <span style="font-size: 20px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
                                     </div>
                                 @endforeach
@@ -839,13 +839,13 @@ if (! function_exists('mb_ucfirst')) {
                         </div>
                     </div>
                     <!-- Подписи второго ряда -->
-                    <div style="display: flex; justify-content: center; gap: 32px; margin-left: 36px;">
+                    <div style="display: flex; justify-content: center; margin-left: 36px;">
                         @foreach($row2Types as $type)
                             @php
                                 $shortName = str_replace(' интеллект', '', $type);
                                 $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
                             @endphp
-                            <div style="width: 90px; display: flex; flex-direction: column; align-items: center;">
+                            <div style="width: 90px; display: flex; flex-direction: column; align-items: center; margin: 0 16px;">
                                 <div style="height: 28px; display: flex; align-items: center; justify-content: center;">
                                     <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 22px; height: 22px;">
                                 </div>
