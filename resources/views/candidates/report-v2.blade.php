@@ -336,18 +336,20 @@ if (! function_exists('mb_ucfirst')) {
                         @if($isReducedReport)
                             <span class="text-lg text-gray-500 font-normal">(урезанная версия)</span>
                         @endif
-                    <h1 class="text-3xl font-bold text-gray-800 mb-4">
+                    <h1 class="text-3xl font-bold mb-4" style="color: #39761d;">
                         {{ $candidate->full_name }}
                     </h1>
                      @if($isFullReport)
                     <div class="text-base mb-6">
-                        <div class="mb-4 space-y-1">
-                            <!-- <span class="font-medium text-gray-800"></span> -->
-                            <span class="font-medium text-gray-800">{{ $candidate->email }}</span>
-                            <span class="font-medium text-gray-800 ml-8">{{ $candidate->phone }}</span>
-
+                        <div class="mb-2">
+                            <span class="font-medium text-gray-800">📍 {{ $candidate->current_city }}</span>
+                            <span class="font-medium text-gray-800 ml-6">📞 {{ $candidate->phone }}</span>
+                            <span class="font-medium text-gray-800 ml-6">📧 {{ $candidate->email }}</span>
+                        </div>
+                        <div>
+                            <span class="font-medium text-gray-800">🕒 {{ $candidate->created_at->format('d.m.Y') }}</span>
                             @if($candidate->instagram)
-                                <span class="font-medium text-gray-800 ml-8">{{ $candidate->instagram }}</span>
+                                <span class="font-medium text-gray-800 ml-6"><img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4f7.svg" alt="Instagram" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle;"> {{ $candidate->instagram }}</span>
                             @endif
                         </div>
                     </div>
