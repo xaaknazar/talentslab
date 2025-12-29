@@ -365,133 +365,133 @@ if (! function_exists('mb_ucfirst')) {
                         </div>
                     </div>
                      @endif
-                    <h2 class="text-xl font-bold text-gray-800 mb-2">Основная информация</h2>
+                    <h2 style="font-size: 18px; font-weight: 600; color: #1f2937; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb;">Основная информация</h2>
                      <!-- Основная информация -->
-                     <div class="space-y-1">
-                        <div class="flex items-start">
-                            <span class="w-60 text-base text-gray-600">Желаемая должность:</span>
-                            <span class="text-base font-medium flex-1">
-                                @php
-                                    $desired = trim($candidate->desired_position ?? '');
-                                    if ($desired !== '') {
-                                        $dLower = mb_strtolower($desired, 'UTF-8');
-                                        $dFirst = mb_strtoupper(mb_substr($dLower, 0, 1, 'UTF-8'), 'UTF-8');
-                                        $dRest = mb_substr($dLower, 1, null, 'UTF-8');
-                                        $desired = $dFirst . $dRest;
-                                    } else {
-                                        $desired = 'Не указано';
-                                    }
-                                @endphp
-                                {{ $desired }}
-                            </span>
+                     <div style="background: #fafafa; border-radius: 8px; padding: 16px;">
+                        <!-- Желаемая должность и зарплата -->
+                        <div style="display: flex; margin-bottom: 12px;">
+                            <div style="flex: 1; padding-right: 16px;">
+                                <div style="font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Желаемая должность</div>
+                                <div style="font-size: 14px; font-weight: 500; color: #111827;">
+                                    @php
+                                        $desired = trim($candidate->desired_position ?? '');
+                                        if ($desired !== '') {
+                                            $dLower = mb_strtolower($desired, 'UTF-8');
+                                            $dFirst = mb_strtoupper(mb_substr($dLower, 0, 1, 'UTF-8'), 'UTF-8');
+                                            $dRest = mb_substr($dLower, 1, null, 'UTF-8');
+                                            $desired = $dFirst . $dRest;
+                                        } else {
+                                            $desired = 'Не указано';
+                                        }
+                                    @endphp
+                                    {{ $desired }}
+                                </div>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Ожидаемая зарплата</div>
+                                <div style="font-size: 14px; font-weight: 500; color: #111827;">{{ $candidate->formatted_salary_range ?: 'Не указано' }}</div>
+                            </div>
                         </div>
-                         <div class="flex">
-                             <span class="w-60 text-base text-gray-600">Ожидаемая заработная плата:</span>
-                             <span class="text-base font-medium">{{ $candidate->formatted_salary_range }}</span>
-                         </div>
-                         <div class="flex">
-                             <span class="w-60 text-base text-gray-600">Дата рождения:</span>
-                             <span class="text-base font-medium">{{ $candidate->birth_date?->format('d.m.Y') ?: 'Не указано' }}</span>
-                         </div>
-                         <div class="flex items-start">
-                             <span class="w-60 text-base text-gray-600">Место рождения:</span>
-                             <span class="text-base font-medium flex-1">{{ $candidate->birth_place ?: 'Не указано' }}</span>
-                         </div>
-                         <div class="flex">
-                             <span class="w-60 text-base text-gray-600">Пол:</span>
-                             <span class="text-base font-medium">{{ $candidate->gender ?: 'Не указано' }}</span>
-                         </div>
-                         <div class="flex">
-                             <span class="w-60 text-base text-gray-600">Семейное положение:</span>
-                             <span class="text-base font-medium">{{ $candidate->marital_status ?: 'Не указано' }}</span>
-                         </div>
-                         @php
-                             $family = $candidate->getFamilyStructured();
-                         @endphp
 
-                         @if($isFullReport)
-                         <!-- Дети -->
-                         <div class="flex items-start">
-                             <span class="w-60 text-base text-gray-600">Дети:</span>
-                             <span class="text-base font-medium flex-1">
-                                 @if(!empty($family['children']) && count($family['children']) > 0)
-                                     {{ count($family['children']) }}
-                                     @foreach($family['children'] as $child)
-                                         ({{ $child['gender'] ?? 'М' }}{{ $child['birth_year'] ?? '' }})
-                                     @endforeach
-                                 @else
-                                     Детей нет
-                                 @endif
-                             </span>
-                         </div>
-                         @endif
+                        <div style="height: 1px; background: #e5e7eb; margin: 12px 0;"></div>
+
+                        <!-- Личные данные: 2 колонки -->
+                        <div style="display: flex; margin-bottom: 12px;">
+                            <div style="flex: 1; padding-right: 16px;">
+                                <div style="font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Дата рождения</div>
+                                <div style="font-size: 14px; font-weight: 500; color: #111827;">{{ $candidate->birth_date?->format('d.m.Y') ?: 'Не указано' }}</div>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Место рождения</div>
+                                <div style="font-size: 14px; font-weight: 500; color: #111827;">{{ $candidate->birth_place ?: 'Не указано' }}</div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; margin-bottom: 12px;">
+                            <div style="flex: 1; padding-right: 16px;">
+                                <div style="font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Пол</div>
+                                <div style="font-size: 14px; font-weight: 500; color: #111827;">{{ $candidate->gender ?: 'Не указано' }}</div>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Семейное положение</div>
+                                <div style="font-size: 14px; font-weight: 500; color: #111827;">{{ $candidate->marital_status ?: 'Не указано' }}</div>
+                            </div>
+                        </div>
+
+                        @php
+                            $family = $candidate->getFamilyStructured();
+                        @endphp
 
                         @if($isFullReport)
+                        <div style="height: 1px; background: #e5e7eb; margin: 12px 0;"></div>
+
+                        <!-- Семья: 2 колонки -->
+                        <div style="display: flex; margin-bottom: 12px;">
+                            <div style="flex: 1; padding-right: 16px;">
+                                <div style="font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Дети</div>
+                                <div style="font-size: 14px; font-weight: 500; color: #111827;">
+                                    @if(!empty($family['children']) && count($family['children']) > 0)
+                                        {{ count($family['children']) }}
+                                        @foreach($family['children'] as $child)
+                                            ({{ $child['gender'] ?? 'М' }}{{ $child['birth_year'] ?? '' }})
+                                        @endforeach
+                                    @else
+                                        Нет
+                                    @endif
+                                </div>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Кол-во братьев/сестер</div>
+                                <div style="font-size: 14px; font-weight: 500; color: #111827;">
+                                    @if(!empty($family['siblings']))
+                                        {{ count($family['siblings']) }}
+                                        @foreach($family['siblings'] as $sibling)
+                                            ({{ ($sibling['relation'] ?? 'Не указано') === 'Брат' ? 'Б' : 'С' }}{{ $sibling['birth_year'] ?? '' }})
+                                        @endforeach
+                                    @else
+                                        Нет
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Родители -->
-                        <div class="flex items-start">
-                            <span class="w-60 text-base text-gray-600">Родители:</span>
-                            <span class="text-base font-medium flex-1">
+                        <div style="margin-bottom: 12px;">
+                            <div style="font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Родители</div>
+                            <div style="font-size: 14px; font-weight: 500; color: #111827;">
                                 @if(!empty($family['parents']))
                                     @foreach($family['parents'] as $parent)
-                                        <span>
-                                            {{ $parent['relation'] ?? 'Не указано' }} - {{ $parent['birth_year'] ?? 'Не указано' }}
-                                            @if(!empty($parent['profession']))
-                                                - {{ $parent['profession'] }}
-                                            @endif
-                                        </span>
-                                        @if(!$loop->last)<br>@endif
+                                        {{ $parent['relation'] ?? 'Не указано' }} - {{ $parent['birth_year'] ?? 'Не указано' }}@if(!empty($parent['profession'])) - {{ $parent['profession'] }}@endif@if(!$loop->last), @endif
                                     @endforeach
                                 @else
                                     Не указано
                                 @endif
-                            </span>
+                            </div>
                         </div>
                         @endif
 
-                         @if($isFullReport)
-                         <!-- Братья и сестры -->
-                         <div class="flex items-start">
-                             <span class="w-60 text-base text-gray-600">Кол-во братьев/сестер:</span>
-                             <span class="text-base font-medium flex-1">
-                                 @if(!empty($family['siblings']))
-                                     {{ count($family['siblings']) }}
-                                     @foreach($family['siblings'] as $sibling)
-                                         ({{ ($sibling['relation'] ?? 'Не указано') === 'Брат' ? 'Б' : 'С' }}{{ $sibling['birth_year'] ?? 'Не указано' }})
-                                     @endforeach
-                                 @else
-                                     Не указано
-                                 @endif
-                             </span>
-                         </div>
-                         @endif
-
-                        <!-- Школа -->
-                         <div class="flex items-start">
-                             <span class="w-60 text-base text-gray-600">Школа:</span>
-                             <span class="text-base font-medium flex-1">{{ $candidate->school ?: 'Не указано' }}</span>
-                         </div>
+                        <div style="height: 1px; background: #e5e7eb; margin: 12px 0;"></div>
 
                         <!-- Образование -->
-                        <div class="flex items-start">
-                             <span class="w-60 text-base text-gray-600">Профессиональное образование:</span>
-                             <span class="text-base font-medium flex-1">
+                        <div style="display: flex; margin-bottom: 12px;">
+                            <div style="flex: 1; padding-right: 16px;">
+                                <div style="font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Школа</div>
+                                <div style="font-size: 14px; font-weight: 500; color: #111827;">{{ $candidate->school ?: 'Не указано' }}</div>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 0;">
+                            <div style="font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Профессиональное образование</div>
+                            <div style="font-size: 14px; font-weight: 500; color: #111827;">
                                 @if($candidate->universities && count($candidate->universities) > 0)
                                     @foreach($candidate->universities as $index => $university)
-                                        <span>
-                                            <span class="font-medium">{{ $university['name'] ?? 'Не указано' }}</span> /
-                                            <span class="font-medium">{{ $university['speciality'] ?? 'Не указано' }}</span> /
-                                            <span>{{ $university['graduation_year'] ?? 'Не указано' }}</span>
-                                            @if(!empty($university['gpa']))
-                                                / <span>{{ $university['gpa'] }}</span>
-                                            @endif
-                                        </span>
-                                        @if(!$loop->last)<br>@endif
+                                        {{ $university['name'] ?? 'Не указано' }} / {{ $university['speciality'] ?? 'Не указано' }} / {{ $university['graduation_year'] ?? 'Не указано' }}@if(!empty($university['gpa'])) / {{ $university['gpa'] }}@endif@if(!$loop->last)<br>@endif
                                     @endforeach
                                 @else
                                     Не указано
                                 @endif
-                            </span>
-                         </div>
+                            </div>
+                        </div>
                     </div>
                </div>
 
