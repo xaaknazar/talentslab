@@ -821,7 +821,7 @@ if (! function_exists('mb_ucfirst')) {
                             @foreach([100, 75, 50, 25, 0] as $mark)
                                 <div style="position: absolute; bottom: {{ $mark * 1.8 }}px; left: 0; right: 0; border-bottom: 1px solid #d1d5db; z-index: 0;"></div>
                             @endforeach
-                            <div style="display: flex; align-items: flex-end; justify-content: center; height: 180px; gap: 30px; position: relative; z-index: 1;">
+                            <div style="display: flex; align-items: flex-end; justify-content: center; height: 180px; gap: 32px; position: relative; z-index: 1;">
                                 @foreach($row2Types as $type)
                                     @php
                                         $percentage = $results[$type] ?? '0%';
@@ -839,7 +839,7 @@ if (! function_exists('mb_ucfirst')) {
                         </div>
                     </div>
                     <!-- Подписи второго ряда -->
-                    <div style="display: flex; justify-content: center; gap: 30px; margin-left: 36px;">
+                    <div style="display: flex; justify-content: center; gap: 32px; margin-left: 36px;">
                         @foreach($row2Types as $type)
                             @php
                                 $shortName = str_replace(' интеллект', '', $type);
