@@ -368,18 +368,6 @@ if (! function_exists('mb_ucfirst')) {
                     <h2 class="text-xl font-bold text-gray-800 mb-2">Основная информация</h2>
                      <!-- Основная информация -->
                      <div class="space-y-1">
-                         <div class="flex">
-                             <span class="w-60 text-base text-gray-600">Текущий город:</span>
-                             <span class="text-base font-medium">{{ $candidate->current_city }}</span>
-                         </div>
-                         <div class="flex">
-                             <span class="w-60 text-base text-gray-600">Готов к переезду:</span>
-                             <span class="text-base font-medium">{{ $candidate->ready_to_relocate ? 'Да' : 'Нет' }}</span>
-                         </div>
-                         <div class="flex items-start">
-                             <span class="w-60 text-base text-gray-600">Сфера деятельности:</span>
-                             <span class="text-base font-medium flex-1">{{ $candidate->activity_sphere ?: 'Не указано' }}</span>
-                         </div>
                         <div class="flex items-start">
                             <span class="w-60 text-base text-gray-600">Желаемая должность:</span>
                             <span class="text-base font-medium flex-1">
@@ -463,7 +451,7 @@ if (! function_exists('mb_ucfirst')) {
                          @if($isFullReport)
                          <!-- Братья и сестры -->
                          <div class="flex items-start">
-                             <span class="w-60 text-base text-gray-600">Кол-во братьев-сестер:</span>
+                             <span class="w-60 text-base text-gray-600">Кол-во братьев/сестер:</span>
                              <span class="text-base font-medium flex-1">
                                  @if(!empty($family['siblings']))
                                      {{ count($family['siblings']) }}
@@ -485,7 +473,7 @@ if (! function_exists('mb_ucfirst')) {
 
                         <!-- Образование -->
                         <div class="flex items-start">
-                             <span class="w-60 text-base text-gray-600">Образование:</span>
+                             <span class="w-60 text-base text-gray-600">Профессиональное образование:</span>
                              <span class="text-base font-medium flex-1">
                                 @if($candidate->universities && count($candidate->universities) > 0)
                                     @foreach($candidate->universities as $index => $university)
