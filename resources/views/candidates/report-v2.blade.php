@@ -782,8 +782,8 @@ if (! function_exists('mb_ucfirst')) {
                                         $textColor = $config['textColor'] ?? 'white';
                                         $textShadow = $textColor === 'white' ? '1px 1px 2px rgba(0,0,0,0.3)' : 'none';
                                     @endphp
-                                    <div style="width: 90px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px; margin: 0 14px;">
-                                        <span style="font-size: 20px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
+                                    <div style="width: 90px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px; margin: 0 16px;">
+                                        <span style="font-size: 22px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
                                     </div>
                                 @endforeach
                             </div>
@@ -796,13 +796,13 @@ if (! function_exists('mb_ucfirst')) {
                                 $shortName = str_replace(' интеллект', '', $type);
                                 $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
                             @endphp
-                            <div style="width: 90px; display: flex; flex-direction: column; align-items: center; margin: 0 14px;">
+                            <div style="width: 90px; display: flex; flex-direction: column; align-items: center; margin: 0 16px;">
                                 <div style="height: 28px; display: flex; align-items: center; justify-content: center;">
                                     <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 22px; height: 22px;">
                                 </div>
                                 <div style="text-align: center;">
-                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</div>
-                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</div>
+                                    <div style="font-size: 13px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</div>
+                                    <div style="font-size: 13px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</div>
                                 </div>
                             </div>
                         @endforeach
@@ -831,8 +831,8 @@ if (! function_exists('mb_ucfirst')) {
                                         $textColor = $config['textColor'] ?? 'white';
                                         $textShadow = $textColor === 'white' ? '1px 1px 2px rgba(0,0,0,0.3)' : 'none';
                                     @endphp
-                                    <div style="width: 90px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px; margin: 0 18px;">
-                                        <span style="font-size: 20px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
+                                    <div style="width: 90px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px; margin: 0 20px;">
+                                        <span style="font-size: 22px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
                                     </div>
                                 @endforeach
                             </div>
@@ -845,13 +845,13 @@ if (! function_exists('mb_ucfirst')) {
                                 $shortName = str_replace(' интеллект', '', $type);
                                 $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
                             @endphp
-                            <div style="width: 90px; display: flex; flex-direction: column; align-items: center; margin: 0 18px;">
+                            <div style="width: 90px; display: flex; flex-direction: column; align-items: center; margin: 0 20px;">
                                 <div style="height: 28px; display: flex; align-items: center; justify-content: center;">
                                     <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 22px; height: 22px;">
                                 </div>
                                 <div style="text-align: center;">
-                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</div>
-                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</div>
+                                    <div style="font-size: 13px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</div>
+                                    <div style="font-size: 13px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</div>
                                 </div>
                             </div>
                         @endforeach
