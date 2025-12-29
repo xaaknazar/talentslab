@@ -772,7 +772,7 @@ if (! function_exists('mb_ucfirst')) {
                             @foreach([100, 75, 50, 25, 0] as $mark)
                                 <div style="position: absolute; bottom: {{ $mark * 1.8 }}px; left: 0; right: 0; border-bottom: 1px solid #d1d5db; z-index: 0;"></div>
                             @endforeach
-                            <div style="display: flex; align-items: flex-end; justify-content: center; height: 180px; gap: 12px; position: relative; z-index: 1;">
+                            <div style="display: flex; align-items: flex-end; justify-content: center; height: 180px; gap: 14px; position: relative; z-index: 1;">
                                 @foreach($row1Types as $type)
                                     @php
                                         $percentage = $results[$type] ?? '0%';
@@ -783,14 +783,14 @@ if (! function_exists('mb_ucfirst')) {
                                         $textShadow = $textColor === 'white' ? '1px 1px 2px rgba(0,0,0,0.3)' : 'none';
                                     @endphp
                                     <div style="width: 90px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px;">
-                                        <span style="font-size: 18px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
+                                        <span style="font-size: 20px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
                                     </div>
                                 @endforeach
                             </div>
                         </div>
                     </div>
                     <!-- Подписи первого ряда -->
-                    <div style="display: flex; justify-content: center; gap: 12px; margin-left: 36px; margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: center; gap: 14px; margin-left: 36px; margin-bottom: 24px;">
                         @foreach($row1Types as $type)
                             @php
                                 $shortName = str_replace(' интеллект', '', $type);
@@ -801,8 +801,8 @@ if (! function_exists('mb_ucfirst')) {
                                     <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 22px; height: 22px;">
                                 </div>
                                 <div style="text-align: center;">
-                                    <div style="font-size: 10px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</div>
-                                    <div style="font-size: 10px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</div>
+                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</div>
+                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</div>
                                 </div>
                             </div>
                         @endforeach
@@ -821,7 +821,7 @@ if (! function_exists('mb_ucfirst')) {
                             @foreach([100, 75, 50, 25, 0] as $mark)
                                 <div style="position: absolute; bottom: {{ $mark * 1.8 }}px; left: 0; right: 0; border-bottom: 1px solid #d1d5db; z-index: 0;"></div>
                             @endforeach
-                            <div style="display: flex; align-items: flex-end; justify-content: center; height: 180px; gap: 12px; position: relative; z-index: 1;">
+                            <div style="display: flex; align-items: flex-end; justify-content: center; height: 180px; gap: 14px; position: relative; z-index: 1;">
                                 @foreach($row2Types as $type)
                                     @php
                                         $percentage = $results[$type] ?? '0%';
@@ -832,14 +832,14 @@ if (! function_exists('mb_ucfirst')) {
                                         $textShadow = $textColor === 'white' ? '1px 1px 2px rgba(0,0,0,0.3)' : 'none';
                                     @endphp
                                     <div style="width: 90px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px;">
-                                        <span style="font-size: 18px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
+                                        <span style="font-size: 20px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
                                     </div>
                                 @endforeach
                             </div>
                         </div>
                     </div>
                     <!-- Подписи второго ряда -->
-                    <div style="display: flex; justify-content: center; gap: 12px; margin-left: 36px;">
+                    <div style="display: flex; justify-content: center; gap: 14px; margin-left: 36px;">
                         @foreach($row2Types as $type)
                             @php
                                 $shortName = str_replace(' интеллект', '', $type);
