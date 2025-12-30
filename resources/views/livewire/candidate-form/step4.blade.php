@@ -4,32 +4,56 @@
 
     <!-- Секция 1: Тест Гарднера (обязательный) -->
     <div class="mb-8">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+        <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg sm:text-xl font-semibold">Тест множественных интеллектов Гарднера</h3>
-            <span class="px-3 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full w-fit">Обязательно</span>
+            <span class="px-3 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full">Обязательно</span>
         </div>
 
-        <div class="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+        <div class="bg-white rounded-lg border border-gray-200 p-6">
             @if($gardner_test_completed)
                 <!-- Тест пройден -->
                 <div class="mb-4">
-                    <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-                        <div class="flex items-center gap-3 sm:gap-4">
+                    <!-- Desktop: все в одну строку, Mobile: кнопка снизу -->
+                    <div class="hidden sm:flex sm:items-center sm:space-x-4">
+                        <div class="flex-shrink-0">
+                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-lg font-semibold text-green-800">Тест пройден</h4>
+                            <p class="text-sm text-gray-600">Ваши результаты сохранены и будут использованы в отчёте</p>
+                        </div>
+                        <a href="{{ route('gardner-test') }}"
+                           target="_blank"
+                           class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                            Посмотреть результаты
+                        </a>
+                    </div>
+                    <!-- Mobile версия -->
+                    <div class="sm:hidden">
+                        <div class="flex items-center space-x-3 mb-3">
                             <div class="flex-shrink-0">
-                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-full flex items-center justify-center">
-                                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                     </svg>
                                 </div>
                             </div>
                             <div class="flex-1">
-                                <h4 class="text-base sm:text-lg font-semibold text-green-800">Тест пройден</h4>
-                                <p class="text-sm text-gray-600">Ваши результаты сохранены и будут использованы в отчёте</p>
+                                <h4 class="text-base font-semibold text-green-800">Тест пройден</h4>
+                                <p class="text-sm text-gray-600">Ваши результаты сохранены</p>
                             </div>
                         </div>
                         <a href="{{ route('gardner-test') }}"
                            target="_blank"
-                           class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors w-full sm:w-auto">
+                           class="inline-flex items-center justify-center w-full px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
@@ -39,16 +63,16 @@
                     </div>
                 </div>
                 <!-- Информация о тесте Гарднера -->
-                <div class="p-3 sm:p-4 bg-blue-50 rounded-lg">
+                <div class="p-4 bg-blue-50 rounded-lg">
                     <div class="flex">
                         <div class="flex-shrink-0">
-                            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                            <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
                             </svg>
                         </div>
-                        <div class="ml-2 sm:ml-3">
-                            <h3 class="text-xs sm:text-sm font-medium text-blue-800">О тесте Гарднера</h3>
-                            <div class="mt-1 sm:mt-2 text-xs sm:text-sm text-blue-700">
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-blue-800">О тесте Гарднера</h3>
+                            <div class="mt-2 text-sm text-blue-700">
                                 <p>Тест определяет ваши доминирующие типы интеллекта по теории Говарда Гарднера.</p>
                             </div>
                         </div>
@@ -57,23 +81,46 @@
             @else
                 <!-- Тест не пройден -->
                 <div class="mb-4">
-                    <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-                        <div class="flex items-center gap-3 sm:gap-4">
+                    <!-- Desktop: все в одну строку -->
+                    <div class="hidden sm:flex sm:items-center sm:space-x-4">
+                        <div class="flex-shrink-0">
+                            <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-lg font-semibold text-amber-800">Тест не пройден</h4>
+                            <p class="text-sm text-gray-600">Для продолжения необходимо пройти тест Гарднера (45 вопросов, ~10 минут)</p>
+                        </div>
+                        <a href="{{ route('gardner-test') }}"
+                           target="_blank"
+                           class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all">
+                            Пройти тест
+                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                            </svg>
+                        </a>
+                    </div>
+                    <!-- Mobile версия -->
+                    <div class="sm:hidden">
+                        <div class="flex items-center space-x-3 mb-3">
                             <div class="flex-shrink-0">
-                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 rounded-full flex items-center justify-center">
-                                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
                                     </svg>
                                 </div>
                             </div>
                             <div class="flex-1">
-                                <h4 class="text-base sm:text-lg font-semibold text-amber-800">Тест не пройден</h4>
-                                <p class="text-sm text-gray-600">Для продолжения необходимо пройти тест Гарднера (45 вопросов, ~10 минут)</p>
+                                <h4 class="text-base font-semibold text-amber-800">Тест не пройден</h4>
+                                <p class="text-sm text-gray-600">45 вопросов, ~10 минут</p>
                             </div>
                         </div>
                         <a href="{{ route('gardner-test') }}"
                            target="_blank"
-                           class="inline-flex items-center justify-center px-6 py-3 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all w-full sm:w-auto">
+                           class="inline-flex items-center justify-center w-full px-6 py-3 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-all">
                             Пройти тест
                             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
@@ -82,16 +129,16 @@
                     </div>
                 </div>
                 <!-- Информация о тесте Гарднера -->
-                <div class="p-3 sm:p-4 bg-blue-50 rounded-lg">
+                <div class="p-4 bg-blue-50 rounded-lg">
                     <div class="flex">
                         <div class="flex-shrink-0">
-                            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                            <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
                             </svg>
                         </div>
-                        <div class="ml-2 sm:ml-3">
-                            <h3 class="text-xs sm:text-sm font-medium text-blue-800">О тесте Гарднера</h3>
-                            <div class="mt-1 sm:mt-2 text-xs sm:text-sm text-blue-700">
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-blue-800">О тесте Гарднера</h3>
+                            <div class="mt-2 text-sm text-blue-700">
                                 <p>Тест определяет ваши доминирующие типы интеллекта по теории Говарда Гарднера.</p>
                             </div>
                         </div>
@@ -115,11 +162,11 @@
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
         <!-- MBTI тип личности (обязательный) -->
         <div>
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+            <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg sm:text-xl font-semibold">Тип личности MBTI</h3>
-                <span class="px-3 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full w-fit">Обязательно</span>
+                <span class="px-3 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full">Обязательно</span>
             </div>
-            <div class="bg-white rounded-lg border border-gray-200 p-4 sm:p-6">
+            <div class="bg-white rounded-lg border border-gray-200 p-6">
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Выберите ваш тип MBTI</label>
                     <select wire:model="mbti_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -153,17 +200,17 @@
                 </div>
 
                 <!-- Дополнительная информация о MBTI -->
-                <div class="p-3 sm:p-4 bg-blue-50 rounded-lg">
+                <div class="p-4 bg-blue-50 rounded-lg">
                     <div class="flex">
                         <div class="flex-shrink-0">
-                            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                            <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
                             </svg>
                         </div>
-                        <div class="ml-2 sm:ml-3">
-                            <h3 class="text-xs sm:text-sm font-medium text-blue-800">О тесте MBTI</h3>
-                            <div class="mt-1 sm:mt-2 text-xs sm:text-sm text-blue-700">
-                                <p class="mb-1 sm:mb-2">Выберите ваш тип личности согласно результатам теста Myers-Briggs.</p>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-blue-800">О тесте MBTI</h3>
+                            <div class="mt-2 text-sm text-blue-700">
+                                <p class="mb-2">Выберите ваш тип личности согласно результатам теста Myers-Briggs.</p>
                                 <p>Если вы еще не знаете свой тип, <a href="https://www.16personalities.com/ru/test-lichnosti" target="_blank" rel="noopener noreferrer" class="font-medium text-blue-800 underline hover:text-blue-900">пройдите тест здесь</a>.</p>
                             </div>
                         </div>
@@ -174,9 +221,9 @@
 
         <!-- Gallup тест (рекомендуется) -->
         <div>
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+            <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg sm:text-xl font-semibold">Gallup CliftonStrengths 34 PDF</h3>
-                <span class="px-3 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-full w-fit">Рекомендуется</span>
+                <span class="px-3 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-full">Рекомендуется</span>
             </div>
             <div class="w-full" x-data="fileUpload()">
                 <!-- Область загрузки файла -->
@@ -213,16 +260,16 @@
                     </label>
 
                     <!-- Рекомендация под полем загрузки -->
-                    <div class="p-3 sm:p-4 bg-blue-50 rounded-b-lg">
+                    <div class="p-4 bg-blue-50 rounded-b-lg">
                         <div class="flex">
                             <div class="flex-shrink-0">
-                                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
                                 </svg>
                             </div>
-                            <div class="ml-2 sm:ml-3">
-                                <h3 class="text-xs sm:text-sm font-medium text-blue-800">Рекомендация</h3>
-                                <div class="mt-1 sm:mt-2 text-xs sm:text-sm text-blue-700">
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-blue-800">Рекомендация</h3>
+                                <div class="mt-2 text-sm text-blue-700">
                                     <p>Рекомендуем загрузить PDF файл результата теста Gallup CliftonStrengths34 в оригинале. На основе данного документа формируются отчеты Divergents (FMD, DPT, DPs).</p>
                                 </div>
                             </div>
@@ -235,42 +282,42 @@
                 <div x-show="fileUploaded" x-transition>
                     <div class="bg-white rounded-lg border border-gray-200">
                         <!-- Заголовок -->
-                        <div class="flex justify-between items-start sm:items-center p-3 sm:p-4 border-b bg-gray-50">
-                            <div class="flex items-center space-x-2 sm:space-x-3">
+                        <div class="flex justify-between items-center p-4 border-b bg-gray-50">
+                            <div class="flex items-center space-x-3">
                                 <div class="flex-shrink-0">
-                                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>
                                     </svg>
                                 </div>
                                 <div>
-                                    <h4 class="text-base sm:text-lg font-semibold text-gray-900">PDF файл загружен</h4>
-                                    <p class="text-xs sm:text-sm text-gray-500">Gallup результаты готовы к отправке</p>
+                                    <h4 class="text-lg font-semibold text-gray-900">PDF файл загружен</h4>
+                                    <p class="text-sm text-gray-500">Gallup результаты готовы к отправке</p>
                                 </div>
                             </div>
                             <button type="button"
                                     @click="removeFile()"
-                                    class="text-gray-400 hover:text-gray-600 focus:outline-none ml-2">
-                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    class="text-gray-400 hover:text-gray-600 focus:outline-none">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                 </svg>
                             </button>
                         </div>
 
                         <!-- Информация о файле -->
-                        <div class="p-3 sm:p-4">
-                            <div class="grid grid-cols-1 gap-2 sm:gap-3">
-                                <div class="bg-gray-50 rounded-lg p-2 sm:p-3">
-                                    <div class="text-xs sm:text-sm text-gray-500 mb-1">Имя файла</div>
-                                    <div class="font-medium text-gray-900 text-xs sm:text-sm break-all" x-text="fileName || 'Gallup результаты.pdf'"></div>
+                        <div class="p-4">
+                            <div class="grid grid-cols-1 gap-3">
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-sm text-gray-500 mb-1">Имя файла</div>
+                                    <div class="font-medium text-gray-900 text-sm" x-text="fileName || 'Gallup результаты.pdf'"></div>
                                 </div>
-                                <div class="grid grid-cols-2 gap-2 sm:gap-3">
-                                    <div class="bg-gray-50 rounded-lg p-2 sm:p-3">
-                                        <div class="text-xs sm:text-sm text-gray-500 mb-1">Размер</div>
-                                        <div class="font-medium text-gray-900 text-xs sm:text-sm" x-text="fileSize || 'Загружен'"></div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="bg-gray-50 rounded-lg p-3">
+                                        <div class="text-sm text-gray-500 mb-1">Размер</div>
+                                        <div class="font-medium text-gray-900 text-sm" x-text="fileSize || 'Загружен'"></div>
                                     </div>
-                                    <div class="bg-gray-50 rounded-lg p-2 sm:p-3">
-                                        <div class="text-xs sm:text-sm text-gray-500 mb-1">Статус</div>
-                                        <div class="font-medium text-xs sm:text-sm"
+                                    <div class="bg-gray-50 rounded-lg p-3">
+                                        <div class="text-sm text-gray-500 mb-1">Статус</div>
+                                        <div class="font-medium text-sm"
                                              x-bind:class="isExistingFile ? 'text-green-600' : 'text-blue-600'"
                                              x-text="isExistingFile ? 'Сохранен' : 'Загружен'"></div>
                                     </div>
@@ -278,10 +325,10 @@
                             </div>
 
                             <!-- Кнопка для скачивания/просмотра если это существующий файл -->
-                            <div x-show="isExistingFile && downloadUrl" class="mt-2 sm:mt-3">
+                            <div x-show="isExistingFile && downloadUrl" class="mt-3">
                                 <a x-bind:href="downloadUrl"
                                    target="_blank"
-                                   class="inline-flex items-center px-3 py-2 bg-blue-600 text-white text-xs sm:text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-full justify-center">
+                                   class="inline-flex items-center px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-full justify-center">
                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                     </svg>
@@ -290,10 +337,10 @@
                             </div>
 
                             <!-- Информация для нового файла -->
-                            <div x-show="!isExistingFile" class="mt-2 sm:mt-3">
-                                <div class="text-xs sm:text-sm text-blue-600 bg-blue-50 rounded-lg p-2 sm:p-3">
+                            <div x-show="!isExistingFile" class="mt-3">
+                                <div class="text-sm text-blue-600 bg-blue-50 rounded-lg p-3">
                                     <div class="flex items-center">
-                                        <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
                                         </svg>
                                         Файл будет сохранен при переходе к следующему шагу
