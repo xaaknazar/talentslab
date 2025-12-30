@@ -11,9 +11,9 @@
                 <h1 class="text-2xl font-bold mb-8">Добро пожаловать, {{ Auth::user()->name }}!</h1>
 
                 <div class="max-w-xl">
-                    <!-- Анкета -->
+                    <!-- Резюме -->
                     <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-                        <h2 class="text-xl font-semibold mb-4">Анкета</h2>
+                        <h2 class="text-xl font-semibold mb-4">Резюме</h2>
                         @if($candidate)
                             <div class="mb-4">
                                 <div class="flex items-center mb-2">
@@ -28,11 +28,11 @@
                             </div>
                             <div class="flex gap-3">
                                 <a href="{{ route('candidate.form', ['id' => $candidate->id]) }}" class="inline-flex items-center px-4 py-2 bg-blue-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:border-blue-700 focus:ring focus:ring-blue-200 disabled:opacity-25 transition">
-                                    Редактировать анкету
+                                    Редактировать резюме
                                 </a>
                                 @if($candidate->step >= 5)
                                     <a href="{{ route('candidate.report', $candidate) }}" class="inline-flex items-center px-4 py-2 bg-green-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-600 active:bg-green-700 focus:outline-none focus:border-green-700 focus:ring focus:ring-green-200 disabled:opacity-25 transition">
-                                        Просмотр анкеты
+                                        Просмотр резюме
                                     </a>
                                 @endif
                             </div>
@@ -40,9 +40,9 @@
                                 <p class="mt-2 text-sm text-gray-500">обновлено {{ $lastUpdate }}</p>
                             @endif
                         @else
-                        <p class="text-gray-600 mb-4">Заполните анкету для участия в отборе.</p>
+                        <p class="text-gray-600 mb-4">Заполните резюме для участия в отборе.</p>
                         <a href="{{ route('candidate.form') }}" class="inline-flex items-center px-4 py-2 bg-orange-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-600 active:bg-orange-700 focus:outline-none focus:border-orange-700 focus:ring focus:ring-orange-200 disabled:opacity-25 transition">
-                            Создать анкету
+                            Создать резюме
                         </a>
                         @endif
                     </div>
