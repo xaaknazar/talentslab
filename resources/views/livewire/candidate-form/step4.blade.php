@@ -219,7 +219,7 @@
                             <div class="ml-3">
                                 <h3 class="text-sm font-medium text-blue-800">Рекомендация</h3>
                                 <div class="mt-2 text-sm text-blue-700">
-                                    <p>Рекомендуем загрузить Gallup CliftonStrengths 34 PDF оригинал. Через этот файл формируются отчёты команды Дивергента.</p>
+                                    <p>Рекомендуем загрузить PDF файл результата теста Gallup CliftonStrengths34 в оригинале. На основе данного документа формируются отчеты Divergents (FMD, DPT, DPs).</p>
                                 </div>
                             </div>
                         </div>
