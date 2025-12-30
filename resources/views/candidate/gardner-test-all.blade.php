@@ -11,7 +11,7 @@
                 <div class="p-6">
                     <div class="mb-4 flex justify-between items-center">
                         <div>
-                            <h3 class="text-lg font-semibold text-gray-900">Все 56 вопросов на одной странице</h3>
+                            <h3 class="text-lg font-semibold text-gray-900">Все 45 вопросов на одной странице</h3>
                             <p class="text-sm text-gray-600">Отвечайте на вопросы в любом порядке</p>
                         </div>
                         <a href="{{ route('gardner-test') }}" 

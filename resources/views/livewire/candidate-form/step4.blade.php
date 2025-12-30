@@ -65,7 +65,7 @@
                         </div>
                         <div class="flex-1">
                             <h4 class="text-lg font-semibold text-amber-800">Тест не пройден</h4>
-                            <p class="text-sm text-gray-600">Для продолжения необходимо пройти тест Гарднера (44 вопроса, ~10 минут)</p>
+                            <p class="text-sm text-gray-600">Для продолжения необходимо пройти тест Гарднера (45 вопросов, ~10 минут)</p>
                         </div>
                         <a href="{{ route('gardner-test') }}"
                            target="_blank"
