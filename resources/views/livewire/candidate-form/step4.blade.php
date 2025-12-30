@@ -171,7 +171,7 @@
         <!-- Gallup тест (рекомендуется) -->
         <div>
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-xl font-semibold">Gallup PDF</h3>
+                <h3 class="text-xl font-semibold">Gallup CliftonStrengths 34 PDF</h3>
                 <span class="px-3 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-full">Рекомендуется</span>
             </div>
             <div class="w-full" x-data="fileUpload()">
@@ -219,7 +219,7 @@
                             <div class="ml-3">
                                 <h3 class="text-sm font-medium text-blue-800">Рекомендация</h3>
                                 <div class="mt-2 text-sm text-blue-700">
-                                    <p>Рекомендуем загрузить Gallup PDF оригинал. Через этот файл формируются отчёты команды Дивергента.</p>
+                                    <p>Рекомендуем загрузить Gallup CliftonStrengths 34 PDF оригинал. Через этот файл формируются отчёты команды Дивергента.</p>
                                 </div>
                             </div>
                         </div>
