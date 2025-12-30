@@ -9,10 +9,10 @@
             <span class="px-3 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full">Обязательно</span>
         </div>
 
-        <div class="bg-white rounded-lg shadow-lg border border-gray-200">
+        <div class="bg-white rounded-lg border border-gray-200 p-6">
             @if($gardner_test_completed)
                 <!-- Тест пройден -->
-                <div class="p-6">
+                <div class="mb-4">
                     <div class="flex items-center space-x-4">
                         <div class="flex-shrink-0">
                             <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
@@ -36,9 +36,25 @@
                         </a>
                     </div>
                 </div>
+                <!-- Информация о тесте Гарднера -->
+                <div class="p-4 bg-blue-50 rounded-lg">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-blue-800">О тесте Гарднера</h3>
+                            <div class="mt-2 text-sm text-blue-700">
+                                <p>Тест определяет ваши доминирующие типы интеллекта по теории Говарда Гарднера.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             @else
                 <!-- Тест не пройден -->
-                <div class="p-6">
+                <div class="mb-4">
                     <div class="flex items-center space-x-4">
                         <div class="flex-shrink-0">
                             <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center">
@@ -53,12 +69,28 @@
                         </div>
                         <a href="{{ route('gardner-test') }}"
                            target="_blank"
-                           class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all shadow-md hover:shadow-lg">
+                           class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all">
                             Пройти тест
                             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                             </svg>
                         </a>
+                    </div>
+                </div>
+                <!-- Информация о тесте Гарднера -->
+                <div class="p-4 bg-blue-50 rounded-lg">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-blue-800">О тесте Гарднера</h3>
+                            <div class="mt-2 text-sm text-blue-700">
+                                <p>Тест определяет ваши доминирующие типы интеллекта по теории Говарда Гарднера.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             @endif
@@ -83,7 +115,7 @@
                 <h3 class="text-xl font-semibold">Тип личности MBTI</h3>
                 <span class="px-3 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full">Обязательно</span>
             </div>
-            <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
+            <div class="bg-white rounded-lg border border-gray-200 p-6">
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Выберите ваш тип MBTI</label>
                     <select wire:model="mbti_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -144,7 +176,7 @@
             </div>
             <div class="w-full" x-data="fileUpload()">
                 <!-- Область загрузки файла -->
-                <div x-show="!fileUploaded" class="bg-white rounded-lg shadow-lg border border-gray-200">
+                <div x-show="!fileUploaded" class="bg-white rounded-lg border border-gray-200">
                     <label class="group flex justify-center w-full h-32 px-4 py-6 transition-all duration-300 ease-in-out bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer focus:outline-none transform hover:scale-[1.02] hover:shadow-lg hover:border-blue-400 hover:bg-blue-50/50"
                            @dragover.prevent="isDragOver = true"
                            @dragleave.prevent="isDragOver = false"
@@ -197,7 +229,7 @@
 
                 <!-- Информация о загруженном файле -->
                 <div x-show="fileUploaded" x-transition>
-                    <div class="bg-white rounded-lg shadow-lg border border-gray-200">
+                    <div class="bg-white rounded-lg border border-gray-200">
                         <!-- Заголовок -->
                         <div class="flex justify-between items-center p-4 border-b bg-gray-50">
                             <div class="flex items-center space-x-3">
