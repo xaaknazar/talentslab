@@ -84,6 +84,7 @@ class CandidateForm extends Component
     // Step 4: Tests
     public $gallup_pdf;
     public $mbti_type;
+    public $gardner_test_completed = false;
 
     // Загружаем списки
     public $countries = [];
@@ -258,6 +259,35 @@ class CandidateForm extends Component
         if ($this->candidate) {
             $this->isFirstLoad = false;
         }
+
+        // Проверяем, пройден ли тест Гарднера
+        $this->checkGardnerTestStatus();
+    }
+
+    /**
+     * Проверяет статус прохождения теста Гарднера для текущего пользователя
+     */
+    public function checkGardnerTestStatus()
+    {
+        $user = auth()->user();
+        if ($user) {
+            $this->gardner_test_completed = \App\Models\GardnerTestResult::where('user_id', $user->id)->exists();
+        } else {
+            $this->gardner_test_completed = false;
+        }
+    }
+
+    /**
+     * Возвращает результаты теста Гарднера для текущего пользователя
+     */
+    public function getGardnerTestResults()
+    {
+        $user = auth()->user();
+        if ($user) {
+            $result = \App\Models\GardnerTestResult::where('user_id', $user->id)->first();
+            return $result ? $result->results : null;
+        }
+        return null;
     }
 
     protected function loadCandidateData()
@@ -427,23 +457,27 @@ class CandidateForm extends Component
             'employer_requirements' => ['required', 'string', 'max:2000'],
 
             // Step 4 validation rules
-            'gallup_pdf' => [
-                Rule::when($this->currentStep === 4, ['required', 'file', 'mimes:pdf', 'max:10240', function ($attribute, $value, $fail) {
-                    if ($value && !is_string($value) && !$this->isGallupPdf($value)) {
-                        $fail('Загруженный файл не является корректным отчетом Gallup.');
-                    }
-                }]),
-                Rule::when($this->currentStep !== 4, ['nullable']),
-            ],
+            // Gallup PDF - необязательный (рекомендуется)
+            'gallup_pdf' => 'nullable|file|mimes:pdf|max:10240',
             'mbti_type' => [
                 Rule::when($this->currentStep === 4, ['required', 'string']),
                 Rule::when($this->currentStep !== 4, ['nullable']),
             ],
         ];
 
-        // Если мы на последнем шаге и gallup_pdf уже есть в базе, делаем его необязательным
-        if ($this->currentStep === 4 && $this->candidate && $this->candidate->gallup_pdf) {
-            $rules['gallup_pdf'] = 'nullable|file|mimes:pdf|max:10240';
+        // Проверка прохождения теста Гарднера на шаге 4
+        if ($this->currentStep === 4) {
+            $rules['gardner_test_completed'] = [
+                function ($attribute, $value, $fail) {
+                    $user = auth()->user();
+                    if ($user) {
+                        $hasGardnerResult = \App\Models\GardnerTestResult::where('user_id', $user->id)->exists();
+                        if (!$hasGardnerResult) {
+                            $fail('Необходимо пройти тест Гарднера для продолжения.');
+                        }
+                    }
+                }
+            ];
         }
 
         return $rules;
