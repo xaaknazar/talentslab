@@ -190,7 +190,8 @@
                                     </div>
                                     <button
                                         type="button"
-                                        wire:click.stop.prevent="clearCandidate"
+                                        x-data
+                                        x-on:click.stop.prevent="$wire.clearCandidate()"
                                         class="flex-shrink-0 p-2 rounded-lg text-red-500 bg-red-50 hover:bg-red-100 transition-all cursor-pointer"
                                     >
                                         <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -217,7 +218,8 @@
                                     >
                                         @foreach($candidateResults as $result)
                                             <div
-                                                wire:click.stop.prevent="selectCandidate({{ $result['id'] }})"
+                                                x-data
+                                                x-on:click.stop.prevent="$wire.selectCandidate({{ $result['id'] }})"
                                                 wire:key="candidate-{{ $result['id'] }}"
                                                 class="px-4 py-3 hover:bg-blue-50 active:bg-blue-100 transition-colors cursor-pointer border-b border-slate-100 last:border-b-0 select-none"
                                             >
@@ -283,7 +285,8 @@
                                     </div>
                                     <button
                                         type="button"
-                                        wire:click.stop.prevent="removePdf"
+                                        x-data
+                                        x-on:click.stop.prevent="$wire.removePdf()"
                                         class="p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all cursor-pointer"
                                     >
                                         <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
