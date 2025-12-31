@@ -28,8 +28,9 @@ class AIResumeAnalyzer extends Component
     public $selectedCandidate = null;
     public $showCandidateDropdown = false;
 
-    // For resetting file input
+    // For resetting inputs
     public $uploadKey = 1;
+    public $searchKey = 1;
 
     protected $rules = [
         'pdfFile' => 'required|file|mimes:pdf|max:20480',
@@ -73,6 +74,7 @@ class AIResumeAnalyzer extends Component
     public function clearCandidate()
     {
         $this->reset(['selectedCandidate', 'candidateSearch', 'candidateResults', 'showCandidateDropdown']);
+        $this->searchKey++;
     }
 
     #[On('clearCandidateEvent')]

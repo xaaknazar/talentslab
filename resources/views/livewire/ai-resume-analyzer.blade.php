@@ -200,7 +200,7 @@
                                 </div>
                             </div>
                         @else
-                            <div class="relative">
+                            <div class="relative" wire:key="search-container-{{ $searchKey }}">
                                 <input
                                     type="text"
                                     wire:model.live.debounce.300ms="candidateSearch"
