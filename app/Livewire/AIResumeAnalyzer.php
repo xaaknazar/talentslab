@@ -27,6 +27,10 @@ class AIResumeAnalyzer extends Component
     public $selectedCandidate = null;
     public $showCandidateDropdown = false;
 
+    // Iteration counters for forcing re-render
+    public $uploadIteration = 0;
+    public $searchIteration = 0;
+
     protected $rules = [
         'pdfFile' => 'required|file|mimes:pdf|max:20480',
     ];
@@ -66,6 +70,7 @@ class AIResumeAnalyzer extends Component
         $this->candidateSearch = '';
         $this->candidateResults = [];
         $this->showCandidateDropdown = false;
+        $this->searchIteration++;
         $this->resetValidation();
     }
 
@@ -87,6 +92,7 @@ class AIResumeAnalyzer extends Component
         $this->fileName = '';
         $this->extractedText = '';
         $this->showExtractedText = false;
+        $this->uploadIteration++;
         $this->resetValidation('pdfFile');
     }
 
