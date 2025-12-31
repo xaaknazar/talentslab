@@ -376,6 +376,7 @@
             color: #334155;
             font-size: 15px;
             line-height: 1.8;
+            padding: 16px 24px;
         }
 
         .report-content h1 {
@@ -406,16 +407,20 @@
             color: #334155;
             margin-top: 24px;
             margin-bottom: 12px;
+            padding-left: 8px;
         }
 
         .report-content p {
             margin-bottom: 16px;
+            padding-left: 8px;
+            padding-right: 8px;
             color: #475569;
         }
 
         .report-content ul, .report-content ol {
             margin-bottom: 20px;
-            padding-left: 24px;
+            padding-left: 32px;
+            padding-right: 8px;
         }
 
         .report-content li {
@@ -438,7 +443,7 @@
         .report-content blockquote {
             border-left: 4px solid #3b82f6;
             padding: 16px 20px;
-            margin: 24px 0;
+            margin: 24px 8px;
             background: #f8fafc;
             border-radius: 0 10px 10px 0;
             font-style: italic;
@@ -446,9 +451,9 @@
         }
 
         .report-content table {
-            width: 100%;
+            width: calc(100% - 16px);
             border-collapse: collapse;
-            margin: 24px 0;
+            margin: 24px 8px;
             font-size: 14px;
             border-radius: 10px;
             overflow: hidden;
