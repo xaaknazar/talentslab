@@ -213,10 +213,10 @@
                                                 type="button"
                                                 wire:click="selectCandidate({{ $result['id'] }})"
                                                 wire:key="candidate-{{ $result['id'] }}"
-                                                class="w-full text-left px-4 py-3 hover:bg-blue-50 active:bg-blue-100 transition-colors cursor-pointer border-b border-slate-100 last:border-b-0"
+                                                class="w-full text-left px-4 py-3 hover:bg-blue-50 active:bg-blue-100 transition-colors border-b border-slate-100 last:border-b-0 cursor-pointer"
                                             >
-                                                <p class="text-sm font-medium text-slate-800">{{ $result['full_name'] }}</p>
-                                                <p class="text-xs text-slate-500 mt-0.5">{{ $result['email'] }}</p>
+                                                <p class="text-sm font-medium text-slate-800 pointer-events-none">{{ $result['full_name'] }}</p>
+                                                <p class="text-xs text-slate-500 mt-0.5 pointer-events-none">{{ $result['email'] }}</p>
                                             </button>
                                         @endforeach
                                     </div>
@@ -311,10 +311,11 @@
 
                 <!-- Generate Button -->
                 <button
+                    type="button"
                     wire:click="generateReport"
                     wire:loading.attr="disabled"
                     wire:target="generateReport"
-                    :disabled="$wire.isLoading || !$wire.fileName"
+                    @if($isLoading || !$fileName) disabled @endif
                     class="w-full h-14 text-white text-sm font-semibold rounded-2xl transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40 active:scale-[0.98]"
                 >
                     <span wire:loading.remove wire:target="generateReport" class="flex items-center gap-2">
