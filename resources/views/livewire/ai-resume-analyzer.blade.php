@@ -17,10 +17,10 @@
         <div class="flex gap-4">
             <!-- LEFT: Report Area (MAIN - takes most width) -->
             <div class="flex-1 min-w-0">
-                <div class="bg-white rounded-xl shadow-sm h-full" style="border: 1px solid #E5E7EB; min-height: calc(100vh - 120px);">
+                <div class="bg-white rounded-xl shadow-sm h-full" style="border: 1px solid #E5E7EB; min-height: calc(100vh - 150px);">
                     <!-- Report Header -->
-                    <div class="px-5 py-3 flex items-center justify-between rounded-t-xl" style="border-bottom: 1px solid #E5E7EB; background: linear-gradient(135deg, #F8FAFF 0%, #EEF2FF 100%);">
-                        <div class="flex items-center">
+                    <div class="px-5 py-2.5 flex items-center justify-between rounded-t-xl" style="border-bottom: 1px solid #E5E7EB; background: linear-gradient(135deg, #F8FAFF 0%, #EEF2FF 100%);">
+                        <div class="flex items-center ml-2">
                             <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);">
                                 <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -135,17 +135,14 @@
                                 </div>
                             </div>
                         @else
-                            <div class="relative flex items-center">
+                            <div class="relative">
                                 <input
                                     type="text"
                                     wire:model.live.debounce.300ms="candidateSearch"
                                     placeholder="Поиск по имени..."
-                                    class="w-full rounded-lg pl-3 pr-9 py-2 text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    class="w-full rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                     style="border: 1px solid #E5E7EB; color: #334155;"
                                 >
-                                <svg class="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style="color: #94A3B8;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                </svg>
 
                                 @if($showCandidateDropdown && count($candidateResults) > 0)
                                     <div class="absolute z-50 w-full top-full mt-1 bg-white rounded-lg shadow-lg max-h-48 overflow-y-auto" style="border: 1px solid #E5E7EB;">
