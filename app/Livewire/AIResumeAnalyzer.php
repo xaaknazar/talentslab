@@ -27,10 +27,6 @@ class AIResumeAnalyzer extends Component
     public $selectedCandidate = null;
     public $showCandidateDropdown = false;
 
-    // For resetting inputs
-    public $uploadKey = 1;
-    public $searchKey = 1;
-
     protected $rules = [
         'pdfFile' => 'required|file|mimes:pdf|max:20480',
     ];
@@ -70,7 +66,6 @@ class AIResumeAnalyzer extends Component
         $this->candidateSearch = '';
         $this->candidateResults = [];
         $this->showCandidateDropdown = false;
-        $this->searchKey++;
         $this->resetValidation();
     }
 
@@ -92,7 +87,6 @@ class AIResumeAnalyzer extends Component
         $this->fileName = '';
         $this->extractedText = '';
         $this->showExtractedText = false;
-        $this->uploadKey++;
         $this->resetValidation('pdfFile');
     }
 

@@ -196,7 +196,7 @@
                                 </div>
                             </div>
                         @else
-                            <div class="relative" wire:key="search-container-{{ $searchKey }}">
+                            <div class="relative">
                                 <input
                                     type="text"
                                     wire:model.live.debounce.300ms="candidateSearch"
@@ -239,7 +239,6 @@
                     <div class="p-4">
                         @if(!$fileName)
                             <div
-                                wire:key="pdf-upload-{{ $uploadKey }}"
                                 x-data="{ isDragging: false }"
                                 x-on:dragover.prevent="isDragging = true"
                                 x-on:dragleave.prevent="isDragging = false"
