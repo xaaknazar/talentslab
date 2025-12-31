@@ -4,7 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use App\Services\GeminiService;
+use App\Services\OpenAIService;
 use Illuminate\Support\Facades\Storage;
 
 class AIResumeAnalyzer extends Component
@@ -58,8 +58,8 @@ class AIResumeAnalyzer extends Component
             $fullPath = Storage::disk('local')->path($tempPath);
 
             // Извлекаем текст из PDF
-            $geminiService = new GeminiService();
-            $extractedText = $geminiService->extractTextFromPdf($fullPath);
+            $aiService = new OpenAIService();
+            $extractedText = $aiService->extractTextFromPdf($fullPath);
 
             // Удаляем временный файл
             Storage::disk('local')->delete($tempPath);
@@ -71,7 +71,7 @@ class AIResumeAnalyzer extends Component
             }
 
             // Анализируем резюме
-            $result = $geminiService->analyzeResume($extractedText, $this->comment);
+            $result = $aiService->analyzeResume($extractedText, $this->comment);
 
             if ($result['success']) {
                 $this->report = $result['report'];
