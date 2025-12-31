@@ -24,9 +24,9 @@
             </div>
 
             <!-- Status -->
-            <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span class="text-xs font-medium text-emerald-700">GPT-4o Ready</span>
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200">
+                <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                <span class="text-xs font-medium text-blue-700">AI version 1.0</span>
             </div>
         </div>
 
@@ -64,18 +64,48 @@
                     <!-- Report Content -->
                     <div class="p-8 overflow-auto" style="max-height: calc(100vh - 240px);">
                         @if($isLoading)
-                            <div class="flex flex-col items-center justify-center py-24">
-                                <div class="relative mb-6">
-                                    <div class="w-16 h-16 rounded-full border-4 border-slate-100"></div>
-                                    <div class="w-16 h-16 rounded-full border-4 border-blue-500 border-t-transparent animate-spin absolute top-0 left-0"></div>
+                            <div class="flex flex-col items-center justify-center" style="min-height: calc(100vh - 320px);">
+                                <!-- Animated loader -->
+                                <div class="relative mb-8">
+                                    <div class="w-24 h-24 rounded-full border-4 border-slate-100"></div>
+                                    <div class="w-24 h-24 rounded-full border-4 border-blue-500 border-t-transparent animate-spin absolute top-0 left-0"></div>
                                     <div class="absolute inset-0 flex items-center justify-center">
-                                        <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"></path>
-                                        </svg>
+                                        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
+                                            <svg class="w-8 h-8 text-white animate-pulse" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"></path>
+                                            </svg>
+                                        </div>
                                     </div>
                                 </div>
-                                <h3 class="text-lg font-semibold text-slate-800 mb-2">Анализируем данные</h3>
-                                <p class="text-sm text-slate-400">AI формирует психологический профиль • 1-2 мин</p>
+
+                                <h3 class="text-xl font-bold text-slate-800 mb-2">Формируем отчет</h3>
+                                <p class="text-sm text-slate-500 mb-6">AI анализирует данные кандидата</p>
+
+                                <!-- Progress steps -->
+                                <div class="flex flex-col gap-3 text-sm">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
+                                            <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="text-slate-700">Извлечение данных из PDF</span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center animate-pulse">
+                                            <div class="w-2 h-2 rounded-full bg-white"></div>
+                                        </div>
+                                        <span class="text-slate-700">Анализ профиля кандидата</span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center">
+                                            <div class="w-2 h-2 rounded-full bg-slate-400"></div>
+                                        </div>
+                                        <span class="text-slate-400">Генерация отчета</span>
+                                    </div>
+                                </div>
+
+                                <p class="text-xs text-slate-400 mt-6">Обычно занимает 1-2 минуты</p>
                             </div>
                         @elseif($error)
                             <div class="flex flex-col items-center justify-center py-16">
@@ -132,8 +162,8 @@
             <!-- RIGHT: Controls Sidebar -->
             <div class="w-80 flex-shrink-0 space-y-4">
                 <!-- Candidate Search -->
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="px-4 py-3 flex items-center justify-between border-b border-slate-100 bg-gradient-to-r from-blue-500 to-blue-600">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200">
+                    <div class="px-4 py-3 flex items-center justify-between border-b border-slate-100 bg-gradient-to-r from-blue-500 to-blue-600 rounded-t-2xl">
                         <div class="flex items-center gap-2">
                             <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
