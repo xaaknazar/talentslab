@@ -211,21 +211,23 @@
                                 >
 
                                 @if(count($candidateResults) > 0)
-                                    <div
-                                        class="absolute z-[9999] left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden"
+                                    <ul
+                                        class="absolute z-[9999] left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-200"
                                         style="max-height: 280px; overflow-y: auto;"
                                     >
                                         @foreach($candidateResults as $result)
-                                            <div
-                                                wire:click="selectCandidate({{ $result['id'] }})"
+                                            <li
+                                                wire:click.stop="selectCandidate({{ $result['id'] }})"
                                                 wire:key="candidate-{{ $result['id'] }}"
-                                                class="px-4 py-3 hover:bg-blue-50 transition-colors cursor-pointer border-b border-slate-100 last:border-b-0"
+                                                role="button"
+                                                tabindex="0"
+                                                class="px-4 py-3 hover:bg-blue-50 active:bg-blue-100 transition-colors cursor-pointer border-b border-slate-100 last:border-b-0 select-none"
                                             >
-                                                <p class="text-sm font-medium text-slate-800">{{ $result['full_name'] }}</p>
-                                                <p class="text-xs text-slate-500 mt-0.5">{{ $result['email'] }}</p>
-                                            </div>
+                                                <p class="text-sm font-medium text-slate-800 pointer-events-none">{{ $result['full_name'] }}</p>
+                                                <p class="text-xs text-slate-500 mt-0.5 pointer-events-none">{{ $result['email'] }}</p>
+                                            </li>
                                         @endforeach
-                                    </div>
+                                    </ul>
                                 @endif
                             </div>
                         @endif
