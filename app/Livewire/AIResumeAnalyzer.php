@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\Attributes\On;
 use App\Services\OpenAIService;
 use App\Models\Candidate;
 use Illuminate\Support\Facades\Storage;
@@ -60,12 +61,24 @@ class AIResumeAnalyzer extends Component
         $this->candidateResults = [];
     }
 
+    #[On('selectCandidateEvent')]
+    public function handleSelectCandidate($id)
+    {
+        $this->selectCandidate($id);
+    }
+
     public function clearCandidate()
     {
         $this->selectedCandidate = null;
         $this->candidateSearch = '';
         $this->candidateResults = [];
         $this->showCandidateDropdown = false;
+    }
+
+    #[On('clearCandidateEvent')]
+    public function handleClearCandidate()
+    {
+        $this->clearCandidate();
     }
 
     public function updatedPdfFile()
@@ -86,6 +99,12 @@ class AIResumeAnalyzer extends Component
         $this->fileName = '';
         $this->extractedText = '';
         $this->showExtractedText = false;
+    }
+
+    #[On('removePdfEvent')]
+    public function handleRemovePdf()
+    {
+        $this->removePdf();
     }
 
     public function toggleExtractedText()
