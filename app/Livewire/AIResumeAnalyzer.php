@@ -17,6 +17,8 @@ class AIResumeAnalyzer extends Component
     public $isLoading = false;
     public $error = '';
     public $fileName = '';
+    public $extractedText = '';
+    public $showExtractedText = false;
 
     protected $rules = [
         'pdfFile' => 'required|file|mimes:pdf|max:20480', // 20MB max
@@ -35,6 +37,8 @@ class AIResumeAnalyzer extends Component
         if ($this->pdfFile) {
             $this->fileName = $this->pdfFile->getClientOriginalName();
             $this->error = '';
+            $this->extractedText = '';
+            $this->showExtractedText = false;
         }
     }
 
@@ -42,6 +46,13 @@ class AIResumeAnalyzer extends Component
     {
         $this->pdfFile = null;
         $this->fileName = '';
+        $this->extractedText = '';
+        $this->showExtractedText = false;
+    }
+
+    public function toggleExtractedText()
+    {
+        $this->showExtractedText = !$this->showExtractedText;
     }
 
     public function generateReport()
@@ -60,6 +71,9 @@ class AIResumeAnalyzer extends Component
             // Извлекаем текст из PDF
             $aiService = new OpenAIService();
             $extractedText = $aiService->extractTextFromPdf($fullPath);
+
+            // Сохраняем извлеченный текст для просмотра
+            $this->extractedText = $extractedText ?? '';
 
             // Удаляем временный файл
             Storage::disk('local')->delete($tempPath);
@@ -89,6 +103,8 @@ class AIResumeAnalyzer extends Component
     {
         $this->report = '';
         $this->error = '';
+        $this->extractedText = '';
+        $this->showExtractedText = false;
     }
 
     public function render()

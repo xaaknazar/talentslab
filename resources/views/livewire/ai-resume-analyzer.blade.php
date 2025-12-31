@@ -232,6 +232,35 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Debug: Show Extracted Text -->
+                @if($extractedText)
+                    <div class="rounded-xl overflow-hidden" style="border: 1px solid #E5E7EB;">
+                        <button
+                            wire:click="toggleExtractedText"
+                            class="w-full px-4 py-2.5 text-left text-xs font-medium flex items-center justify-between"
+                            style="background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); color: #92400E;"
+                        >
+                            <span class="flex items-center">
+                                <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                </svg>
+                                Raw PDF данные
+                            </span>
+                            <svg class="w-3.5 h-3.5 transition-transform {{ $showExtractedText ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        @if($showExtractedText)
+                            <div class="p-3 bg-white">
+                                <div class="text-[10px] mb-2" style="color: #64748B;">
+                                    Символов: {{ strlen($extractedText) }}
+                                </div>
+                                <pre class="text-[10px] p-3 rounded-lg overflow-auto max-h-60 whitespace-pre-wrap break-words" style="background-color: #F8FAFF; border: 1px solid #E5E7EB; color: #334155; font-family: monospace;">{{ $extractedText }}</pre>
+                            </div>
+                        @endif
+                    </div>
+                @endif
             </div>
         </div>
     </div>
