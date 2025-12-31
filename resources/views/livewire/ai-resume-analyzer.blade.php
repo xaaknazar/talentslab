@@ -170,17 +170,21 @@
                                 </div>
                             </div>
                         @else
-                            <div class="relative" wire:ignore.self>
+                            <div class="relative">
                                 <input
                                     type="text"
                                     wire:model.live.debounce.300ms="candidateSearch"
+                                    wire:keydown.escape="$set('showCandidateDropdown', false)"
                                     placeholder="Поиск по имени..."
                                     class="w-full rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none"
                                     autocomplete="off"
                                 >
 
-                                @if($showCandidateDropdown && count($candidateResults) > 0)
-                                    <div class="absolute z-[9999] left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden" style="max-height: 280px; overflow-y: auto;">
+                                @if(count($candidateResults) > 0)
+                                    <div
+                                        class="absolute z-[9999] left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden"
+                                        style="max-height: 280px; overflow-y: auto;"
+                                    >
                                         @foreach($candidateResults as $result)
                                             <div
                                                 wire:click="selectCandidate({{ $result['id'] }})"
