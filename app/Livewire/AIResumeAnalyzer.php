@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Livewire\Attributes\On;
 use App\Services\OpenAIService;
 use App\Models\Candidate;
 use Illuminate\Support\Facades\Storage;
@@ -65,22 +64,14 @@ class AIResumeAnalyzer extends Component
         $this->candidateResults = [];
     }
 
-    #[On('selectCandidateEvent')]
-    public function handleSelectCandidate($id)
-    {
-        $this->selectCandidate($id);
-    }
-
     public function clearCandidate()
     {
-        $this->reset(['selectedCandidate', 'candidateSearch', 'candidateResults', 'showCandidateDropdown']);
+        $this->selectedCandidate = null;
+        $this->candidateSearch = '';
+        $this->candidateResults = [];
+        $this->showCandidateDropdown = false;
         $this->searchKey++;
-    }
-
-    #[On('clearCandidateEvent')]
-    public function handleClearCandidate()
-    {
-        $this->clearCandidate();
+        $this->resetValidation();
     }
 
     public function updatedPdfFile()
@@ -97,14 +88,12 @@ class AIResumeAnalyzer extends Component
 
     public function removePdf()
     {
-        $this->reset(['pdfFile', 'fileName', 'extractedText', 'showExtractedText']);
+        $this->pdfFile = null;
+        $this->fileName = '';
+        $this->extractedText = '';
+        $this->showExtractedText = false;
         $this->uploadKey++;
-    }
-
-    #[On('removePdfEvent')]
-    public function handleRemovePdf()
-    {
-        $this->removePdf();
+        $this->resetValidation('pdfFile');
     }
 
     public function toggleExtractedText()
