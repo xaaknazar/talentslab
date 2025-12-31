@@ -16,7 +16,7 @@
         <!-- Main Layout - Horizontal -->
         <div class="flex gap-4">
             <!-- LEFT: Report Area (MAIN - takes most width) -->
-            <div class="flex-1 min-w-0">
+            <div class="flex-1 min-w-0" style="max-width: calc(100% - 320px);">
                 <div class="bg-white rounded-xl shadow-sm h-full" style="border: 1px solid #E5E7EB; min-height: calc(100vh - 150px);">
                     <!-- Report Header -->
                     <div class="px-5 py-2.5 flex items-center justify-between rounded-t-xl" style="border-bottom: 1px solid #E5E7EB; background: linear-gradient(135deg, #F8FAFF 0%, #EEF2FF 100%);">
