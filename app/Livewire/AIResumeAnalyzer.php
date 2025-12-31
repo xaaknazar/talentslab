@@ -28,6 +28,9 @@ class AIResumeAnalyzer extends Component
     public $selectedCandidate = null;
     public $showCandidateDropdown = false;
 
+    // For resetting file input
+    public $uploadKey = 1;
+
     protected $rules = [
         'pdfFile' => 'required|file|mimes:pdf|max:20480',
     ];
@@ -69,10 +72,7 @@ class AIResumeAnalyzer extends Component
 
     public function clearCandidate()
     {
-        $this->selectedCandidate = null;
-        $this->candidateSearch = '';
-        $this->candidateResults = [];
-        $this->showCandidateDropdown = false;
+        $this->reset(['selectedCandidate', 'candidateSearch', 'candidateResults', 'showCandidateDropdown']);
     }
 
     #[On('clearCandidateEvent')]
@@ -95,10 +95,8 @@ class AIResumeAnalyzer extends Component
 
     public function removePdf()
     {
-        $this->pdfFile = null;
-        $this->fileName = '';
-        $this->extractedText = '';
-        $this->showExtractedText = false;
+        $this->reset(['pdfFile', 'fileName', 'extractedText', 'showExtractedText']);
+        $this->uploadKey++;
     }
 
     #[On('removePdfEvent')]
