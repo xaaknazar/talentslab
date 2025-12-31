@@ -196,31 +196,39 @@
                                 </div>
                             </div>
                         @else
-                            <div class="relative" wire:key="search-{{ $searchIteration }}">
+                            <div
+                                class="relative"
+                                wire:key="search-{{ $searchIteration }}"
+                                x-data="{ open: @entangle('showCandidateDropdown') }"
+                            >
                                 <input
                                     type="text"
                                     wire:model.live.debounce.300ms="candidateSearch"
-                                    wire:keydown.escape="$set('showCandidateDropdown', false)"
+                                    x-on:focus="open = true"
+                                    x-on:keydown.escape="open = false"
                                     placeholder="Поиск по имени..."
                                     class="w-full rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none"
                                     autocomplete="off"
                                 >
 
-                                @if(count($candidateResults) > 0)
-                                    <div class="absolute z-[9999] left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-200" style="max-height: 280px; overflow-y: auto;">
-                                        @foreach($candidateResults as $result)
-                                            <button
-                                                type="button"
-                                                wire:click="selectCandidate({{ $result['id'] }})"
-                                                wire:key="candidate-{{ $result['id'] }}"
-                                                class="w-full text-left px-4 py-3 hover:bg-blue-50 active:bg-blue-100 transition-colors border-b border-slate-100 last:border-b-0 cursor-pointer"
-                                            >
-                                                <p class="text-sm font-medium text-slate-800 pointer-events-none">{{ $result['full_name'] }}</p>
-                                                <p class="text-xs text-slate-500 mt-0.5 pointer-events-none">{{ $result['email'] }}</p>
-                                            </button>
-                                        @endforeach
-                                    </div>
-                                @endif
+                                <div
+                                    x-show="open && {{ count($candidateResults) }} > 0"
+                                    x-on:click.outside="open = false"
+                                    x-transition
+                                    class="absolute z-[9999] left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-200"
+                                    style="max-height: 280px; overflow-y: auto;"
+                                >
+                                    @foreach($candidateResults as $result)
+                                        <div
+                                            x-on:click="$wire.selectCandidate({{ $result['id'] }})"
+                                            wire:key="candidate-{{ $result['id'] }}"
+                                            class="w-full text-left px-4 py-3 hover:bg-blue-50 active:bg-blue-100 transition-colors border-b border-slate-100 last:border-b-0 cursor-pointer select-none"
+                                        >
+                                            <p class="text-sm font-medium text-slate-800">{{ $result['full_name'] }}</p>
+                                            <p class="text-xs text-slate-500 mt-0.5">{{ $result['email'] }}</p>
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
                         @endif
                     </div>
