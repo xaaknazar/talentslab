@@ -12,8 +12,8 @@
                 <div class="h-6 w-px bg-slate-200"></div>
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/25">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"></path>
+                        <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                         </svg>
                     </div>
                     <div>
@@ -92,7 +92,7 @@
                                 {!! \Illuminate\Support\Str::markdown($report) !!}
                             </article>
                         @else
-                            <div class="flex flex-col items-center justify-center py-20 text-center">
+                            <div class="flex flex-col items-center justify-center text-center" style="min-height: calc(100vh - 320px);">
                                 <div class="w-20 h-20 rounded-2xl flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-600 shadow-xl shadow-blue-500/30 mb-6">
                                     <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"></path>
@@ -103,7 +103,7 @@
                                     Загрузите PDF-отчет кандидата для получения глубинного психологического анализа
                                 </p>
 
-                                <div class="flex items-center gap-2">
+                                <div class="flex flex-wrap items-center justify-center gap-2">
                                     <div class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-50 border border-blue-200">
                                         <div class="w-6 h-6 rounded-md flex items-center justify-center bg-blue-500 text-white text-xs font-bold">1</div>
                                         <span class="text-sm text-blue-700">Выберите кандидата</span>
@@ -150,7 +150,7 @@
                     <div class="p-4">
                         @if($selectedCandidate)
                             <div class="rounded-xl p-4 bg-emerald-50 border border-emerald-200">
-                                <div class="flex items-start justify-between">
+                                <div class="flex items-start justify-between gap-2">
                                     <div class="min-w-0 flex-1">
                                         <p class="text-sm font-semibold text-emerald-800 truncate">{{ $selectedCandidate->full_name }}</p>
                                         <p class="text-xs text-emerald-600 mt-1 truncate">{{ $selectedCandidate->email }}</p>
@@ -158,7 +158,11 @@
                                             <p class="text-xs text-slate-500 mt-1">{{ $selectedCandidate->current_city }}</p>
                                         @endif
                                     </div>
-                                    <button wire:click="clearCandidate" class="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all">
+                                    <button
+                                        type="button"
+                                        wire:click.prevent="clearCandidate"
+                                        class="flex-shrink-0 p-2 rounded-lg text-red-500 bg-red-50 hover:bg-red-100 transition-all cursor-pointer"
+                                    >
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
                                         </svg>
@@ -166,27 +170,26 @@
                                 </div>
                             </div>
                         @else
-                            <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                            <div class="relative" wire:ignore.self>
                                 <input
                                     type="text"
                                     wire:model.live.debounce.300ms="candidateSearch"
-                                    @focus="open = true"
-                                    @input="open = true"
                                     placeholder="Поиск по имени..."
                                     class="w-full rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none"
+                                    autocomplete="off"
                                 >
 
                                 @if($showCandidateDropdown && count($candidateResults) > 0)
-                                    <div class="absolute z-[100] left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden">
+                                    <div class="absolute z-[9999] left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden" style="max-height: 280px; overflow-y: auto;">
                                         @foreach($candidateResults as $result)
-                                            <button
-                                                type="button"
+                                            <div
                                                 wire:click="selectCandidate({{ $result['id'] }})"
-                                                class="w-full px-4 py-3 text-left hover:bg-blue-50 transition-colors cursor-pointer border-b border-slate-100 last:border-b-0"
+                                                wire:key="candidate-{{ $result['id'] }}"
+                                                class="px-4 py-3 hover:bg-blue-50 transition-colors cursor-pointer border-b border-slate-100 last:border-b-0"
                                             >
                                                 <p class="text-sm font-medium text-slate-800">{{ $result['full_name'] }}</p>
                                                 <p class="text-xs text-slate-500 mt-0.5">{{ $result['email'] }}</p>
-                                            </button>
+                                            </div>
                                         @endforeach
                                     </div>
                                 @endif
