@@ -68,16 +68,36 @@
                                 {!! \Illuminate\Support\Str::markdown($report) !!}
                             </article>
                         @else
-                            <div class="flex flex-col items-center justify-center py-32 text-center">
-                                <div class="w-16 h-16 rounded-xl flex items-center justify-center mb-4" style="background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);">
-                                    <svg class="w-8 h-8" style="color: #3B82F6;" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"></path>
+                            <div class="flex flex-col items-center justify-center py-24 text-center">
+                                <div class="w-20 h-20 rounded-2xl flex items-center justify-center mb-6" style="background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%); box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);">
+                                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"></path>
                                     </svg>
                                 </div>
-                                <h3 class="text-base font-semibold mb-2" style="color: #0F172A;">Готов к анализу</h3>
-                                <p class="text-sm leading-relaxed max-w-md" style="color: #64748B;">
-                                    Выберите кандидата из базы и загрузите PDF отчет для получения глубинного анализа личности
+                                <h3 class="text-xl font-bold mb-3" style="color: #0F172A;">Готов к анализу</h3>
+                                <p class="text-sm leading-relaxed max-w-sm mb-6" style="color: #64748B;">
+                                    Выберите кандидата из базы и загрузите PDF отчет для глубинного анализа личности
                                 </p>
+                                <div class="flex items-center gap-6 text-xs" style="color: #94A3B8;">
+                                    <div class="flex items-center">
+                                        <div class="w-6 h-6 rounded-full flex items-center justify-center mr-2" style="background-color: #EEF2FF;">
+                                            <span style="color: #3B82F6; font-weight: 600;">1</span>
+                                        </div>
+                                        Выберите кандидата
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-6 h-6 rounded-full flex items-center justify-center mr-2" style="background-color: #EEF2FF;">
+                                            <span style="color: #3B82F6; font-weight: 600;">2</span>
+                                        </div>
+                                        Загрузите PDF
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-6 h-6 rounded-full flex items-center justify-center mr-2" style="background-color: #EEF2FF;">
+                                            <span style="color: #3B82F6; font-weight: 600;">3</span>
+                                        </div>
+                                        Получите отчет
+                                    </div>
+                                </div>
                             </div>
                         @endif
                     </div>
@@ -115,20 +135,20 @@
                                 </div>
                             </div>
                         @else
-                            <div class="relative">
+                            <div class="relative flex items-center">
                                 <input
                                     type="text"
                                     wire:model.live.debounce.300ms="candidateSearch"
                                     placeholder="Поиск по имени..."
-                                    class="w-full rounded-lg px-3 py-2 text-xs pr-8 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    class="w-full rounded-lg pl-3 pr-9 py-2 text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                     style="border: 1px solid #E5E7EB; color: #334155;"
                                 >
-                                <svg class="w-4 h-4 absolute right-2.5 top-2" style="color: #94A3B8;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <svg class="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style="color: #94A3B8;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
 
                                 @if($showCandidateDropdown && count($candidateResults) > 0)
-                                    <div class="absolute z-50 w-full mt-1 bg-white rounded-lg shadow-lg max-h-48 overflow-y-auto" style="border: 1px solid #E5E7EB;">
+                                    <div class="absolute z-50 w-full top-full mt-1 bg-white rounded-lg shadow-lg max-h-48 overflow-y-auto" style="border: 1px solid #E5E7EB;">
                                         @foreach($candidateResults as $result)
                                             <button
                                                 wire:click="selectCandidate({{ $result['id'] }})"
