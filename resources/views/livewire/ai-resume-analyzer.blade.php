@@ -209,14 +209,15 @@
                                 @if(count($candidateResults) > 0)
                                     <div class="absolute z-[9999] left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-200" style="max-height: 280px; overflow-y: auto;">
                                         @foreach($candidateResults as $result)
-                                            <div
-                                                wire:mousedown.prevent="selectCandidate({{ $result['id'] }})"
+                                            <button
+                                                type="button"
+                                                wire:click="selectCandidate({{ $result['id'] }})"
                                                 wire:key="candidate-{{ $result['id'] }}"
                                                 class="w-full text-left px-4 py-3 hover:bg-blue-50 active:bg-blue-100 transition-colors border-b border-slate-100 last:border-b-0 cursor-pointer"
                                             >
-                                                <p class="text-sm font-medium text-slate-800">{{ $result['full_name'] }}</p>
-                                                <p class="text-xs text-slate-500 mt-0.5">{{ $result['email'] }}</p>
-                                            </div>
+                                                <p class="text-sm font-medium text-slate-800 pointer-events-none">{{ $result['full_name'] }}</p>
+                                                <p class="text-xs text-slate-500 mt-0.5 pointer-events-none">{{ $result['email'] }}</p>
+                                            </button>
                                         @endforeach
                                     </div>
                                 @endif
