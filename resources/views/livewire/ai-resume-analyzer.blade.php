@@ -188,7 +188,11 @@
                                             <p class="text-xs text-slate-500 mt-1">{{ $selectedCandidate->current_city }}</p>
                                         @endif
                                     </div>
-                                    <button type="button" wire:click="clearCandidate" class="flex-shrink-0 p-2 rounded-lg text-red-500 bg-red-50 hover:bg-red-100 transition-all cursor-pointer">
+                                    <button
+                                        type="button"
+                                        onclick="Livewire.find('{{ $this->getId() }}').call('clearCandidate')"
+                                        class="flex-shrink-0 p-2 rounded-lg text-red-500 bg-red-50 hover:bg-red-100 transition-all cursor-pointer"
+                                    >
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
                                         </svg>
