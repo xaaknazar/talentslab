@@ -12,12 +12,12 @@
 
         <!-- Main Grid -->
         <div class="flex flex-col lg:flex-row gap-6">
-            <!-- Left Column - AI Report (70%) -->
-            <div class="w-full lg:w-[70%] order-2 lg:order-1">
+            <!-- Left Column - AI Report (78%) -->
+            <div class="w-full lg:w-[78%] order-2 lg:order-1">
                 <div class="bg-white rounded-xl border border-gray-200 shadow-sm min-h-[500px] sm:min-h-[600px]">
                     <!-- Report Header -->
                     <div class="px-5 sm:px-6 py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                        <h2 class="text-lg sm:text-xl font-semibold text-gray-800">Аналитический отчёт</h2>
+                        <h2 class="text-lg sm:text-xl font-semibold text-gray-800">Аналитический отчет</h2>
                         @if($report)
                             <button
                                 wire:click="clearReport"
@@ -65,9 +65,9 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                     </svg>
                                 </div>
-                                <h3 class="text-base sm:text-lg font-medium text-gray-700 mb-2">Отчёт пока не сформирован</h3>
+                                <h3 class="text-base sm:text-lg font-medium text-gray-700 mb-2">Отчет пока не сформирован</h3>
                                 <p class="text-sm text-gray-500 max-w-sm px-4">
-                                    Загрузите PDF-резюме и нажмите «Сформировать отчёт» для получения AI-анализа
+                                    Загрузите PDF-резюме и нажмите «Сформировать отчет» для получения AI-анализа
                                 </p>
                             </div>
                         @endif
@@ -75,8 +75,8 @@
                 </div>
             </div>
 
-            <!-- Right Column - Upload & Settings (30%) -->
-            <div class="w-full lg:w-[30%] space-y-6 order-1 lg:order-2">
+            <!-- Right Column - Upload & Settings (22%) -->
+            <div class="w-full lg:w-[22%] space-y-5 order-1 lg:order-2">
                 <!-- Upload Card -->
                 <div class="bg-white rounded-xl border border-gray-200 shadow-sm">
                     <div class="px-5 sm:px-6 py-4 border-b border-gray-100">
@@ -173,7 +173,7 @@
                         <svg class="w-5 h-5 mr-2 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                         </svg>
-                        Сформировать отчёт
+                        Сформировать отчет
                     </span>
                     <span wire:loading wire:target="generateReport" class="flex items-center">
                         <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
