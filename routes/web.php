@@ -72,6 +72,9 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // AI Resume Analyzer
+    Route::get('/ai', \App\Livewire\AIResumeAnalyzer::class)->name('ai.resume-analyzer');
+
     Route::get('/candidate/form/{id?}', [CandidateController::class, 'create'])->name('candidate.form');
     Route::get('/candidate/test', [CandidateController::class, 'test'])->name('candidate.test');
 
