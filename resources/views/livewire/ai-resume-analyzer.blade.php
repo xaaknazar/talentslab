@@ -188,13 +188,8 @@
                                             <p class="text-xs text-slate-500 mt-1">{{ $selectedCandidate->current_city }}</p>
                                         @endif
                                     </div>
-                                    <button
-                                        type="button"
-                                        x-data
-                                        x-on:click.stop.prevent="$wire.clearCandidate()"
-                                        class="flex-shrink-0 p-2 rounded-lg text-red-500 bg-red-50 hover:bg-red-100 transition-all cursor-pointer"
-                                    >
-                                        <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <button type="button" wire:click="clearCandidate" class="flex-shrink-0 p-2 rounded-lg text-red-500 bg-red-50 hover:bg-red-100 transition-all cursor-pointer">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
                                         </svg>
                                     </button>
@@ -212,20 +207,17 @@
                                 >
 
                                 @if(count($candidateResults) > 0)
-                                    <div
-                                        class="absolute z-[9999] left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-200"
-                                        style="max-height: 280px; overflow-y: auto;"
-                                    >
+                                    <div class="absolute z-[9999] left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-200" style="max-height: 280px; overflow-y: auto;">
                                         @foreach($candidateResults as $result)
-                                            <div
-                                                x-data
-                                                x-on:click.stop.prevent="$wire.selectCandidate({{ $result['id'] }})"
+                                            <button
+                                                type="button"
+                                                wire:click="selectCandidate({{ $result['id'] }})"
                                                 wire:key="candidate-{{ $result['id'] }}"
-                                                class="px-4 py-3 hover:bg-blue-50 active:bg-blue-100 transition-colors cursor-pointer border-b border-slate-100 last:border-b-0 select-none"
+                                                class="w-full text-left px-4 py-3 hover:bg-blue-50 active:bg-blue-100 transition-colors cursor-pointer border-b border-slate-100 last:border-b-0"
                                             >
-                                                <p class="text-sm font-medium text-slate-800 pointer-events-none">{{ $result['full_name'] }}</p>
-                                                <p class="text-xs text-slate-500 mt-0.5 pointer-events-none">{{ $result['email'] }}</p>
-                                            </div>
+                                                <p class="text-sm font-medium text-slate-800">{{ $result['full_name'] }}</p>
+                                                <p class="text-xs text-slate-500 mt-0.5">{{ $result['email'] }}</p>
+                                            </button>
                                         @endforeach
                                     </div>
                                 @endif
@@ -283,13 +275,8 @@
                                             <p class="text-xs text-emerald-500">Готов к анализу</p>
                                         </div>
                                     </div>
-                                    <button
-                                        type="button"
-                                        x-data
-                                        x-on:click.stop.prevent="$wire.removePdf()"
-                                        class="p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all cursor-pointer"
-                                    >
-                                        <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <button type="button" wire:click="removePdf" class="p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all cursor-pointer">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
                                         </svg>
                                     </button>
