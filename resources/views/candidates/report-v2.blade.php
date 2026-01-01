@@ -317,7 +317,7 @@ if (! function_exists('clean_git_conflicts')) {
         </div>
 
         <!-- Candidate Header -->
-        <div class="p-3 border-b border-gray-200">
+        <div class="p-3">
             <div class="mb-8">
                 <!-- Фото справа с обтеканием -->
                 <div class="float-right ml-6 flex-shrink-0">
@@ -485,7 +485,7 @@ if (! function_exists('clean_git_conflicts')) {
         </div>
 
         <!-- Main Content -->
-        <div class="p-3">
+        <div style="padding: 0 12px 12px 12px;">
             <!-- Опыт работы -->
             <div class="mb-8">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Опыт работы</h2>
