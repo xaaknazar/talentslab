@@ -253,36 +253,22 @@
             transition: opacity 0.3s ease-in-out;
         }
 
-        /* Предотвращение разрывов страниц */
-        .mb-8 {
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
+        /* Правила для плавного перехода контента между страницами */
 
-        .mb-4 {
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
-
+        /* Заголовок секции не отрывается от первой строки контента */
         h2 {
             page-break-after: avoid;
             break-after: avoid;
         }
 
-        /* Держим заголовок и следующий элемент вместе */
-        h2 + * {
-            page-break-before: avoid;
-            break-before: avoid;
-        }
-
-        /* Для flex контейнеров с данными */
-        .flex {
+        /* Отдельные строки данных не разрываются */
+        .data-row {
             page-break-inside: avoid;
             break-inside: avoid;
         }
 
-        /* Для grid контейнеров */
-        .grid {
+        /* Небольшие блоки с данными не разрываются */
+        .space-y-1 > .flex {
             page-break-inside: avoid;
             break-inside: avoid;
         }
@@ -680,13 +666,6 @@ if (! function_exists('clean_git_conflicts')) {
                             {{ $workplace }}
                         </span>
                     </div>
-                    <!-- 13. Компьютерные навыки -->
-                    @if($candidate->computer_skills)
-                    <div class="flex items-start">
-                        <span class="w-60 text-base text-gray-600">Компьютерные навыки:</span>
-                        <span class="text-base font-medium flex-1">{{ $candidate->computer_skills }}</span>
-                    </div>
-                    @endif
                 </div>
             </div>
 
@@ -709,6 +688,12 @@ if (! function_exists('clean_git_conflicts')) {
                 @else
                     <p class="text-base text-gray-500">Языковые навыки не указаны</p>
                 @endif
+            </div>
+
+            <!-- Компьютерные навыки -->
+            <div class="mb-8">
+                <h2 class="text-xl font-bold text-gray-800 mb-2">Компьютерные навыки</h2>
+                <p class="text-base font-medium">{{ $candidate->computer_skills ?: 'Не указано' }}</p>
             </div>
 
             <!-- Дата заполнения -->
