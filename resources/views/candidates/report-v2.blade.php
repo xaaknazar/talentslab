@@ -261,14 +261,28 @@
             break-after: avoid;
         }
 
-        /* Отдельные строки данных не разрываются */
-        .data-row {
+        /* Предотвращаем разрыв текста между страницами */
+        p, span, .flex, .flex-1 {
             page-break-inside: avoid;
             break-inside: avoid;
         }
 
+        /* Минимум строк до/после разрыва страницы */
+        p {
+            orphans: 3;
+            widows: 3;
+        }
+
         /* Небольшие блоки с данными не разрываются */
-        .space-y-1 > .flex {
+        .space-y-1 > .flex,
+        .space-y-1 > div,
+        .items-start {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        /* Секция mb-8 может разрываться, но её дочерние элементы - нет */
+        .mb-8 > * {
             page-break-inside: avoid;
             break-inside: avoid;
         }
