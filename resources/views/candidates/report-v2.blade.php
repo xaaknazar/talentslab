@@ -538,9 +538,9 @@ if (! function_exists('clean_git_conflicts')) {
                 @endif
             </div>
 
-            <!-- Прочая информация -->
+            <!-- Интересы и развитие -->
             <div class="mb-8">
-                <h2 class="text-xl font-bold text-gray-800 mb-2">Прочая информация</h2>
+                <h2 class="text-xl font-bold text-gray-800 mb-2">Интересы и развитие</h2>
                 <div class="space-y-1">
                     <!-- 1. Хобби -->
                     <div class="flex items-start">
