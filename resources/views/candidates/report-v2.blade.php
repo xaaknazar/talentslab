@@ -1,3 +1,30 @@
+@php
+if (! function_exists('mb_ucfirst')) {
+    function mb_ucfirst(mixed $value): string
+    {
+        $text = trim((string) ($value ?? ''));
+        if ($text === '') {
+            return '';
+        }
+        $lower = mb_strtolower($text, 'UTF-8');
+        $first = mb_strtoupper(mb_substr($lower, 0, 1, 'UTF-8'), 'UTF-8');
+        return $first . mb_substr($lower, 1, null, 'UTF-8');
+    }
+}
+
+if (! function_exists('mb_ucwords')) {
+    function mb_ucwords(mixed $value): string
+    {
+        $text = trim((string) ($value ?? ''));
+        if ($text === '') {
+            return '';
+        }
+        $words = explode(' ', $text);
+        $capitalizedWords = array_map('mb_ucfirst', $words);
+        return implode(' ', $capitalizedWords);
+    }
+}
+@endphp
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -289,34 +316,6 @@
     </style>
 </head>
 <body>
-@php
-if (! function_exists('mb_ucfirst')) {
-    function mb_ucfirst(mixed $value): string
-    {
-        $text = trim((string) ($value ?? ''));
-        if ($text === '') {
-            return '';
-        }
-        $lower = mb_strtolower($text, 'UTF-8');
-        $first = mb_strtoupper(mb_substr($lower, 0, 1, 'UTF-8'), 'UTF-8');
-        return $first . mb_substr($lower, 1, null, 'UTF-8');
-    }
-}
-
-if (! function_exists('mb_ucwords')) {
-    function mb_ucwords(mixed $value): string
-    {
-        $text = trim((string) ($value ?? ''));
-        if ($text === '') {
-            return '';
-        }
-        $words = explode(' ', $text);
-        $capitalizedWords = array_map('mb_ucfirst', $words);
-        return implode(' ', $capitalizedWords);
-    }
-}
-@endphp
-
     <div class="max-w-4xl mx-auto bg-white ">
         <!-- Header -->
         <div class="logo-header p-3">
