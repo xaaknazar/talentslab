@@ -336,18 +336,31 @@ if (! function_exists('mb_ucfirst')) {
                         @if($isReducedReport)
                             <span class="text-lg text-gray-500 font-normal">(урезанная версия)</span>
                         @endif
-                    <h1 class="text-3xl font-bold text-gray-800 mb-4">
+                    <h1 class="text-3xl font-bold mb-4" style="color: #39761d;">
                         {{ $candidate->full_name }}
                     </h1>
                      @if($isFullReport)
-                    <div class="text-base mb-6">
-                        <div class="mb-4 space-y-1">
-                            <!-- <span class="font-medium text-gray-800"></span> -->
-                            <span class="font-medium text-gray-800">{{ $candidate->email }}</span>
-                            <span class="font-medium text-gray-800 ml-8">{{ $candidate->phone }}</span>
-
+                    <div class="text-base mb-6" style="line-height: 1.8;">
+                        <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 8px;">
+                            <span class="font-medium text-gray-800" style="display: inline-flex; align-items: center; margin-right: 24px;">
+                                <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4cd.svg" alt="📍" style="width: 16px; height: 16px; margin-right: 6px;">
+                                {{ $candidate->current_city }}
+                            </span>
+                            <span class="font-medium text-gray-800" style="display: inline-flex; align-items: center;">
+                                <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4e7.svg" alt="📧" style="width: 16px; height: 16px; margin-right: 6px;">
+                                {{ $candidate->email }}
+                            </span>
+                        </div>
+                        <div style="display: flex; flex-wrap: wrap; align-items: center;">
+                            <span class="font-medium text-gray-800" style="display: inline-flex; align-items: center; margin-right: 24px;">
+                                <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4de.svg" alt="📞" style="width: 16px; height: 16px; margin-right: 6px;">
+                                {{ $candidate->phone }}
+                            </span>
                             @if($candidate->instagram)
-                                <span class="font-medium text-gray-800 ml-8">{{ $candidate->instagram }}</span>
+                                <span class="font-medium text-gray-800" style="display: inline-flex; align-items: center;">
+                                    <svg style="width: 16px; height: 16px; margin-right: 6px;" viewBox="0 0 24 24" fill="#E4405F"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.757-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/></svg>
+                                    {{ $candidate->instagram }}
+                                </span>
                             @endif
                         </div>
                     </div>
@@ -355,18 +368,6 @@ if (! function_exists('mb_ucfirst')) {
                     <h2 class="text-xl font-bold text-gray-800 mb-2">Основная информация</h2>
                      <!-- Основная информация -->
                      <div class="space-y-1">
-                         <div class="flex">
-                             <span class="w-60 text-base text-gray-600">Текущий город:</span>
-                             <span class="text-base font-medium">{{ $candidate->current_city }}</span>
-                         </div>
-                         <div class="flex">
-                             <span class="w-60 text-base text-gray-600">Готов к переезду:</span>
-                             <span class="text-base font-medium">{{ $candidate->ready_to_relocate ? 'Да' : 'Нет' }}</span>
-                         </div>
-                         <div class="flex items-start">
-                             <span class="w-60 text-base text-gray-600">Сфера деятельности:</span>
-                             <span class="text-base font-medium flex-1">{{ $candidate->activity_sphere ?: 'Не указано' }}</span>
-                         </div>
                         <div class="flex items-start">
                             <span class="w-60 text-base text-gray-600">Желаемая должность:</span>
                             <span class="text-base font-medium flex-1">
@@ -432,13 +433,7 @@ if (! function_exists('mb_ucfirst')) {
                             <span class="text-base font-medium flex-1">
                                 @if(!empty($family['parents']))
                                     @foreach($family['parents'] as $parent)
-                                        <span>
-                                            {{ $parent['relation'] ?? 'Не указано' }} - {{ $parent['birth_year'] ?? 'Не указано' }}
-                                            @if(!empty($parent['profession']))
-                                                - {{ $parent['profession'] }}
-                                            @endif
-                                        </span>
-                                        @if(!$loop->last)<br>@endif
+                                        <div>{{ $parent['relation'] ?? 'Не указано' }} - {{ $parent['birth_year'] ?? 'Не указано' }}{{ !empty($parent['profession']) ? ' - ' . $parent['profession'] : '' }}</div>
                                     @endforeach
                                 @else
                                     Не указано
@@ -450,12 +445,12 @@ if (! function_exists('mb_ucfirst')) {
                          @if($isFullReport)
                          <!-- Братья и сестры -->
                          <div class="flex items-start">
-                             <span class="w-60 text-base text-gray-600">Кол-во братьев-сестер:</span>
+                             <span class="w-60 text-base text-gray-600">Кол-во братьев/сестер:</span>
                              <span class="text-base font-medium flex-1">
                                  @if(!empty($family['siblings']))
                                      {{ count($family['siblings']) }}
                                      @foreach($family['siblings'] as $sibling)
-                                         ({{ ($sibling['relation'] ?? 'Не указано') === 'Брат' ? 'Б' : 'С' }}{{ $sibling['birth_year'] ?? 'Не указано' }})
+                                         ({{ ($sibling['relation'] ?? 'Не указано') === 'Брат' ? 'Б' : 'С' }}{{ $sibling['birth_year'] ?? '' }})
                                      @endforeach
                                  @else
                                      Не указано
@@ -472,19 +467,11 @@ if (! function_exists('mb_ucfirst')) {
 
                         <!-- Образование -->
                         <div class="flex items-start">
-                             <span class="w-60 text-base text-gray-600">Образование:</span>
+                             <span class="w-60 text-base text-gray-600">Профессиональное образование:</span>
                              <span class="text-base font-medium flex-1">
                                 @if($candidate->universities && count($candidate->universities) > 0)
                                     @foreach($candidate->universities as $index => $university)
-                                        <span>
-                                            <span class="font-medium">{{ $university['name'] ?? 'Не указано' }}</span> /
-                                            <span class="font-medium">{{ $university['speciality'] ?? 'Не указано' }}</span> /
-                                            <span>{{ $university['graduation_year'] ?? 'Не указано' }}</span>
-                                            @if(!empty($university['gpa']))
-                                                / <span>{{ $university['gpa'] }}</span>
-                                            @endif
-                                        </span>
-                                        @if(!$loop->last)<br>@endif
+                                        <div>{{ $university['name'] ?? 'Не указано' }} / {{ $university['speciality'] ?? 'Не указано' }} / {{ $university['graduation_year'] ?? 'Не указано' }}{{ !empty($university['gpa']) ? ' / ' . $university['gpa'] : '' }}</div>
                                     @endforeach
                                 @else
                                     Не указано
@@ -711,6 +698,13 @@ if (! function_exists('mb_ucfirst')) {
                 @endif
             </div>
 
+            <!-- Дата заполнения -->
+            @if($isFullReport)
+            <div style="text-align: right; padding: 8px 0; margin-bottom: 16px;">
+                <span style="color: #9ca3af; font-size: 12px;">Дата заполнения: {{ $candidate->created_at->format('d.m.Y') }}</span>
+            </div>
+            @endif
+
             <!-- Психометрические данные -->
             <div class="mb-8">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Психометрические данные</h2>
@@ -782,8 +776,8 @@ if (! function_exists('mb_ucfirst')) {
                                         $textColor = $config['textColor'] ?? 'white';
                                         $textShadow = $textColor === 'white' ? '1px 1px 2px rgba(0,0,0,0.3)' : 'none';
                                     @endphp
-                                    <div style="width: 90px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px; margin: 0 14px;">
-                                        <span style="font-size: 20px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
+                                    <div style="width: 110px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px; margin: 0 24px;">
+                                        <span style="font-size: 26px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
                                     </div>
                                 @endforeach
                             </div>
@@ -796,13 +790,13 @@ if (! function_exists('mb_ucfirst')) {
                                 $shortName = str_replace(' интеллект', '', $type);
                                 $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
                             @endphp
-                            <div style="width: 90px; display: flex; flex-direction: column; align-items: center; margin: 0 14px;">
+                            <div style="width: 110px; display: flex; flex-direction: column; align-items: center; margin: 0 24px;">
                                 <div style="height: 28px; display: flex; align-items: center; justify-content: center;">
-                                    <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 22px; height: 22px;">
+                                    <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 24px; height: 24px;">
                                 </div>
                                 <div style="text-align: center;">
-                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</div>
-                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</div>
+                                    <div style="font-size: 15px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</div>
+                                    <div style="font-size: 15px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</div>
                                 </div>
                             </div>
                         @endforeach
@@ -831,8 +825,8 @@ if (! function_exists('mb_ucfirst')) {
                                         $textColor = $config['textColor'] ?? 'white';
                                         $textShadow = $textColor === 'white' ? '1px 1px 2px rgba(0,0,0,0.3)' : 'none';
                                     @endphp
-                                    <div style="width: 90px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px; margin: 0 18px;">
-                                        <span style="font-size: 20px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
+                                    <div style="width: 110px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px; margin: 0 36px;">
+                                        <span style="font-size: 26px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
                                     </div>
                                 @endforeach
                             </div>
@@ -845,13 +839,13 @@ if (! function_exists('mb_ucfirst')) {
                                 $shortName = str_replace(' интеллект', '', $type);
                                 $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
                             @endphp
-                            <div style="width: 90px; display: flex; flex-direction: column; align-items: center; margin: 0 18px;">
+                            <div style="width: 110px; display: flex; flex-direction: column; align-items: center; margin: 0 36px;">
                                 <div style="height: 28px; display: flex; align-items: center; justify-content: center;">
-                                    <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 22px; height: 22px;">
+                                    <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 24px; height: 24px;">
                                 </div>
                                 <div style="text-align: center;">
-                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</div>
-                                    <div style="font-size: 11px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</div>
+                                    <div style="font-size: 15px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</div>
+                                    <div style="font-size: 15px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</div>
                                 </div>
                             </div>
                         @endforeach

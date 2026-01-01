@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Candidate;
 use App\Models\CandidateHistory;
-use App\Models\GardnerTestResult;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -26,13 +25,9 @@ class DashboardController extends Controller
                 ->first()?->created_at?->format('d.m.Y H:i');
         }
 
-        // Получаем результаты теста Гарднера
-        $gardnerTest = GardnerTestResult::where('user_id', $user->id)->first();
-
         return view('dashboard', [
             'candidate' => $candidate,
             'lastUpdate' => $lastUpdate,
-            'gardnerTest' => $gardnerTest
         ]);
     }
 
