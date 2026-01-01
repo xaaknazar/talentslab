@@ -190,7 +190,7 @@
                                     </div>
                                     <button
                                         type="button"
-                                        wire:click.prevent="clearCandidate"
+                                        onclick="Livewire.find('{{ $this->getId() }}').call('clearCandidate')"
                                         class="flex-shrink-0 p-2 rounded-lg text-red-500 bg-red-50 hover:bg-red-100 transition-all cursor-pointer"
                                     >
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -204,30 +204,24 @@
                                 <input
                                     type="text"
                                     wire:model.live.debounce.300ms="candidateSearch"
-                                    wire:keydown.escape="$set('showCandidateDropdown', false)"
                                     placeholder="Поиск по имени..."
                                     class="w-full rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none"
                                     autocomplete="off"
                                 >
 
                                 @if(count($candidateResults) > 0)
-                                    <ul
-                                        class="absolute z-[9999] left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-200"
-                                        style="max-height: 280px; overflow-y: auto;"
-                                    >
+                                    <div class="absolute z-[9999] left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-200" style="max-height: 280px; overflow-y: auto;">
                                         @foreach($candidateResults as $result)
-                                            <li
-                                                wire:click.stop="selectCandidate({{ $result['id'] }})"
+                                            <div
+                                                onclick="Livewire.find('{{ $this->getId() }}').call('selectCandidate', {{ $result['id'] }})"
                                                 wire:key="candidate-{{ $result['id'] }}"
-                                                role="button"
-                                                tabindex="0"
-                                                class="px-4 py-3 hover:bg-blue-50 active:bg-blue-100 transition-colors cursor-pointer border-b border-slate-100 last:border-b-0 select-none"
+                                                class="w-full text-left px-4 py-3 hover:bg-blue-50 active:bg-blue-100 transition-colors border-b border-slate-100 last:border-b-0 cursor-pointer select-none"
                                             >
-                                                <p class="text-sm font-medium text-slate-800 pointer-events-none">{{ $result['full_name'] }}</p>
-                                                <p class="text-xs text-slate-500 mt-0.5 pointer-events-none">{{ $result['email'] }}</p>
-                                            </li>
+                                                <p class="text-sm font-medium text-slate-800">{{ $result['full_name'] }}</p>
+                                                <p class="text-xs text-slate-500 mt-0.5">{{ $result['email'] }}</p>
+                                            </div>
                                         @endforeach
-                                    </ul>
+                                    </div>
                                 @endif
                             </div>
                         @endif
@@ -247,6 +241,7 @@
                     <div class="p-4">
                         @if(!$fileName)
                             <div
+                                wire:key="upload-{{ $uploadIteration }}"
                                 x-data="{ isDragging: false }"
                                 x-on:dragover.prevent="isDragging = true"
                                 x-on:dragleave.prevent="isDragging = false"
@@ -282,7 +277,7 @@
                                             <p class="text-xs text-emerald-500">Готов к анализу</p>
                                         </div>
                                     </div>
-                                    <button wire:click="removePdf" class="p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all">
+                                    <button type="button" wire:click="removePdf" class="p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all cursor-pointer">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
                                         </svg>
@@ -319,10 +314,11 @@
 
                 <!-- Generate Button -->
                 <button
+                    type="button"
                     wire:click="generateReport"
                     wire:loading.attr="disabled"
                     wire:target="generateReport"
-                    :disabled="$wire.isLoading || !$wire.fileName"
+                    @if($isLoading || !$fileName) disabled @endif
                     class="w-full h-14 text-white text-sm font-semibold rounded-2xl transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40 active:scale-[0.98]"
                 >
                     <span wire:loading.remove wire:target="generateReport" class="flex items-center gap-2">
@@ -374,6 +370,7 @@
             color: #334155;
             font-size: 15px;
             line-height: 1.8;
+            padding: 16px 24px;
         }
 
         .report-content h1 {
@@ -404,16 +401,20 @@
             color: #334155;
             margin-top: 24px;
             margin-bottom: 12px;
+            padding-left: 8px;
         }
 
         .report-content p {
             margin-bottom: 16px;
+            padding-left: 8px;
+            padding-right: 8px;
             color: #475569;
         }
 
         .report-content ul, .report-content ol {
             margin-bottom: 20px;
-            padding-left: 24px;
+            padding-left: 32px;
+            padding-right: 8px;
         }
 
         .report-content li {
@@ -436,7 +437,7 @@
         .report-content blockquote {
             border-left: 4px solid #3b82f6;
             padding: 16px 20px;
-            margin: 24px 0;
+            margin: 24px 8px;
             background: #f8fafc;
             border-radius: 0 10px 10px 0;
             font-style: italic;
@@ -444,9 +445,9 @@
         }
 
         .report-content table {
-            width: 100%;
+            width: calc(100% - 16px);
             border-collapse: collapse;
-            margin: 24px 0;
+            margin: 24px 8px;
             font-size: 14px;
             border-radius: 10px;
             overflow: hidden;
