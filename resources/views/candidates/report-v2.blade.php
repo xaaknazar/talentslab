@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@if($isReducedReport)Урезанный отчет о кандидате@elseОтчет о кандидате@endif - {{ $candidate->full_name }}</title>
+    <title>@if($isReducedReport)Урезанный отчет о кандидате@elseОтчет о кандидате@endif - {{ mb_ucwords($candidate->full_name) }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -302,6 +302,19 @@ if (! function_exists('mb_ucfirst')) {
         return $first . mb_substr($lower, 1, null, 'UTF-8');
     }
 }
+
+if (! function_exists('mb_ucwords')) {
+    function mb_ucwords(mixed $value): string
+    {
+        $text = trim((string) ($value ?? ''));
+        if ($text === '') {
+            return '';
+        }
+        $words = explode(' ', $text);
+        $capitalizedWords = array_map('mb_ucfirst', $words);
+        return implode(' ', $capitalizedWords);
+    }
+}
 @endphp
 
     <div class="max-w-4xl mx-auto bg-white ">
@@ -337,7 +350,7 @@ if (! function_exists('mb_ucfirst')) {
                             <span class="text-lg text-gray-500 font-normal">(урезанная версия)</span>
                         @endif
                     <h1 class="text-3xl font-bold text-gray-800 mb-4">
-                        {{ $candidate->full_name }}
+                        {{ mb_ucwords($candidate->full_name) }}
                     </h1>
                      @if($isFullReport)
                     <div class="text-base mb-6">
@@ -357,7 +370,7 @@ if (! function_exists('mb_ucfirst')) {
                      <div class="space-y-1">
                          <div class="flex">
                              <span class="w-60 text-base text-gray-600">Текущий город:</span>
-                             <span class="text-base font-medium">{{ $candidate->current_city }}</span>
+                             <span class="text-base font-medium">{{ mb_ucfirst($candidate->current_city) }}</span>
                          </div>
                          <div class="flex">
                              <span class="w-60 text-base text-gray-600">Готов к переезду:</span>
