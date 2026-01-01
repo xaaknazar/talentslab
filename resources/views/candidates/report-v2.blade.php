@@ -433,7 +433,7 @@ if (! function_exists('clean_git_conflicts')) {
                                          ({{ $child['gender'] ?? 'М' }}{{ $child['birth_year'] ?? '' }})
                                      @endforeach
                                  @else
-                                     Детей нет
+                                     0
                                  @endif
                              </span>
                          </div>

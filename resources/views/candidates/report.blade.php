@@ -234,7 +234,7 @@ if (! function_exists('mb_ucfirst')) {
                                             ({{ $child['gender'] ?? 'М' }}{{ $child['birth_year'] ?? '' }})
                                         @endforeach
                                     @else
-                                        Детей нет
+                                        0
                                     @endif
                                 </span>
                             </div>
