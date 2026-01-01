@@ -121,10 +121,31 @@
         <div class="p-6 border-b border-gray-200">
             <div class="flex items-start gap-8">
                 <div class="flex-1">
-                    <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ $candidate->first_name }} {{ $candidate->last_name }}</h1>
+                    @php
+if (! function_exists('clean_git_conflicts')) {
+    function clean_git_conflicts(mixed $value): string
+    {
+        $text = (string) ($value ?? '');
+        $text = preg_replace('/<<<<<<< .*?\n?/', '', $text);
+        $text = preg_replace('/=======\n?/', '', $text);
+        $text = preg_replace('/>>>>>>> .*?\n?/', '', $text);
+        return trim($text);
+    }
+}
+if (! function_exists('mb_ucfirst')) {
+    function mb_ucfirst(mixed $value): string
+    {
+        $text = trim((string) ($value ?? ''));
+        if ($text === '') return '';
+        $lower = mb_strtolower($text, 'UTF-8');
+        return mb_strtoupper(mb_substr($lower, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr($lower, 1, null, 'UTF-8');
+    }
+}
+@endphp
+                    <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ clean_git_conflicts($candidate->first_name) }} {{ clean_git_conflicts($candidate->last_name) }}</h1>
                      <div class="text-base mb-6">
                          <div class="mb-4">
-                             <span class="font-medium text-gray-800">{{ $candidate->current_city }}</span>
+                             <span class="font-medium text-gray-800">{{ mb_ucfirst(clean_git_conflicts($candidate->current_city)) }}</span>
                              <span class="font-medium text-gray-800 ml-8">{{ $candidate->phone }}</span>
                              <span class="font-medium text-gray-800 ml-8">{{ $candidate->email }}</span>
                          </div>

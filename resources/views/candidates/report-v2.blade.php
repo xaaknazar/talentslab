@@ -302,6 +302,19 @@ if (! function_exists('mb_ucfirst')) {
         return $first . mb_substr($lower, 1, null, 'UTF-8');
     }
 }
+
+// Функция для очистки git conflict маркеров из текста
+if (! function_exists('clean_git_conflicts')) {
+    function clean_git_conflicts(mixed $value): string
+    {
+        $text = (string) ($value ?? '');
+        // Удаляем маркеры git конфликтов
+        $text = preg_replace('/<<<<<<< .*?\n?/', '', $text);
+        $text = preg_replace('/=======\n?/', '', $text);
+        $text = preg_replace('/>>>>>>> .*?\n?/', '', $text);
+        return trim($text);
+    }
+}
 @endphp
 
     <div class="max-w-4xl mx-auto bg-white ">
@@ -337,14 +350,14 @@ if (! function_exists('mb_ucfirst')) {
                             <span class="text-lg text-gray-500 font-normal">(урезанная версия)</span>
                         @endif
                     <h1 class="text-3xl font-bold mb-4" style="color: #39761d;">
-                        {{ $candidate->full_name }}
+                        {{ clean_git_conflicts($candidate->full_name) }}
                     </h1>
                      @if($isFullReport)
                     <div class="text-base mb-6" style="line-height: 1.8;">
                         <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 8px;">
                             <span class="font-medium text-gray-800" style="display: inline-flex; align-items: center; margin-right: 24px;">
                                 <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4cd.svg" alt="📍" style="width: 16px; height: 16px; margin-right: 6px;">
-                                {{ $candidate->current_city }}
+                                {{ mb_ucfirst(clean_git_conflicts($candidate->current_city)) }}
                             </span>
                             <span class="font-medium text-gray-800" style="display: inline-flex; align-items: center;">
                                 <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4e7.svg" alt="📧" style="width: 16px; height: 16px; margin-right: 6px;">
