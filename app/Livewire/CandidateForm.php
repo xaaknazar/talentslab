@@ -428,8 +428,10 @@ class CandidateForm extends Component
             'school_graduation_year' => 'required|integer|min:1970|max:2035',
             'universities' => 'nullable|array|min:0',
             'universities.*.name' => 'required|string|max:255',
+            'universities.*.city' => 'required|string|max:255',
             'universities.*.graduation_year' => 'required|integer|min:1950',
             'universities.*.speciality' => 'required|string|max:255',
+            'universities.*.degree' => 'required|in:Средне-специальное,Бакалавр,Магистратура,PhD',
             'universities.*.gpa' => 'nullable|numeric|min:0|max:4',
             'language_skills' => 'required|array|min:1',
             'language_skills.*.language' => 'required|string|max:255',
@@ -615,8 +617,10 @@ class CandidateForm extends Component
         'school_graduation_year' => 'Год окончания (школа)',
         'universities' => 'Университеты',
         'universities.*.name' => 'Название университета',
+        'universities.*.city' => 'Город',
         'universities.*.graduation_year' => 'Год окончания',
         'universities.*.speciality' => 'Специальность',
+        'universities.*.degree' => 'Степень образования',
         'universities.*.gpa' => 'GPA',
         'language_skills' => 'Языковые навыки',
         'language_skills.*.language' => 'Язык',
@@ -905,8 +909,10 @@ class CandidateForm extends Component
                 'school_graduation_year' => $allRules['school_graduation_year'],
                 'universities' => $allRules['universities'],
                 'universities.*.name' => $allRules['universities.*.name'],
+                'universities.*.city' => $allRules['universities.*.city'],
                 'universities.*.graduation_year' => $allRules['universities.*.graduation_year'],
                 'universities.*.speciality' => $allRules['universities.*.speciality'],
+                'universities.*.degree' => $allRules['universities.*.degree'],
                 'universities.*.gpa' => $allRules['universities.*.gpa'],
                 'language_skills' => $allRules['language_skills'],
                 'language_skills.*.language' => $allRules['language_skills.*.language'],
@@ -1473,6 +1479,8 @@ class CandidateForm extends Component
             'name' => '',
             'graduation_year' => '',
             'speciality' => '',
+            'degree' => '',
+            'city' => '',
             'gpa' => ''
         ];
     }
@@ -1899,14 +1907,11 @@ class CandidateForm extends Component
 
             session()->flash('message', 'Анкета успешно сохранена!');
 
-            // Определяем, куда перенаправить пользователя
-            if (auth()->user()->is_admin) {
-                // Администратор возвращается в админ-панель
-                return redirect()->to('/admin/candidates');
-            } else {
-                // Обычный пользователь попадает на дашборд
-                return redirect()->route('dashboard');
-            }
+            // Определяем URL для редиректа
+            $redirectUrl = auth()->user()->is_admin ? '/admin/candidates' : route('dashboard');
+
+            // Показываем поздравление с конфетти перед редиректом
+            $this->dispatch('form-completed', redirectUrl: $redirectUrl);
         } catch (\Illuminate\Validation\ValidationException $e) {
             logger()->debug('Validation errors in submit:', $e->errors());
             throw $e;
