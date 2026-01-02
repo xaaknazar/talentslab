@@ -464,8 +464,35 @@ class CandidateForm extends Component
             'desired_position' => ['required', 'string', 'max:255'],
             'activity_sphere' => ['required', 'string', 'max:255'],
             'expected_salary' => 'nullable|numeric|min:0|max:999999999999',
-            'expected_salary_from' => 'required|numeric|min:0|max:999999999999',
-            'expected_salary_to' => 'required|numeric|min:0|max:999999999999|gte:expected_salary_from',
+            'expected_salary_from' => [
+                'required',
+                'numeric',
+                'min:0',
+                'max:999999999999',
+                function ($attribute, $value, $fail) {
+                    if ($this->birth_date) {
+                        $birthYear = (int) date('Y', strtotime($this->birth_date));
+                        if ($birthYear >= 2000 && $value > 2000000) {
+                            $fail('Для кандидатов младше 2000 года рождения максимальная зарплата "От" - 2 000 000 тенге.');
+                        }
+                    }
+                }
+            ],
+            'expected_salary_to' => [
+                'required',
+                'numeric',
+                'min:0',
+                'max:999999999999',
+                'gte:expected_salary_from',
+                function ($attribute, $value, $fail) {
+                    if ($this->birth_date) {
+                        $birthYear = (int) date('Y', strtotime($this->birth_date));
+                        if ($birthYear >= 2000 && $value > 2000000) {
+                            $fail('Для кандидатов младше 2000 года рождения максимальная зарплата "До" - 2 000 000 тенге.');
+                        }
+                    }
+                }
+            ],
             'employer_requirements' => ['required', 'string', 'max:2000'],
 
             // Step 4 validation rules
