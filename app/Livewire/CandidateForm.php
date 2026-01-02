@@ -1914,10 +1914,11 @@ class CandidateForm extends Component
             session()->flash('message', 'Анкета успешно сохранена!');
 
             // Определяем, куда перенаправить пользователя
-            $redirectUrl = auth()->user()->is_admin ? '/admin/candidates' : route('dashboard');
+            if (auth()->user()->is_admin) {
+                return redirect()->to('/admin/candidates');
+            }
 
-            // Отправляем событие для показа поздравления с конфетти
-            $this->dispatch('form-completed', redirectUrl: $redirectUrl);
+            return redirect()->route('dashboard');
         } catch (\Illuminate\Validation\ValidationException $e) {
             logger()->debug('Validation errors in submit:', $e->errors());
             throw $e;
