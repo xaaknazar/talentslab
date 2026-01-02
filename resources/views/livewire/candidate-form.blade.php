@@ -1,6 +1,84 @@
 <?php
 // resources/views/livewire/candidate-form.blade.php
 ?>
+<!-- Confetti CSS -->
+<style>
+    /* Плавные переходы между шагами */
+    .step {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Плавные переходы для кнопок */
+    button, input, select, textarea {
+        transition: all 0.2s ease-in-out;
+    }
+
+    /* Модальное окно поздравления */
+    .celebration-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .celebration-content {
+        background: white;
+        padding: 3rem;
+        border-radius: 1.5rem;
+        text-align: center;
+        max-width: 450px;
+        animation: scaleIn 0.4s ease-out;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    @keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    /* Конфетти анимация */
+    .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        top: -10px;
+        z-index: 10000;
+        animation: confettiFall 3s linear forwards;
+    }
+
+    @keyframes confettiFall {
+        0% {
+            transform: translateY(0) rotate(0deg);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(100vh) rotate(720deg);
+            opacity: 0;
+        }
+    }
+</style>
+
 <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
     <div class="bg-white overflow-hidden shadow-xl rounded-lg">
         <!-- Step Navigation -->
@@ -187,6 +265,85 @@
 
 @push('scripts')
 <script>
+// Функция создания конфетти
+function createConfetti() {
+    const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500', '#ff69b4'];
+    const shapes = ['circle', 'square', 'triangle'];
+
+    for (let i = 0; i < 150; i++) {
+        setTimeout(() => {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            confetti.style.animationDelay = Math.random() * 0.5 + 's';
+
+            const shape = shapes[Math.floor(Math.random() * shapes.length)];
+            if (shape === 'circle') {
+                confetti.style.borderRadius = '50%';
+            } else if (shape === 'triangle') {
+                confetti.style.width = '0';
+                confetti.style.height = '0';
+                confetti.style.borderLeft = '5px solid transparent';
+                confetti.style.borderRight = '5px solid transparent';
+                confetti.style.borderBottom = '10px solid ' + colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.backgroundColor = 'transparent';
+            }
+
+            document.body.appendChild(confetti);
+
+            // Удаляем конфетти после анимации
+            setTimeout(() => confetti.remove(), 4000);
+        }, i * 20);
+    }
+}
+
+// Функция показа модального окна поздравления
+function showCelebration(redirectUrl) {
+    // Создаем модальное окно
+    const modal = document.createElement('div');
+    modal.className = 'celebration-modal';
+    modal.innerHTML = `
+        <div class="celebration-content">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">🎊🎉</div>
+            <h2 style="font-size: 1.75rem; font-weight: bold; color: #1f2937; margin-bottom: 1rem;">
+                Поздравляем!
+            </h2>
+            <p style="font-size: 1.125rem; color: #4b5563; margin-bottom: 2rem;">
+                Вы успешно завершили заполнение анкеты
+            </p>
+            <div style="width: 100%; height: 4px; background: #e5e7eb; border-radius: 2px; overflow: hidden;">
+                <div style="height: 100%; background: linear-gradient(90deg, #10b981, #3b82f6); animation: progressBar 3s linear forwards;"></div>
+            </div>
+            <style>
+                @keyframes progressBar {
+                    from { width: 0; }
+                    to { width: 100%; }
+                }
+            </style>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Запускаем конфетти
+    createConfetti();
+
+    // Через 3 секунды редиректим
+    setTimeout(() => {
+        window.location.href = redirectUrl;
+    }, 3000);
+}
+
+// Слушаем событие завершения формы от Livewire
+document.addEventListener('livewire:initialized', () => {
+    Livewire.on('form-completed', (event) => {
+        console.log('🎉 Form completed event received', event);
+        showCelebration(event.redirectUrl);
+    });
+});
+
 // Глобальный обработчик ползунков - версия 2.0
 (function() {
     'use strict';
