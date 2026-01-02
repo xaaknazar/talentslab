@@ -1,7 +1,70 @@
 <?php
 // resources/views/livewire/candidate-form.blade.php
 ?>
-<div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+<!-- Стили для плавных переходов и конфетти -->
+<style>
+    .step {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    button, input, select, textarea {
+        transition: all 0.2s ease-in-out;
+    }
+    .celebration-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+    .celebration-content {
+        background: white;
+        padding: 3rem;
+        border-radius: 1.5rem;
+        text-align: center;
+        max-width: 450px;
+        animation: scaleIn 0.4s ease-out;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    @keyframes scaleIn {
+        from { opacity: 0; transform: scale(0.8); }
+        to { opacity: 1; transform: scale(1); }
+    }
+    .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        top: -10px;
+        z-index: 10000;
+        animation: confettiFall 3s linear forwards;
+    }
+    @keyframes confettiFall {
+        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+</style>
+
+<div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8"
+     x-data="{ showCelebration: false }"
+     @form-completed.window="showCelebration = true; createConfetti(); setTimeout(() => { window.location.href = $event.detail.redirectUrl; }, 3000);">
+
+    <!-- Модальное окно поздравления -->
+    <template x-if="showCelebration">
+        <div class="celebration-modal">
+            <div class="celebration-content">
+                <div class="text-6xl mb-4">🎉</div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Поздравляем!</h2>
+                <p class="text-gray-600 mb-4">Вы успешно завершили заполнение анкеты</p>
+                <p class="text-sm text-gray-500">Перенаправление через 3 секунды...</p>
+            </div>
+        </div>
+    </template>
     <div class="bg-white overflow-hidden shadow-xl rounded-lg">
         <!-- Step Navigation -->
         <div class="mb-6 px-3 sm:px-6 pt-6">
@@ -545,7 +608,24 @@
             console.log('✅ TEST: Event chain test completed');
         }, 2000);
     };
-    
+
+    // Функция создания конфетти
+    window.createConfetti = function() {
+        const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff8800', '#8800ff'];
+        for (let i = 0; i < 100; i++) {
+            setTimeout(() => {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 4000);
+            }, i * 30);
+        }
+    };
+
 })();
 </script>
 @endpush 

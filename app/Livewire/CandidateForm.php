@@ -351,7 +351,17 @@ class CandidateForm extends Component
             $this->school_city = $schoolParts[1] ?? '';
             $this->school_graduation_year = $schoolParts[2] ?? '';
         }
-        $this->universities = $this->candidate->universities ?? [];
+        // Нормализуем данные университетов для обратной совместимости
+        $this->universities = collect($this->candidate->universities ?? [])->map(function ($uni) {
+            return [
+                'name' => $uni['name'] ?? '',
+                'city' => $uni['city'] ?? '',
+                'graduation_year' => $uni['graduation_year'] ?? '',
+                'speciality' => $uni['speciality'] ?? '',
+                'degree' => $uni['degree'] ?? '',
+                'gpa' => $uni['gpa'] ?? '',
+            ];
+        })->toArray();
         $this->language_skills = $this->candidate->language_skills ?? [];
         $this->computer_skills = $this->candidate->computer_skills ?? '';
         $this->work_experience = $this->convertWorkExperienceFormat($this->candidate->work_experience ?? []);
@@ -428,8 +438,10 @@ class CandidateForm extends Component
             'school_graduation_year' => 'required|integer|min:1970|max:2035',
             'universities' => 'nullable|array|min:0',
             'universities.*.name' => 'required|string|max:255',
+            'universities.*.city' => 'nullable|string|max:255',
             'universities.*.graduation_year' => 'required|integer|min:1950',
             'universities.*.speciality' => 'required|string|max:255',
+            'universities.*.degree' => 'nullable|in:Средне-специальное,Бакалавр,Магистратура,PhD',
             'universities.*.gpa' => 'nullable|numeric|min:0|max:4',
             'language_skills' => 'required|array|min:1',
             'language_skills.*.language' => 'required|string|max:255',
@@ -1471,8 +1483,10 @@ class CandidateForm extends Component
         $this->universities = collect($this->universities)->toArray();
         $this->universities[] = [
             'name' => '',
+            'city' => '',
             'graduation_year' => '',
             'speciality' => '',
+            'degree' => '',
             'gpa' => ''
         ];
     }
@@ -1900,13 +1914,10 @@ class CandidateForm extends Component
             session()->flash('message', 'Анкета успешно сохранена!');
 
             // Определяем, куда перенаправить пользователя
-            if (auth()->user()->is_admin) {
-                // Администратор возвращается в админ-панель
-                return redirect()->to('/admin/candidates');
-            } else {
-                // Обычный пользователь попадает на дашборд
-                return redirect()->route('dashboard');
-            }
+            $redirectUrl = auth()->user()->is_admin ? '/admin/candidates' : route('dashboard');
+
+            // Отправляем событие для показа поздравления с конфетти
+            $this->dispatch('form-completed', redirectUrl: $redirectUrl);
         } catch (\Illuminate\Validation\ValidationException $e) {
             logger()->debug('Validation errors in submit:', $e->errors());
             throw $e;

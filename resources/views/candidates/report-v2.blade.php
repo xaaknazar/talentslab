@@ -464,7 +464,16 @@ if (! function_exists('clean_git_conflicts')) {
                              <span class="text-base font-medium flex-1">
                                 @if($candidate->universities && count($candidate->universities) > 0)
                                     @foreach($candidate->universities as $index => $university)
-                                        <div>{{ $university['name'] ?? 'Не указано' }} / {{ $university['speciality'] ?? 'Не указано' }} / {{ $university['graduation_year'] ?? 'Не указано' }}{{ !empty($university['gpa']) ? ' / ' . $university['gpa'] : '' }}</div>
+                                        @php
+                                            $parts = [];
+                                            $parts[] = $university['name'] ?? 'Не указано';
+                                            if (!empty($university['city'])) $parts[] = $university['city'];
+                                            $parts[] = $university['graduation_year'] ?? 'Не указано';
+                                            $parts[] = $university['speciality'] ?? 'Не указано';
+                                            if (!empty($university['degree'])) $parts[] = $university['degree'];
+                                            if (!empty($university['gpa'])) $parts[] = $university['gpa'];
+                                        @endphp
+                                        <div>{{ implode(' / ', $parts) }}</div>
                                     @endforeach
                                 @else
                                     Не указано
