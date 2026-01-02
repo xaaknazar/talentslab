@@ -111,24 +111,18 @@ class CandidateForm extends Component
 
             // Загружаем списки из JSON файлов
             $jsonPath = base_path('resources/json/countries.json');
-            logger()->debug('JSON path:', ['path' => $jsonPath, 'exists' => file_exists($jsonPath)]);
 
             if (!file_exists($jsonPath)) {
                 throw new \Exception("JSON file not found at: " . $jsonPath);
             }
 
             $jsonContent = file_get_contents($jsonPath);
-            logger()->debug('JSON content:', ['content' => substr($jsonContent, 0, 100)]);
 
             $countriesData = json_decode($jsonContent, true);
             if (json_last_error() !== JSON_ERROR_NONE) {
                 throw new \Exception("JSON decode error: " . json_last_error_msg());
             }
 
-            logger()->debug('Decoded countries:', [
-                'count' => count($countriesData),
-                'first_country' => $countriesData[0] ?? null
-            ]);
 
             $this->countries = collect($countriesData)->map(function($country) {
                 $data = [];
@@ -164,11 +158,6 @@ class CandidateForm extends Component
             ->values()
             ->all();
 
-            logger()->debug('Final countries array:', [
-                'count' => count($this->countries),
-                'first_country' => $this->countries[0] ?? null,
-                'keys' => array_keys($this->countries[0] ?? [])
-            ]);
 
         } catch (\Exception $e) {
             logger()->error('Error loading countries:', [
@@ -204,7 +193,6 @@ class CandidateForm extends Component
         $this->work_experience = [];
         $this->computer_skills = '';
 
-        logger()->debug('Mount: work_experience initialized as empty array');
 
         // Инициализируем значения для step3 ползунков
         $this->total_experience_years = 0;
@@ -322,7 +310,6 @@ class CandidateForm extends Component
 
         // Additional Information
         $this->religion = $this->convertReligionToRussian($this->candidate->religion);
-        logger()->debug('Loading candidate religion:', ['original' => $this->candidate->religion, 'converted' => $this->religion]);
         $this->is_practicing = $this->candidate->is_practicing;
         $this->family_members = $this->candidate->family_members ?? [];
 
@@ -355,7 +342,6 @@ class CandidateForm extends Component
         $this->language_skills = $this->candidate->language_skills ?? [];
         $this->computer_skills = $this->candidate->computer_skills ?? '';
         $this->work_experience = $this->convertWorkExperienceFormat($this->candidate->work_experience ?? []);
-        logger()->debug('Work experience loaded:', ['original' => $this->candidate->work_experience, 'converted' => $this->work_experience]);
         $this->total_experience_years = $this->candidate->total_experience_years;
         $this->job_satisfaction = $this->candidate->job_satisfaction;
         $this->desired_position = $this->candidate->desired_position;
@@ -693,13 +679,6 @@ class CandidateForm extends Component
             strpos($propertyName, 'siblings.') === 0 ||
             strpos($propertyName, 'children.') === 0) {
             // Логируем обновление данных семьи
-            logger()->info('Family field updated', [
-                'property' => $propertyName,
-                'value' => $this->{explode('.', $propertyName)[0]} ?? 'not set',
-                'parents_count' => count($this->parents),
-                'siblings_count' => count($this->siblings),
-                'children_count' => count($this->children)
-            ]);
             // Просто сбрасываем ошибки для этого поля без валидации
             $this->resetErrorBag($propertyName);
             return;
@@ -712,11 +691,6 @@ class CandidateForm extends Component
                 $index = (int)$matches[1];
                 // Проверяем, что элемент с таким индексом существует
                 if (!isset($this->work_experience[$index])) {
-                    logger()->warning('Attempted to access non-existent work experience index', [
-                        'property' => $propertyName,
-                        'index' => $index,
-                        'work_experience_count' => count($this->work_experience)
-                    ]);
                     return;
                 }
                 // Валидируем только если все обязательные поля заполнены
@@ -785,20 +759,12 @@ class CandidateForm extends Component
     public function nextStep()
     {
         try {
-            logger()->debug('Starting nextStep method');
-            logger()->debug('Current step: ' . $this->currentStep);
 
             // Фильтруем пустые элементы семьи перед валидацией
             $this->filterEmptyFamilyElements();
 
             $rules = $this->getStepRules();
 
-            logger()->debug('Validation rules for step ' . $this->currentStep . ':', $rules);
-            logger()->debug('Current family data:', [
-                'parents' => $this->parents,
-                'siblings' => $this->siblings,
-                'children' => $this->children
-            ]);
 
             // Специальная обработка для фото на первом шаге
             if ($this->currentStep === 1) {
@@ -808,25 +774,18 @@ class CandidateForm extends Component
                 }
             }
 
-            logger()->debug('Validation rules:', $rules);
 
             $this->validate($rules);
-            logger()->debug('Validation passed');
 
         if ($this->currentStep < $this->totalSteps) {
             $this->currentStep++;
-                logger()->debug('New step: ' . $this->currentStep);
 
                 // Переинициализируем валидацию для нового шага
-                logger()->debug('About to call reinitializeValidation()');
                 $this->reinitializeValidation();
-                logger()->debug('reinitializeValidation() completed');
 
                 $this->saveProgress();
-                logger()->debug('Progress saved');
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
-            logger()->debug('Validation errors:', $e->errors());
             throw $e;
         } catch (\Exception $e) {
             logger()->error('Unexpected error in nextStep:', [
@@ -840,20 +799,14 @@ class CandidateForm extends Component
     public function previousStep()
     {
         try {
-            logger()->debug('Starting previousStep method');
-            logger()->debug('Current step: ' . $this->currentStep);
 
         if ($this->currentStep > 1) {
             $this->currentStep--;
-                logger()->debug('New step: ' . $this->currentStep);
 
                 // Переинициализируем валидацию для нового шага
-                logger()->debug('About to call reinitializeValidation()');
                 $this->reinitializeValidation();
-                logger()->debug('reinitializeValidation() completed');
 
                 $this->saveProgress();
-                logger()->debug('Progress saved');
             }
         } catch (\Exception $e) {
             logger()->error('Error in previousStep:', [
@@ -979,10 +932,6 @@ class CandidateForm extends Component
     // Новые методы для работы с категориями семьи
     public function addParent()
     {
-        logger()->debug('addParent called', [
-            'current_parents_count' => count($this->parents),
-            'parents_before' => $this->parents
-        ]);
 
         $this->parents[] = [
             'relation' => '',
@@ -990,27 +939,14 @@ class CandidateForm extends Component
             'profession' => ''
         ];
 
-        logger()->debug('addParent completed', [
-            'new_parents_count' => count($this->parents),
-            'parents_after' => $this->parents
-        ]);
     }
 
     public function removeParent($index)
     {
-        logger()->debug('removeParent called', [
-            'index' => $index,
-            'parents_before' => $this->parents,
-            'count_before' => count($this->parents)
-        ]);
 
         unset($this->parents[$index]);
         $this->parents = array_values($this->parents);
 
-        logger()->debug('removeParent completed', [
-            'parents_after' => $this->parents,
-            'count_after' => count($this->parents)
-        ]);
     }
 
     public function addSibling()
@@ -1046,9 +982,6 @@ class CandidateForm extends Component
      */
     public function updatedParents()
     {
-        logger()->info('updatedParents hook called', [
-            'parents' => $this->parents
-        ]);
     }
 
     /**
@@ -1056,9 +989,6 @@ class CandidateForm extends Component
      */
     public function updatedSiblings()
     {
-        logger()->info('updatedSiblings hook called', [
-            'siblings' => $this->siblings
-        ]);
     }
 
     /**
@@ -1066,9 +996,6 @@ class CandidateForm extends Component
      */
     public function updatedChildren()
     {
-        logger()->info('updatedChildren hook called', [
-            'children' => $this->children
-        ]);
     }
 
     /**
@@ -1076,12 +1003,6 @@ class CandidateForm extends Component
      */
     private function filterEmptyFamilyElements()
     {
-        logger()->debug('FILTER START - Original data:', [
-            'parents' => $this->parents,
-            'siblings' => $this->siblings,
-            'children' => $this->children,
-            'family_members' => $this->family_members
-        ]);
 
         // ВАЖНО: Очищаем старую структуру family_members чтобы избежать конфликтов валидации
         $this->family_members = [];
@@ -1091,11 +1012,9 @@ class CandidateForm extends Component
             $originalCount = count($this->parents);
             $this->parents = array_filter($this->parents, function($parent) {
                 $hasData = !empty($parent['relation']) || !empty($parent['birth_year']) || !empty($parent['profession']);
-                logger()->debug('Parent filter check:', ['parent' => $parent, 'hasData' => $hasData]);
                 return $hasData;
             });
             $this->parents = array_values($this->parents); // Переиндексируем
-            logger()->debug('Parents filtered: ' . $originalCount . ' -> ' . count($this->parents));
         }
 
         // Фильтруем братьев и сестер
@@ -1103,11 +1022,9 @@ class CandidateForm extends Component
             $originalCount = count($this->siblings);
             $this->siblings = array_filter($this->siblings, function($sibling) {
                 $hasData = !empty($sibling['relation']) || !empty($sibling['birth_year']);
-                logger()->debug('Sibling filter check:', ['sibling' => $sibling, 'hasData' => $hasData]);
                 return $hasData;
             });
             $this->siblings = array_values($this->siblings);
-            logger()->debug('Siblings filtered: ' . $originalCount . ' -> ' . count($this->siblings));
         }
 
         // Фильтруем детей
@@ -1115,19 +1032,11 @@ class CandidateForm extends Component
             $originalCount = count($this->children);
             $this->children = array_filter($this->children, function($child) {
                 $hasData = !empty($child['name']) || !empty($child['birth_year']);
-                logger()->debug('Child filter check:', ['child' => $child, 'hasData' => $hasData]);
                 return $hasData;
             });
             $this->children = array_values($this->children);
-            logger()->debug('Children filtered: ' . $originalCount . ' -> ' . count($this->children));
         }
 
-        logger()->debug('FILTER END - Filtered data:', [
-            'parents' => $this->parents,
-            'siblings' => $this->siblings,
-            'children' => $this->children,
-            'family_members' => $this->family_members
-        ]);
     }
 
 
@@ -1200,12 +1109,6 @@ class CandidateForm extends Component
             'children' => $this->children ?? []
         ];
         
-        logger()->info('buildFamilyStructure called', [
-            'input_parents' => $this->parents,
-            'input_siblings' => $this->siblings,
-            'input_children' => $this->children,
-            'output_structure' => $structure
-        ]);
         
         return $structure;
     }
@@ -1267,11 +1170,6 @@ class CandidateForm extends Component
      */
     private function validateFamilyData()
     {
-        logger()->debug('CUSTOM VALIDATION - Family data:', [
-            'parents' => $this->parents,
-            'siblings' => $this->siblings,
-            'children' => $this->children
-        ]);
 
         $errors = [];
 
@@ -1421,27 +1319,13 @@ class CandidateForm extends Component
     public function updatedNewCountry($value)
     {
         try {
-            logger()->debug('Updating new country:', [
-                'value' => $value,
-                'countries_count' => count($this->countries),
-                'first_country' => $this->countries[0] ?? null
-            ]);
 
             if ($value) {
                 $country = collect($this->countries)->firstWhere('name_ru', $value);
-                logger()->debug('Found country:', [
-                    'country' => $country,
-                    'has_flag_url' => isset($country['flag_url']),
-                    'flag_url_value' => $country['flag_url'] ?? null
-                ]);
 
                 if ($country && !in_array($value, $this->visited_countries)) {
                     $this->visited_countries[] = $value;
                     $this->newCountry = '';
-                    logger()->debug('Added country to visited_countries:', [
-                        'visited_countries' => $this->visited_countries,
-                        'last_added' => end($this->visited_countries)
-                    ]);
                 }
             }
         } catch (\Exception $e) {
@@ -1634,7 +1518,6 @@ class CandidateForm extends Component
             // Устанавливаем фото как строку, чтобы указать что оно уже сохранено
             $this->photo = $photoPath;
 
-            logger()->info('Photo saved immediately', ['path' => $photoPath, 'candidate_id' => $this->candidate->id]);
 
         } catch (\Exception $e) {
             logger()->error('Error saving photo immediately: ' . $e->getMessage());
@@ -1677,36 +1560,24 @@ class CandidateForm extends Component
 
     public function updatedGallupPdf()
     {
-        logger()->info('Gallup PDF upload started', [
-            'file_present' => $this->gallup_pdf ? 'yes' : 'no',
-            'file_type' => $this->gallup_pdf ? get_class($this->gallup_pdf) : 'null'
-        ]);
 
         if ($this->gallup_pdf) {
             try {
                 // Логируем информацию о файле
-                logger()->info('Gallup PDF file info', [
-                    'original_name' => $this->gallup_pdf->getClientOriginalName(),
-                    'size' => $this->gallup_pdf->getSize(),
-                    'mime_type' => $this->gallup_pdf->getMimeType(),
-                ]);
 
                 // Базовая валидация файла
                 $this->validate([
                     'gallup_pdf' => 'file|mimes:pdf|max:10240'
                 ]);
 
-                logger()->info('Gallup PDF passed basic validation');
 
                 // Проверяем, что это корректный Gallup PDF
                 if (!$this->isGallupPdf($this->gallup_pdf)) {
-                    logger()->warning('Gallup PDF failed content validation');
                     $this->addError('gallup_pdf', 'Загруженный файл не является корректным отчетом Gallup. Убедитесь, что это официальный PDF с результатами теста Gallup.');
                     $this->resetGallupFile();
                     return;
                 }
 
-                logger()->info('Gallup PDF validation successful');
 
                 // Отправляем событие в JavaScript
                 $this->dispatch('gallup-file-uploaded');
@@ -1735,10 +1606,6 @@ class CandidateForm extends Component
     public function submit()
     {
         try {
-            logger()->debug('Starting submit method');
-            logger()->debug('Current step: ' . $this->currentStep);
-            logger()->debug('Gallup PDF: ', ['gallup_pdf' => $this->gallup_pdf ? 'present' : 'null', 'candidate_gallup' => $this->candidate?->gallup_pdf]);
-            logger()->debug('MBTI type: ' . $this->mbti_type);
 
             // Фильтруем пустые элементы семьи перед валидацией
             $this->filterEmptyFamilyElements();
@@ -1749,17 +1616,14 @@ class CandidateForm extends Component
             // Если фото уже сохранено (строка) и не загружается новое, исключаем из валидации
             if ($this->candidate && $this->candidate->photo && is_string($this->photo)) {
                 unset($rules['photo']);
-                logger()->debug('Photo validation removed (existing file)');
             } else if ($this->candidate && $this->candidate->photo) {
                 // Если есть сохраненное фото, но загружается новое
                 $rules['photo'] = ['nullable', 'image', 'max:20480'];
-                logger()->debug('Photo rule modified to nullable (candidate has existing photo)');
             }
 
             // Если Gallup PDF уже сохранен (строка) и не загружается новый, исключаем из валидации
             if ($this->candidate && $this->candidate->gallup_pdf && is_string($this->gallup_pdf)) {
                 unset($rules['gallup_pdf']);
-                logger()->debug('Gallup PDF validation removed (existing file)');
             } else if ($this->candidate && $this->candidate->gallup_pdf) {
                 // Если есть сохраненный файл, но загружается новый
                 $rules['gallup_pdf'] = [
@@ -1773,20 +1637,12 @@ class CandidateForm extends Component
                         }
                     }
                 ];
-                logger()->debug('Gallup PDF rule modified to nullable with validation (file exists in DB)');
             }
 
-            logger()->debug('Validation rules for submit:', ['photo' => $rules['photo'] ?? 'not set', 'gallup_pdf' => $rules['gallup_pdf'] ?? 'not set', 'mbti_type' => $rules['mbti_type'] ?? 'not set']);
 
             // Отладка значения религии
-            logger()->debug('Religion debug:', [
-                'current_religion_value' => $this->religion,
-                'allowed_religions' => array_values(config('lists.religions')),
-                'religion_validation_rule' => $rules['religion'] ?? 'not set'
-            ]);
 
             $this->validate($rules);
-            logger()->debug('Validation passed');
 
             if (!$this->candidate) {
                 $this->candidate = new Candidate();
@@ -1827,12 +1683,6 @@ class CandidateForm extends Component
 
             // Сохраняем новую структуру семьи в JSON
             $familyStructure = $this->buildFamilyStructure();
-            logger()->info('Saving family structure in submit', [
-                'family_structure' => $familyStructure,
-                'parents_from_component' => $this->parents,
-                'siblings_from_component' => $this->siblings,
-                'children_from_component' => $this->children
-            ]);
             $this->candidate->family_members = $familyStructure;
 
             $this->candidate->hobbies = $this->hobbies;
@@ -1899,10 +1749,6 @@ class CandidateForm extends Component
             // Запускаем обработку Gallup файла в фоновом режиме
             if ($this->candidate->gallup_pdf) {
                 ProcessGallupFile::dispatch($this->candidate);
-                logger()->info('Gallup file processing job dispatched', [
-                    'candidate_id' => $this->candidate->id,
-                    'gallup_pdf' => $this->candidate->gallup_pdf
-                ]);
             }
 
             session()->flash('message', 'Анкета успешно сохранена!');
@@ -1913,7 +1759,6 @@ class CandidateForm extends Component
             // Показываем поздравление с конфетти перед редиректом
             $this->dispatch('form-completed', redirectUrl: $redirectUrl);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            logger()->debug('Validation errors in submit:', $e->errors());
             throw $e;
         } catch (\Exception $e) {
             logger()->error('Unexpected error in submit:', [
@@ -1970,12 +1815,6 @@ class CandidateForm extends Component
 
         // Сохраняем новую структуру семьи
         $familyStructure = $this->buildFamilyStructure();
-        logger()->info('Saving family structure in saveProgress', [
-            'family_structure' => $familyStructure,
-            'parents_from_component' => $this->parents,
-            'siblings_from_component' => $this->siblings,
-            'children_from_component' => $this->children
-        ]);
         // Всегда сохраняем структуру семьи, даже если она пустая
         $this->candidate->family_members = $familyStructure;
 
@@ -2066,21 +1905,11 @@ class CandidateForm extends Component
         // Если страна передана как параметр (из live search), используем её
         $countryToAdd = $country ?? $this->newCountry;
         
-        logger()->debug('Adding country:', [
-            'country_param' => $country,
-            'newCountry' => $this->newCountry,
-            'countryToAdd' => $countryToAdd,
-            'visited_countries' => $this->visited_countries
-        ]);
 
         if ($countryToAdd && !in_array($countryToAdd, $this->visited_countries)) {
             $this->visited_countries[] = $countryToAdd;
             $this->newCountry = ''; // Сбрасываем
             
-            logger()->debug('Country added:', [
-                'visited_countries' => $this->visited_countries,
-                'last_added' => end($this->visited_countries)
-            ]);
         }
     }
 
@@ -2166,12 +1995,6 @@ class CandidateForm extends Component
             $text = $pdf->getText();
             $pages = $pdf->getPages();
 
-            logger()->info('Gallup PDF validation', [
-                'page_count' => count($pages),
-                'has_gallup_inc' => str_contains($text, 'Gallup, Inc.'),
-                'has_clifton' => str_contains($text, 'CliftonStrengths') || str_contains($text, 'Clifton'),
-                'text_sample' => substr($text, 0, 500)
-            ]);
 
             // Смягченные условия проверки Gallup-отчета
             $hasMinimumPages = count($pages) >= 10; // Минимум 10 страниц
@@ -2183,11 +2006,6 @@ class CandidateForm extends Component
             // Если это PDF и содержит ключевые слова Gallup - считаем валидным
             $isValid = $hasMinimumPages && $containsGallupKeywords;
 
-            logger()->info('Gallup PDF validation result', [
-                'is_valid' => $isValid,
-                'minimum_pages' => $hasMinimumPages,
-                'has_keywords' => $containsGallupKeywords
-            ]);
 
             return $isValid;
         } catch (\Exception $e) {
@@ -2222,10 +2040,8 @@ class CandidateForm extends Component
      */
     private function convertWorkExperienceFormat($workExperience)
     {
-        logger()->debug('Converting work experience format:', ['input' => $workExperience]);
 
         if (empty($workExperience)) {
-            logger()->debug('Work experience is empty, returning empty array');
             return [];
         }
 
@@ -2309,7 +2125,6 @@ class CandidateForm extends Component
             }
         }
 
-        logger()->debug('Work experience conversion completed:', ['output' => $converted]);
         return $converted;
     }
 
@@ -2331,8 +2146,6 @@ class CandidateForm extends Component
         $this->dispatch('reinitialize-js');
 
         // Логируем для отладки
-        logger()->debug('Validation reinitialized for step: ' . $this->currentStep);
-        logger()->debug('Events dispatched: step-changed, reinitialize-js');
     }
 
     public function updatedBooksPerYearMin()
