@@ -66,7 +66,7 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">
-                                    Город <span class="text-gray-500">(не обязательно)</span>
+                                    Город
                                 </label>
                                 <input type="text"
                                        wire:model="universities.{{ $index }}.city"
@@ -101,7 +101,7 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">
-                                    Степень образования <span class="text-gray-500">(не обязательно)</span>
+                                    Степень образования
                                 </label>
                                 <select wire:model="universities.{{ $index }}.degree"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">

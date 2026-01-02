@@ -329,8 +329,16 @@ if (! function_exists('clean_git_conflicts')) {
                         @if($isReducedReport)
                             <span class="text-lg text-gray-500 font-normal">(урезанная версия)</span>
                         @endif
-                    <h1 class="text-3xl font-bold mb-4" style="color: #39761d;">
+                    <h1 class="text-3xl font-bold mb-4" style="color: #39761d; display: flex; align-items: center; gap: 12px;">
                         {{ clean_git_conflicts($candidate->full_name) }}
+                        @if($candidate->step >= 6 || ($candidate->gallup_talents && count($candidate->gallup_talents) > 0))
+                            <span style="display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 20px; box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);">
+                                <svg style="width: 14px; height: 14px;" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                Полный профиль
+                            </span>
+                        @endif
                     </h1>
                      @if($isFullReport)
                     <div class="text-base mb-6" style="line-height: 1.8;">
