@@ -253,16 +253,36 @@
             transition: opacity 0.3s ease-in-out;
         }
 
-        /* Правила для плавного перехода контента между страницами */
+        /* Предотвращение разрывов страниц */
+        .mb-8 {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
 
-        /* Заголовок не отрывается от первой строки */
+        .mb-4 {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
         h2 {
             page-break-after: avoid;
             break-after: avoid;
         }
 
-        /* Только одиночные строки данных не разрываются пополам */
-        .data-row {
+        /* Держим заголовок и следующий элемент вместе */
+        h2 + * {
+            page-break-before: avoid;
+            break-before: avoid;
+        }
+
+        /* Для flex контейнеров с данными */
+        .flex {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        /* Для grid контейнеров */
+        .grid {
             page-break-inside: avoid;
             break-inside: avoid;
         }
@@ -282,19 +302,6 @@ if (! function_exists('mb_ucfirst')) {
         return $first . mb_substr($lower, 1, null, 'UTF-8');
     }
 }
-
-// Функция для очистки git conflict маркеров из текста
-if (! function_exists('clean_git_conflicts')) {
-    function clean_git_conflicts(mixed $value): string
-    {
-        $text = (string) ($value ?? '');
-        // Удаляем маркеры git конфликтов
-        $text = preg_replace('/<<<<<<< .*?\n?/', '', $text);
-        $text = preg_replace('/=======\n?/', '', $text);
-        $text = preg_replace('/>>>>>>> .*?\n?/', '', $text);
-        return trim($text);
-    }
-}
 @endphp
 
     <div class="max-w-4xl mx-auto bg-white ">
@@ -311,7 +318,7 @@ if (! function_exists('clean_git_conflicts')) {
         </div>
 
         <!-- Candidate Header -->
-        <div class="p-3">
+        <div class="p-3 border-b border-gray-200">
             <div class="mb-8">
                 <!-- Фото справа с обтеканием -->
                 <div class="float-right ml-6 flex-shrink-0">
@@ -330,14 +337,14 @@ if (! function_exists('clean_git_conflicts')) {
                             <span class="text-lg text-gray-500 font-normal">(урезанная версия)</span>
                         @endif
                     <h1 class="text-3xl font-bold mb-4" style="color: #39761d;">
-                        {{ clean_git_conflicts($candidate->full_name) }}
+                        {{ $candidate->full_name }}
                     </h1>
                      @if($isFullReport)
                     <div class="text-base mb-6" style="line-height: 1.8;">
                         <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 8px;">
                             <span class="font-medium text-gray-800" style="display: inline-flex; align-items: center; margin-right: 24px;">
                                 <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4cd.svg" alt="📍" style="width: 16px; height: 16px; margin-right: 6px;">
-                                {{ mb_ucfirst(clean_git_conflicts($candidate->current_city)) }}
+                                {{ $candidate->current_city }}
                             </span>
                             <span class="font-medium text-gray-800" style="display: inline-flex; align-items: center;">
                                 <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4e7.svg" alt="📧" style="width: 16px; height: 16px; margin-right: 6px;">
@@ -378,23 +385,23 @@ if (! function_exists('clean_git_conflicts')) {
                                 {{ $desired }}
                             </span>
                         </div>
-                         <div class="flex data-row">
+                         <div class="flex">
                              <span class="w-60 text-base text-gray-600">Ожидаемая заработная плата:</span>
                              <span class="text-base font-medium">{{ $candidate->formatted_salary_range }}</span>
                          </div>
-                         <div class="flex data-row">
+                         <div class="flex">
                              <span class="w-60 text-base text-gray-600">Дата рождения:</span>
                              <span class="text-base font-medium">{{ $candidate->birth_date?->format('d.m.Y') ?: 'Не указано' }}</span>
                          </div>
-                         <div class="flex items-start data-row">
+                         <div class="flex items-start">
                              <span class="w-60 text-base text-gray-600">Место рождения:</span>
                              <span class="text-base font-medium flex-1">{{ $candidate->birth_place ?: 'Не указано' }}</span>
                          </div>
-                         <div class="flex data-row">
+                         <div class="flex">
                              <span class="w-60 text-base text-gray-600">Пол:</span>
                              <span class="text-base font-medium">{{ $candidate->gender ?: 'Не указано' }}</span>
                          </div>
-                         <div class="flex data-row">
+                         <div class="flex">
                              <span class="w-60 text-base text-gray-600">Семейное положение:</span>
                              <span class="text-base font-medium">{{ $candidate->marital_status ?: 'Не указано' }}</span>
                          </div>
@@ -413,7 +420,7 @@ if (! function_exists('clean_git_conflicts')) {
                                          ({{ $child['gender'] ?? 'М' }}{{ $child['birth_year'] ?? '' }})
                                      @endforeach
                                  @else
-                                     0
+                                     Детей нет
                                  @endif
                              </span>
                          </div>
@@ -455,20 +462,7 @@ if (! function_exists('clean_git_conflicts')) {
                         <!-- Школа -->
                          <div class="flex items-start">
                              <span class="w-60 text-base text-gray-600">Школа:</span>
-                             <span class="text-base font-medium flex-1">
-                                @if($candidate->school)
-                                    @php
-                                        $schoolParts = array_map('trim', explode('/', $candidate->school));
-                                        $schoolName = mb_ucfirst($schoolParts[0] ?? '');
-                                        $schoolCity = mb_ucfirst($schoolParts[1] ?? '');
-                                        $schoolYear = $schoolParts[2] ?? '';
-                                        $schoolFormatted = implode(' / ', array_filter([$schoolName, $schoolCity, $schoolYear]));
-                                    @endphp
-                                    {{ $schoolFormatted }}
-                                @else
-                                    Не указано
-                                @endif
-                             </span>
+                             <span class="text-base font-medium flex-1">{{ $candidate->school ?: 'Не указано' }}</span>
                          </div>
 
                         <!-- Образование -->
@@ -477,23 +471,7 @@ if (! function_exists('clean_git_conflicts')) {
                              <span class="text-base font-medium flex-1">
                                 @if($candidate->universities && count($candidate->universities) > 0)
                                     @foreach($candidate->universities as $index => $university)
-                                        @php
-                                            $uniName = mb_ucfirst($university['name'] ?? 'Не указано');
-                                            $uniCity = mb_ucfirst($university['city'] ?? '');
-                                            $uniYear = $university['graduation_year'] ?? 'Не указано';
-                                            $uniSpec = mb_ucfirst($university['speciality'] ?? 'Не указано');
-                                            $uniDegree = $university['degree'] ?? '';
-                                            $uniGpa = $university['gpa'] ?? '';
-
-                                            // Формируем строку: Название / Город / Год / Специальность / Степень / GPA
-                                            $parts = [$uniName];
-                                            if ($uniCity) $parts[] = $uniCity;
-                                            $parts[] = $uniYear;
-                                            $parts[] = $uniSpec;
-                                            if ($uniDegree) $parts[] = $uniDegree;
-                                            if ($uniGpa) $parts[] = $uniGpa;
-                                        @endphp
-                                        <div>{{ implode(' / ', $parts) }}</div>
+                                        <div>{{ $university['name'] ?? 'Не указано' }} / {{ $university['speciality'] ?? 'Не указано' }} / {{ $university['graduation_year'] ?? 'Не указано' }}{{ !empty($university['gpa']) ? ' / ' . $university['gpa'] : '' }}</div>
                                     @endforeach
                                 @else
                                     Не указано
@@ -508,7 +486,7 @@ if (! function_exists('clean_git_conflicts')) {
         </div>
 
         <!-- Main Content -->
-        <div style="padding: 0 12px 12px 12px;">
+        <div class="p-3">
             <!-- Опыт работы -->
             <div class="mb-8">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Опыт работы</h2>
@@ -520,29 +498,24 @@ if (! function_exists('clean_git_conflicts')) {
                                 @foreach($candidate->work_experience as $index => $experience)
                                     <div>
                                         {{ $index + 1 }}.
-                                        @php
-                                            $years = trim($experience['years'] ?? '');
-                                            $company = mb_ucfirst($experience['company'] ?? 'Не указано');
-                                            $city = mb_ucfirst($experience['city'] ?? '');
-                                            $position = mb_ucfirst($experience['position'] ?? 'Не указано');
-                                        @endphp
+                                        @php $years = trim($experience['years'] ?? ''); @endphp
                                         @if($years !== '')
                                             {{ implode(' - ', array_map('mb_ucfirst', explode(' - ', $years))) }} -
                                         @endif
-                                        {{ $company }}
-                                        @if($city)
-                                            ({{ $city }})
+                                        {{ $experience['company'] ?? 'Не указано' }}
+                                        @if(!empty($experience['city']))
+                                            ({{ $experience['city'] }})
                                         @endif
-                                         - {{ $position }}
+                                         - {{ $experience['position'] ?? 'Не указано' }}
                                     </div>
                                 @endforeach
                             </div>
                         </div>
-                        <div class="flex data-row" style="margin-top: 1rem;">
+                        <div class="flex" style="margin-top: 1rem;">
                             <span class="w-60 text-base text-gray-600">Общий стаж работы (лет):</span>
                             <span class="text-base font-medium">{{ $candidate->total_experience_years ?? 0 }}</span>
                         </div>
-                        <div class="flex data-row">
+                        <div class="flex">
                             <span class="w-60 text-base text-gray-600">Любит свою работу на (из 5):</span>
                             <span class="text-base font-medium">{{ $candidate->job_satisfaction ?? 'Не указано' }}</span>
                         </div>
@@ -552,12 +525,12 @@ if (! function_exists('clean_git_conflicts')) {
                 @endif
             </div>
 
-            <!-- Интересы и развитие -->
+            <!-- Прочая информация -->
             <div class="mb-8">
-                <h2 class="text-xl font-bold text-gray-800 mb-2">Интересы и развитие</h2>
+                <h2 class="text-xl font-bold text-gray-800 mb-2">Прочая информация</h2>
                 <div class="space-y-1">
                     <!-- 1. Хобби -->
-                    <div class="flex items-start data-row">
+                    <div class="flex items-start">
                         <span class="w-60 text-base text-gray-600">Хобби:</span>
                         <span class="text-base font-medium flex-1">
                             @php
@@ -575,7 +548,7 @@ if (! function_exists('clean_git_conflicts')) {
                         </span>
                     </div>
                     <!-- 2. Интересы -->
-                    <div class="flex items-start data-row">
+                    <div class="flex items-start">
                         <span class="w-60 text-base text-gray-600">Интересы:</span>
                         <span class="text-base font-medium flex-1">
                             @php
@@ -593,7 +566,7 @@ if (! function_exists('clean_git_conflicts')) {
                         </span>
                     </div>
                     <!-- 3. Любимые виды спорта -->
-                    <div class="flex items-start data-row">
+                    <div class="flex items-start">
                         <span class="w-60 text-base text-gray-600">Любимые виды спорта:</span>
                         <span class="text-base font-medium flex-1">
                             @if($candidate->favorite_sports)
@@ -608,7 +581,7 @@ if (! function_exists('clean_git_conflicts')) {
                         </span>
                     </div>
                     <!-- 4. Посещенные страны -->
-                    <div class="flex items-start data-row">
+                    <div class="flex items-start">
                         <span class="w-60 text-base text-gray-600">Посещенные страны:</span>
                         <span class="text-base font-medium flex-1">
                             @if($candidate->visited_countries)
@@ -623,23 +596,23 @@ if (! function_exists('clean_git_conflicts')) {
                         </span>
                     </div>
                     <!-- 5. Кол-во книг в год -->
-                    <div class="flex data-row">
+                    <div class="flex">
                         <span class="w-60 text-base text-gray-600">Кол-во книг в год:</span>
                         <span class="text-base font-medium">{{ $candidate->books_per_year ?? 'Не указано' }}</span>
                     </div>
                     <!-- 6-7. Вероисповедание и Рел. практика -->
                     @if($isFullReport)
-                    <div class="flex data-row">
+                    <div class="flex">
                         <span class="w-60 text-base text-gray-600">Религия:</span>
                         <span class="text-base font-medium">{{ $candidate->religion ?: 'Не указано' }}</span>
                     </div>
-                    <div class="flex data-row">
+                    <div class="flex">
                         <span class="w-60 text-base text-gray-600">Рел. практика:</span>
                         <span class="text-base font-medium">{{ $candidate->is_practicing ? 'Да' : 'Нет' }}</span>
                     </div>
                     @endif
                     <!-- 8. Часы на разв. видео в неделю -->
-                    <div class="flex data-row">
+                    <div class="flex">
                         <span class="w-60 text-base text-gray-600">Часы на разв. видео в неделю:</span>
                         <span class="text-base font-medium">
                             @if($candidate->entertainment_hours_weekly)
@@ -650,7 +623,7 @@ if (! function_exists('clean_git_conflicts')) {
                         </span>
                     </div>
                     <!-- 9. Часы на обра. видео в неделю -->
-                    <div class="flex data-row">
+                    <div class="flex">
                         <span class="w-60 text-base text-gray-600">Часы на обра. видео в неделю:</span>
                         <span class="text-base font-medium">
                             @if($candidate->educational_hours_weekly)
@@ -661,7 +634,7 @@ if (! function_exists('clean_git_conflicts')) {
                         </span>
                     </div>
                     <!-- 10. Часы на соц. сети в неделю -->
-                    <div class="flex data-row">
+                    <div class="flex">
                         <span class="w-60 text-base text-gray-600">Часы на соц. сети в неделю:</span>
                         <span class="text-base font-medium">
                             @if($candidate->social_media_hours_weekly)
@@ -672,12 +645,12 @@ if (! function_exists('clean_git_conflicts')) {
                         </span>
                     </div>
                     <!-- 11. Водительские права -->
-                    <div class="flex data-row">
+                    <div class="flex">
                         <span class="w-60 text-base text-gray-600">Водительские права:</span>
                         <span class="text-base font-medium">{{ $candidate->has_driving_license ? 'Есть' : 'Нет' }}</span>
                     </div>
                     <!-- 12. Пожелания на рабочем месте -->
-                    <div class="flex items-start data-row">
+                    <div class="flex items-start">
                         <span class="w-60 text-base text-gray-600">Пожелания на рабочем месте:</span>
                         <span class="text-base font-medium flex-1">
                             @php
@@ -694,6 +667,13 @@ if (! function_exists('clean_git_conflicts')) {
                             {{ $workplace }}
                         </span>
                     </div>
+                    <!-- 13. Компьютерные навыки -->
+                    @if($candidate->computer_skills)
+                    <div class="flex items-start">
+                        <span class="w-60 text-base text-gray-600">Компьютерные навыки:</span>
+                        <span class="text-base font-medium flex-1">{{ $candidate->computer_skills }}</span>
+                    </div>
+                    @endif
                 </div>
             </div>
 
@@ -718,12 +698,6 @@ if (! function_exists('clean_git_conflicts')) {
                 @endif
             </div>
 
-            <!-- Компьютерные навыки -->
-            <div class="mb-8">
-                <h2 class="text-xl font-bold text-gray-800 mb-2">Компьютерные навыки</h2>
-                <p class="text-base font-medium">{{ $candidate->computer_skills ?: 'Не указано' }}</p>
-            </div>
-
             <!-- Дата заполнения -->
             @if($isFullReport)
             <div style="text-align: right; padding: 8px 0; margin-bottom: 16px;">
@@ -734,7 +708,7 @@ if (! function_exists('clean_git_conflicts')) {
             <!-- Психометрические данные -->
             <div class="mb-8">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Психометрические данные</h2>
-                <div class="flex data-row">
+                <div class="flex">
                     <span class="text-base text-gray-600 w-60">Тип личности по MBTI:</span>
                     <span class="text-base font-medium text-blue-600">{{ $candidate->mbti_full_name ?: 'Не указано' }}</span>
                 </div>

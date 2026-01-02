@@ -151,7 +151,7 @@
                                             ({{ $child['gender'] ?? 'М' }}{{ $child['birth_year'] ?? '' }})
                                         @endforeach
                                     @else
-                                        0
+                                        Детей нет
                                     @endif
                                 </span>
                             </div>
