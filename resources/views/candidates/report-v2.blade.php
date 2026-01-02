@@ -455,20 +455,7 @@ if (! function_exists('clean_git_conflicts')) {
                         <!-- Школа -->
                          <div class="flex items-start">
                              <span class="w-60 text-base text-gray-600">Школа:</span>
-                             <span class="text-base font-medium flex-1">
-                                @if($candidate->school)
-                                    @php
-                                        $schoolParts = array_map('trim', explode('/', $candidate->school));
-                                        $schoolName = mb_ucfirst($schoolParts[0] ?? '');
-                                        $schoolCity = mb_ucfirst($schoolParts[1] ?? '');
-                                        $schoolYear = $schoolParts[2] ?? '';
-                                        $schoolFormatted = implode(' / ', array_filter([$schoolName, $schoolCity, $schoolYear]));
-                                    @endphp
-                                    {{ $schoolFormatted }}
-                                @else
-                                    Не указано
-                                @endif
-                             </span>
+                             <span class="text-base font-medium flex-1">{{ $candidate->school ?: 'Не указано' }}</span>
                          </div>
 
                         <!-- Образование -->
@@ -477,23 +464,7 @@ if (! function_exists('clean_git_conflicts')) {
                              <span class="text-base font-medium flex-1">
                                 @if($candidate->universities && count($candidate->universities) > 0)
                                     @foreach($candidate->universities as $index => $university)
-                                        @php
-                                            $uniName = mb_ucfirst($university['name'] ?? 'Не указано');
-                                            $uniCity = mb_ucfirst($university['city'] ?? '');
-                                            $uniYear = $university['graduation_year'] ?? 'Не указано';
-                                            $uniSpec = mb_ucfirst($university['speciality'] ?? 'Не указано');
-                                            $uniDegree = $university['degree'] ?? '';
-                                            $uniGpa = $university['gpa'] ?? '';
-
-                                            // Формируем строку: Название / Город / Год / Специальность / Степень / GPA
-                                            $parts = [$uniName];
-                                            if ($uniCity) $parts[] = $uniCity;
-                                            $parts[] = $uniYear;
-                                            $parts[] = $uniSpec;
-                                            if ($uniDegree) $parts[] = $uniDegree;
-                                            if ($uniGpa) $parts[] = $uniGpa;
-                                        @endphp
-                                        <div>{{ implode(' / ', $parts) }}</div>
+                                        <div>{{ $university['name'] ?? 'Не указано' }} / {{ $university['speciality'] ?? 'Не указано' }} / {{ $university['graduation_year'] ?? 'Не указано' }}{{ !empty($university['gpa']) ? ' / ' . $university['gpa'] : '' }}</div>
                                     @endforeach
                                 @else
                                     Не указано
@@ -520,20 +491,15 @@ if (! function_exists('clean_git_conflicts')) {
                                 @foreach($candidate->work_experience as $index => $experience)
                                     <div>
                                         {{ $index + 1 }}.
-                                        @php
-                                            $years = trim($experience['years'] ?? '');
-                                            $company = mb_ucfirst($experience['company'] ?? 'Не указано');
-                                            $city = mb_ucfirst($experience['city'] ?? '');
-                                            $position = mb_ucfirst($experience['position'] ?? 'Не указано');
-                                        @endphp
+                                        @php $years = trim($experience['years'] ?? ''); @endphp
                                         @if($years !== '')
                                             {{ implode(' - ', array_map('mb_ucfirst', explode(' - ', $years))) }} -
                                         @endif
-                                        {{ $company }}
-                                        @if($city)
-                                            ({{ $city }})
+                                        {{ $experience['company'] ?? 'Не указано' }}
+                                        @if(!empty($experience['city']))
+                                            ({{ $experience['city'] }})
                                         @endif
-                                         - {{ $position }}
+                                         - {{ $experience['position'] ?? 'Не указано' }}
                                     </div>
                                 @endforeach
                             </div>

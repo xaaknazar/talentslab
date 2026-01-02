@@ -14,7 +14,6 @@
                         </label>
                         <input type="text"
                                wire:model="school_name"
-                               oninput="capitalizeFirstLetter(this)"
                                placeholder="Школа №25"
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         @error('school_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -26,7 +25,6 @@
                         </label>
                         <input type="text"
                                wire:model="school_city"
-                               oninput="capitalizeFirstLetter(this)"
                                placeholder="Актау"
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         @error('school_city') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -55,35 +53,32 @@
             <div class="space-y-4">
                 @foreach($universities as $index => $university)
                     <div class="p-4 bg-gray-50 rounded-lg">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">
                                     Название университета | колледжа <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text"
-                                       wire:model="universities.{{ $index }}.name"
-                                       oninput="capitalizeFirstLetter(this)"
+                                <input type="text" 
+                                       wire:model="universities.{{ $index }}.name" 
                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                 @error("universities.{$index}.name") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">
-                                    Город <span class="text-red-500">*</span>
+                                    Специальность <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text"
-                                       wire:model="universities.{{ $index }}.city"
-                                       oninput="capitalizeFirstLetter(this)"
-                                       placeholder="Алматы"
+                                <input type="text" 
+                                       wire:model="universities.{{ $index }}.speciality" 
                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                @error("universities.{$index}.city") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                @error("universities.{$index}.speciality") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">
                                     Год окончания <span class="text-red-500">*</span>
                                 </label>
-                                <select wire:model="universities.{{ $index }}.graduation_year"
+                                <select wire:model="universities.{{ $index }}.graduation_year" 
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                     <option value="" selected disabled>Выберите год</option>
                                     @for($year = 1970; $year <= 2035; $year++)
@@ -95,39 +90,13 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">
-                                    Специальность <span class="text-red-500">*</span>
-                                </label>
-                                <input type="text"
-                                       wire:model="universities.{{ $index }}.speciality"
-                                       oninput="capitalizeFirstLetter(this)"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                @error("universities.{$index}.speciality") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">
-                                    Степень образования <span class="text-red-500">*</span>
-                                </label>
-                                <select wire:model="universities.{{ $index }}.degree"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                    <option value="" selected disabled>Выберите степень</option>
-                                    <option value="Средне-специальное">Средне-специальное</option>
-                                    <option value="Бакалавр">Бакалавр</option>
-                                    <option value="Магистратура">Магистратура</option>
-                                    <option value="PhD">PhD</option>
-                                </select>
-                                @error("universities.{$index}.degree") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">
                                     GPA <span class="text-gray-500">(не обязательно)</span>
                                 </label>
-                                <input type="number"
+                                <input type="number" 
                                        wire:model="universities.{{ $index }}.gpa"
                                        name="universities[{{ $index }}][gpa]"
-                                       min="0"
-                                       max="4.0"
+                                       min="0" 
+                                       max="4.0" 
                                        step="0.01"
                                        placeholder="например: 3.75"
                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -288,9 +257,8 @@
                                     <label class="block text-sm font-medium text-gray-700">
                                         Название компании <span class="text-red-500">*</span>
                                     </label>
-                                    <input type="text"
-                                           wire:model="work_experience.{{ $index }}.company"
-                                           oninput="capitalizeFirstLetter(this)"
+                                    <input type="text" 
+                                           wire:model="work_experience.{{ $index }}.company" 
                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                     @error("work_experience.{$index}.company") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
@@ -299,9 +267,8 @@
                                     <label class="block text-sm font-medium text-gray-700">
                                         Город <span class="text-red-500">*</span>
                                     </label>
-                                    <input type="text"
-                                           wire:model="work_experience.{{ $index }}.city"
-                                           oninput="capitalizeFirstLetter(this)"
+                                    <input type="text" 
+                                           wire:model="work_experience.{{ $index }}.city" 
                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                     @error("work_experience.{$index}.city") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
@@ -310,9 +277,8 @@
                                     <label class="block text-sm font-medium text-gray-700">
                                         Должность <span class="text-red-500">*</span>
                                     </label>
-                                    <input type="text"
-                                           wire:model="work_experience.{{ $index }}.position"
-                                           oninput="capitalizeFirstLetter(this)"
+                                    <input type="text" 
+                                           wire:model="work_experience.{{ $index }}.position" 
                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                     @error("work_experience.{$index}.position") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
@@ -559,29 +525,6 @@
 
 
 <script>
-// Функция для капитализации первой буквы первого слова
-window.capitalizeFirstLetter = function(input) {
-    let text = input.value;
-    let cursorPosition = input.selectionStart;
-
-    // Капитализация первой буквы
-    if (text.length > 0) {
-        let firstChar = text.charAt(0);
-        if (firstChar >= 'a' && firstChar <= 'z' || firstChar >= 'а' && firstChar <= 'я' || firstChar === 'ё') {
-            text = firstChar.toUpperCase() + text.slice(1);
-        }
-    }
-
-    // Обновляем значение только если оно изменилось
-    if (input.value !== text) {
-        input.value = text;
-        input.setSelectionRange(cursorPosition, cursorPosition);
-
-        // Триггерим событие input для Livewire
-        input.dispatchEvent(new Event('input', { bubbles: true }));
-    }
-};
-
 // Функция для капитализации первой буквы после запятой
 window.capitalizeAfterComma = function(textarea) {
     let text = textarea.value;
@@ -712,53 +655,10 @@ window.toggleCurrentWork = function(index) {
 }
 
 // Глобальные функции для форматирования зарплаты
-// Проверка возраста (рожден после 2000 года включительно)
-window.isBornAfter2000 = function() {
-    // Получаем год рождения из Livewire
-    const birthDateInput = document.querySelector('input[wire\\:model="birth_date"]');
-    if (birthDateInput && birthDateInput.value) {
-        const birthYear = new Date(birthDateInput.value).getFullYear();
-        return birthYear >= 2000;
-    }
-    return false;
-};
-
-// Показать/скрыть предупреждение о зарплате
-window.showSalaryWarning = function(message) {
-    let warningEl = document.getElementById('salary-warning');
-    if (!warningEl) {
-        warningEl = document.createElement('div');
-        warningEl.id = 'salary-warning';
-        warningEl.className = 'mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-md text-yellow-800 text-xs';
-        const salaryContainer = document.getElementById('salary_from_formatted').closest('div').parentElement;
-        salaryContainer.appendChild(warningEl);
-    }
-    warningEl.textContent = message;
-    warningEl.style.display = 'block';
-};
-
-window.hideSalaryWarning = function() {
-    const warningEl = document.getElementById('salary-warning');
-    if (warningEl) {
-        warningEl.style.display = 'none';
-    }
-};
-
 // Функция форматирования зарплаты "от"
 window.formatSalaryFrom = function(input) {
     // Получаем только цифры
     let numericValue = input.value.replace(/\D/g, '');
-
-    // Проверка для рожденных после 2000 и KZT валюты
-    const currencySelect = document.querySelector('select[wire\\:model="salary_currency"]');
-    const isKZT = currencySelect && currencySelect.value === 'KZT';
-
-    if (isKZT && isBornAfter2000() && parseInt(numericValue) > 2000000) {
-        numericValue = '2000000';
-        showSalaryWarning('Максимальная зарплата для вашего возраста: 2 000 000 тенге');
-    } else {
-        hideSalaryWarning();
-    }
 
     // Форматируем с пробелами
     let formatted = '';
@@ -776,28 +676,12 @@ window.formatSalaryFrom = function(input) {
         // Уведомляем Livewire
         hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
     }
-
-    // Валидация поля "До" - максимум 2x от "От"
-    validateSalaryTo();
 };
 
 // Функция форматирования зарплаты "до"
 window.formatSalaryTo = function(input) {
     // Получаем только цифры
     let numericValue = input.value.replace(/\D/g, '');
-
-    // Получаем значение "От"
-    const salaryFromHidden = document.getElementById('salary_from_hidden');
-    const salaryFromValue = salaryFromHidden ? parseInt(salaryFromHidden.value) || 0 : 0;
-    const maxSalaryTo = salaryFromValue * 2;
-
-    // Проверка максимума (2x от "От")
-    if (salaryFromValue > 0 && parseInt(numericValue) > maxSalaryTo) {
-        numericValue = maxSalaryTo.toString();
-        showSalaryWarning('Максимальная зарплата "До": ' + maxSalaryTo.toLocaleString('ru-RU') + ' (2x от указанной суммы)');
-    } else {
-        hideSalaryWarning();
-    }
 
     // Форматируем с пробелами
     let formatted = '';
@@ -814,26 +698,6 @@ window.formatSalaryTo = function(input) {
         hiddenInput.value = numericValue;
         // Уведомляем Livewire
         hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
-    }
-};
-
-// Валидация поля "До" при изменении "От"
-window.validateSalaryTo = function() {
-    const salaryFromHidden = document.getElementById('salary_from_hidden');
-    const salaryToHidden = document.getElementById('salary_to_hidden');
-    const salaryToFormatted = document.getElementById('salary_to_formatted');
-
-    if (salaryFromHidden && salaryToHidden && salaryToFormatted) {
-        const salaryFromValue = parseInt(salaryFromHidden.value) || 0;
-        const salaryToValue = parseInt(salaryToHidden.value) || 0;
-        const maxSalaryTo = salaryFromValue * 2;
-
-        if (salaryFromValue > 0 && salaryToValue > maxSalaryTo) {
-            salaryToHidden.value = maxSalaryTo;
-            salaryToFormatted.value = maxSalaryTo.toLocaleString('ru-RU').replace(/,/g, ' ');
-            salaryToHidden.dispatchEvent(new Event('input', { bubbles: true }));
-            showSalaryWarning('Зарплата "До" скорректирована до максимума: ' + maxSalaryTo.toLocaleString('ru-RU'));
-        }
     }
 };
 
