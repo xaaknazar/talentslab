@@ -72,35 +72,62 @@
                 @endif
 
                 <!-- Language Switcher -->
-                <div class="ms-3 relative">
-                    <x-dropdown align="right" width="48">
-                        <x-slot name="trigger">
-                            <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
-                                @php
-                                    $currentLocale = app()->getLocale();
-                                    $flags = ['ru' => '🇷🇺', 'en' => '🇬🇧', 'ar' => '🇸🇦'];
-                                    $names = ['ru' => 'RU', 'en' => 'EN', 'ar' => 'AR'];
-                                @endphp
-                                <span class="text-lg me-1">{{ $flags[$currentLocale] ?? '🌐' }}</span>
-                                <span>{{ $names[$currentLocale] ?? 'RU' }}</span>
-                                <svg class="ms-1 -me-0.5 size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                </svg>
-                            </button>
-                        </x-slot>
+                <div class="ms-3 relative" x-data="{ langOpen: false }">
+                    @php
+                        $currentLocale = app()->getLocale();
+                        $languages = [
+                            'ru' => ['flag' => '🇷🇺', 'name' => 'Русский', 'short' => 'RU'],
+                            'en' => ['flag' => '🇬🇧', 'name' => 'English', 'short' => 'EN'],
+                            'ar' => ['flag' => '🇸🇦', 'name' => 'العربية', 'short' => 'AR']
+                        ];
+                        $currentLang = $languages[$currentLocale] ?? $languages['ru'];
+                    @endphp
 
-                        <x-slot name="content">
-                            <x-dropdown-link href="{{ route('language.switch', 'ru') }}" class="{{ app()->getLocale() === 'ru' ? 'bg-gray-100' : '' }}">
-                                <span class="text-lg me-2">🇷🇺</span> Русский
-                            </x-dropdown-link>
-                            <x-dropdown-link href="{{ route('language.switch', 'en') }}" class="{{ app()->getLocale() === 'en' ? 'bg-gray-100' : '' }}">
-                                <span class="text-lg me-2">🇬🇧</span> English
-                            </x-dropdown-link>
-                            <x-dropdown-link href="{{ route('language.switch', 'ar') }}" class="{{ app()->getLocale() === 'ar' ? 'bg-gray-100' : '' }}">
-                                <span class="text-lg me-2">🇸🇦</span> العربية
-                            </x-dropdown-link>
-                        </x-slot>
-                    </x-dropdown>
+                    <button @click="langOpen = !langOpen"
+                            @click.outside="langOpen = false"
+                            type="button"
+                            class="group flex items-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 hover:border-blue-300 hover:from-blue-50 hover:to-indigo-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm hover:shadow-md">
+                        <span class="text-xl">{{ $currentLang['flag'] }}</span>
+                        <span class="font-medium text-gray-700 group-hover:text-blue-700 text-sm">{{ $currentLang['short'] }}</span>
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-transform duration-200"
+                             :class="{ 'rotate-180': langOpen }"
+                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+
+                    <div x-show="langOpen"
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 scale-95 translate-y-1"
+                         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 scale-95 translate-y-1"
+                         class="absolute right-0 mt-2 w-56 origin-top-right rounded-xl bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50 overflow-hidden"
+                         style="display: none;">
+
+                        <div class="px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100">
+                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ __('Choose Language') }}</p>
+                        </div>
+
+                        <div class="py-2">
+                            @foreach($languages as $locale => $lang)
+                                <a href="{{ route('language.switch', $locale) }}"
+                                   class="flex items-center gap-3 px-4 py-3 text-sm transition-all duration-150 {{ $currentLocale === $locale ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-500' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900 border-l-4 border-transparent' }}">
+                                    <span class="text-2xl">{{ $lang['flag'] }}</span>
+                                    <div class="flex flex-col">
+                                        <span class="font-medium">{{ $lang['name'] }}</span>
+                                        <span class="text-xs text-gray-400">{{ $lang['short'] }}</span>
+                                    </div>
+                                    @if($currentLocale === $locale)
+                                        <svg class="ml-auto w-5 h-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                        </svg>
+                                    @endif
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Settings Dropdown -->

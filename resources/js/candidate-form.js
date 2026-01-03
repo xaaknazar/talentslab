@@ -524,25 +524,10 @@ function initializeComponents(force = false) {
     }, 100);
 }
 
-// Функция проверки кириллицы
+// Функция проверки кириллицы (отключена для мультиязычности)
 export function isCyrillic(text) {
-    if (!text || text.trim() === '') return true; // Пустые значения разрешены (валидация обязательности отдельно)
-
-    // Проверяем на наличие латинских букв (более точная проверка)
-    const hasLatinLetters = /[a-zA-Z]/.test(text);
-    if (hasLatinLetters) {
-        console.log(`❌ Text contains latin letters: "${text}"`);
-        return false;
-    }
-
-    // Регулярное выражение для кириллицы (русской и казахской), цифр, пробелов, знаков препинания
-    // Соответствует серверной валидации в CyrillicRule
-    // Включает казахские буквы: Ә ә, Ғ ғ, Қ қ, Ң ң, Ө ө, Ұ ұ, Ү ү, Һ һ, І і
-    const cyrillicRegex = /^[а-яёА-ЯЁәғқңөұүһіӘҒҚҢӨҰҮҺІ\s\-\.',():;№\d/+=!?&\n\r\t]+$/u;
-    const isValid = cyrillicRegex.test(text);
-
-    console.log(`🔍 Cyrillic validation for "${text}": ${isValid ? '✅ Valid' : '❌ Invalid'}`);
-    return isValid;
+    // Валидация кириллицы отключена для поддержки мультиязычного ввода
+    return true;
 }
 
 // Функция отображения ошибки кириллицы
@@ -615,31 +600,10 @@ function validateCyrillicField(input) {
     return isValid;
 }
 
-// Инициализация валидации кириллицы
+// Инициализация валидации кириллицы (отключена для мультиязычности)
 export function initCyrillicValidation() {
-    console.log('🔤 Starting cyrillic validation initialization...');
-
-    // Убираем старые обработчики со всех полей
-    removeCyrillicHandlers();
-
-    // Находим ВСЕ input и textarea поля, которые видимы
-    const allInputs = document.querySelectorAll('input[type="text"], textarea');
-    const allVisibleInputs = Array.from(allInputs).filter(input => {
-        return isElementVisible(input) && shouldValidateCyrillic(input);
-    });
-
-    console.log(`🔍 Found ${allVisibleInputs.length} visible inputs/textareas to check for cyrillic`);
-
-    let initializedFields = 0;
-
-    allVisibleInputs.forEach(input => {
-        const identifier = getInputIdentifier(input);
-        console.log(`✅ Initializing cyrillic validation for: ${identifier}`);
-        initCyrillicField(input, identifier);
-        initializedFields++;
-    });
-
-    console.log(`🔤 Cyrillic validation initialized for ${initializedFields} fields`);
+    // Валидация кириллицы отключена для поддержки мультиязычного ввода
+    return;
 }
 
 // Функция для определения, нужно ли проверять поле на кириллицу
