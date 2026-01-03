@@ -805,8 +805,8 @@ class CandidateForm extends Component
 
         $step1Fields = ['last_name', 'first_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
         $step2Fields = ['religion', 'is_practicing', 'family_members', 'parents', 'siblings', 'children', 'hobbies', 'interests', 'visited_countries', 'books_per_year_min', 'books_per_year_max', 'favorite_sports', 'entertainment_hours_weekly', 'educational_hours_weekly', 'social_media_hours_weekly', 'has_driving_license', 'newCountry'];
-        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary', 'employer_requirements'];
-        $step4Fields = ['gallup_pdf', 'mbti_type'];
+        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary', 'expected_salary_from', 'expected_salary_to', 'employer_requirements'];
+        $step4Fields = ['gallup_pdf', 'mbti_type', 'gardner_test_completed'];
 
         return match($this->currentStep) {
             1 => in_array($baseField, $step1Fields),
@@ -989,8 +989,8 @@ class CandidateForm extends Component
 
         $step1Fields = ['last_name', 'first_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
         $step2Fields = ['religion', 'is_practicing', 'family_members', 'parents', 'siblings', 'children', 'hobbies', 'interests', 'visited_countries', 'books_per_year_min', 'books_per_year_max', 'favorite_sports', 'entertainment_hours_weekly', 'educational_hours_weekly', 'social_media_hours_weekly', 'has_driving_license', 'newCountry'];
-        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary', 'employer_requirements'];
-        $step4Fields = ['gallup_pdf', 'mbti_type'];
+        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary', 'expected_salary_from', 'expected_salary_to', 'employer_requirements'];
+        $step4Fields = ['gallup_pdf', 'mbti_type', 'gardner_test_completed'];
 
         if (in_array($baseField, $step1Fields, true)) return 1;
         if (in_array($baseField, $step2Fields, true)) return 2;
