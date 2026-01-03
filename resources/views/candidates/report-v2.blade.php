@@ -332,7 +332,7 @@ if (! function_exists('clean_git_conflicts')) {
                     <h1 class="text-3xl font-bold mb-4" style="color: #39761d; display: flex; align-items: center; gap: 8px;">
                         {{ clean_git_conflicts($candidate->full_name) }}
                         @if($candidate->gallup_pdf || ($candidate->gallup_talents && count($candidate->gallup_talents) > 0))
-                            <span style="display: inline-flex; align-items: center; justify-content: center; background: #39761d; color: white; width: 22px; height: 22px; border-radius: 50%; margin-left: 4px; flex-shrink: 0;" title="Полный профиль">
+                            <span style="display: inline-flex; align-items: center; justify-content: center; background: #39761d; color: white; width: 20px; height: 20px; border-radius: 50%; margin-left: 10px; flex-shrink: 0;" title="Полный профиль">
                                 <svg style="width: 14px; height: 14px;" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                                 </svg>
