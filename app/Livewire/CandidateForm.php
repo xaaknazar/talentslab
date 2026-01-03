@@ -323,7 +323,7 @@ class CandidateForm extends Component
         // Additional Information
         $this->religion = $this->convertReligionToRussian($this->candidate->religion);
         logger()->debug('Loading candidate religion:', ['original' => $this->candidate->religion, 'converted' => $this->religion]);
-        $this->is_practicing = $this->candidate->is_practicing;
+        $this->is_practicing = $this->candidate->is_practicing !== null ? (int) $this->candidate->is_practicing : null;
         $this->family_members = $this->candidate->family_members ?? [];
 
         // Инициализируем новые категории семьи
@@ -341,7 +341,7 @@ class CandidateForm extends Component
         $this->entertainment_hours_weekly = $this->candidate->entertainment_hours_weekly;
         $this->educational_hours_weekly = $this->candidate->educational_hours_weekly;
         $this->social_media_hours_weekly = $this->candidate->social_media_hours_weekly;
-        $this->has_driving_license = $this->candidate->has_driving_license;
+        $this->has_driving_license = $this->candidate->has_driving_license !== null ? (int) $this->candidate->has_driving_license : null;
 
         // Education and Work
         // Разбираем поле school на три части
