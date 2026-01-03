@@ -7,7 +7,6 @@ use App\Models\CandidateFile;
 use App\Models\CandidateHistory;
 use App\Models\CandidateStatus;
 use App\Jobs\ProcessGallupFile;
-use App\Rules\CyrillicRule;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
@@ -386,16 +385,16 @@ class CandidateForm extends Component
     {
         $rules = [
         // Step 1 validation rules
-            'last_name' => ['required', 'string', 'max:255', new CyrillicRule()],
-            'first_name' => ['required', 'string', 'max:255', new CyrillicRule()],
+            'last_name' => ['required', 'string', 'max:255'],
+            'first_name' => ['required', 'string', 'max:255'],
         'email' => 'required|email|max:255',
             // Универсальный международный формат: допускает +, цифры, пробелы, дефисы и скобки; 8-15 цифр всего
             'phone' => ['required', 'string', 'regex:/^(?=(?:.*\d){8,15})\+?[\d\s\-\(\)]{7,20}$/'],
             'gender' => 'required|in:Мужской,Женский',
             'marital_status' => 'required|in:Холост/Не замужем,Женат/Замужем,Разведен(а),Вдовец/Вдова',
             'birth_date' => 'required|date|before:today',
-            'birth_place' => ['required', 'string', 'max:255', new CyrillicRule()],
-        'current_city' => ['required', 'string', 'max:255', new CyrillicRule()],
+            'birth_place' => ['required', 'string', 'max:255'],
+            'current_city' => ['required', 'string', 'max:255'],
             'ready_to_relocate' => 'nullable|boolean',
             'instagram' => 'nullable|string|max:255',
             'photo' => !$this->candidate?->photo ? 'required|image|max:20480' : 'nullable|image|max:20480',
@@ -562,12 +561,6 @@ class CandidateForm extends Component
         'activity_sphere.required' => 'Сфера деятельности обязательна для заполнения',
         'activity_sphere.max' => 'Сфера деятельности не должна превышать 255 символов',
         'instagram.max' => 'Инстаграм не должен превышать 255 символов',
-
-        // Сообщения для CyrillicRule
-        'hobbies.cyrillic' => 'Поле "Хобби" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
-        'interests.cyrillic' => 'Поле "Интересы" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
-        'desired_position.cyrillic' => 'Поле "Желаемая должность" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
-        'family_members.*.profession.cyrillic' => 'Поле "Профессия" должно содержать только кириллические символы (русские и казахские), цифры и знаки препинания',
 
         // Дополнительные сообщения для обязательных полей
         'hobbies.required' => 'Хобби обязательно для заполнения',

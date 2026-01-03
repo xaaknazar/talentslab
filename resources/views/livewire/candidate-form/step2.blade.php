@@ -1,20 +1,20 @@
 @if($currentStep === 2)
 <div class="step">
-    <h2 class="text-2xl font-bold mb-6">Дополнительная информация</h2>
+    <h2 class="text-2xl font-bold mb-6">{{ __('Additional Information') }}</h2>
 
     <div class="space-y-6">
-        
+
         <!-- Первые три поля в одной строке -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <!-- Водительские права -->
             <div>
                 <label class="block text-base font-medium text-gray-700">
-                    Водительские права <span class="text-red-500">*</span>
+                    {{ __('Driving License') }} <span class="text-red-500">*</span>
                 </label>
                 <select wire:model="has_driving_license" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    <option value="">Выберите ответ</option>
-                    <option value="1">Есть</option>
-                    <option value="0">Нет</option>
+                    <option value="">{{ __('Select answer') }}</option>
+                    <option value="1">{{ __('Available') }}</option>
+                    <option value="0">{{ __('Not available') }}</option>
                 </select>
                 @error('has_driving_license') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
@@ -22,23 +22,23 @@
             <!-- Религия -->
             <div>
                 <label class="block text-base font-medium text-gray-700">
-                    Вероисповедание <span class="text-red-500">*</span>
+                    {{ __('Religion') }} <span class="text-red-500">*</span>
                 </label>
                 <select wire:model="religion" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    <option value="">Выберите вероисповедание</option>
+                    <option value="">{{ __('Select religion') }}</option>
                     @foreach($religions as $key => $value)
-                        <option value="{{ $value }}">{{ $value }}</option>
+                        <option value="{{ $value }}">{{ __($value) }}</option>
                     @endforeach
                 </select>
                 @error('religion') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
 
             <div>
-                <label class="block text-base font-medium text-gray-700">Практикующий</label>
+                <label class="block text-base font-medium text-gray-700">{{ __('Practicing') }}</label>
                 <select wire:model="is_practicing" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    <option value="">Выберите ответ</option>
-                    <option value="1">Да</option>
-                    <option value="0">Нет</option>
+                    <option value="">{{ __('Select answer') }}</option>
+                    <option value="1">{{ __('Yes') }}</option>
+                    <option value="0">{{ __('No') }}</option>
                 </select>
                 @error('is_practicing') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
@@ -48,31 +48,31 @@
         <div class="space-y-6">
             <!-- Родители -->
             <div>
-                <label class="block text-base font-medium text-gray-700 mb-3">Родители</label>
+                <label class="block text-base font-medium text-gray-700 mb-3">{{ __('Parents') }}</label>
                 <div class="space-y-4">
                     @foreach($parents as $index => $parent)
                         <div wire:key="parent-{{ $index }}" class="p-4 bg-gray-50 rounded-lg">
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">
-                                        Родство <span class="text-red-500">*</span>
+                                        {{ __('Relationship') }} <span class="text-red-500">*</span>
                                     </label>
-                                    <select wire:model.live="parents.{{ $index }}.relation" 
+                                    <select wire:model.live="parents.{{ $index }}.relation"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                        <option value="">Выберите</option>
-                                        <option value="Отец">Отец</option>
-                                        <option value="Мать">Мать</option>
+                                        <option value="">{{ __('Select') }}</option>
+                                        <option value="Отец">{{ __('Father') }}</option>
+                                        <option value="Мать">{{ __('Mother') }}</option>
                                     </select>
                                     @error("parents.{$index}.relation") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">
-                                        Год рождения <span class="text-red-500">*</span>
+                                        {{ __('Year of Birth') }} <span class="text-red-500">*</span>
                                     </label>
-                                    <select wire:model.live="parents.{{ $index }}.birth_year" 
+                                    <select wire:model.live="parents.{{ $index }}.birth_year"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                        <option value="">Год рождения</option>
+                                        <option value="">{{ __('Year of Birth') }}</option>
                                         @foreach($familyYears as $year)
                                             <option value="{{ $year }}">{{ $year }}</option>
                                         @endforeach
@@ -82,18 +82,18 @@
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">
-                                        Профессия (родителя) <span class="text-red-500">*</span>
+                                        {{ __("Parent's Profession") }} <span class="text-red-500">*</span>
                                     </label>
-                                    <input type="text" 
-                                           wire:model.live.debounce.500ms="parents.{{ $index }}.profession" 
-                                           placeholder="Профессия"
+                                    <input type="text"
+                                           wire:model.live.debounce.500ms="parents.{{ $index }}.profession"
+                                           placeholder="{{ __('Profession') }}"
                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                     @error("parents.{$index}.profession") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
                             </div>
                             <div class="mt-2">
                                 <button type="button" onclick="@this.call('removeParent', {{ $index }})" class="text-red-600 hover:text-red-800">
-                                    Удалить
+                                    {{ __('Delete') }}
                                 </button>
                             </div>
                         </div>
@@ -106,7 +106,7 @@
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                             </svg>
-                            Добавить
+                            {{ __('Add') }}
                         </button>
                     @endif
                 </div>
@@ -114,31 +114,31 @@
 
             <!-- Братья и сестры -->
             <div>
-                <label class="block text-base font-medium text-gray-700 mb-3">Братья и сестры</label>
+                <label class="block text-base font-medium text-gray-700 mb-3">{{ __('Siblings') }}</label>
                 <div class="space-y-4">
                     @foreach($siblings as $index => $sibling)
                         <div wire:key="sibling-{{ $index }}" class="p-4 bg-gray-50 rounded-lg">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">
-                                        Родство <span class="text-red-500">*</span>
+                                        {{ __('Relationship') }} <span class="text-red-500">*</span>
                                     </label>
                                     <select wire:model.live="siblings.{{ $index }}.relation"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                        <option value="">Выберите</option>
-                                        <option value="Брат">Брат</option>
-                                        <option value="Сестра">Сестра</option>
+                                        <option value="">{{ __('Select') }}</option>
+                                        <option value="Брат">{{ __('Brother') }}</option>
+                                        <option value="Сестра">{{ __('Sister') }}</option>
                                     </select>
                                     @error("siblings.{$index}.relation") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">
-                                        Год рождения <span class="text-red-500">*</span>
+                                        {{ __('Year of Birth') }} <span class="text-red-500">*</span>
                                     </label>
                                     <select wire:model.live="siblings.{{ $index }}.birth_year"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                        <option value="">Год рождения</option>
+                                        <option value="">{{ __('Year of Birth') }}</option>
                                         @foreach($familyYears as $year)
                                             <option value="{{ $year }}">{{ $year }}</option>
                                         @endforeach
@@ -148,7 +148,7 @@
                             </div>
                             <div class="mt-2">
                                 <button type="button" onclick="@this.call('removeSibling', {{ $index }})" class="text-red-600 hover:text-red-800">
-                                    Удалить
+                                    {{ __('Delete') }}
                                 </button>
                             </div>
                         </div>
@@ -160,38 +160,38 @@
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
-                        Добавить
+                        {{ __('Add') }}
                     </button>
                 </div>
             </div>
 
             <!-- Дети -->
             <div>
-                <label class="block text-base font-medium text-gray-700 mb-3">Дети</label>
+                <label class="block text-base font-medium text-gray-700 mb-3">{{ __('Children') }}</label>
                 <div class="space-y-4">
                     @foreach($children as $index => $child)
                         <div wire:key="child-{{ $index }}" class="p-4 bg-gray-50 rounded-lg">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">
-                                        Пол <span class="text-red-500">*</span>
+                                        {{ __('Gender') }} <span class="text-red-500">*</span>
                                     </label>
                                     <select wire:model.live="children.{{ $index }}.gender"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                        <option value="">Выберите</option>
-                                        <option value="М">Сын</option>
-                                        <option value="Ж">Дочь</option>
+                                        <option value="">{{ __('Select') }}</option>
+                                        <option value="М">{{ __('Son') }}</option>
+                                        <option value="Ж">{{ __('Daughter') }}</option>
                                     </select>
                                     @error("children.{$index}.gender") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">
-                                        Год рождения <span class="text-red-500">*</span>
+                                        {{ __('Year of Birth') }} <span class="text-red-500">*</span>
                                     </label>
                                     <select wire:model.live="children.{{ $index }}.birth_year"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                        <option value="">Год рождения</option>
+                                        <option value="">{{ __('Year of Birth') }}</option>
                                         @foreach($familyYears as $year)
                                             <option value="{{ $year }}">{{ $year }}</option>
                                         @endforeach
@@ -201,7 +201,7 @@
                             </div>
                             <div class="mt-2">
                                 <button type="button" onclick="@this.call('removeChild', {{ $index }})" class="text-red-600 hover:text-red-800">
-                                    Удалить
+                                    {{ __('Delete') }}
                                 </button>
                             </div>
                         </div>
@@ -213,7 +213,7 @@
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
-                        Добавить
+                        {{ __('Add') }}
                     </button>
                 </div>
             </div>
@@ -222,13 +222,13 @@
         <!-- Хобби и интересы -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-                <label class="block text-base font-medium text-gray-700">Хобби <span class="text-red-500">*</span></label>
+                <label class="block text-base font-medium text-gray-700">{{ __('Hobbies') }} <span class="text-red-500">*</span></label>
                 <textarea wire:model="hobbies" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
                 @error('hobbies') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
 
             <div>
-                <label class="block text-base font-medium text-gray-700">Интересы <span class="text-red-500">*</span></label>
+                <label class="block text-base font-medium text-gray-700">{{ __('Interests') }} <span class="text-red-500">*</span></label>
                 <textarea wire:model="interests" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
                 @error('interests') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
@@ -238,8 +238,8 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Посещенные страны -->
             <div>
-                <label class="block text-base font-medium text-gray-700 mb-2">Посещенные страны <span class="text-red-500">*</span></label>
-                
+                <label class="block text-base font-medium text-gray-700 mb-2">{{ __('Visited Countries') }} <span class="text-red-500">*</span></label>
+
                 <!-- Выбранные страны (badges) -->
                 @if(count($visited_countries) > 0)
                     <div class="flex flex-wrap gap-2 mb-3" id="selected-countries-badges">
@@ -249,12 +249,12 @@
                                     $countryData = collect($countries)->firstWhere('name_ru', $country);
                                 @endphp
                                 @if($countryData && isset($countryData['flag_url']))
-                                    <img src="{{ $countryData['flag_url'] }}" 
-                                         alt="flag" 
+                                    <img src="{{ $countryData['flag_url'] }}"
+                                         alt="flag"
                                          class="w-5 h-4 mr-2 rounded border border-white/30 object-cover">
                                 @endif
                                 {{ $country }}
-                                <button type="button" 
+                                <button type="button"
                                         wire:click="removeCountry('{{ $country }}')"
                                         class="ml-2 text-white/80 hover:text-white focus:outline-none">
                                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -265,13 +265,13 @@
                         @endforeach
                     </div>
                 @endif
-                
+
                 <!-- Select2 для выбора стран -->
                 <div wire:ignore>
                     <select id="country-select-2" class="block w-full rounded-lg border-gray-300 shadow-sm">
-                        <option value="">Выберите страну для добавления</option>
+                        <option value="">{{ __('Select country to add') }}</option>
                         @foreach($countries as $country)
-                            <option value="{{ $country['name_ru'] }}" 
+                            <option value="{{ $country['name_ru'] }}"
                                     data-flag="{{ $country['flag_url'] ?? '' }}">
                                 {{ $country['name_ru'] }}
                             </option>
@@ -283,7 +283,7 @@
 
             <!-- Спорт -->
             <div>
-                <label class="block text-base font-medium text-gray-700">Любимые виды спорта <span class="text-red-500">*</span></label>
+                <label class="block text-base font-medium text-gray-700">{{ __('Favorite Sports') }} <span class="text-red-500">*</span></label>
                 <textarea wire:model="favorite_sports" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
                 @error('favorite_sports') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
@@ -293,20 +293,20 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Книг в год -->
             <div>
-                <label class="block text-base font-medium text-gray-700">Количество книг в год</label>
+                <label class="block text-base font-medium text-gray-700">{{ __('Books per Year') }}</label>
                 <div class="flex items-center gap-3 mt-1">
                     <input type="number"
                            wire:model="books_per_year_min"
                            min="0"
                            max="100"
-                           placeholder="от"
+                           placeholder="{{ __('from') }}"
                            class="w-20 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
                     <span class="text-gray-400">—</span>
                     <input type="number"
                            wire:model="books_per_year_max"
                            min="0"
                            max="100"
-                           placeholder="до"
+                           placeholder="{{ __('To') }}"
                            class="w-20 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
                 </div>
                 @error('books_per_year_min') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -315,7 +315,7 @@
 
             <!-- Развлекательные видео -->
             <div>
-                <label class="block text-base font-medium text-gray-700">Развлекательные видео (часов в неделю)</label>
+                <label class="block text-base font-medium text-gray-700">{{ __('Entertainment Videos (hours per week)') }}</label>
                 <input type="number"
                        wire:model="entertainment_hours_weekly"
                        min="0"
@@ -327,7 +327,7 @@
 
             <!-- Образовательные видео -->
             <div>
-                <label class="block text-base font-medium text-gray-700">Образовательные видео (часов в неделю)</label>
+                <label class="block text-base font-medium text-gray-700">{{ __('Educational Videos (hours per week)') }}</label>
                 <input type="number"
                        wire:model="educational_hours_weekly"
                        min="0"
@@ -339,7 +339,7 @@
 
             <!-- Социальные сети -->
             <div>
-                <label class="block text-base font-medium text-gray-700">Соц. сети (часов в неделю)</label>
+                <label class="block text-base font-medium text-gray-700">{{ __('Social Media (hours per week)') }}</label>
                 <input type="number"
                        wire:model="social_media_hours_weekly"
                        min="0"
@@ -358,129 +358,60 @@
 
 <!-- Select2 Кастомные стили -->
 <style>
-    /* Select2 контейнер */
     .select2-container--default .select2-selection--single {
         border: 1px solid #d1d5db;
         border-radius: 0.5rem;
         height: 42px;
         padding: 4px 8px;
     }
-    
+
     .select2-container--default .select2-selection--single .select2-selection__rendered {
         line-height: 32px;
         padding-left: 8px;
         color: #374151;
     }
-    
+
     .select2-container--default .select2-selection--single .select2-selection__arrow {
         height: 40px;
         right: 8px;
     }
-    
-    /* Dropdown */
+
     .select2-container--default .select2-results__option {
         padding: 10px 12px;
     }
-    
+
     .select2-container--default .select2-results__option--highlighted[aria-selected] {
         background-color: #eff6ff;
         color: #1e40af;
     }
-    
+
     .select2-container--default .select2-results__option[aria-selected=true] {
         background-color: #dbeafe;
     }
-    
-    /* Search field */
+
     .select2-search--dropdown .select2-search__field {
         border: 1px solid #d1d5db;
         border-radius: 0.375rem;
         padding: 8px 12px;
     }
-    
+
     .select2-search--dropdown .select2-search__field:focus {
         border-color: #3b82f6;
         outline: none;
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
-    
-    /* Dropdown container */
+
     .select2-dropdown {
         border: 1px solid #d1d5db;
         border-radius: 0.5rem;
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
-    
-    /* Флаги в опциях */
+
     .select2-results__option img {
         margin-right: 8px;
         vertical-align: middle;
     }
 </style>
-
-
-<script>
-// Отладочный скрипт для проверки Livewire синхронизации
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🔍 Step2 Family Debug Script Loaded');
-    
-    // Отслеживаем все изменения в полях семьи
-    document.addEventListener('input', function(e) {
-        if (e.target && e.target.getAttribute && e.target.getAttribute('wire:model.blur')) {
-            const wireModel = e.target.getAttribute('wire:model.blur');
-            if (wireModel && (wireModel.includes('parents') || wireModel.includes('siblings') || wireModel.includes('children'))) {
-                console.log('📝 Family field changed:', {
-                    field: wireModel,
-                    value: e.target.value,
-                    type: e.target.tagName
-                });
-            }
-        }
-    }, true); // capture phase
-    
-    // Отслеживаем blur события
-    document.addEventListener('blur', function(e) {
-        if (e.target && e.target.getAttribute && e.target.getAttribute('wire:model.blur')) {
-            const wireModel = e.target.getAttribute('wire:model.blur');
-            if (wireModel && (wireModel.includes('parents') || wireModel.includes('siblings') || wireModel.includes('children'))) {
-                console.log('💨 Family field blur (sync triggered):', {
-                    field: wireModel,
-                    value: e.target.value
-                });
-            }
-        }
-    }, true); // capture phase
-    
-    // Проверяем состояние Livewire компонента
-    window.debugFamilyData = function() {
-        console.log('🔍 Debugging Livewire Family Data...');
-        const componentEl = document.querySelector('[wire\\:id]');
-        if (componentEl) {
-            const componentId = componentEl.getAttribute('wire:id');
-            console.log('Component ID:', componentId);
-            
-            if (window.Livewire) {
-                const component = window.Livewire.find(componentId);
-                if (component) {
-                    console.log('📊 Current family data in Livewire:', {
-                        parents: component.get('parents'),
-                        siblings: component.get('siblings'),
-                        children: component.get('children')
-                    });
-                } else {
-                    console.error('❌ Livewire component not found');
-                }
-            } else {
-                console.error('❌ Livewire not available');
-            }
-        } else {
-            console.error('❌ Component element not found');
-        }
-    };
-    
-    console.log('✅ Family debug script ready. Use window.debugFamilyData() to check state');
-});
-</script>
 
 <!-- jQuery (требуется для Select2) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -490,140 +421,101 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🌍 Select2 Country Selector initialization started');
-    
     function initSelect2() {
         const selectElement = $('#country-select-2');
-        
+
         if (!selectElement.length) {
-            console.log('ℹ️ Country select element not found (probably not on step 2)');
             return false;
         }
-        
-        // Уничтожаем предыдущий экземпляр если есть
+
         if (selectElement.hasClass('select2-hidden-accessible')) {
-            console.log('⚠️ Select2 already initialized, skipping');
-            return true; // Уже инициализирован
+            return true;
         }
-        
+
         try {
-            console.log('✨ Initializing Select2');
-            
-            // Инициализируем Select2
             selectElement.select2({
-                placeholder: 'Начните вводить название страны...',
+                placeholder: '{{ __("Start typing country name...") }}',
                 allowClear: true,
                 width: '100%',
                 templateResult: formatCountryOption,
                 templateSelection: formatCountrySelection,
                 language: {
                     noResults: function() {
-                        return "Страна не найдена";
+                        return "{{ __('Country not found') }}";
                     },
                     searching: function() {
-                        return "Поиск...";
+                        return "{{ __('Searching...') }}";
                     }
                 }
             });
-            
-            // Убираем старые обработчики чтобы не было дублей
+
             selectElement.off('select2:select');
-            
-            // Обработчик выбора страны
+
             selectElement.on('select2:select', function(e) {
                 const country = e.params.data.id;
-                console.log('📍 Country selected:', country);
-                
+
                 if (country) {
-                    // Вызываем Livewire метод
                     @this.call('addCountry', country).then(() => {
-                        console.log('✅ Country added via Livewire');
-                        // Сбрасываем Select2
                         selectElement.val(null).trigger('change');
-                    }).catch((error) => {
-                        console.error('❌ Error adding country:', error);
                     });
                 }
             });
-            
-            console.log('✅ Select2 initialized successfully');
+
             return true;
         } catch (error) {
-            console.error('❌ Error initializing Select2:', error);
             return false;
         }
     }
-    
-    // Форматирование опций с флагами
+
     function formatCountryOption(country) {
         if (!country.id) {
             return country.text;
         }
-        
+
         const $country = $(
             '<span><img src="' + $(country.element).data('flag') + '" class="inline-block w-6 h-4 mr-2 rounded" onerror="this.style.display=\'none\'" /> ' + country.text + '</span>'
         );
-        
+
         return $country;
     }
-    
-    // Форматирование выбранной опции
+
     function formatCountrySelection(country) {
-        return country.text || 'Выберите страну...';
+        return country.text || '{{ __("Select country to add") }}';
     }
-    
-    // Пытаемся инициализировать при загрузке
+
     initSelect2();
-    
-    // Слушаем Livewire событие смены шага - ГЛАВНЫЙ механизм
+
     document.addEventListener('livewire:initialized', () => {
         Livewire.on('step-changed', (event) => {
-            console.log('🔄 Step changed event received (Livewire):', event);
-            
             const step = event.step || event[0]?.step || event[0];
-            console.log('📍 Current step:', step);
-            
+
             if (step === 2) {
-                console.log('✅ Moved to step 2, will initialize Select2');
-                
-                // Пробуем несколько раз с увеличивающейся задержкой
                 setTimeout(() => initSelect2(), 100);
                 setTimeout(() => initSelect2(), 300);
                 setTimeout(() => initSelect2(), 500);
             }
         });
-        
-        console.log('✅ Livewire event listener registered');
     });
-    
-    // Переинициализация при обновлении Livewire (ловит все изменения, включая клики на индикаторы)
+
     Livewire.hook('message.processed', (message, component) => {
-        // Пробуем множество раз с разными задержками для надежности
         const delays = [50, 100, 200, 300, 500];
-        
+
         delays.forEach(delay => {
             setTimeout(() => {
                 const selectElement = $('#country-select-2');
-                
-                // Если элемент есть и не инициализирован - инициализируем
+
                 if (selectElement.length && !selectElement.hasClass('select2-hidden-accessible')) {
-                    console.log(`🔄 Livewire message.processed (delay ${delay}ms): Initializing Select2`);
                     initSelect2();
                 }
             }, delay);
         });
     });
-    
-    // Дополнительный механизм: следим за изменениями DOM постоянно
+
     setInterval(() => {
         const selectElement = $('#country-select-2');
         if (selectElement.length && !selectElement.hasClass('select2-hidden-accessible')) {
-            console.log('⏰ Interval check: Found uninitialized Select2, initializing...');
             initSelect2();
         }
-    }, 1000); // Проверяем каждую секунду
-    
-    console.log('✅ Select2 script loaded and ready');
+    }, 1000);
 });
 </script>
- 

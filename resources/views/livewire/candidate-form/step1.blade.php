@@ -1,12 +1,12 @@
 @if($currentStep === 1)
 <div class="step">
-    <h2 class="text-2xl font-bold mb-6">Основная информация</h2>
+    <h2 class="text-2xl font-bold mb-6">{{ __('Basic Information') }}</h2>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Фото -->
         <div class="col-span-1 lg:col-span-2">
             <label class="block text-sm font-medium text-gray-700 mb-2">
-                Фото <span class="text-red-500">*</span>
+                {{ __('Photo') }} <span class="text-red-500">*</span>
             </label>
 
             <!-- Предпросмотр фото -->
@@ -14,7 +14,7 @@
                 <div class="relative w-32 h-40 mx-auto">
                     <img id="preview-image"
                          src="{{ $photoPreview }}"
-                         alt="Фото"
+                         alt="{{ __('Photo') }}"
                          class="w-full h-full object-cover rounded-lg shadow-md">
                     <button type="button"
                             onclick="removePhoto()"
@@ -32,8 +32,8 @@
                     <div class="fixed inset-0 bg-black opacity-50"></div>
                     <div class="relative bg-white rounded-lg max-w-4xl w-full mx-auto z-[10000]">
                         <div class="px-6 py-4 border-b">
-                            <h3 class="text-lg font-semibold">Обрезать фото</h3>
-                            <p class="text-sm text-gray-600 mt-1">Выберите область фото (пропорция 3:4)</p>
+                            <h3 class="text-lg font-semibold">{{ __('Crop Photo') }}</h3>
+                            <p class="text-sm text-gray-600 mt-1">{{ __('Select photo area (aspect ratio 3:4)') }}</p>
                         </div>
                         <div class="p-6">
                             <div class="max-h-[60vh] overflow-hidden">
@@ -44,12 +44,12 @@
                             <button type="button"
                                     onclick="cancelCrop()"
                                     class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
-                                Отмена
+                                {{ __('Cancel') }}
                             </button>
                             <button type="button"
                                     onclick="saveCrop()"
                                     class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700">
-                                Сохранить
+                                {{ __('Save') }}
                             </button>
                         </div>
                     </div>
@@ -64,9 +64,9 @@
                             <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                         <p class="mt-2 text-sm text-gray-600">
-                            <span class="font-semibold">Нажмите для загрузки</span> или перетащите файл
+                            <span class="font-semibold">{{ __('Click to upload') }}</span> {{ __('or drag and drop') }}
                         </p>
-                        <p class="text-xs text-gray-500 mt-1">PNG, JPG до 20MB (пропорция 3:4)</p>
+                        <p class="text-xs text-gray-500 mt-1">{{ __('PNG, JPG up to 20MB (aspect ratio 3:4)') }}</p>
                     </div>
                     <input id="photo-input"
                            type="file"
@@ -86,7 +86,7 @@
             <div id="loading-indicator" class="mt-2 hidden">
                 <div class="flex items-center justify-center space-x-2">
                     <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                    <span class="text-sm text-gray-600">Обработка...</span>
+                    <span class="text-sm text-gray-600">{{ __('Processing...') }}</span>
                 </div>
             </div>
 
@@ -108,26 +108,26 @@
                 <!-- Имя -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700">
-                        Имя <span class="text-gray-500">(на кириллице)</span><span class="text-red-500">*</span>
+                        {{ __('First Name') }} <span class="text-red-500">*</span>
                     </label>
                     <input type="text"
                            id="first-name-input"
                            wire:model="first_name"
                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 capitalize"
-                           placeholder="Иван">
+                           placeholder="{{ app()->getLocale() == 'ar' ? 'أحمد' : (app()->getLocale() == 'en' ? 'John' : 'Иван') }}">
                     @error('first_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
 
                 <!-- Фамилия -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700">
-                        Фамилия <span class="text-gray-500">(на кириллице)</span><span class="text-red-500">*</span>
+                        {{ __('Last Name') }} <span class="text-red-500">*</span>
                     </label>
                     <input type="text"
                            id="last-name-input"
                            wire:model="last_name"
                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 capitalize"
-                           placeholder="Иванов">
+                           placeholder="{{ app()->getLocale() == 'ar' ? 'محمد' : (app()->getLocale() == 'en' ? 'Smith' : 'Иванов') }}">
                     @error('last_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
             </div>
@@ -136,7 +136,7 @@
         <!-- Email -->
         <div>
             <label class="block text-sm font-medium text-gray-700">
-                Email <span class="text-red-500">*</span>
+                {{ __('Email') }} <span class="text-red-500">*</span>
             </label>
             <input type="email"
                    wire:model="email"
@@ -148,19 +148,19 @@
         <!-- Инстаграм -->
         <div>
             <label class="block text-sm font-medium text-gray-700">
-                Инстаграм <span class="text-gray-500">(в формате @username)</span>
+                {{ __('Instagram') }} <span class="text-gray-500">({{ __('in format @username') }})</span>
             </label>
             <input type="text"
                    wire:model="instagram"
                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                   placeholder="username (знак @ добавится автоматически)">
+                   placeholder="{{ __('username (@ sign will be added automatically)') }}">
             @error('instagram') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
 
         <!-- Телефон -->
         <div>
             <label class="block text-sm font-medium text-gray-700">
-                Телефон <span class="text-red-500">*</span><span class="text-gray-500"> (в формате +77081992519)</span>
+                {{ __('Phone') }} <span class="text-red-500">*</span><span class="text-gray-500"> ({{ __('in format +77081992519') }})</span>
             </label>
             <input type="text"
                    wire:model.lazy="phone"
@@ -173,12 +173,12 @@
         <!-- Пол -->
         <div>
             <label class="block text-sm font-medium text-gray-700">
-                Пол <span class="text-red-500">*</span>
+                {{ __('Gender') }} <span class="text-red-500">*</span>
             </label>
             <select wire:model="gender" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                <option value="">Выберите пол</option>
-                <option value="Мужской">Мужской</option>
-                <option value="Женский">Женский</option>
+                <option value="">{{ __('Select gender') }}</option>
+                <option value="Мужской">{{ __('Male') }}</option>
+                <option value="Женский">{{ __('Female') }}</option>
             </select>
             @error('gender') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
@@ -186,14 +186,14 @@
         <!-- Семейное положение -->
         <div>
             <label class="block text-sm font-medium text-gray-700">
-                Семейное положение <span class="text-red-500">*</span>
+                {{ __('Marital Status') }} <span class="text-red-500">*</span>
             </label>
             <select wire:model="marital_status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                <option value="">Выберите семейное положение</option>
-                <option value="Холост/Не замужем">Холост/Не замужем</option>
-                <option value="Женат/Замужем">Женат/Замужем</option>
-                <option value="Разведен(а)">Разведен(а)</option>
-                <option value="Вдовец/Вдова">Вдовец/Вдова</option>
+                <option value="">{{ __('Select marital status') }}</option>
+                <option value="Холост/Не замужем">{{ __('Single') }}</option>
+                <option value="Женат/Замужем">{{ __('Married') }}</option>
+                <option value="Разведен(а)">{{ __('Divorced') }}</option>
+                <option value="Вдовец/Вдова">{{ __('Widowed') }}</option>
             </select>
             @error('marital_status') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
@@ -201,7 +201,7 @@
         <!-- Дата рождения -->
         <div>
             <label class="block text-sm font-medium text-gray-700">
-                Дата рождения <span class="text-red-500">*</span>
+                {{ __('Date of Birth') }} <span class="text-red-500">*</span>
             </label>
             <input type="date"
                    wire:model="birth_date"
@@ -212,40 +212,40 @@
         <!-- Место рождения -->
         <div>
             <label class="block text-sm font-medium text-gray-700">
-                Место рождения <span class="text-gray-500">(на кириллице)</span><span class="text-red-500">*</span>
+                {{ __('Place of Birth') }} <span class="text-red-500">*</span>
             </label>
             <input type="text"
                    id="birth-place-input"
                    wire:model="birth_place"
                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 capitalize"
-                   placeholder="Москва">
+                   placeholder="{{ app()->getLocale() == 'ar' ? 'الرياض' : (app()->getLocale() == 'en' ? 'New York' : 'Москва') }}">
             @error('birth_place') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
 
         <!-- Текущий город -->
         <div>
             <label class="block text-sm font-medium text-gray-700">
-                Текущий город <span class="text-gray-500">(на кириллице)</span><span class="text-red-500">*</span>
+                {{ __('Current City') }} <span class="text-red-500">*</span>
             </label>
             <input type="text"
                    id="current-city-input"
                    wire:model="current_city"
                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 capitalize"
-                   placeholder="Москва">
+                   placeholder="{{ app()->getLocale() == 'ar' ? 'دبي' : (app()->getLocale() == 'en' ? 'London' : 'Москва') }}">
             @error('current_city') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
 
         <!-- Готов к переезду -->
         <div>
             <label class="block text-sm font-medium text-gray-700">
-                Готов к переезду
+                {{ __('Ready to Relocate') }}
             </label>
             <div class="mt-2">
                 <label class="inline-flex items-center">
                     <input type="checkbox"
                            wire:model="ready_to_relocate"
                            class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    <span class="ml-2 text-sm text-gray-700">Да, готов к переезду</span>
+                    <span class="ml-2 text-sm text-gray-700">{{ __('Yes, ready to relocate') }}</span>
                 </label>
             </div>
             @error('ready_to_relocate') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -254,55 +254,8 @@
 </div>
 @endif
 
-@push('styles')
-<!-- CSS уже подключен в layout -->
-<style>
-/* Стили для ошибок кириллицы */
-.cyrillic-error {
-    font-weight: 500;
-    animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-5px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Стили для полей с ошибкой кириллицы */
-.border-red-500 {
-    border-color: #ef4444 !important;
-}
-
-.focus\:border-red-500:focus {
-    border-color: #ef4444 !important;
-}
-
-.focus\:ring-red-500:focus {
-    --tw-ring-color: #ef4444 !important;
-}
-
-/* Добавляем небольшое расстояние между ошибками */
-.cyrillic-error + .text-red-500 {
-    margin-top: 0.25rem;
-}
-</style>
-@endpush
-
 @push('scripts')
 <script>
-// Простая проверка загрузки - fallback код убран так как основной JavaScript работает
-console.log('Step1 template loaded - cyrillic validation handled by candidate-form.js');
-
-// Проверяем доступность функций для отладки
-console.log('JavaScript functions available:', {
-    initCyrillicValidation: typeof window.initCyrillicValidation,
-    isCyrillic: typeof window.isCyrillic
-});
+console.log('Step1 template loaded');
 </script>
 @endpush
