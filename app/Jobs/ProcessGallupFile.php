@@ -54,9 +54,14 @@ class ProcessGallupFile implements ShouldQueue
                 $data = $result->getData(true);
 
                 if ($result->getStatusCode() === 200) {
+                    // Устанавливаем шаг 6 - полная анкета с Gallup
+                    $this->candidate->step = 6;
+                    $this->candidate->save();
+
                     Log::info('Gallup file processed successfully', [
                         'candidate_id' => $this->candidate->id,
-                        'message' => $data['message'] ?? 'Success'
+                        'message' => $data['message'] ?? 'Success',
+                        'step' => 6
                     ]);
                 } else {
                     Log::error('Gallup file processing failed', [

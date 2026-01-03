@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,6 +23,74 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <!-- RTL Support for Arabic -->
+        @if(app()->getLocale() === 'ar')
+        <style>
+            /* RTL base styles */
+            body {
+                direction: rtl;
+                text-align: right;
+            }
+
+            /* Flip margins and paddings */
+            .ms-1, .ms-2, .ms-3, .ms-4, .ms-5, .ms-6, .ms-8, .ms-10 {
+                margin-right: inherit;
+                margin-left: 0 !important;
+            }
+
+            .me-1, .me-2, .me-3, .me-4, .me-5, .me-6, .me-8, .me-10 {
+                margin-left: inherit;
+                margin-right: 0 !important;
+            }
+
+            .ps-1, .ps-2, .ps-3, .ps-4, .ps-5, .ps-6, .ps-8, .ps-10 {
+                padding-right: inherit;
+                padding-left: 0 !important;
+            }
+
+            .pe-1, .pe-2, .pe-3, .pe-4, .pe-5, .pe-6, .pe-8, .pe-10 {
+                padding-left: inherit;
+                padding-right: 0 !important;
+            }
+
+            /* Flex direction */
+            .flex-row {
+                flex-direction: row-reverse;
+            }
+
+            /* Text alignment */
+            .text-left {
+                text-align: right !important;
+            }
+
+            .text-right {
+                text-align: left !important;
+            }
+
+            /* Navigation adjustments */
+            nav .flex {
+                flex-direction: row-reverse;
+            }
+
+            /* Dropdown alignment */
+            [x-placement="bottom-end"] {
+                right: auto !important;
+                left: 0 !important;
+            }
+
+            /* Input fields */
+            input, textarea, select {
+                text-align: right;
+            }
+
+            /* Icons in buttons */
+            button svg {
+                margin-left: 0;
+                margin-right: 0.5rem;
+            }
+        </style>
+        @endif
 
         @stack('scripts')
     </head>

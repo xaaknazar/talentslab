@@ -329,8 +329,15 @@ if (! function_exists('clean_git_conflicts')) {
                         @if($isReducedReport)
                             <span class="text-lg text-gray-500 font-normal">(урезанная версия)</span>
                         @endif
-                    <h1 class="text-3xl font-bold mb-4" style="color: #39761d;">
+                    <h1 class="text-3xl font-bold mb-4" style="color: #39761d; display: flex; align-items: center; gap: 8px;">
                         {{ clean_git_conflicts($candidate->full_name) }}
+                        @if($candidate->gallup_pdf || ($candidate->gallup_talents && count($candidate->gallup_talents) > 0))
+                            <span style="display: inline-flex; align-items: center; justify-content: center; background: #39761d; color: white; width: 20px; height: 20px; border-radius: 50%; margin-left: 10px; flex-shrink: 0;" title="Полный профиль">
+                                <svg style="width: 14px; height: 14px;" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                            </span>
+                        @endif
                     </h1>
                      @if($isFullReport)
                     <div class="text-base mb-6" style="line-height: 1.8;">
@@ -464,7 +471,16 @@ if (! function_exists('clean_git_conflicts')) {
                              <span class="text-base font-medium flex-1">
                                 @if($candidate->universities && count($candidate->universities) > 0)
                                     @foreach($candidate->universities as $index => $university)
-                                        <div>{{ $university['name'] ?? 'Не указано' }} / {{ $university['speciality'] ?? 'Не указано' }} / {{ $university['graduation_year'] ?? 'Не указано' }}{{ !empty($university['gpa']) ? ' / ' . $university['gpa'] : '' }}</div>
+                                        @php
+                                            $parts = [];
+                                            $parts[] = $university['name'] ?? 'Не указано';
+                                            if (!empty($university['city'])) $parts[] = $university['city'];
+                                            $parts[] = $university['graduation_year'] ?? 'Не указано';
+                                            $parts[] = $university['speciality'] ?? 'Не указано';
+                                            if (!empty($university['degree'])) $parts[] = $university['degree'];
+                                            if (!empty($university['gpa'])) $parts[] = $university['gpa'];
+                                        @endphp
+                                        <div>{{ implode(' / ', $parts) }}</div>
                                     @endforeach
                                 @else
                                     Не указано

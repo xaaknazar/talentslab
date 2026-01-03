@@ -53,32 +53,33 @@
             <div class="space-y-4">
                 @foreach($universities as $index => $university)
                     <div class="p-4 bg-gray-50 rounded-lg">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">
                                     Название университета | колледжа <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" 
-                                       wire:model="universities.{{ $index }}.name" 
+                                <input type="text"
+                                       wire:model="universities.{{ $index }}.name"
                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                 @error("universities.{$index}.name") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">
-                                    Специальность <span class="text-red-500">*</span>
+                                    Город
                                 </label>
-                                <input type="text" 
-                                       wire:model="universities.{{ $index }}.speciality" 
+                                <input type="text"
+                                       wire:model="universities.{{ $index }}.city"
+                                       placeholder="Алматы"
                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                @error("universities.{$index}.speciality") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                @error("universities.{$index}.city") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">
                                     Год окончания <span class="text-red-500">*</span>
                                 </label>
-                                <select wire:model="universities.{{ $index }}.graduation_year" 
+                                <select wire:model="universities.{{ $index }}.graduation_year"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                     <option value="" selected disabled>Выберите год</option>
                                     @for($year = 1970; $year <= 2035; $year++)
@@ -90,13 +91,38 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">
+                                    Специальность <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text"
+                                       wire:model="universities.{{ $index }}.speciality"
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                @error("universities.{$index}.speciality") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">
+                                    Степень образования
+                                </label>
+                                <select wire:model="universities.{{ $index }}.degree"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">Выберите степень</option>
+                                    <option value="Средне-специальное">Средне-специальное</option>
+                                    <option value="Бакалавр">Бакалавр</option>
+                                    <option value="Магистратура">Магистратура</option>
+                                    <option value="PhD">PhD</option>
+                                </select>
+                                @error("universities.{$index}.degree") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">
                                     GPA <span class="text-gray-500">(не обязательно)</span>
                                 </label>
-                                <input type="number" 
+                                <input type="number"
                                        wire:model="universities.{{ $index }}.gpa"
                                        name="universities[{{ $index }}][gpa]"
-                                       min="0" 
-                                       max="4.0" 
+                                       min="0"
+                                       max="4.0"
                                        step="0.01"
                                        placeholder="например: 3.75"
                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
@@ -453,12 +479,13 @@
                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                placeholder="400 000"
                                autocomplete="off"
-                               oninput="formatSalaryFrom(this)"
+                               oninput="formatSalaryFrom(this); validateSalaryFrom();"
                                onpaste="handleSalaryPasteFrom(event)"
                                onkeypress="return allowOnlyNumbers(event)">
                         <input type="hidden"
                                wire:model="expected_salary_from"
                                id="salary_from_hidden">
+                        <div id="salary_from_warning" class="hidden text-orange-600 text-xs mt-1"></div>
                         @error('expected_salary_from') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
 
@@ -469,12 +496,13 @@
                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                placeholder="500 000"
                                autocomplete="off"
-                               oninput="formatSalaryTo(this)"
+                               oninput="formatSalaryTo(this); validateSalaryTo();"
                                onpaste="handleSalaryPasteTo(event)"
                                onkeypress="return allowOnlyNumbers(event)">
                         <input type="hidden"
                                wire:model="expected_salary_to"
                                id="salary_to_hidden">
+                        <div id="salary_to_warning" class="hidden text-orange-600 text-xs mt-1"></div>
                         @error('expected_salary_to') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
                 </div>
@@ -547,6 +575,66 @@ window.capitalizeAfterComma = function(textarea) {
 
         // Триггерим событие input для Livewire
         textarea.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+};
+
+// Проверка года рождения (рождённые после 2000 года включительно)
+window.isBornAfter2000 = function() {
+    const birthDateInput = document.querySelector('input[wire\\:model="birth_date"]');
+    if (!birthDateInput || !birthDateInput.value) return false;
+    const birthYear = new Date(birthDateInput.value).getFullYear();
+    return birthYear >= 2000;
+};
+
+// Валидация зарплаты "От"
+window.validateSalaryFrom = function() {
+    const input = document.getElementById('salary_from_formatted');
+    const warning = document.getElementById('salary_from_warning');
+    if (!input || !warning) return;
+
+    const numericValue = parseInt(input.value.replace(/\D/g, '')) || 0;
+    const maxSalary = 2000000;
+
+    if (isBornAfter2000() && numericValue > maxSalary) {
+        warning.textContent = 'Для рождённых после 2000 г. максимум 2 000 000 тенге';
+        warning.classList.remove('hidden');
+        input.value = '2 000 000';
+        const hiddenInput = document.getElementById('salary_from_hidden');
+        if (hiddenInput) {
+            hiddenInput.value = maxSalary;
+            hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+    } else {
+        warning.classList.add('hidden');
+    }
+
+    // Также проверяем поле "До"
+    validateSalaryTo();
+};
+
+// Валидация зарплаты "До"
+window.validateSalaryTo = function() {
+    const fromInput = document.getElementById('salary_from_formatted');
+    const toInput = document.getElementById('salary_to_formatted');
+    const warning = document.getElementById('salary_to_warning');
+    if (!fromInput || !toInput || !warning) return;
+
+    const fromValue = parseInt(fromInput.value.replace(/\D/g, '')) || 0;
+    const toValue = parseInt(toInput.value.replace(/\D/g, '')) || 0;
+    const maxToValue = fromValue * 2;
+
+    if (fromValue > 0 && toValue > maxToValue) {
+        warning.textContent = 'Максимум 2x от суммы "От" (' + maxToValue.toLocaleString('ru-RU') + ' тенге)';
+        warning.classList.remove('hidden');
+        const formatted = maxToValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        toInput.value = formatted;
+        const hiddenInput = document.getElementById('salary_to_hidden');
+        if (hiddenInput) {
+            hiddenInput.value = maxToValue;
+            hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+    } else {
+        warning.classList.add('hidden');
     }
 };
 

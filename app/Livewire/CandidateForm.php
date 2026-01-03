@@ -323,7 +323,7 @@ class CandidateForm extends Component
         // Additional Information
         $this->religion = $this->convertReligionToRussian($this->candidate->religion);
         logger()->debug('Loading candidate religion:', ['original' => $this->candidate->religion, 'converted' => $this->religion]);
-        $this->is_practicing = $this->candidate->is_practicing;
+        $this->is_practicing = $this->candidate->is_practicing !== null ? (int) $this->candidate->is_practicing : null;
         $this->family_members = $this->candidate->family_members ?? [];
 
         // Инициализируем новые категории семьи
@@ -341,7 +341,7 @@ class CandidateForm extends Component
         $this->entertainment_hours_weekly = $this->candidate->entertainment_hours_weekly;
         $this->educational_hours_weekly = $this->candidate->educational_hours_weekly;
         $this->social_media_hours_weekly = $this->candidate->social_media_hours_weekly;
-        $this->has_driving_license = $this->candidate->has_driving_license;
+        $this->has_driving_license = $this->candidate->has_driving_license !== null ? (int) $this->candidate->has_driving_license : null;
 
         // Education and Work
         // Разбираем поле school на три части
@@ -351,7 +351,17 @@ class CandidateForm extends Component
             $this->school_city = $schoolParts[1] ?? '';
             $this->school_graduation_year = $schoolParts[2] ?? '';
         }
-        $this->universities = $this->candidate->universities ?? [];
+        // Нормализуем данные университетов для обратной совместимости
+        $this->universities = collect($this->candidate->universities ?? [])->map(function ($uni) {
+            return [
+                'name' => $uni['name'] ?? '',
+                'city' => $uni['city'] ?? '',
+                'graduation_year' => $uni['graduation_year'] ?? '',
+                'speciality' => $uni['speciality'] ?? '',
+                'degree' => $uni['degree'] ?? '',
+                'gpa' => $uni['gpa'] ?? '',
+            ];
+        })->toArray();
         $this->language_skills = $this->candidate->language_skills ?? [];
         $this->computer_skills = $this->candidate->computer_skills ?? '';
         $this->work_experience = $this->convertWorkExperienceFormat($this->candidate->work_experience ?? []);
@@ -428,8 +438,10 @@ class CandidateForm extends Component
             'school_graduation_year' => 'required|integer|min:1970|max:2035',
             'universities' => 'nullable|array|min:0',
             'universities.*.name' => 'required|string|max:255',
+            'universities.*.city' => 'nullable|string|max:255',
             'universities.*.graduation_year' => 'required|integer|min:1950',
             'universities.*.speciality' => 'required|string|max:255',
+            'universities.*.degree' => 'nullable|in:Средне-специальное,Бакалавр,Магистратура,PhD',
             'universities.*.gpa' => 'nullable|numeric|min:0|max:4',
             'language_skills' => 'required|array|min:1',
             'language_skills.*.language' => 'required|string|max:255',
@@ -452,8 +464,35 @@ class CandidateForm extends Component
             'desired_position' => ['required', 'string', 'max:255'],
             'activity_sphere' => ['required', 'string', 'max:255'],
             'expected_salary' => 'nullable|numeric|min:0|max:999999999999',
-            'expected_salary_from' => 'required|numeric|min:0|max:999999999999',
-            'expected_salary_to' => 'required|numeric|min:0|max:999999999999|gte:expected_salary_from',
+            'expected_salary_from' => [
+                'required',
+                'numeric',
+                'min:0',
+                'max:999999999999',
+                function ($attribute, $value, $fail) {
+                    if ($this->birth_date) {
+                        $birthYear = (int) date('Y', strtotime($this->birth_date));
+                        if ($birthYear >= 2000 && $value > 2000000) {
+                            $fail('Для кандидатов младше 2000 года рождения максимальная зарплата "От" - 2 000 000 тенге.');
+                        }
+                    }
+                }
+            ],
+            'expected_salary_to' => [
+                'required',
+                'numeric',
+                'min:0',
+                'max:999999999999',
+                'gte:expected_salary_from',
+                function ($attribute, $value, $fail) {
+                    if ($this->birth_date) {
+                        $birthYear = (int) date('Y', strtotime($this->birth_date));
+                        if ($birthYear >= 2000 && $value > 2000000) {
+                            $fail('Для кандидатов младше 2000 года рождения максимальная зарплата "До" - 2 000 000 тенге.');
+                        }
+                    }
+                }
+            ],
             'employer_requirements' => ['required', 'string', 'max:2000'],
 
             // Step 4 validation rules
@@ -766,8 +805,8 @@ class CandidateForm extends Component
 
         $step1Fields = ['last_name', 'first_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
         $step2Fields = ['religion', 'is_practicing', 'family_members', 'parents', 'siblings', 'children', 'hobbies', 'interests', 'visited_countries', 'books_per_year_min', 'books_per_year_max', 'favorite_sports', 'entertainment_hours_weekly', 'educational_hours_weekly', 'social_media_hours_weekly', 'has_driving_license', 'newCountry'];
-        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary', 'employer_requirements'];
-        $step4Fields = ['gallup_pdf', 'mbti_type'];
+        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary', 'expected_salary_from', 'expected_salary_to', 'employer_requirements'];
+        $step4Fields = ['gallup_pdf', 'mbti_type', 'gardner_test_completed'];
 
         return match($this->currentStep) {
             1 => in_array($baseField, $step1Fields),
@@ -950,8 +989,8 @@ class CandidateForm extends Component
 
         $step1Fields = ['last_name', 'first_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
         $step2Fields = ['religion', 'is_practicing', 'family_members', 'parents', 'siblings', 'children', 'hobbies', 'interests', 'visited_countries', 'books_per_year_min', 'books_per_year_max', 'favorite_sports', 'entertainment_hours_weekly', 'educational_hours_weekly', 'social_media_hours_weekly', 'has_driving_license', 'newCountry'];
-        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary', 'employer_requirements'];
-        $step4Fields = ['gallup_pdf', 'mbti_type'];
+        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary', 'expected_salary_from', 'expected_salary_to', 'employer_requirements'];
+        $step4Fields = ['gallup_pdf', 'mbti_type', 'gardner_test_completed'];
 
         if (in_array($baseField, $step1Fields, true)) return 1;
         if (in_array($baseField, $step2Fields, true)) return 2;
@@ -1471,8 +1510,10 @@ class CandidateForm extends Component
         $this->universities = collect($this->universities)->toArray();
         $this->universities[] = [
             'name' => '',
+            'city' => '',
             'graduation_year' => '',
             'speciality' => '',
+            'degree' => '',
             'gpa' => ''
         ];
     }
@@ -1901,12 +1942,10 @@ class CandidateForm extends Component
 
             // Определяем, куда перенаправить пользователя
             if (auth()->user()->is_admin) {
-                // Администратор возвращается в админ-панель
                 return redirect()->to('/admin/candidates');
-            } else {
-                // Обычный пользователь попадает на дашборд
-                return redirect()->route('dashboard');
             }
+
+            return redirect()->route('dashboard');
         } catch (\Illuminate\Validation\ValidationException $e) {
             logger()->debug('Validation errors in submit:', $e->errors());
             throw $e;
