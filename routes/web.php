@@ -10,6 +10,16 @@ use App\Http\Controllers\CandidateReportController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
+
+// Смена языка
+Route::get('/language/{locale}', function (string $locale) {
+    if (in_array($locale, ['ru', 'en', 'ar'])) {
+        Session::put('locale', $locale);
+        cookie()->queue('locale', $locale, 60 * 24 * 365); // 1 год
+    }
+    return redirect()->back();
+})->name('language.switch');
 
 Route::get('/', function () {
     return view('welcome');

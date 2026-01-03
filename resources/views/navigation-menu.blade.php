@@ -71,6 +71,38 @@
                     </div>
                 @endif
 
+                <!-- Language Switcher -->
+                <div class="ms-3 relative">
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
+                                @php
+                                    $currentLocale = app()->getLocale();
+                                    $flags = ['ru' => '🇷🇺', 'en' => '🇬🇧', 'ar' => '🇸🇦'];
+                                    $names = ['ru' => 'RU', 'en' => 'EN', 'ar' => 'AR'];
+                                @endphp
+                                <span class="text-lg me-1">{{ $flags[$currentLocale] ?? '🌐' }}</span>
+                                <span>{{ $names[$currentLocale] ?? 'RU' }}</span>
+                                <svg class="ms-1 -me-0.5 size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </button>
+                        </x-slot>
+
+                        <x-slot name="content">
+                            <x-dropdown-link href="{{ route('language.switch', 'ru') }}" class="{{ app()->getLocale() === 'ru' ? 'bg-gray-100' : '' }}">
+                                <span class="text-lg me-2">🇷🇺</span> Русский
+                            </x-dropdown-link>
+                            <x-dropdown-link href="{{ route('language.switch', 'en') }}" class="{{ app()->getLocale() === 'en' ? 'bg-gray-100' : '' }}">
+                                <span class="text-lg me-2">🇬🇧</span> English
+                            </x-dropdown-link>
+                            <x-dropdown-link href="{{ route('language.switch', 'ar') }}" class="{{ app()->getLocale() === 'ar' ? 'bg-gray-100' : '' }}">
+                                <span class="text-lg me-2">🇸🇦</span> العربية
+                            </x-dropdown-link>
+                        </x-slot>
+                    </x-dropdown>
+                </div>
+
                 <!-- Settings Dropdown -->
                 <div class="ms-3 relative">
                     <x-dropdown align="right" width="48">
