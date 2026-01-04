@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('candidates', function (Blueprint $table) {
-            $table->json('desired_positions')->nullable()->after('desired_position');
-            $table->json('awards')->nullable()->after('activity_sphere');
+            if (!Schema::hasColumn('candidates', 'desired_positions')) {
+                $table->json('desired_positions')->nullable()->after('desired_position');
+            }
+            if (!Schema::hasColumn('candidates', 'awards')) {
+                $table->json('awards')->nullable()->after('activity_sphere');
+            }
         });
     }
 
@@ -23,7 +27,12 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('candidates', function (Blueprint $table) {
-            $table->dropColumn(['desired_positions', 'awards']);
+            if (Schema::hasColumn('candidates', 'desired_positions')) {
+                $table->dropColumn('desired_positions');
+            }
+            if (Schema::hasColumn('candidates', 'awards')) {
+                $table->dropColumn('awards');
+            }
         });
     }
 };

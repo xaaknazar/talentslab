@@ -12,18 +12,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Перенос старых данных из expected_salary в новые поля
-        DB::statement("
-            UPDATE candidates
-            SET
-                expected_salary_from = expected_salary,
-                expected_salary_to = expected_salary,
-                salary_currency = 'KZT'
-            WHERE
-                expected_salary IS NOT NULL
-                AND expected_salary > 0
-                AND (expected_salary_from IS NULL OR expected_salary_to IS NULL)
-        ");
+        // Проверяем существование колонок перед миграцией данных
+        if (Schema::hasColumn('candidates', 'salary_currency') &&
+            Schema::hasColumn('candidates', 'expected_salary_from') &&
+            Schema::hasColumn('candidates', 'expected_salary_to')) {
+
+            // Перенос старых данных из expected_salary в новые поля
+            DB::statement("
+                UPDATE candidates
+                SET
+                    expected_salary_from = expected_salary,
+                    expected_salary_to = expected_salary,
+                    salary_currency = 'KZT'
+                WHERE
+                    expected_salary IS NOT NULL
+                    AND expected_salary > 0
+                    AND (expected_salary_from IS NULL OR expected_salary_to IS NULL)
+            ");
+        }
     }
 
     /**
