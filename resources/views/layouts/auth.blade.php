@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,8 +14,63 @@
         <link href="{{ asset('css/auth-pages.css') }}" rel="stylesheet">
 
         @stack('styles')
+        <style>
+            .language-switcher {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                display: flex;
+                gap: 8px;
+                z-index: 100;
+            }
+            .language-switcher a {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                padding: 8px 12px;
+                border-radius: 8px;
+                text-decoration: none;
+                font-size: 13px;
+                font-weight: 500;
+                transition: all 0.2s ease;
+                background: rgba(255, 255, 255, 0.9);
+                color: #374151;
+                border: 1px solid rgba(0, 0, 0, 0.1);
+            }
+            .language-switcher a:hover {
+                background: #fff;
+                border-color: #3b82f6;
+                color: #3b82f6;
+            }
+            .language-switcher a.active {
+                background: #3b82f6;
+                color: #fff;
+                border-color: #3b82f6;
+            }
+            .lang-code {
+                font-weight: 600;
+            }
+        </style>
     </head>
     <body>
+        <!-- Language Switcher -->
+        <div class="language-switcher">
+            @php
+                $currentLocale = app()->getLocale();
+                $languages = [
+                    'ru' => ['name' => 'Русский', 'code' => 'Ru'],
+                    'en' => ['name' => 'English', 'code' => 'En'],
+                    'ar' => ['name' => 'العربية', 'code' => 'SA']
+                ];
+            @endphp
+            @foreach($languages as $locale => $lang)
+                <a href="{{ route('language.switch', $locale) }}" class="{{ $currentLocale === $locale ? 'active' : '' }}">
+                    <span class="lang-code">{{ $lang['code'] }}</span>
+                    <span class="lang-name">{{ $lang['name'] }}</span>
+                </a>
+            @endforeach
+        </div>
+
         <div class="container">
             <div class="main-card">
                 <!-- Left Panel - Auth Form -->
@@ -32,9 +87,9 @@
                         <img src="{{ asset('logos/talents_lab_logo.png') }}" alt="Talents Lab Logo" class="brand-logo brand-logo-right">
                     </div>
                     <p class="brand-description">
-                        Talents Lab — современная онлайн-платформа с базой данных резюме, отражающих целостный психометрический портрет личности.
+                        {{ __('Talents Lab is a modern online platform with a resume database reflecting a holistic psychometric portrait of personality.') }}
                         <br><br>
-                        Пройдя анкетирование, вы сформируете резюме и сможете подобрать вакансию, максимально соответствующую вашим способностям и потенциалу.
+                        {{ __('By completing the questionnaire, you will create a resume and be able to find a vacancy that best matches your abilities and potential.') }}
                     </p>
                 </div>
             </div>
