@@ -495,66 +495,63 @@ if (! function_exists('clean_git_conflicts')) {
             <div class="mb-8">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Опыт работы</h2>
                 @if($candidate->work_experience && count($candidate->work_experience) > 0)
-                    <div class="space-y-4">
+                    <div class="space-y-3">
                         @foreach($candidate->work_experience as $index => $experience)
-                            <div class="border-l-2 border-gray-300 pl-4">
-                                <div class="text-base font-medium text-gray-800">
-                                    {{ $index + 1 }}.
-                                    @php $years = trim($experience['years'] ?? ''); @endphp
-                                    @if($years !== '')
-                                        {{ implode(' - ', array_map('mb_ucfirst', explode(' - ', $years))) }} -
-                                    @endif
-                                    {{ $experience['company'] ?? 'Не указано' }}
-                                    @if(!empty($experience['city']))
-                                        ({{ $experience['city'] }})
-                                    @endif
-                                     - {{ $experience['position'] ?? 'Не указано' }}
+                            <div style="background-color: #f9fafb; padding: 12px 16px; border-radius: 6px;">
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+                                    <div>
+                                        <span class="text-base font-semibold text-gray-800">{{ $experience['position'] ?? 'Не указано' }}</span>
+                                        <span style="color: #9ca3af; margin: 0 8px;">—</span>
+                                        <span class="text-base text-gray-700">{{ $experience['company'] ?? 'Не указано' }}</span>
+                                        @if(!empty($experience['city']))
+                                            <span class="text-gray-500">, {{ $experience['city'] }}</span>
+                                        @endif
+                                    </div>
+                                    <span class="text-sm text-gray-500" style="white-space: nowrap; margin-left: 16px;">{{ $experience['years'] ?? '' }}</span>
                                 </div>
                                 @if(!empty($experience['activity_sphere']))
-                                    <div class="text-sm text-gray-600 mt-1">
-                                        <span class="font-medium">Сфера деятельности:</span> {{ $experience['activity_sphere'] }}
-                                    </div>
+                                    <div class="text-sm text-gray-600" style="margin-bottom: 6px;">{{ $experience['activity_sphere'] }}</div>
                                 @endif
                                 @if(!empty($experience['main_tasks']) && is_array($experience['main_tasks']) && count(array_filter($experience['main_tasks'])) > 0)
-                                    <div class="text-sm text-gray-600 mt-1">
-                                        <span class="font-medium">Основные задачи:</span>
-                                        <ul class="list-disc list-inside ml-2 mt-1">
-                                            @foreach(array_filter($experience['main_tasks']) as $task)
-                                                <li>{{ $task }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
+                                    <ul class="text-sm text-gray-600" style="margin-top: 6px;">
+                                        @foreach(array_filter($experience['main_tasks']) as $task)
+                                            <li style="display: flex; align-items: flex-start; margin-bottom: 4px;">
+                                                <span style="color: #9ca3af; margin-right: 8px;">•</span>
+                                                <span>{{ $task }}</span>
+                                            </li>
+                                        @endforeach
+                                    </ul>
                                 @endif
                             </div>
                         @endforeach
-                        <div class="flex data-row" style="margin-top: 1rem;">
-                            <span class="w-60 text-base text-gray-600">Общий стаж работы (лет):</span>
-                            <span class="text-base font-medium">{{ $candidate->total_experience_years ?? 0 }}</span>
+                    </div>
+                    <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #e5e7eb; display: flex; gap: 32px;">
+                        <div style="display: flex; align-items: center;">
+                            <span class="text-sm text-gray-500" style="margin-right: 8px;">Общий стаж:</span>
+                            <span class="text-sm font-medium text-gray-800">{{ $candidate->total_experience_years ?? 0 }} лет</span>
                         </div>
-                        <div class="flex data-row">
-                            <span class="w-60 text-base text-gray-600">Любит свою работу на (из 5):</span>
-                            <span class="text-base font-medium">{{ $candidate->job_satisfaction ?? 'Не указано' }}</span>
+                        <div style="display: flex; align-items: center;">
+                            <span class="text-sm text-gray-500" style="margin-right: 8px;">Удовлетворённость работой:</span>
+                            <span class="text-sm font-medium text-gray-800">{{ $candidate->job_satisfaction ?? '—' }}/5</span>
                         </div>
                     </div>
+                    @if($candidate->awards && is_array($candidate->awards) && count(array_filter($candidate->awards)) > 0)
+                        <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
+                            <span class="text-sm font-medium text-gray-600" style="display: block; margin-bottom: 8px;">Награды и достижения</span>
+                            <ul class="text-sm text-gray-700">
+                                @foreach(array_filter($candidate->awards) as $award)
+                                    <li style="display: flex; align-items: flex-start; margin-bottom: 4px;">
+                                        <span style="color: #f59e0b; margin-right: 8px;">★</span>
+                                        <span>{{ $award }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                 @else
                     <p class="text-base text-gray-500">Опыт работы не указан</p>
                 @endif
             </div>
-
-            <!-- Награды и достижения -->
-            @if($candidate->awards && is_array($candidate->awards) && count(array_filter($candidate->awards)) > 0)
-            <div class="mb-8">
-                <h2 class="text-xl font-bold text-gray-800 mb-2">Награды и достижения</h2>
-                <div class="space-y-2">
-                    @foreach(array_filter($candidate->awards) as $index => $award)
-                        <div class="flex items-start text-base">
-                            <span class="w-8 text-amber-500 font-medium" style="color: #f59e0b;">★</span>
-                            <span class="flex-1 text-gray-800">{{ $award }}</span>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-            @endif
 
             <!-- Интересы и развитие -->
             <div class="mb-8">
