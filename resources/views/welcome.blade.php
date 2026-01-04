@@ -3,8 +3,8 @@
 @section('title', 'TalentsLab - CV Database')
 
 @section('content')
-<h1>Добро пожаловать!</h1>
-<p>Войдите в онлайн платформу TalentsLab</p>
+<h1>{{ __('Welcome!') }}</h1>
+<p>{{ __('Sign in to TalentsLab online platform') }}</p>
 
 @if (session('status'))
     <div class="success-message">
@@ -16,10 +16,10 @@
     @auth
         <!-- User is authenticated -->
         <div class="success-message">
-            Привет, {{ Auth::user()->name }}! 👋
+            {{ __('Hello') }}, {{ Auth::user()->name }}! 👋
         </div>
         <a href="{{ url('/dashboard') }}" class="btn-auth btn-dashboard">
-            Войти
+            {{ __('Enter') }}
         </a>
     @else
         <!-- Login Form -->
@@ -31,7 +31,7 @@
                     id="email"
                     name="email"
                     class="form-input"
-                    placeholder="Email адрес"
+                    placeholder="{{ __('Email address') }}"
                     value="{{ old('email') }}"
                     required
                 >
@@ -47,7 +47,7 @@
                         id="password"
                         name="password"
                         class="form-input password-input"
-                        placeholder="Пароль"
+                        placeholder="{{ __('Password') }}"
                         required
                     >
                     <button type="button" class="password-toggle" onclick="togglePassword('password')">
@@ -69,18 +69,18 @@
             </div>
 
             <button type="submit" class="btn-auth">
-                Войти в систему
+                {{ __('Sign in') }}
             </button>
         </form>
 
         <div class="auth-footer">
             @if (Route::has('password.request'))
                 <div class="forgot-password-link">
-                    <a href="{{ route('password.request') }}">Забыли пароль?</a>
+                    <a href="{{ route('password.request') }}">{{ __('Forgot password?') }}</a>
                 </div>
             @endif
             @if (Route::has('register'))
-                Нет аккаунта? <a href="{{ route('register') }}">Создать аккаунт</a>
+                {{ __("Don't have an account?") }} <a href="{{ route('register') }}">{{ __('Create account') }}</a>
             @endif
         </div>
     @endauth
