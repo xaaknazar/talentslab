@@ -20,10 +20,10 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Приоритет: сессия > cookie > браузер > дефолт
+        // Приоритет: сессия > cookie > дефолт (русский)
+        // НЕ используем язык браузера - только явный выбор пользователя
         $locale = Session::get('locale')
             ?? $request->cookie('locale')
-            ?? $this->getBrowserLocale($request)
             ?? config('app.locale', 'ru');
 
         // Проверяем что язык поддерживается

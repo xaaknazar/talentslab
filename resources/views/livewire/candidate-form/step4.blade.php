@@ -1,12 +1,12 @@
 @if($currentStep === 4)
 <div class="step">
-    <h2 class="text-2xl font-bold mb-6">Психометрический портрет</h2>
+    <h2 class="text-2xl font-bold mb-6">{{ __('Psychometric Portrait') }}</h2>
 
     <!-- Секция 1: Тест Гарднера (обязательный) -->
     <div class="mb-8">
         <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg sm:text-xl font-semibold">Тест множественных интеллектов Гарднера</h3>
-            <span class="px-3 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full">Обязательно</span>
+            <h3 class="text-lg sm:text-xl font-semibold">{{ __('Gardner Multiple Intelligences Test') }}</h3>
+            <span class="px-3 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full">{{ __('Required') }}</span>
         </div>
 
         <div class="bg-white rounded-lg border border-gray-200 p-6">
@@ -23,8 +23,8 @@
                             </div>
                         </div>
                         <div class="flex-1">
-                            <h4 class="text-lg font-semibold text-green-800">Тест пройден</h4>
-                            <p class="text-sm text-gray-600">Ваши результаты сохранены и будут использованы в отчёте</p>
+                            <h4 class="text-lg font-semibold text-green-800">{{ __('Test completed') }}</h4>
+                            <p class="text-sm text-gray-600">{{ __('Your results are saved and will be used in the report') }}</p>
                         </div>
                         <a href="{{ route('gardner-test') }}"
                            target="_blank"
@@ -33,7 +33,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                             </svg>
-                            Посмотреть результаты
+                            {{ __('View results') }}
                         </a>
                     </div>
                     <!-- Mobile версия -->
@@ -47,8 +47,8 @@
                                 </div>
                             </div>
                             <div class="flex-1">
-                                <h4 class="text-base font-semibold text-green-800">Тест пройден</h4>
-                                <p class="text-sm text-gray-600">Ваши результаты сохранены</p>
+                                <h4 class="text-base font-semibold text-green-800">{{ __('Test completed') }}</h4>
+                                <p class="text-sm text-gray-600">{{ __('Your results are saved') }}</p>
                             </div>
                         </div>
                         <a href="{{ route('gardner-test') }}"
@@ -58,7 +58,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                             </svg>
-                            Посмотреть результаты
+                            {{ __('View results') }}
                         </a>
                     </div>
                 </div>
@@ -71,9 +71,9 @@
                             </svg>
                         </div>
                         <div class="ml-3">
-                            <h3 class="text-sm font-medium text-blue-800">О тесте Гарднера</h3>
+                            <h3 class="text-sm font-medium text-blue-800">{{ __('About Gardner Test') }}</h3>
                             <div class="mt-2 text-sm text-blue-700">
-                                <p>Тест определяет ваши доминирующие типы интеллекта по теории Говарда Гарднера.</p>
+                                <p>{{ __('The test determines your dominant intelligence types according to Howard Gardner\'s theory.') }}</p>
                             </div>
                         </div>
                     </div>
@@ -91,13 +91,13 @@
                             </div>
                         </div>
                         <div class="flex-1">
-                            <h4 class="text-lg font-semibold text-amber-800">Тест не пройден</h4>
-                            <p class="text-sm text-gray-600">Для продолжения необходимо пройти тест Гарднера (45 вопросов, ~10 минут)</p>
+                            <h4 class="text-lg font-semibold text-amber-800">{{ __('Test not completed') }}</h4>
+                            <p class="text-sm text-gray-600">{{ __('To continue, you need to complete the Gardner test (45 questions, ~10 minutes)') }}</p>
                         </div>
                         <a href="{{ route('gardner-test') }}"
                            target="_blank"
                            class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all">
-                            Пройти тест
+                            {{ __('Take the test') }}
                             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                             </svg>
@@ -114,14 +114,14 @@
                                 </div>
                             </div>
                             <div class="flex-1">
-                                <h4 class="text-base font-semibold text-amber-800">Тест не пройден</h4>
-                                <p class="text-sm text-gray-600">45 вопросов, ~10 минут</p>
+                                <h4 class="text-base font-semibold text-amber-800">{{ __('Test not completed') }}</h4>
+                                <p class="text-sm text-gray-600">{{ __('45 questions, ~10 minutes') }}</p>
                             </div>
                         </div>
                         <a href="{{ route('gardner-test') }}"
                            target="_blank"
                            class="inline-flex items-center justify-center w-full px-6 py-3 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-all">
-                            Пройти тест
+                            {{ __('Take the test') }}
                             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                             </svg>
@@ -137,9 +137,9 @@
                             </svg>
                         </div>
                         <div class="ml-3">
-                            <h3 class="text-sm font-medium text-blue-800">О тесте Гарднера</h3>
+                            <h3 class="text-sm font-medium text-blue-800">{{ __('About Gardner Test') }}</h3>
                             <div class="mt-2 text-sm text-blue-700">
-                                <p>Тест определяет ваши доминирующие типы интеллекта по теории Говарда Гарднера.</p>
+                                <p>{{ __('The test determines your dominant intelligence types according to Howard Gardner\'s theory.') }}</p>
                             </div>
                         </div>
                     </div>
@@ -163,37 +163,37 @@
         <!-- MBTI тип личности (обязательный) -->
         <div>
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg sm:text-xl font-semibold">Тип личности MBTI</h3>
-                <span class="px-3 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full">Обязательно</span>
+                <h3 class="text-lg sm:text-xl font-semibold">{{ __('MBTI Personality Type') }}</h3>
+                <span class="px-3 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full">{{ __('Required') }}</span>
             </div>
             <div class="bg-white rounded-lg border border-gray-200 p-6">
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Выберите ваш тип MBTI</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Select your MBTI type') }}</label>
                     <select wire:model="mbti_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                        <option value="">Выберите тип MBTI</option>
-                        <optgroup label="Аналитики">
-                            <option value="INTJ">INTJ - Архитектор</option>
-                            <option value="INTP">INTP - Мыслитель</option>
-                            <option value="ENTJ">ENTJ - Командир</option>
-                            <option value="ENTP">ENTP - Полемист</option>
+                        <option value="">{{ __('Select MBTI type') }}</option>
+                        <optgroup label="{{ __('Analysts') }}">
+                            <option value="INTJ">INTJ - {{ __('Architect') }}</option>
+                            <option value="INTP">INTP - {{ __('Thinker') }}</option>
+                            <option value="ENTJ">ENTJ - {{ __('Commander') }}</option>
+                            <option value="ENTP">ENTP - {{ __('Debater') }}</option>
                         </optgroup>
-                        <optgroup label="Дипломаты">
-                            <option value="INFJ">INFJ - Активист</option>
-                            <option value="INFP">INFP - Посредник</option>
-                            <option value="ENFJ">ENFJ - Тренер</option>
-                            <option value="ENFP">ENFP - Борец</option>
+                        <optgroup label="{{ __('Diplomats') }}">
+                            <option value="INFJ">INFJ - {{ __('Advocate') }}</option>
+                            <option value="INFP">INFP - {{ __('Mediator') }}</option>
+                            <option value="ENFJ">ENFJ - {{ __('Protagonist') }}</option>
+                            <option value="ENFP">ENFP - {{ __('Campaigner') }}</option>
                         </optgroup>
-                        <optgroup label="Хранители">
-                            <option value="ISTJ">ISTJ - Логист</option>
-                            <option value="ISFJ">ISFJ - Защитник</option>
-                            <option value="ESTJ">ESTJ - Менеджер</option>
-                            <option value="ESFJ">ESFJ - Консул</option>
+                        <optgroup label="{{ __('Sentinels') }}">
+                            <option value="ISTJ">ISTJ - {{ __('Logistician') }}</option>
+                            <option value="ISFJ">ISFJ - {{ __('Defender') }}</option>
+                            <option value="ESTJ">ESTJ - {{ __('Executive') }}</option>
+                            <option value="ESFJ">ESFJ - {{ __('Consul') }}</option>
                         </optgroup>
-                        <optgroup label="Искатели">
-                            <option value="ISTP">ISTP - Виртуоз</option>
-                            <option value="ISFP">ISFP - Авантюрист</option>
-                            <option value="ESTP">ESTP - Делец</option>
-                            <option value="ESFP">ESFP - Развлекатель</option>
+                        <optgroup label="{{ __('Explorers') }}">
+                            <option value="ISTP">ISTP - {{ __('Virtuoso') }}</option>
+                            <option value="ISFP">ISFP - {{ __('Adventurer') }}</option>
+                            <option value="ESTP">ESTP - {{ __('Entrepreneur') }}</option>
+                            <option value="ESFP">ESFP - {{ __('Entertainer') }}</option>
                         </optgroup>
                     </select>
                     @error('mbti_type') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -208,10 +208,10 @@
                             </svg>
                         </div>
                         <div class="ml-3">
-                            <h3 class="text-sm font-medium text-blue-800">О тесте MBTI</h3>
+                            <h3 class="text-sm font-medium text-blue-800">{{ __('About MBTI Test') }}</h3>
                             <div class="mt-2 text-sm text-blue-700">
-                                <p class="mb-2">Выберите ваш тип личности согласно результатам теста Myers-Briggs.</p>
-                                <p>Если вы еще не знаете свой тип, <a href="https://www.16personalities.com/ru/test-lichnosti" target="_blank" rel="noopener noreferrer" class="font-medium text-blue-800 underline hover:text-blue-900">пройдите тест здесь</a>.</p>
+                                <p class="mb-2">{{ __('Select your personality type according to Myers-Briggs test results.') }}</p>
+                                <p>{{ __('If you don\'t know your type yet,') }} <a href="https://www.16personalities.com/{{ app()->getLocale() === 'ru' ? 'ru/test-lichnosti' : 'free-personality-test' }}" target="_blank" rel="noopener noreferrer" class="font-medium text-blue-800 underline hover:text-blue-900">{{ __('take the test here') }}</a>.</p>
                             </div>
                         </div>
                     </div>
@@ -223,7 +223,7 @@
         <div>
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg sm:text-xl font-semibold">Gallup CliftonStrengths 34 PDF</h3>
-                <span class="px-3 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-full">Рекомендуется</span>
+                <span class="px-3 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-full">{{ __('Recommended') }}</span>
             </div>
             <div class="w-full" x-data="fileUpload()">
                 <!-- Область загрузки файла -->
@@ -243,11 +243,11 @@
                             <span class="font-medium text-gray-600 transition-all duration-300 group-hover:text-blue-700 text-center"
                                   :class="isDragOver ? 'text-blue-700' : 'text-gray-600'">
                                 <span x-show="!isDragOver" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" class="block">
-                                    <span class="block text-sm">Перетащите файлы или</span>
-                                    <span class="text-blue-600 underline hover:text-blue-800 text-sm">выберите</span>
+                                    <span class="block text-sm">{{ __('Drag files or') }}</span>
+                                    <span class="text-blue-600 underline hover:text-blue-800 text-sm">{{ __('choose') }}</span>
                                 </span>
                                 <span x-show="isDragOver" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" class="text-blue-700 font-semibold">
-                                    Отпустите для загрузки PDF файла
+                                    {{ __('Drop to upload PDF file') }}
                                 </span>
                             </span>
                         </span>
@@ -268,9 +268,9 @@
                                 </svg>
                             </div>
                             <div class="ml-3">
-                                <h3 class="text-sm font-medium text-blue-800">Рекомендация</h3>
+                                <h3 class="text-sm font-medium text-blue-800">{{ __('Recommendation') }}</h3>
                                 <div class="mt-2 text-sm text-blue-700">
-                                    <p>Рекомендуем загрузить PDF файл результата теста Gallup CliftonStrengths34 в оригинале. На основе данного документа формируются отчеты Divergents (FMD, DPT, DPs).</p>
+                                    <p>{{ __('We recommend uploading the original Gallup CliftonStrengths34 test result PDF file. Divergents reports (FMD, DPT, DPs) are generated based on this document.') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -290,8 +290,8 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <h4 class="text-lg font-semibold text-gray-900">PDF файл загружен</h4>
-                                    <p class="text-sm text-gray-500">Gallup результаты готовы к отправке</p>
+                                    <h4 class="text-lg font-semibold text-gray-900">{{ __('PDF file uploaded') }}</h4>
+                                    <p class="text-sm text-gray-500">{{ __('Gallup results ready to submit') }}</p>
                                 </div>
                             </div>
                             <button type="button"
@@ -307,19 +307,19 @@
                         <div class="p-4">
                             <div class="grid grid-cols-1 gap-3">
                                 <div class="bg-gray-50 rounded-lg p-3">
-                                    <div class="text-sm text-gray-500 mb-1">Имя файла</div>
-                                    <div class="font-medium text-gray-900 text-sm" x-text="fileName || 'Gallup результаты.pdf'"></div>
+                                    <div class="text-sm text-gray-500 mb-1">{{ __('File name') }}</div>
+                                    <div class="font-medium text-gray-900 text-sm" x-text="fileName || '{{ __('Gallup results') }}.pdf'"></div>
                                 </div>
                                 <div class="grid grid-cols-2 gap-3">
                                     <div class="bg-gray-50 rounded-lg p-3">
-                                        <div class="text-sm text-gray-500 mb-1">Размер</div>
-                                        <div class="font-medium text-gray-900 text-sm" x-text="fileSize || 'Загружен'"></div>
+                                        <div class="text-sm text-gray-500 mb-1">{{ __('Size') }}</div>
+                                        <div class="font-medium text-gray-900 text-sm" x-text="fileSize || '{{ __('Uploaded') }}'"></div>
                                     </div>
                                     <div class="bg-gray-50 rounded-lg p-3">
-                                        <div class="text-sm text-gray-500 mb-1">Статус</div>
+                                        <div class="text-sm text-gray-500 mb-1">{{ __('Status') }}</div>
                                         <div class="font-medium text-sm"
                                              x-bind:class="isExistingFile ? 'text-green-600' : 'text-blue-600'"
-                                             x-text="isExistingFile ? 'Сохранен' : 'Загружен'"></div>
+                                             x-text="isExistingFile ? '{{ __('Saved') }}' : '{{ __('Uploaded') }}'"></div>
                                     </div>
                                 </div>
                             </div>
@@ -332,7 +332,7 @@
                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                     </svg>
-                                    Скачать файл
+                                    {{ __('Download file') }}
                                 </a>
                             </div>
 
@@ -343,7 +343,7 @@
                                         <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
                                         </svg>
-                                        Файл будет сохранен при переходе к следующему шагу
+                                        {{ __('File will be saved when proceeding to the next step') }}
                                     </div>
                                 </div>
                             </div>
