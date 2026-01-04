@@ -238,14 +238,14 @@
                             <div class="py-2">
                                 <div class="flex justify-between items-start mb-1">
                                     <div class="text-xs">
-                                        <span class="font-semibold text-gray-900">{{ $experience['position'] ?? 'Не указано' }}</span>
-                                        <span class="text-gray-900 mx-1">—</span>
-                                        <span class="text-gray-900">{{ $experience['company'] ?? 'Не указано' }}</span>
+                                        <span class="font-semibold text-black">{{ $experience['position'] ?? 'Не указано' }}</span>
+                                        <span class="text-black mx-1">—</span>
+                                        <span class="text-black">{{ $experience['company'] ?? 'Не указано' }}</span>
                                         @if(!empty($experience['city']))
-                                            <span class="text-gray-800">, {{ $experience['city'] }}</span>
+                                            <span class="text-black">, {{ $experience['city'] }}</span>
                                         @endif
                                     </div>
-                                    <span class="text-xs text-gray-900 whitespace-nowrap ml-2">{{ $experience['years'] ?? '' }}</span>
+                                    <span class="text-xs text-black whitespace-nowrap ml-2">{{ $experience['years'] ?? '' }}</span>
                                 </div>
                                 @if(!empty($experience['activity_sphere']))
                                     <div class="text-xs text-gray-800">{{ $experience['activity_sphere'] }}</div>
