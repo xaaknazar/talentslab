@@ -647,7 +647,67 @@ window.allowOnlyNumbers = function(event) {
 };
 
 window.updatePeriodDisplay = function(index) {
-    // Period display update logic
+    const months = {
+        0: '{{ __("January") }}', 1: '{{ __("February") }}', 2: '{{ __("March") }}', 3: '{{ __("April") }}',
+        4: '{{ __("May") }}', 5: '{{ __("June") }}', 6: '{{ __("July") }}', 7: '{{ __("August") }}',
+        8: '{{ __("September") }}', 9: '{{ __("October") }}', 10: '{{ __("November") }}', 11: '{{ __("December") }}'
+    };
+    const shortMonths = {
+        0: 'Янв', 1: 'Фев', 2: 'Мар', 3: 'Апр',
+        4: 'Май', 5: 'Июн', 6: 'Июл', 7: 'Авг',
+        8: 'Сен', 9: 'Окт', 10: 'Ноя', 11: 'Дек'
+    };
+
+    const startMonthSelect = document.querySelector(`select[wire\\:model="work_experience.${index}.start_month"]`);
+    const startYearSelect = document.querySelector(`select[wire\\:model="work_experience.${index}.start_year"]`);
+    const endMonthSelect = document.querySelector(`select[wire\\:model="work_experience.${index}.end_month"]`);
+    const endYearSelect = document.querySelector(`select[wire\\:model="work_experience.${index}.end_year"]`);
+    const isCurrentCheckbox = document.querySelector(`input[wire\\:model="work_experience.${index}.is_current"]`);
+    const periodDisplay = document.getElementById('period-display-' + index);
+    const startDisplay = document.getElementById('start-display-' + index);
+    const endDisplay = document.getElementById('end-display-' + index);
+    const hiddenInput = document.getElementById('period-hidden-' + index);
+
+    if (!startMonthSelect || !startYearSelect) return;
+
+    const startMonth = startMonthSelect.value;
+    const startYear = startYearSelect.value;
+    const endMonth = endMonthSelect ? endMonthSelect.value : '';
+    const endYear = endYearSelect ? endYearSelect.value : '';
+    const isCurrent = isCurrentCheckbox ? isCurrentCheckbox.checked : false;
+
+    // Update start display
+    if (startMonth !== '' && startYear) {
+        const startMonthName = months[parseInt(startMonth)] || '';
+        if (startDisplay) startDisplay.textContent = startMonthName + ' ' + startYear;
+    }
+
+    // Update end display
+    if (isCurrent) {
+        if (endDisplay) endDisplay.textContent = '{{ __("Present") }}';
+    } else if (endMonth !== '' && endYear) {
+        const endMonthName = months[parseInt(endMonth)] || '';
+        if (endDisplay) endDisplay.textContent = endMonthName + ' ' + endYear;
+    }
+
+    // Update period display and hidden input
+    if (startMonth !== '' && startYear) {
+        const startShort = shortMonths[parseInt(startMonth)] + ' ' + startYear;
+        let endShort = '';
+
+        if (isCurrent) {
+            endShort = '{{ __("Present") }}';
+        } else if (endMonth !== '' && endYear) {
+            endShort = shortMonths[parseInt(endMonth)] + ' ' + endYear;
+        }
+
+        const periodValue = endShort ? (startShort + ' — ' + endShort) : startShort;
+        if (periodDisplay) periodDisplay.textContent = periodValue;
+        if (hiddenInput) {
+            hiddenInput.value = periodValue;
+            hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+    }
 };
 
 window.toggleCurrentWork = function(index) {
@@ -662,5 +722,7 @@ window.toggleCurrentWork = function(index) {
             endSelects.style.pointerEvents = 'auto';
         }
     }
+    // Update period display after toggling
+    updatePeriodDisplay(index);
 };
 </script>

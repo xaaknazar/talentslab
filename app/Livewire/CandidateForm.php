@@ -1118,6 +1118,60 @@ class CandidateForm extends Component
     }
 
     /**
+     * Хук для отслеживания изменений в опыте работы
+     * Автоматически обновляет поле years при изменении дат
+     */
+    public function updatedWorkExperience($value, $key)
+    {
+        // Проверяем, изменились ли поля дат
+        if (preg_match('/^(\d+)\.(start_month|start_year|end_month|end_year|is_current)$/', $key, $matches)) {
+            $index = (int)$matches[1];
+            $this->updateWorkExperienceYears($index);
+        }
+    }
+
+    /**
+     * Обновляет поле years для указанного опыта работы
+     */
+    private function updateWorkExperienceYears($index)
+    {
+        if (!isset($this->work_experience[$index])) {
+            return;
+        }
+
+        $exp = $this->work_experience[$index];
+        $months = [
+            0 => 'Янв', 1 => 'Фев', 2 => 'Мар', 3 => 'Апр',
+            4 => 'Май', 5 => 'Июн', 6 => 'Июл', 7 => 'Авг',
+            8 => 'Сен', 9 => 'Окт', 10 => 'Ноя', 11 => 'Дек'
+        ];
+
+        $startMonth = $exp['start_month'] ?? null;
+        $startYear = $exp['start_year'] ?? null;
+        $endMonth = $exp['end_month'] ?? null;
+        $endYear = $exp['end_year'] ?? null;
+        $isCurrent = $exp['is_current'] ?? false;
+
+        if ($startMonth !== null && $startMonth !== '' && $startYear) {
+            $startStr = ($months[(int)$startMonth] ?? '') . ' ' . $startYear;
+
+            if ($isCurrent) {
+                $endStr = __('Present');
+            } elseif ($endMonth !== null && $endMonth !== '' && $endYear) {
+                $endStr = ($months[(int)$endMonth] ?? '') . ' ' . $endYear;
+            } else {
+                $endStr = '';
+            }
+
+            if ($endStr) {
+                $this->work_experience[$index]['years'] = $startStr . ' — ' . $endStr;
+            } else {
+                $this->work_experience[$index]['years'] = $startStr;
+            }
+        }
+    }
+
+    /**
      * Фильтрует пустые элементы из массивов семьи перед валидацией
      */
     private function filterEmptyFamilyElements()
