@@ -233,6 +233,32 @@
                     </x-responsive-nav-link>
                 </form>
 
+                <!-- Language Switcher (Mobile) -->
+                <div class="border-t border-gray-200"></div>
+
+                <div class="block px-4 py-2 text-xs text-gray-400">
+                    {{ __('Language') }}
+                </div>
+
+                @php
+                    $mobileCurrentLocale = app()->getLocale();
+                    $mobileLanguages = [
+                        'ru' => ['name' => 'Русский', 'code' => 'Ru'],
+                        'en' => ['name' => 'English', 'code' => 'En'],
+                        'ar' => ['name' => 'العربية', 'code' => 'SA']
+                    ];
+                @endphp
+
+                <div class="flex gap-2 px-4 py-2">
+                    @foreach($mobileLanguages as $locale => $lang)
+                        <a href="{{ route('language.switch', $locale) }}"
+                           class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 {{ $mobileCurrentLocale === $locale ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                            <span class="font-semibold">{{ $lang['code'] }}</span>
+                            <span class="{{ $mobileCurrentLocale === $locale ? 'text-blue-100' : 'text-gray-500' }}">{{ $lang['name'] }}</span>
+                        </a>
+                    @endforeach
+                </div>
+
                 <!-- Team Management -->
                 @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
                     <div class="border-t border-gray-200"></div>

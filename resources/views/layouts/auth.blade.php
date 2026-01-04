@@ -50,6 +50,36 @@
             .lang-code {
                 font-weight: 600;
             }
+
+            /* Mobile responsive styles */
+            @media (max-width: 640px) {
+                .language-switcher {
+                    top: 10px;
+                    right: 10px;
+                    gap: 4px;
+                }
+                .language-switcher a {
+                    padding: 6px 10px;
+                    font-size: 12px;
+                    gap: 4px;
+                }
+                .language-switcher .lang-name {
+                    display: none;
+                }
+            }
+
+            @media (max-width: 400px) {
+                .language-switcher {
+                    top: 8px;
+                    right: 8px;
+                    gap: 3px;
+                }
+                .language-switcher a {
+                    padding: 5px 8px;
+                    font-size: 11px;
+                    border-radius: 6px;
+                }
+            }
         </style>
     </head>
     <body>
