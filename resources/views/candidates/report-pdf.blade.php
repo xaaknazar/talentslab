@@ -279,8 +279,8 @@
                     </div>
                     @if($candidate->awards && is_array($candidate->awards) && count(array_filter($candidate->awards)) > 0)
                         <div class="mt-3">
-                            <span class="text-xs font-medium text-gray-800 block mb-1">Награды и достижения</span>
-                            <ul class="text-xs text-gray-900">
+                            <span class="text-xs font-medium text-black block mb-1">Награды и достижения</span>
+                            <ul class="text-xs font-medium text-black">
                                 @foreach(array_filter($candidate->awards) as $award)
                                     <li>{{ $award }}</li>
                                 @endforeach

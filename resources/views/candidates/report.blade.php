@@ -370,8 +370,8 @@ if (! function_exists('mb_ucfirst')) {
                     </div>
                     @if($candidate->awards && is_array($candidate->awards) && count(array_filter($candidate->awards)) > 0)
                         <div class="mt-4">
-                            <span class="text-base font-medium text-gray-800 mb-2 block">Награды и достижения</span>
-                            <ul class="text-base text-gray-900 space-y-1">
+                            <span class="text-base font-medium text-black mb-2 block">Награды и достижения</span>
+                            <ul class="text-base font-medium text-black space-y-1">
                                 @foreach(array_filter($candidate->awards) as $award)
                                     <li>{{ $award }}</li>
                                 @endforeach

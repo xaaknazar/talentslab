@@ -537,8 +537,8 @@ if (! function_exists('clean_git_conflicts')) {
                     </div>
                     @if($candidate->awards && is_array($candidate->awards) && count(array_filter($candidate->awards)) > 0)
                         <div style="margin-top: 16px;">
-                            <span class="text-base font-medium" style="color: #374151; display: block; margin-bottom: 8px;">Награды и достижения</span>
-                            <ul class="text-base" style="color: #111827;">
+                            <span class="text-base font-medium" style="color: #000000; display: block; margin-bottom: 8px;">Награды и достижения</span>
+                            <ul class="text-base font-medium" style="color: #000000;">
                                 @foreach(array_filter($candidate->awards) as $award)
                                     <li style="margin-bottom: 3px;">{{ $award }}</li>
                                 @endforeach
