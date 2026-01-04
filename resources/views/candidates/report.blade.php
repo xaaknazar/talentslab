@@ -160,7 +160,15 @@ if (! function_exists('mb_ucfirst')) {
                          <div class="space-y-3">
                              <div class="flex">
                                  <span class="w-60 text-base text-gray-600">Желаемая должность:</span>
-                                 <span class="text-base font-medium">{{ $candidate->desired_position ?: 'Не указано' }}</span>
+                                 <span class="text-base font-medium">
+                                     @if($candidate->desired_positions && is_array($candidate->desired_positions) && count($candidate->desired_positions) > 0)
+                                         {{ implode(' / ', $candidate->desired_positions) }}
+                                     @elseif($candidate->desired_position)
+                                         {{ $candidate->desired_position }}
+                                     @else
+                                         Не указано
+                                     @endif
+                                 </span>
                              </div>
                              <div class="flex">
                                  <span class="w-60 text-base text-gray-600">Ожидаемая заработная плата:</span>
@@ -314,18 +322,44 @@ if (! function_exists('mb_ucfirst')) {
             <div class="mb-8">
                 <h2 class="section-header text-sm font-medium text-gray-500 p-3 mb-4">Опыт работы</h2>
                 @if($candidate->work_experience && count($candidate->work_experience) > 0)
-                    <div class="space-y-2">
+                    <div class="space-y-4">
                         @foreach($candidate->work_experience as $index => $experience)
-                            <div class="flex text-base">
-                                <span class="w-8 text-gray-600">{{ $index + 1 }}.</span>
-                                <span class="flex-1">
-                                    <span class="font-medium">{{ $experience['years'] ?? 'Не указано' }}</span> - 
-                                    <span class="font-medium">{{ $experience['company'] ?? 'Не указано' }}</span> - 
-                                    <span>{{ $experience['position'] ?? 'Не указано' }}</span>
-                                    @if(!empty($experience['city']))
-                                        - <span class="text-gray-600">{{ $experience['city'] }}</span>
-                                    @endif
-                                </span>
+                            <div class="border-l-2 border-blue-200 pl-4 py-2">
+                                <div class="flex items-start">
+                                    <span class="w-8 text-gray-600 font-medium">{{ $index + 1 }}.</span>
+                                    <div class="flex-1">
+                                        <div class="text-base">
+                                            <span class="font-medium text-gray-800">{{ $experience['position'] ?? 'Не указано' }}</span>
+                                            <span class="text-gray-500 mx-2">•</span>
+                                            <span class="font-medium">{{ $experience['company'] ?? 'Не указано' }}</span>
+                                            @if(!empty($experience['city']))
+                                                <span class="text-gray-500">, {{ $experience['city'] }}</span>
+                                            @endif
+                                        </div>
+                                        <div class="text-sm text-gray-600 mt-1">
+                                            <span>{{ $experience['years'] ?? 'Не указано' }}</span>
+                                            @if(!empty($experience['activity_sphere']))
+                                                <span class="text-gray-400 mx-2">|</span>
+                                                <span class="text-blue-600">{{ $experience['activity_sphere'] }}</span>
+                                            @endif
+                                        </div>
+                                        @if(!empty($experience['main_tasks']) && is_array($experience['main_tasks']))
+                                            @php
+                                                $filledTasks = array_filter($experience['main_tasks'], fn($task) => !empty(trim($task)));
+                                            @endphp
+                                            @if(count($filledTasks) > 0)
+                                                <div class="mt-2">
+                                                    <span class="text-sm font-medium text-gray-600">Основные задачи:</span>
+                                                    <ul class="list-disc list-inside mt-1 text-sm text-gray-700 space-y-0.5">
+                                                        @foreach($filledTasks as $task)
+                                                            <li>{{ $task }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            @endif
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                         @endforeach
                     </div>
@@ -343,6 +377,21 @@ if (! function_exists('mb_ucfirst')) {
                     <p class="text-base text-gray-500">Опыт работы не указан</p>
                 @endif
             </div>
+
+            <!-- Награды и достижения -->
+            @if($candidate->awards && is_array($candidate->awards) && count(array_filter($candidate->awards)) > 0)
+            <div class="mb-8">
+                <h2 class="section-header text-sm font-medium text-gray-500 p-3 mb-4">Награды и достижения</h2>
+                <div class="space-y-2">
+                    @foreach(array_filter($candidate->awards) as $index => $award)
+                        <div class="flex items-start text-base">
+                            <span class="w-8 text-amber-500 font-medium">★</span>
+                            <span class="flex-1 text-gray-800">{{ $award }}</span>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
 
             <!-- Личная информация -->
             <div class="mb-8">
