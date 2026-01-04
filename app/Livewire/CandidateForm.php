@@ -73,12 +73,13 @@ class CandidateForm extends Component
     public $work_experience = [];
     public $total_experience_years;
     public $job_satisfaction;
-    public $desired_position;
-    public $activity_sphere;
+    public $desired_positions = []; // Массив желаемых должностей (макс 3)
+    public $activity_sphere; // Оставляем для обратной совместимости
     public $expected_salary;
     public $expected_salary_from;
     public $expected_salary_to;
     public $employer_requirements;
+    public $awards = []; // Награды и достижения
 
     // Step 4: Tests
     public $gallup_pdf;
@@ -222,6 +223,8 @@ class CandidateForm extends Component
         $this->language_skills = [];
         $this->work_experience = [];
         $this->computer_skills = '';
+        $this->desired_positions = ['']; // Инициализируем с одной пустой должностью
+        $this->awards = []; // Инициализируем пустым массивом
 
         logger()->debug('Mount: work_experience initialized as empty array');
 
@@ -394,8 +397,19 @@ class CandidateForm extends Component
         logger()->debug('Work experience loaded:', ['original' => $this->candidate->work_experience, 'converted' => $this->work_experience]);
         $this->total_experience_years = $this->candidate->total_experience_years;
         $this->job_satisfaction = $this->candidate->job_satisfaction;
-        $this->desired_position = $this->candidate->desired_position;
+
+        // Загружаем желаемые должности - если есть массив, используем его, иначе создаем из строки
+        if (is_array($this->candidate->desired_positions) && !empty($this->candidate->desired_positions)) {
+            $this->desired_positions = $this->candidate->desired_positions;
+        } elseif (!empty($this->candidate->desired_position)) {
+            // Обратная совместимость - преобразуем строку в массив
+            $this->desired_positions = [$this->candidate->desired_position];
+        } else {
+            $this->desired_positions = [''];
+        }
+
         $this->activity_sphere = $this->candidate->activity_sphere;
+        $this->awards = $this->candidate->awards ?? [];
         $this->expected_salary = $this->candidate->expected_salary;
         $this->expected_salary_from = $this->candidate->expected_salary_from;
         $this->expected_salary_to = $this->candidate->expected_salary_to;
@@ -485,10 +499,16 @@ class CandidateForm extends Component
             'work_experience.*.start_period' => 'nullable|integer|min:0|max:420',
             'work_experience.*.end_period' => 'nullable|integer|min:0|max:420',
             'work_experience.*.is_current' => 'nullable|boolean',
+            'work_experience.*.activity_sphere' => 'nullable|string|max:255',
+            'work_experience.*.main_tasks' => 'nullable|array|min:3|max:8',
+            'work_experience.*.main_tasks.*' => 'nullable|string|max:500',
             'total_experience_years' => 'required|integer|min:0',
             'job_satisfaction' => 'required|integer|min:1|max:5',
-            'desired_position' => ['required', 'string', 'max:255'],
-            'activity_sphere' => ['required', 'string', 'max:255'],
+            'desired_positions' => ['required', 'array', 'min:1', 'max:3'],
+            'desired_positions.*' => ['required', 'string', 'max:255'],
+            'activity_sphere' => ['nullable', 'string', 'max:255'],
+            'awards' => 'nullable|array',
+            'awards.*' => 'nullable|string|max:500',
             'expected_salary' => 'nullable|numeric|min:0|max:999999999999',
             'expected_salary_from' => [
                 'required',
@@ -587,10 +607,16 @@ class CandidateForm extends Component
         'expected_salary_to.numeric' => 'Зарплата до должна быть числом',
         'expected_salary_to.min' => 'Зарплата до должна быть больше 0',
         'expected_salary_to.gte' => 'Зарплата до должна быть больше или равна зарплате от',
-        'desired_position.required' => 'Желаемая должность обязательна для заполнения',
-        'desired_position.max' => 'Желаемая должность не должна превышать 255 символов',
+        'desired_positions.required' => 'Желаемая должность обязательна для заполнения',
+        'desired_positions.min' => 'Добавьте минимум одну желаемую должность',
+        'desired_positions.max' => 'Максимум 3 желаемых должности',
+        'desired_positions.*.required' => 'Желаемая должность обязательна для заполнения',
+        'desired_positions.*.max' => 'Желаемая должность не должна превышать 255 символов',
         'activity_sphere.required' => 'Сфера деятельности обязательна для заполнения',
         'activity_sphere.max' => 'Сфера деятельности не должна превышать 255 символов',
+        'awards.*.max' => 'Награда не должна превышать 500 символов',
+        'work_experience.*.main_tasks.min' => 'Добавьте минимум 3 основные задачи',
+        'work_experience.*.main_tasks.*.max' => 'Задача не должна превышать 500 символов',
         'instagram.max' => 'Инстаграм не должен превышать 255 символов',
 
         // Дополнительные сообщения для обязательных полей
@@ -694,10 +720,16 @@ class CandidateForm extends Component
         'work_experience.*.start_year' => 'Год начала',
         'work_experience.*.end_month' => 'Месяц окончания',
         'work_experience.*.end_year' => 'Год окончания',
+        'work_experience.*.activity_sphere' => 'Сфера деятельности',
+        'work_experience.*.main_tasks' => 'Основные задачи',
+        'work_experience.*.main_tasks.*' => 'Задача',
         'total_experience_years' => 'Общий стаж работы',
         'job_satisfaction' => 'Удовлетворенность работой',
-        'desired_position' => 'Желаемая должность',
+        'desired_positions' => 'Желаемая должность',
+        'desired_positions.*' => 'Желаемая должность',
         'activity_sphere' => 'Сфера деятельности',
+        'awards' => 'Награды и достижения',
+        'awards.*' => 'Награда',
         'expected_salary' => 'Ожидаемая зарплата',
         'employer_requirements' => 'Пожелания на рабочем месте',
 
@@ -829,7 +861,7 @@ class CandidateForm extends Component
 
         $step1Fields = ['last_name', 'first_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
         $step2Fields = ['religion', 'is_practicing', 'family_members', 'parents', 'siblings', 'children', 'hobbies', 'interests', 'visited_countries', 'books_per_year_min', 'books_per_year_max', 'favorite_sports', 'entertainment_hours_weekly', 'educational_hours_weekly', 'social_media_hours_weekly', 'has_driving_license', 'newCountry'];
-        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary', 'expected_salary_from', 'expected_salary_to', 'employer_requirements'];
+        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_positions', 'activity_sphere', 'awards', 'expected_salary', 'expected_salary_from', 'expected_salary_to', 'employer_requirements'];
         $step4Fields = ['gallup_pdf', 'mbti_type', 'gardner_test_completed'];
 
         return match($this->currentStep) {
@@ -980,9 +1012,15 @@ class CandidateForm extends Component
                 'work_experience.*.company' => $allRules['work_experience.*.company'],
                 'work_experience.*.city' => $allRules['work_experience.*.city'],
                 'work_experience.*.position' => $allRules['work_experience.*.position'],
+                'work_experience.*.activity_sphere' => $allRules['work_experience.*.activity_sphere'],
+                'work_experience.*.main_tasks' => $allRules['work_experience.*.main_tasks'],
+                'work_experience.*.main_tasks.*' => $allRules['work_experience.*.main_tasks.*'],
                 'total_experience_years' => $allRules['total_experience_years'],
                 'job_satisfaction' => $allRules['job_satisfaction'],
-                'desired_position' => $allRules['desired_position'],
+                'desired_positions' => $allRules['desired_positions'],
+                'desired_positions.*' => $allRules['desired_positions.*'],
+                'awards' => $allRules['awards'],
+                'awards.*' => $allRules['awards.*'],
                 'expected_salary' => $allRules['expected_salary'],
                 'employer_requirements' => $allRules['employer_requirements'],
             ],
@@ -1013,7 +1051,7 @@ class CandidateForm extends Component
 
         $step1Fields = ['last_name', 'first_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
         $step2Fields = ['religion', 'is_practicing', 'family_members', 'parents', 'siblings', 'children', 'hobbies', 'interests', 'visited_countries', 'books_per_year_min', 'books_per_year_max', 'favorite_sports', 'entertainment_hours_weekly', 'educational_hours_weekly', 'social_media_hours_weekly', 'has_driving_license', 'newCountry'];
-        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary', 'expected_salary_from', 'expected_salary_to', 'employer_requirements'];
+        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_positions', 'activity_sphere', 'awards', 'expected_salary', 'expected_salary_from', 'expected_salary_to', 'employer_requirements'];
         $step4Fields = ['gallup_pdf', 'mbti_type', 'gardner_test_completed'];
 
         if (in_array($baseField, $step1Fields, true)) return 1;
@@ -1674,7 +1712,9 @@ class CandidateForm extends Component
             'end_year' => '',
             'start_period' => 240, // Примерно 2020 год (240 месяцев с 1990)
             'end_period' => 300,   // Примерно 2025 год (300 месяцев с 1990)
-            'is_current' => false
+            'is_current' => false,
+            'activity_sphere' => '', // Сфера деятельности
+            'main_tasks' => ['', '', ''], // Основные задачи (минимум 3)
         ];
     }
 
@@ -1682,6 +1722,56 @@ class CandidateForm extends Component
     {
         unset($this->work_experience[$index]);
         $this->work_experience = array_values($this->work_experience);
+    }
+
+    // Методы для желаемых должностей
+    public function addDesiredPosition()
+    {
+        if (count($this->desired_positions) < 3) {
+            $this->desired_positions[] = '';
+        }
+    }
+
+    public function removeDesiredPosition($index)
+    {
+        unset($this->desired_positions[$index]);
+        $this->desired_positions = array_values($this->desired_positions);
+    }
+
+    // Методы для добавления задач в опыт работы
+    public function addWorkTask($experienceIndex)
+    {
+        if (isset($this->work_experience[$experienceIndex])) {
+            if (!isset($this->work_experience[$experienceIndex]['main_tasks'])) {
+                $this->work_experience[$experienceIndex]['main_tasks'] = [];
+            }
+            if (count($this->work_experience[$experienceIndex]['main_tasks']) < 8) {
+                $this->work_experience[$experienceIndex]['main_tasks'][] = '';
+            }
+        }
+    }
+
+    public function removeWorkTask($experienceIndex, $taskIndex)
+    {
+        if (isset($this->work_experience[$experienceIndex]['main_tasks'][$taskIndex])) {
+            // Не удаляем если осталось 3 или меньше задач
+            if (count($this->work_experience[$experienceIndex]['main_tasks']) > 3) {
+                unset($this->work_experience[$experienceIndex]['main_tasks'][$taskIndex]);
+                $this->work_experience[$experienceIndex]['main_tasks'] = array_values($this->work_experience[$experienceIndex]['main_tasks']);
+            }
+        }
+    }
+
+    // Методы для наград и достижений
+    public function addAward()
+    {
+        $this->awards[] = '';
+    }
+
+    public function removeAward($index)
+    {
+        unset($this->awards[$index]);
+        $this->awards = array_values($this->awards);
     }
 
     public function updatedPhoto()
@@ -1976,8 +2066,11 @@ class CandidateForm extends Component
             });
             $this->candidate->total_experience_years = $this->total_experience_years;
             $this->candidate->job_satisfaction = $this->job_satisfaction;
-            $this->candidate->desired_position = $this->desired_position;
+            // Сохраняем желаемые должности как массив и также в старое поле для обратной совместимости
+            $this->candidate->desired_positions = array_filter($this->desired_positions);
+            $this->candidate->desired_position = implode(' / ', array_filter($this->desired_positions));
             $this->candidate->activity_sphere = $this->activity_sphere;
+            $this->candidate->awards = array_filter($this->awards);
             $this->candidate->expected_salary = $this->expected_salary;
             $this->candidate->expected_salary_from = $this->expected_salary_from;
             $this->candidate->expected_salary_to = $this->expected_salary_to;
@@ -2127,8 +2220,12 @@ class CandidateForm extends Component
         }
         if ($this->total_experience_years !== null) $this->candidate->total_experience_years = $this->total_experience_years;
         if ($this->job_satisfaction !== null) $this->candidate->job_satisfaction = $this->job_satisfaction;
-        if ($this->desired_position) $this->candidate->desired_position = $this->desired_position;
+        if (!empty($this->desired_positions)) {
+            $this->candidate->desired_positions = array_filter($this->desired_positions);
+            $this->candidate->desired_position = implode(' / ', array_filter($this->desired_positions));
+        }
         if ($this->activity_sphere) $this->candidate->activity_sphere = $this->activity_sphere;
+        if (!empty($this->awards)) $this->candidate->awards = array_filter($this->awards);
         if ($this->expected_salary !== null) $this->candidate->expected_salary = $this->expected_salary;
         if ($this->expected_salary_from !== null) $this->candidate->expected_salary_from = $this->expected_salary_from;
         if ($this->expected_salary_to !== null) $this->candidate->expected_salary_to = $this->expected_salary_to;
@@ -2358,6 +2455,8 @@ class CandidateForm extends Component
                     'start_period' => $experience['start_period'] ?? 240, // Значение по умолчанию
                     'end_period' => $experience['end_period'] ?? 300,     // Значение по умолчанию
                     'is_current' => $experience['is_current'] ?? false,
+                    'activity_sphere' => $experience['activity_sphere'] ?? '',
+                    'main_tasks' => $experience['main_tasks'] ?? ['', '', ''], // Минимум 3 задачи
                 ];
             }
             // Если это старый формат, конвертируем
@@ -2417,6 +2516,8 @@ class CandidateForm extends Component
                     'start_period' => $startPeriod,
                     'end_period' => $endPeriod,
                     'is_current' => false,
+                    'activity_sphere' => '',
+                    'main_tasks' => ['', '', ''], // Минимум 3 задачи
                 ];
             }
         }

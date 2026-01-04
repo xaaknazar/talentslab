@@ -459,6 +459,18 @@
     "Select field of activity": "Выберите сферу деятельности",
     "Desired Position": "Желаемая должность",
     "Example: Financial Analyst": "Например: Финансовый аналитик",
+    "maximum 3": "максимум 3",
+
+    "Main Tasks": "Основные задачи",
+    "minimum 3, maximum 8": "минимум 3, максимум 8",
+    "Describe one task in one sentence": "Опишите одну задачу одним предложением",
+    "Add task": "Добавить задачу",
+
+    "Awards and Achievements": "Награды и достижения",
+    "Optional": "Необязательно",
+    "Add achievement": "Добавить достижение",
+    "Describe your achievement": "Опишите своё достижение",
+    "Example: Exceeded sales plan, Improved customer service, Optimized department workflow": "Например: Выполнил(а) план продаж, Улучшил(а) качество обслуживания клиентов, Оптимизировал(а) рабочие процессы отдела",
 
     "Expected Salary": "Ожидаемая зарплата",
     "Currency": "Валюта",

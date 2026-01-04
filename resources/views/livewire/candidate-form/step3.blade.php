@@ -273,12 +273,12 @@
                             <div class="space-y-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">
-                                        {{ __('Company Name') }} <span class="text-red-500">*</span>
+                                        {{ __('Position') }} <span class="text-red-500">*</span>
                                     </label>
                                     <input type="text"
-                                           wire:model="work_experience.{{ $index }}.company"
+                                           wire:model="work_experience.{{ $index }}.position"
                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                    @error("work_experience.{$index}.company") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                    @error("work_experience.{$index}.position") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
 
                                 <div>
@@ -293,16 +293,73 @@
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">
-                                        {{ __('Position') }} <span class="text-red-500">*</span>
+                                        {{ __('Company Name') }} <span class="text-red-500">*</span>
                                     </label>
                                     <input type="text"
-                                           wire:model="work_experience.{{ $index }}.position"
+                                           wire:model="work_experience.{{ $index }}.company"
                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                    @error("work_experience.{$index}.position") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                    @error("work_experience.{$index}.company") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">
+                                        {{ __('Field of Activity') }}
+                                    </label>
+                                    <select wire:model="work_experience.{{ $index }}.activity_sphere"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                        <option value="">{{ __('Select field of activity') }}</option>
+                                        @foreach($activitySpheres as $key => $sphere)
+                                            <option value="{{ $sphere }}">{{ __($sphere) }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error("work_experience.{$index}.activity_sphere") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
                             </div>
                         </div>
-                        <div class="mt-2">
+
+                        <!-- Основные задачи -->
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                            <label class="block text-sm font-medium text-gray-700 mb-3">
+                                {{ __('Main Tasks') }} <span class="text-red-500">*</span>
+                                <span class="text-xs text-gray-500 font-normal ml-2">({{ __('minimum 3, maximum 8') }})</span>
+                            </label>
+                            <div class="space-y-2">
+                                @php
+                                    $tasks = $experience['main_tasks'] ?? ['', '', ''];
+                                @endphp
+                                @foreach($tasks as $taskIndex => $task)
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-sm text-gray-500 w-6 text-center">{{ $taskIndex + 1 }}.</span>
+                                        <input type="text"
+                                               wire:model="work_experience.{{ $index }}.main_tasks.{{ $taskIndex }}"
+                                               class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+                                               placeholder="{{ __('Describe one task in one sentence') }}">
+                                        @if(count($tasks) > 3)
+                                            <button type="button"
+                                                    wire:click="removeWorkTask({{ $index }}, {{ $taskIndex }})"
+                                                    class="text-red-500 hover:text-red-700 p-1">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                                </svg>
+                                            </button>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                            @if(count($tasks) < 8)
+                                <button type="button"
+                                        wire:click="addWorkTask({{ $index }})"
+                                        class="mt-2 inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                    </svg>
+                                    {{ __('Add task') }}
+                                </button>
+                            @endif
+                            @error("work_experience.{$index}.main_tasks") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div class="mt-4 pt-2">
                             <button type="button" wire:click="removeWorkExperience({{ $index }})" class="text-red-600 hover:text-red-800">
                                 {{ __('Delete') }}
                             </button>
@@ -411,33 +468,89 @@
             </div>
         </div>
 
-        <!-- Желаемая должность, Сфера деятельности и Ожидаемая зарплата -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-            <!-- Сфера деятельности -->
-            <div>
-                <label class="block text-base font-medium text-gray-700">
-                    {{ __('Field of Activity') }} <span class="text-red-500">*</span>
-                </label>
-                <select wire:model="activity_sphere"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    <option value="">{{ __('Select field of activity') }}</option>
-                    @foreach($activitySpheres as $key => $sphere)
-                        <option value="{{ $sphere }}">{{ __($sphere) }}</option>
-                    @endforeach
-                </select>
-                @error('activity_sphere') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        <!-- Награды и достижения -->
+        <div class="mb-6">
+            <label class="block text-base font-medium text-gray-700 mb-3">
+                {{ __('Awards and Achievements') }}
+                <span class="text-gray-500 text-sm font-normal">({{ __('Optional') }})</span>
+            </label>
+            <p class="text-xs text-gray-500 mb-3">
+                <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
+                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                    </svg>
+                    {{ __('Example: Exceeded sales plan, Improved customer service, Optimized department workflow') }}
+                </span>
+            </p>
+            <div class="space-y-2">
+                @foreach($awards as $index => $award)
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-500 w-6 text-center">{{ $index + 1 }}.</span>
+                        <input type="text"
+                               wire:model="awards.{{ $index }}"
+                               class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+                               placeholder="{{ __('Describe your achievement') }}">
+                        <button type="button"
+                                wire:click="removeAward({{ $index }})"
+                                class="text-red-500 hover:text-red-700 p-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                @endforeach
             </div>
+            <button type="button"
+                    wire:click="addAward"
+                    class="mt-2 inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                {{ __('Add achievement') }}
+            </button>
+            @error('awards') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </div>
 
-            <!-- Желаемая должность -->
+        <!-- Желаемая должность и Ожидаемая зарплата -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+            <!-- Желаемая должность (множественный выбор) -->
             <div>
-                <label class="block text-base font-medium text-gray-700">
+                <label class="block text-base font-medium text-gray-700 mb-2">
                     {{ __('Desired Position') }} <span class="text-red-500">*</span>
+                    <span class="text-gray-500 text-sm font-normal ml-2">({{ __('maximum 3') }})</span>
                 </label>
-                <input type="text"
-                       wire:model="desired_position"
-                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                       placeholder="{{ __('Example: Financial Analyst') }}">
-                @error('desired_position') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                <div class="space-y-2">
+                    @foreach($desired_positions as $index => $position)
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm text-gray-500 w-6 text-center">{{ $index + 1 }}.</span>
+                            <input type="text"
+                                   wire:model="desired_positions.{{ $index }}"
+                                   class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                   placeholder="{{ __('Example: Financial Analyst') }}">
+                            @if(count($desired_positions) > 1)
+                                <button type="button"
+                                        wire:click="removeDesiredPosition({{ $index }})"
+                                        class="text-red-500 hover:text-red-700 p-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                </button>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+                @if(count($desired_positions) < 3)
+                    <button type="button"
+                            wire:click="addDesiredPosition"
+                            class="mt-2 inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        {{ __('Add') }}
+                    </button>
+                @endif
+                @error('desired_positions') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                @error('desired_positions.*') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
 
             <!-- Ожидаемая зарплата (диапазон) -->

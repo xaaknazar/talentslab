@@ -369,6 +369,18 @@
     "Select field of activity": "اختر مجال العمل",
     "Desired Position": "المنصب المطلوب",
     "Example: Financial Analyst": "مثال: محلل مالي",
+    "maximum 3": "الحد الأقصى 3",
+
+    "Main Tasks": "المهام الرئيسية",
+    "minimum 3, maximum 8": "الحد الأدنى 3، الحد الأقصى 8",
+    "Describe one task in one sentence": "صف مهمة واحدة في جملة واحدة",
+    "Add task": "إضافة مهمة",
+
+    "Awards and Achievements": "الجوائز والإنجازات",
+    "Optional": "اختياري",
+    "Add achievement": "إضافة إنجاز",
+    "Describe your achievement": "صف إنجازك",
+    "Example: Exceeded sales plan, Improved customer service, Optimized department workflow": "مثال: تجاوز خطة المبيعات، تحسين خدمة العملاء، تحسين سير العمل في القسم",
 
     "Expected Salary": "الراتب المتوقع",
     "Currency": "العملة",

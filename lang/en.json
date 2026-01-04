@@ -369,6 +369,18 @@
     "Select field of activity": "Select field of activity",
     "Desired Position": "Desired Position",
     "Example: Financial Analyst": "Example: Financial Analyst",
+    "maximum 3": "maximum 3",
+
+    "Main Tasks": "Main Tasks",
+    "minimum 3, maximum 8": "minimum 3, maximum 8",
+    "Describe one task in one sentence": "Describe one task in one sentence",
+    "Add task": "Add task",
+
+    "Awards and Achievements": "Awards and Achievements",
+    "Optional": "Optional",
+    "Add achievement": "Add achievement",
+    "Describe your achievement": "Describe your achievement",
+    "Example: Exceeded sales plan, Improved customer service, Optimized department workflow": "Example: Exceeded sales plan, Improved customer service, Optimized department workflow",
 
     "Expected Salary": "Expected Salary",
     "Currency": "Currency",
