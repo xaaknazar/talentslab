@@ -539,8 +539,8 @@ if (! function_exists('clean_git_conflicts')) {
                                 </div>
                             @endforeach
                         </div>
-                        <div style="margin-top: 16px; display: flex; gap: 32px;">
-                            <div style="display: flex; align-items: center;">
+                        <div style="margin-top: 16px;">
+                            <div style="display: flex; align-items: center; margin-bottom: 4px;">
                                 <span class="text-base" style="color: #374151; margin-right: 8px;">Общий стаж:</span>
                                 <span class="text-base font-medium" style="color: #111827;">{{ $candidate->total_experience_years ?? 0 }} лет</span>
                             </div>
@@ -551,7 +551,7 @@ if (! function_exists('clean_git_conflicts')) {
                         </div>
                         @if($candidate->awards && is_array($candidate->awards) && count(array_filter($candidate->awards)) > 0)
                             <div style="margin-top: 16px;">
-                                <span class="text-base font-medium" style="color: #000000; display: block; margin-bottom: 8px;">Награды и достижения</span>
+                                <span class="text-lg font-bold" style="color: #000000; display: block; margin-bottom: 8px;">Награды и достижения</span>
                                 <ul class="text-base font-medium" style="color: #000000;">
                                     @foreach(array_filter($candidate->awards) as $award)
                                         <li style="margin-bottom: 3px;">{{ $award }}</li>

@@ -281,8 +281,8 @@
                                 </div>
                             @endforeach
                         </div>
-                        <div class="mt-3 flex gap-6">
-                            <div class="flex items-center text-xs">
+                        <div class="mt-3">
+                            <div class="flex items-center text-xs mb-1">
                                 <span class="text-gray-700 mr-1">Общий стаж:</span>
                                 <span class="font-medium text-gray-900">{{ $candidate->total_experience_years ?? 0 }} лет</span>
                             </div>
@@ -293,7 +293,7 @@
                         </div>
                         @if($candidate->awards && is_array($candidate->awards) && count(array_filter($candidate->awards)) > 0)
                             <div class="mt-3">
-                                <span class="text-xs font-medium text-black block mb-1">Награды и достижения</span>
+                                <span class="text-sm font-bold text-black block mb-1">Награды и достижения</span>
                                 <ul class="text-xs font-medium text-black">
                                     @foreach(array_filter($candidate->awards) as $award)
                                         <li>{{ $award }}</li>

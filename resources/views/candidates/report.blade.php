@@ -372,8 +372,8 @@ if (! function_exists('mb_ucfirst')) {
                                 </div>
                             @endforeach
                         </div>
-                        <div class="mt-4 flex gap-8">
-                            <div class="flex items-center">
+                        <div class="mt-4">
+                            <div class="flex items-center mb-1">
                                 <span class="text-base text-gray-700 mr-2">Общий стаж:</span>
                                 <span class="text-base font-medium text-gray-900">{{ $candidate->total_experience_years ?? 0 }} лет</span>
                             </div>
@@ -384,7 +384,7 @@ if (! function_exists('mb_ucfirst')) {
                         </div>
                         @if($candidate->awards && is_array($candidate->awards) && count(array_filter($candidate->awards)) > 0)
                             <div class="mt-4">
-                                <span class="text-base font-medium text-black mb-2 block">Награды и достижения</span>
+                                <span class="text-lg font-bold text-black mb-2 block">Награды и достижения</span>
                                 <ul class="text-base font-medium text-black space-y-1">
                                     @foreach(array_filter($candidate->awards) as $award)
                                         <li>{{ $award }}</li>
