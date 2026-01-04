@@ -634,5 +634,7 @@
     "Sign in": "Войти",
     "Forgot password?": "Забыли пароль?",
     "Don't have an account?": "Нет аккаунта?",
-    "Enter": "Войти"
+    "Enter": "Войти",
+    "You must complete the Gardner test to continue.": "Необходимо пройти тест Гарднера для продолжения.",
+    "Present": "по наст. время"
 }

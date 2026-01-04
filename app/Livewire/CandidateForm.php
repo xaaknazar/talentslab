@@ -284,26 +284,33 @@ class CandidateForm extends Component
     }
 
     /**
-     * Проверяет статус прохождения теста Гарднера для текущего пользователя
+     * Проверяет статус прохождения теста Гарднера для кандидата
      */
     public function checkGardnerTestStatus()
     {
-        $user = auth()->user();
-        if ($user) {
-            $this->gardner_test_completed = \App\Models\GardnerTestResult::where('user_id', $user->id)->exists();
+        // Если редактируем существующего кандидата, проверяем его user_id
+        if ($this->candidate && $this->candidate->user_id) {
+            $this->gardner_test_completed = \App\Models\GardnerTestResult::where('user_id', $this->candidate->user_id)->exists();
+        } elseif (auth()->user()) {
+            // Для новых кандидатов проверяем залогиненного пользователя
+            $this->gardner_test_completed = \App\Models\GardnerTestResult::where('user_id', auth()->id())->exists();
         } else {
             $this->gardner_test_completed = false;
         }
     }
 
     /**
-     * Возвращает результаты теста Гарднера для текущего пользователя
+     * Возвращает результаты теста Гарднера для кандидата
      */
     public function getGardnerTestResults()
     {
-        $user = auth()->user();
-        if ($user) {
-            $result = \App\Models\GardnerTestResult::where('user_id', $user->id)->first();
+        // Если редактируем существующего кандидата, получаем его результаты
+        if ($this->candidate && $this->candidate->user_id) {
+            $result = \App\Models\GardnerTestResult::where('user_id', $this->candidate->user_id)->first();
+            return $result ? $result->results : null;
+        } elseif (auth()->user()) {
+            // Для новых кандидатов используем залогиненного пользователя
+            $result = \App\Models\GardnerTestResult::where('user_id', auth()->id())->first();
             return $result ? $result->results : null;
         }
         return null;
@@ -527,12 +534,16 @@ class CandidateForm extends Component
         if ($this->currentStep === 4) {
             $rules['gardner_test_completed'] = [
                 function ($attribute, $value, $fail) {
-                    $user = auth()->user();
-                    if ($user) {
-                        $hasGardnerResult = \App\Models\GardnerTestResult::where('user_id', $user->id)->exists();
-                        if (!$hasGardnerResult) {
-                            $fail('Необходимо пройти тест Гарднера для продолжения.');
-                        }
+                    // Если редактируем кандидата, проверяем его user_id
+                    if ($this->candidate && $this->candidate->user_id) {
+                        $hasGardnerResult = \App\Models\GardnerTestResult::where('user_id', $this->candidate->user_id)->exists();
+                    } else {
+                        // Для нового кандидата проверяем текущего пользователя
+                        $hasGardnerResult = \App\Models\GardnerTestResult::where('user_id', auth()->id())->exists();
+                    }
+
+                    if (!$hasGardnerResult) {
+                        $fail(__('You must complete the Gardner test to continue.'));
                     }
                 }
             ];

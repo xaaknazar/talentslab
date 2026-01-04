@@ -726,5 +726,7 @@
     "Sign in": "Sign in",
     "Forgot password?": "Forgot password?",
     "Don't have an account?": "Don't have an account?",
-    "Enter": "Enter"
+    "Enter": "Enter",
+    "You must complete the Gardner test to continue.": "You must complete the Gardner test to continue.",
+    "Present": "Present"
 }

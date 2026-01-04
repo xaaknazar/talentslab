@@ -727,5 +727,7 @@
     "Sign in": "تسجيل الدخول",
     "Forgot password?": "نسيت كلمة المرور؟",
     "Don't have an account?": "ليس لديك حساب؟",
-    "Enter": "دخول"
+    "Enter": "دخول",
+    "You must complete the Gardner test to continue.": "يجب عليك إكمال اختبار غاردنر للمتابعة.",
+    "Present": "حتى الآن"
 }
