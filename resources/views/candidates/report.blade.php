@@ -331,18 +331,18 @@ if (! function_exists('mb_ucfirst')) {
                                         <span class="text-gray-900 mx-2">—</span>
                                         <span class="text-base text-gray-900">{{ $experience['company'] ?? 'Не указано' }}</span>
                                         @if(!empty($experience['city']))
-                                            <span class="text-gray-800">, {{ $experience['city'] }}</span>
+                                            <span class="text-base text-gray-800">, {{ $experience['city'] }}</span>
                                         @endif
                                     </div>
-                                    <span class="text-sm text-gray-900 whitespace-nowrap ml-4">{{ $experience['years'] ?? '' }}</span>
+                                    <span class="text-base text-gray-900 whitespace-nowrap ml-4">{{ $experience['years'] ?? '' }}</span>
                                 </div>
                                 @if(!empty($experience['activity_sphere']))
-                                    <div class="text-sm text-gray-800 mb-1">{{ $experience['activity_sphere'] }}</div>
+                                    <div class="text-base text-gray-800 mb-1">{{ $experience['activity_sphere'] }}</div>
                                 @endif
                                 @if(!empty($experience['main_tasks']) && is_array($experience['main_tasks']))
                                     @php $filledTasks = array_filter($experience['main_tasks'], fn($task) => !empty(trim($task))); @endphp
                                     @if(count($filledTasks) > 0)
-                                        <ul class="text-sm text-gray-800 space-y-1 mt-1">
+                                        <ul class="text-base text-gray-800 space-y-1 mt-1">
                                             @foreach($filledTasks as $task)
                                                 <li class="flex items-start">
                                                     <span class="text-gray-600 mr-2">•</span>
@@ -357,18 +357,18 @@ if (! function_exists('mb_ucfirst')) {
                     </div>
                     <div class="mt-4 flex gap-8">
                         <div class="flex items-center">
-                            <span class="text-sm text-gray-700 mr-2">Общий стаж:</span>
-                            <span class="text-sm font-medium text-gray-900">{{ $candidate->total_experience_years ?? 0 }} лет</span>
+                            <span class="text-base text-gray-700 mr-2">Общий стаж:</span>
+                            <span class="text-base font-medium text-gray-900">{{ $candidate->total_experience_years ?? 0 }} лет</span>
                         </div>
                         <div class="flex items-center">
-                            <span class="text-sm text-gray-700 mr-2">Удовлетворённость работой:</span>
-                            <span class="text-sm font-medium text-gray-900">{{ $candidate->job_satisfaction ?? '—' }}/5</span>
+                            <span class="text-base text-gray-700 mr-2">Удовлетворённость работой:</span>
+                            <span class="text-base font-medium text-gray-900">{{ $candidate->job_satisfaction ?? '—' }}/5</span>
                         </div>
                     </div>
                     @if($candidate->awards && is_array($candidate->awards) && count(array_filter($candidate->awards)) > 0)
                         <div class="mt-4">
-                            <span class="text-sm font-medium text-gray-800 mb-2 block">Награды и достижения</span>
-                            <ul class="text-sm text-gray-900 space-y-1">
+                            <span class="text-base font-medium text-gray-800 mb-2 block">Награды и достижения</span>
+                            <ul class="text-base text-gray-900 space-y-1">
                                 @foreach(array_filter($candidate->awards) as $award)
                                     <li>{{ $award }}</li>
                                 @endforeach

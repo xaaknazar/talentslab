@@ -504,16 +504,16 @@ if (! function_exists('clean_git_conflicts')) {
                                         <span style="color: #111827; margin: 0 8px;">—</span>
                                         <span class="text-base" style="color: #111827;">{{ $experience['company'] ?? 'Не указано' }}</span>
                                         @if(!empty($experience['city']))
-                                            <span style="color: #374151;">, {{ $experience['city'] }}</span>
+                                            <span class="text-base" style="color: #374151;">, {{ $experience['city'] }}</span>
                                         @endif
                                     </div>
-                                    <span class="text-sm" style="color: #111827; white-space: nowrap; margin-left: 16px;">{{ $experience['years'] ?? '' }}</span>
+                                    <span class="text-base" style="color: #111827; white-space: nowrap; margin-left: 16px;">{{ $experience['years'] ?? '' }}</span>
                                 </div>
                                 @if(!empty($experience['activity_sphere']))
-                                    <div class="text-sm" style="color: #374151; margin-bottom: 4px;">{{ $experience['activity_sphere'] }}</div>
+                                    <div class="text-base" style="color: #374151; margin-bottom: 4px;">{{ $experience['activity_sphere'] }}</div>
                                 @endif
                                 @if(!empty($experience['main_tasks']) && is_array($experience['main_tasks']) && count(array_filter($experience['main_tasks'])) > 0)
-                                    <ul class="text-sm" style="color: #374151; margin-top: 4px;">
+                                    <ul class="text-base" style="color: #374151; margin-top: 4px;">
                                         @foreach(array_filter($experience['main_tasks']) as $task)
                                             <li style="display: flex; align-items: flex-start; margin-bottom: 3px;">
                                                 <span style="color: #6b7280; margin-right: 8px;">•</span>
@@ -527,18 +527,18 @@ if (! function_exists('clean_git_conflicts')) {
                     </div>
                     <div style="margin-top: 16px; display: flex; gap: 32px;">
                         <div style="display: flex; align-items: center;">
-                            <span class="text-sm" style="color: #374151; margin-right: 8px;">Общий стаж:</span>
-                            <span class="text-sm font-medium" style="color: #111827;">{{ $candidate->total_experience_years ?? 0 }} лет</span>
+                            <span class="text-base" style="color: #374151; margin-right: 8px;">Общий стаж:</span>
+                            <span class="text-base font-medium" style="color: #111827;">{{ $candidate->total_experience_years ?? 0 }} лет</span>
                         </div>
                         <div style="display: flex; align-items: center;">
-                            <span class="text-sm" style="color: #374151; margin-right: 8px;">Удовлетворённость работой:</span>
-                            <span class="text-sm font-medium" style="color: #111827;">{{ $candidate->job_satisfaction ?? '—' }}/5</span>
+                            <span class="text-base" style="color: #374151; margin-right: 8px;">Удовлетворённость работой:</span>
+                            <span class="text-base font-medium" style="color: #111827;">{{ $candidate->job_satisfaction ?? '—' }}/5</span>
                         </div>
                     </div>
                     @if($candidate->awards && is_array($candidate->awards) && count(array_filter($candidate->awards)) > 0)
                         <div style="margin-top: 16px;">
-                            <span class="text-sm font-medium" style="color: #374151; display: block; margin-bottom: 8px;">Награды и достижения</span>
-                            <ul class="text-sm" style="color: #111827;">
+                            <span class="text-base font-medium" style="color: #374151; display: block; margin-bottom: 8px;">Награды и достижения</span>
+                            <ul class="text-base" style="color: #111827;">
                                 @foreach(array_filter($candidate->awards) as $award)
                                     <li style="margin-bottom: 3px;">{{ $award }}</li>
                                 @endforeach
