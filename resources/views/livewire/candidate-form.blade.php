@@ -9,10 +9,10 @@
             <div class="block lg:hidden">
                 <div class="grid grid-cols-2 gap-3 mb-4">
                     @foreach([
-                        ['step' => 1, 'title' => 'Основная информация'],
-                        ['step' => 2, 'title' => 'Дополнительная информация'],
-                        ['step' => 3, 'title' => 'Образование и работа'],
-                        ['step' => 4, 'title' => 'Тесты']
+                        ['step' => 1, 'title' => __('Basic Information')],
+                        ['step' => 2, 'title' => __('Additional Information')],
+                        ['step' => 3, 'title' => __('Education and Work')],
+                        ['step' => 4, 'title' => __('Tests')]
                     ] as $stepInfo)
                     <button type="button" 
                             wire:click="$set('currentStep', {{ $stepInfo['step'] }})"
@@ -50,10 +50,10 @@
             <div class="hidden lg:flex items-center justify-between">
                 <div class="flex items-center space-x-2 w-full">
                     @foreach([
-                        ['step' => 1, 'title' => 'Основная информация'],
-                        ['step' => 2, 'title' => 'Дополнительная информация'], 
-                        ['step' => 3, 'title' => 'Образование и работа'],
-                        ['step' => 4, 'title' => 'Тесты']
+                        ['step' => 1, 'title' => __('Basic Information')],
+                        ['step' => 2, 'title' => __('Additional Information')],
+                        ['step' => 3, 'title' => __('Education and Work')],
+                        ['step' => 4, 'title' => __('Tests')]
                     ] as $index => $stepInfo)
                     <!-- Step -->
                     <div class="flex items-center {{ $index === 3 ? '' : 'flex-1' }}">
@@ -103,7 +103,7 @@
                         <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
                         </svg>
-                        Пожалуйста, исправьте ошибки ниже:
+                        {{ __('Please fix the errors below:') }}
                     </div>
                     
                     @php
@@ -149,7 +149,7 @@
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                         </svg>
-                        Назад
+                        {{ __('Back') }}
                     </button>
                 @else
                     <div class="hidden sm:block"></div>
@@ -159,7 +159,7 @@
                     <button type="button"
                             wire:click="nextStep"
                             class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 border border-transparent rounded-md font-semibold text-sm text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring focus:ring-blue-300 disabled:opacity-25 transition">
-                        Сохранить и далее
+                        {{ __('Save and continue') }}
                         <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                         </svg>
@@ -171,11 +171,11 @@
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                             </svg>
-                            Сохранить и завершить
+                            {{ __('Save and finish') }}
                         </button>
                         @if ($errors->any())
                             <div class="text-sm text-red-600 flex items-center">
-                                Проверьте ошибки сверху формы
+                                {{ __('Check errors at the top of the form') }}
                             </div>
                         @endif
                     </div>

@@ -1,10 +1,10 @@
 @extends('layouts.auth')
 
-@section('title', 'Регистрация - Divergents')
+@section('title', __('Registration') . ' - Divergents')
 
 @section('content')
-<h1>Создать аккаунт</h1>
-<p>Зарегистрируйтесь в системе управления обучением Divergents</p>
+<h1>{{ __('Create account') }}</h1>
+<p>{{ __('Register in the Divergents learning management system') }}</p>
 
 <!-- Validation Errors -->
 @if ($errors->any())
@@ -25,7 +25,7 @@
             id="name"
             name="name"
             class="form-input"
-            placeholder="Полное имя"
+            placeholder="{{ __('Full name') }}"
             value="{{ old('name') }}"
             required
             autofocus
@@ -39,7 +39,7 @@
             id="email"
             name="email"
             class="form-input"
-            placeholder="Email адрес"
+            placeholder="{{ __('Email address') }}"
             value="{{ old('email') }}"
             required
             autocomplete="username"
@@ -53,7 +53,7 @@
                 id="password"
                 name="password"
                 class="form-input password-input"
-                placeholder="Пароль"
+                placeholder="{{ __('Password') }}"
                 required
                 autocomplete="new-password"
             >
@@ -79,7 +79,7 @@
                 id="password_confirmation"
                 name="password_confirmation"
                 class="form-input password-input"
-                placeholder="Подтвердите пароль"
+                placeholder="{{ __('Confirm password') }}"
                 required
                 autocomplete="new-password"
             >
@@ -102,18 +102,18 @@
         <div class="terms-checkbox">
             <input type="checkbox" name="terms" id="terms" required>
             <label for="terms">
-                Я согласен с <a href="{{ route('terms.show') }}" target="_blank">Условиями использования</a> и <a href="{{ route('policy.show') }}" target="_blank">Политикой конфиденциальности</a>
+                {{ __('I agree to the') }} <a href="{{ route('terms.show') }}" target="_blank">{{ __('Terms of Service') }}</a> {{ __('and') }} <a href="{{ route('policy.show') }}" target="_blank">{{ __('Privacy Policy') }}</a>
             </label>
         </div>
     @endif
 
     <button type="submit" class="btn-auth">
-        Создать аккаунт
+        {{ __('Create account') }}
     </button>
 </form>
 
 <div class="auth-footer">
-    Уже есть аккаунт? <a href="{{ url('/') }}">Войти в систему</a>
+    {{ __('Already have an account?') }} <a href="{{ url('/') }}">{{ __('Log in') }}</a>
 </div>
 
 <script>
