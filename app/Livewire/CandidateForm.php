@@ -827,6 +827,18 @@ class CandidateForm extends Component
             return;
         }
 
+        // Если обновляется поле desired_positions (массив желаемых должностей)
+        if (strpos($propertyName, 'desired_positions.') === 0) {
+            $this->resetErrorBag($propertyName);
+            return;
+        }
+
+        // Если обновляется поле awards (массив наград)
+        if (strpos($propertyName, 'awards.') === 0) {
+            $this->resetErrorBag($propertyName);
+            return;
+        }
+
         // Валидируем только поля текущего шага
         $rules = collect($this->rules())->filter(function ($rule, $field) {
             return $this->isFieldInCurrentStep($field);
@@ -838,8 +850,13 @@ class CandidateForm extends Component
 
         // Сохраняем изменение в историю
         if ($this->candidate) {
-            $oldValue = $this->candidate->{$propertyName};
-            $newValue = $this->{$propertyName};
+            // Пропускаем запись для сложных массивных свойств
+            if (strpos($propertyName, '.') !== false) {
+                return;
+            }
+
+            $oldValue = $this->candidate->{$propertyName} ?? null;
+            $newValue = $this->{$propertyName} ?? null;
 
             if ($oldValue !== $newValue) {
                 CandidateHistory::create([
