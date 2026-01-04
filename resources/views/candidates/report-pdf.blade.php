@@ -38,6 +38,10 @@
         .text-xl { font-size: 16px; }
         .text-2xl { font-size: 18px; }
         .text-3xl { font-size: 20px; }
+        .text-black { color: #000000; }
+        .text-gray-900 { color: #111827; }
+        .text-gray-800 { color: #1f2937; }
+        .text-gray-700 { color: #374151; }
     </style>
 </head>
 <body class="bg-white font-sans">

@@ -24,7 +24,10 @@
         .bg-gray-50 { background-color: #f9fafb; }
         .bg-white { background-color: #ffffff; }
         .bg-gray-100 { background-color: #f3f4f6; }
+        .text-black { color: #000000; }
+        .text-gray-900 { color: #111827; }
         .text-gray-800 { color: #1f2937; }
+        .text-gray-700 { color: #374151; }
         .text-gray-600 { color: #4b5563; }
         .text-gray-500 { color: #6b7280; }
         .text-blue-600 { color: #2563eb; }
