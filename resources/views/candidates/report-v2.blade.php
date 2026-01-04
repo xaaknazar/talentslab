@@ -500,14 +500,14 @@ if (! function_exists('clean_git_conflicts')) {
                             <div style="padding: 8px 0;">
                                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
                                     <div>
-                                        <span class="text-base font-semibold" style="color: #000000;">{{ $experience['position'] ?? 'Не указано' }}</span>
+                                        <span class="text-base font-medium" style="color: #000000;">{{ $experience['position'] ?? 'Не указано' }}</span>
                                         <span style="color: #000000; margin: 0 8px;">—</span>
-                                        <span class="text-base" style="color: #000000;">{{ $experience['company'] ?? 'Не указано' }}</span>
+                                        <span class="text-base font-medium" style="color: #000000;">{{ $experience['company'] ?? 'Не указано' }}</span>
                                         @if(!empty($experience['city']))
-                                            <span class="text-base" style="color: #000000;">, {{ $experience['city'] }}</span>
+                                            <span class="text-base font-medium" style="color: #000000;">, {{ $experience['city'] }}</span>
                                         @endif
                                     </div>
-                                    <span class="text-base" style="color: #000000; white-space: nowrap; margin-left: 16px;">{{ $experience['years'] ?? '' }}</span>
+                                    <span class="text-base font-medium" style="color: #000000; white-space: nowrap; margin-left: 16px;">{{ $experience['years'] ?? '' }}</span>
                                 </div>
                                 @if(!empty($experience['activity_sphere']))
                                     <div class="text-base" style="color: #374151; margin-bottom: 4px;">{{ $experience['activity_sphere'] }}</div>
