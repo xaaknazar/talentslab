@@ -129,7 +129,9 @@ class CandidateForm extends Component
                 'first_country' => $countriesData[0] ?? null
             ]);
 
-            $this->countries = collect($countriesData)->map(function($country) {
+            $locale = app()->getLocale();
+
+            $this->countries = collect($countriesData)->map(function($country) use ($locale) {
                 $data = [];
 
                 // Проверяем наличие каждого ключа перед добавлением
@@ -148,11 +150,29 @@ class CandidateForm extends Component
 
                 if (isset($country['iso_code2'])) {
                     $data['iso_code2'] = $country['iso_code2'];
+
+                    // Добавляем локализованное название страны
+                    $isoCode = $country['iso_code2'];
+                    if (class_exists('Locale') && !empty($isoCode)) {
+                        $localeMap = [
+                            'ru' => 'ru_RU',
+                            'en' => 'en_US',
+                            'ar' => 'ar_SA'
+                        ];
+                        $intlLocale = $localeMap[$locale] ?? 'en_US';
+                        $localizedName = \Locale::getDisplayRegion("-{$isoCode}", $intlLocale);
+                        if (!empty($localizedName) && $localizedName !== $isoCode) {
+                            $data['name_localized'] = $localizedName;
+                        }
+                    }
                 }
 
                 if (isset($country['iso_code3'])) {
                     $data['iso_code3'] = $country['iso_code3'];
                 }
+
+                // Устанавливаем display_name - используем локализованное или name_ru как fallback
+                $data['display_name'] = $data['name_localized'] ?? $data['name_ru'] ?? '';
 
                 return $data;
             })

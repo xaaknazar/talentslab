@@ -247,13 +247,14 @@
                             <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-medium bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-sm hover:shadow-md transition-shadow">
                                 @php
                                     $countryData = collect($countries)->firstWhere('name_ru', $country);
+                                    $displayName = $countryData['display_name'] ?? $country;
                                 @endphp
                                 @if($countryData && isset($countryData['flag_url']))
                                     <img src="{{ $countryData['flag_url'] }}"
                                          alt="flag"
                                          class="w-5 h-4 mr-2 rounded border border-white/30 object-cover">
                                 @endif
-                                {{ $country }}
+                                {{ $displayName }}
                                 <button type="button"
                                         wire:click="removeCountry('{{ $country }}')"
                                         class="ml-2 text-white/80 hover:text-white focus:outline-none">
@@ -273,7 +274,7 @@
                         @foreach($countries as $country)
                             <option value="{{ $country['name_ru'] }}"
                                     data-flag="{{ $country['flag_url'] ?? '' }}">
-                                {{ $country['name_ru'] }}
+                                {{ $country['display_name'] ?? $country['name_ru'] }}
                             </option>
                         @endforeach
                     </select>
