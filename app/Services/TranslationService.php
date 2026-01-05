@@ -21,19 +21,31 @@ class TranslationService
      */
     public function translateCandidate(Candidate $candidate, string $targetLanguage): array
     {
-        $cacheKey = "candidate_translation_{$candidate->id}_{$targetLanguage}_v2";
+        // v3 - обновлённая версия с улучшенным переводом
+        $cacheKey = "candidate_translation_{$candidate->id}_{$targetLanguage}_v3";
 
         // Проверяем кэш (храним перевод 24 часа)
         $cached = Cache::get($cacheKey);
         if ($cached) {
+            Log::info("Translation cache hit for candidate {$candidate->id} to {$targetLanguage}");
             return $cached;
         }
+
+        Log::info("Starting translation for candidate {$candidate->id} to {$targetLanguage}");
 
         // Собираем все текстовые данные для перевода
         $dataToTranslate = $this->collectTranslatableData($candidate);
 
+        Log::info("Data to translate:", ['keys' => array_keys($dataToTranslate)]);
+
         // Переводим через GPT-4o
         $translatedData = $this->translateWithGpt4o($dataToTranslate, $targetLanguage);
+
+        Log::info("Translation completed", [
+            'translated_keys' => array_keys($translatedData),
+            'gender_original' => $dataToTranslate['gender'] ?? 'null',
+            'gender_translated' => $translatedData['gender'] ?? 'null',
+        ]);
 
         // Кэшируем результат на 24 часа
         Cache::put($cacheKey, $translatedData, now()->addHours(24));
@@ -254,6 +266,35 @@ class TranslatedCandidate
     private array $translatedData;
     private string $language;
 
+    // Поля, которые НЕ должны переводиться (всегда берутся из оригинала)
+    private array $nonTranslatableFields = [
+        // Идентификаторы и системные поля
+        'id', 'user_id', 'step', 'step_parse_gallup',
+        'created_at', 'updated_at',
+
+        // Контактные данные (не переводятся)
+        'email', 'phone', 'instagram', 'photo',
+
+        // Даты и числовые значения
+        'birth_date', 'ready_to_relocate',
+        'is_practicing', 'books_per_year',
+        'entertainment_hours_weekly', 'educational_hours_weekly', 'social_media_hours_weekly',
+        'has_driving_license', 'total_experience_years', 'job_satisfaction',
+        'expected_salary', 'expected_salary_from', 'expected_salary_to',
+
+        // Файлы
+        'gallup_pdf', 'anketa_pdf',
+
+        // Связи Gallup - НЕ переводить
+        'gallup_talents', 'gallupTalents', 'gallup_reports', 'gallupReports',
+
+        // Связи модели
+        'user',
+
+        // Аксессоры (форматированные значения)
+        'formatted_salary_range',
+    ];
+
     public function __construct(Candidate $original, array $translatedData, string $language)
     {
         $this->original = $original;
@@ -263,9 +304,23 @@ class TranslatedCandidate
 
     public function __get($name)
     {
-        // Сначала проверяем переведённые данные
+        // Поля, которые не должны переводиться - всегда из оригинала
+        if (in_array($name, $this->nonTranslatableFields)) {
+            return $this->original->$name;
+        }
+
+        // Аксессоры с префиксом formatted_ всегда из оригинала
+        if (str_starts_with($name, 'formatted_')) {
+            return $this->original->$name;
+        }
+
+        // Проверяем переведённые данные
         if (array_key_exists($name, $this->translatedData)) {
-            return $this->translatedData[$name];
+            $value = $this->translatedData[$name];
+            // Возвращаем переведённое значение если оно не пустое
+            if ($value !== null && $value !== '') {
+                return $value;
+            }
         }
 
         // Иначе возвращаем оригинальное значение
@@ -290,6 +345,11 @@ class TranslatedCandidate
     public function getLanguage(): string
     {
         return $this->language;
+    }
+
+    public function getTranslatedData(): array
+    {
+        return $this->translatedData;
     }
 
     // Переопределяем getFamilyStructured для использования переведённых данных
@@ -345,6 +405,17 @@ class TranslatedCandidate
         ];
     }
 
+    // Прямой доступ к Gallup данным (всегда из оригинала)
+    public function getGallupTalentsAttribute()
+    {
+        return $this->original->gallup_talents;
+    }
+
+    public function getGallupPdfAttribute()
+    {
+        return $this->original->gallup_pdf;
+    }
+
     // Прокси для связей
     public function gallupTalents()
     {
@@ -354,6 +425,11 @@ class TranslatedCandidate
     public function gallupReports()
     {
         return $this->original->gallupReports();
+    }
+
+    public function gallupReportByType(string $type)
+    {
+        return $this->original->gallupReportByType($type);
     }
 
     public function user()
