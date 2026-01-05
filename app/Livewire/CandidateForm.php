@@ -2041,10 +2041,10 @@ class CandidateForm extends Component
                 $rules['gallup_pdf'] = [
                     'nullable',
                     'file',
-                    'mimes:pdf',
+                    'mimes:pdf,jpg,jpeg,png,webp',
                     'max:10240',
                     function ($attribute, $value, $fail) {
-                        if ($value && !is_string($value) && !$this->isGallupPdf($value)) {
+                        if ($value && !is_string($value) && !$this->isValidGallupFile($value)) {
                             $fail('Загруженный файл не является корректным отчетом Gallup.');
                         }
                     }
