@@ -50,19 +50,23 @@ class TranslationService
             // Основная информация
             'full_name' => $candidate->full_name,
             'gender' => $candidate->gender,
-            'nationality' => $candidate->nationality,
-            'city' => $candidate->city,
+            'current_city' => $candidate->current_city,
+            'birth_place' => $candidate->birth_place,
             'religion' => $candidate->religion,
             'marital_status' => $candidate->marital_status,
 
             // Образование
-            'school_name' => $candidate->school_name,
-            'school_city' => $candidate->school_city,
+            'school' => $candidate->school,
             'universities' => $candidate->universities ?? [],
+
+            // Желаемая должность
+            'desired_position' => $candidate->desired_position,
+            'desired_positions' => $candidate->desired_positions ?? [],
 
             // Опыт работы
             'work_experience' => $candidate->work_experience ?? [],
             'awards' => $candidate->awards ?? [],
+            'employer_requirements' => $candidate->employer_requirements,
 
             // Интересы
             'hobbies' => $candidate->hobbies,
@@ -70,24 +74,15 @@ class TranslationService
             'favorite_sports' => $candidate->favorite_sports,
             'visited_countries' => $candidate->visited_countries ?? [],
 
-            // Семья
-            'parents' => $candidate->parents ?? [],
-            'siblings' => $candidate->siblings ?? [],
-            'children' => $candidate->children ?? [],
+            // Семья (из family_members JSON)
+            'family_members' => $candidate->family_members ?? [],
 
             // Навыки
             'computer_skills' => $candidate->computer_skills,
-            'languages' => $candidate->languages ?? [],
+            'language_skills' => $candidate->language_skills ?? [],
 
             // MBTI
             'mbti_full_name' => $candidate->mbti_full_name,
-
-            // Дополнительно
-            'goals_5_years' => $candidate->goals_5_years,
-            'ideal_job' => $candidate->ideal_job,
-            'strengths' => $candidate->strengths,
-            'weaknesses' => $candidate->weaknesses,
-            'achievements' => $candidate->achievements,
         ];
 
         return $data;
@@ -108,18 +103,35 @@ class TranslationService
 
         $prompt = "You are a professional translator. Translate the following JSON data to {$targetLangName}.
 Keep the JSON structure exactly the same, only translate the text values.
-Do not translate:
-- Names of people (full_name) - keep original
-- Email addresses
-- Phone numbers
-- URLs
-- Dates and years
-- Numbers
-- University names (keep original but you can add translation in parentheses)
-- Company names (keep original)
+
+TRANSLATE these fields:
+- gender (e.g. 'Мужской' -> 'Male', 'Женский' -> 'Female')
+- current_city (city names)
+- birth_place (city/country names)
+- religion (e.g. 'Ислам' -> 'Islam', 'Христианство' -> 'Christianity')
+- marital_status (e.g. 'Женат' -> 'Married', 'Холост' -> 'Single')
+- school (school names if in different language)
+- universities: translate 'speciality', 'degree', 'city' fields
+- work_experience: translate 'position', 'company', 'city', 'activity_sphere', 'main_tasks' fields
+- desired_position, desired_positions
+- awards (each award text)
+- employer_requirements
+- hobbies, interests, favorite_sports
+- visited_countries (country names)
+- family_members: translate 'relation', 'profession' fields
+- computer_skills
+- language_skills: translate 'language', 'level' fields
+- mbti_full_name (the personality type description)
+
+DO NOT translate:
+- full_name (keep original person name)
+- University names in 'name' field (keep original)
+- Company names in 'company' field (keep original)
+- Email addresses, phone numbers, URLs
+- Dates, years, numbers, GPA values
 
 For arrays, translate each element.
-For nested objects, translate all string values.
+For nested objects, translate the specified string values.
 
 Important: Return ONLY valid JSON, no markdown formatting, no code blocks.
 
@@ -278,6 +290,59 @@ class TranslatedCandidate
     public function getLanguage(): string
     {
         return $this->language;
+    }
+
+    // Переопределяем getFamilyStructured для использования переведённых данных
+    public function getFamilyStructured(): array
+    {
+        $familyData = $this->translatedData['family_members'] ?? $this->original->family_members ?? [];
+
+        // Если это новая структура
+        if (is_array($familyData) && isset($familyData['parents'])) {
+            return [
+                'parents' => $familyData['parents'] ?? [],
+                'siblings' => $familyData['siblings'] ?? [],
+                'children' => $familyData['children'] ?? [],
+                'is_new_structure' => true
+            ];
+        }
+
+        // Если это старая структура - преобразуем
+        $parents = [];
+        $siblings = [];
+        $children = [];
+
+        if (is_array($familyData)) {
+            foreach ($familyData as $member) {
+                $type = $member['type'] ?? $member['relation'] ?? '';
+
+                if (in_array(mb_strtolower($type), ['мать', 'отец', 'mother', 'father', 'أم', 'أب'])) {
+                    $parents[] = [
+                        'relation' => $type,
+                        'birth_year' => $member['birth_year'] ?? null,
+                        'profession' => $member['profession'] ?? null,
+                    ];
+                } elseif (in_array(mb_strtolower($type), ['брат', 'сестра', 'brother', 'sister', 'أخ', 'أخت'])) {
+                    $siblings[] = [
+                        'relation' => $type,
+                        'birth_year' => $member['birth_year'] ?? null,
+                    ];
+                } elseif (in_array(mb_strtolower($type), ['сын', 'дочь', 'son', 'daughter', 'ابن', 'ابنة', 'ребенок', 'child'])) {
+                    $children[] = [
+                        'name' => $member['name'] ?? null,
+                        'birth_year' => $member['birth_year'] ?? null,
+                        'gender' => $member['gender'] ?? null,
+                    ];
+                }
+            }
+        }
+
+        return [
+            'parents' => $parents,
+            'siblings' => $siblings,
+            'children' => $children,
+            'is_new_structure' => false
+        ];
     }
 
     // Прокси для связей
