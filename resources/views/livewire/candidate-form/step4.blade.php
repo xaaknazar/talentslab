@@ -484,8 +484,9 @@ function fileUpload() {
 
             const file = files[0];
 
-            if (file.type !== 'application/pdf') {
-                alert('Пожалуйста, выберите PDF файл');
+            const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('Пожалуйста, выберите PDF файл или изображение (JPG, PNG, WebP)');
                 return;
             }
 
@@ -517,8 +518,9 @@ function fileUpload() {
                 return;
             }
 
-            if (file.type !== 'application/pdf') {
-                alert('Пожалуйста, выберите PDF файл');
+            const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('Пожалуйста, выберите PDF файл или изображение (JPG, PNG, WebP)');
                 event.target.value = '';
                 return;
             }
