@@ -542,8 +542,8 @@ class CandidateForm extends Component
             'employer_requirements' => ['required', 'string', 'max:2000'],
 
             // Step 4 validation rules
-            // Gallup PDF - необязательный (рекомендуется)
-            'gallup_pdf' => 'nullable|file|mimes:pdf|max:10240',
+            // Gallup файл (PDF или изображение) - необязательный (рекомендуется)
+            'gallup_pdf' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:10240',
             'mbti_type' => [
                 Rule::when($this->currentStep === 4, ['required', 'string']),
                 Rule::when($this->currentStep !== 4, ['nullable']),
@@ -592,7 +592,7 @@ class CandidateForm extends Component
         'photo.max' => 'Размер изображения не должен превышать 20MB',
         'gallup_pdf.required' => 'Необходимо загрузить результаты теста Gallup',
         'gallup_pdf.file' => 'Необходимо загрузить файл',
-        'gallup_pdf.mimes' => 'Файл должен быть в формате PDF',
+        'gallup_pdf.mimes' => 'Файл должен быть в формате PDF или изображение (JPG, PNG, WebP)',
         'gallup_pdf.max' => 'Размер файла не должен превышать 10MB',
         'mbti_type.required' => 'Необходимо выбрать тип личности MBTI',
         'mbti_type.in' => 'Выбран некорректный тип личности MBTI',
@@ -1045,10 +1045,10 @@ class CandidateForm extends Component
                 'gallup_pdf' => [
                     $this->currentStep === 4 && $this->candidate && $this->candidate->gallup_pdf ? 'nullable' : 'required',
                     'file',
-                    'mimes:pdf',
+                    'mimes:pdf,jpg,jpeg,png,webp',
                     'max:10240',
                     function ($attribute, $value, $fail) {
-                        if ($value && !is_string($value) && !$this->isGallupPdf($value)) {
+                        if ($value && !is_string($value) && !$this->isValidGallupFile($value)) {
                             $fail('Загруженный файл не является корректным отчетом Gallup.');
                         }
                     }
@@ -1953,7 +1953,7 @@ class CandidateForm extends Component
 
     public function updatedGallupPdf()
     {
-        logger()->info('Gallup PDF upload started', [
+        logger()->info('Gallup file upload started', [
             'file_present' => $this->gallup_pdf ? 'yes' : 'no',
             'file_type' => $this->gallup_pdf ? get_class($this->gallup_pdf) : 'null'
         ]);
@@ -1961,35 +1961,35 @@ class CandidateForm extends Component
         if ($this->gallup_pdf) {
             try {
                 // Логируем информацию о файле
-                logger()->info('Gallup PDF file info', [
+                logger()->info('Gallup file info', [
                     'original_name' => $this->gallup_pdf->getClientOriginalName(),
                     'size' => $this->gallup_pdf->getSize(),
                     'mime_type' => $this->gallup_pdf->getMimeType(),
                 ]);
 
-                // Базовая валидация файла
+                // Базовая валидация файла (PDF или изображение)
                 $this->validate([
-                    'gallup_pdf' => 'file|mimes:pdf|max:10240'
+                    'gallup_pdf' => 'file|mimes:pdf,jpg,jpeg,png,webp|max:10240'
                 ]);
 
-                logger()->info('Gallup PDF passed basic validation');
+                logger()->info('Gallup file passed basic validation');
 
-                // Проверяем, что это корректный Gallup PDF
-                if (!$this->isGallupPdf($this->gallup_pdf)) {
-                    logger()->warning('Gallup PDF failed content validation');
-                    $this->addError('gallup_pdf', 'Загруженный файл не является корректным отчетом Gallup. Убедитесь, что это официальный PDF с результатами теста Gallup.');
+                // Проверяем, что это корректный Gallup файл
+                if (!$this->isValidGallupFile($this->gallup_pdf)) {
+                    logger()->warning('Gallup file failed content validation');
+                    $this->addError('gallup_pdf', 'Загруженный файл не является корректным отчетом Gallup. Убедитесь, что это официальный PDF или изображение с результатами теста Gallup.');
                     $this->resetGallupFile();
                     return;
                 }
 
-                logger()->info('Gallup PDF validation successful');
+                logger()->info('Gallup file validation successful');
 
                 // Отправляем событие в JavaScript
                 $this->dispatch('gallup-file-uploaded');
 
-                session()->flash('message', 'PDF файл загружен и проверен');
+                session()->flash('message', 'Файл загружен и проверен');
             } catch (\Exception $e) {
-                logger()->error('Error processing Gallup PDF', [
+                logger()->error('Error processing Gallup file', [
                     'message' => $e->getMessage(),
                     'trace' => $e->getTraceAsString()
                 ]);
@@ -2437,46 +2437,72 @@ class CandidateForm extends Component
     }
 
     /**
-     * Проверяет, является ли загруженный файл корректным Gallup PDF
+     * Проверяет, является ли загруженный файл корректным Gallup файлом (PDF или изображение)
      */
-    private function isGallupPdf($file): bool
+    private function isValidGallupFile($file): bool
     {
         try {
             // Получаем временный путь к файлу
             $tempPath = $file->getRealPath();
+            $extension = strtolower($file->getClientOriginalExtension());
 
-            $parser = new \Smalot\PdfParser\Parser();
-            $pdf = $parser->parseFile($tempPath);
-            $text = $pdf->getText();
-            $pages = $pdf->getPages();
+            // Для изображений - просто проверяем, что это валидное изображение
+            if (in_array($extension, ['jpg', 'jpeg', 'png', 'webp'])) {
+                $imageInfo = @getimagesize($tempPath);
+                $isValidImage = $imageInfo !== false;
 
-            logger()->info('Gallup PDF validation', [
-                'page_count' => count($pages),
-                'has_gallup_inc' => str_contains($text, 'Gallup, Inc.'),
-                'has_clifton' => str_contains($text, 'CliftonStrengths') || str_contains($text, 'Clifton'),
-                'text_sample' => substr($text, 0, 500)
-            ]);
+                logger()->info('Gallup image validation', [
+                    'extension' => $extension,
+                    'is_valid_image' => $isValidImage,
+                    'width' => $imageInfo[0] ?? 0,
+                    'height' => $imageInfo[1] ?? 0
+                ]);
 
-            // Смягченные условия проверки Gallup-отчета
-            $hasMinimumPages = count($pages) >= 10; // Минимум 10 страниц
-            $containsGallupKeywords = str_contains($text, 'Gallup') ||
-                                    str_contains($text, 'CliftonStrengths') ||
-                                    str_contains($text, 'StrengthsFinder') ||
-                                    str_contains($text, 'Clifton');
+                // Изображения принимаем без глубокой проверки - GPT-4o проанализирует
+                return $isValidImage;
+            }
 
-            // Если это PDF и содержит ключевые слова Gallup - считаем валидным
-            $isValid = $hasMinimumPages && $containsGallupKeywords;
+            // Для PDF - проверяем ключевые слова Gallup
+            if ($extension === 'pdf') {
+                $parser = new \Smalot\PdfParser\Parser();
+                $pdf = $parser->parseFile($tempPath);
+                $text = $pdf->getText();
+                $pages = $pdf->getPages();
 
-            logger()->info('Gallup PDF validation result', [
-                'is_valid' => $isValid,
-                'minimum_pages' => $hasMinimumPages,
-                'has_keywords' => $containsGallupKeywords
-            ]);
+                logger()->info('Gallup PDF validation', [
+                    'page_count' => count($pages),
+                    'has_gallup_inc' => str_contains($text, 'Gallup, Inc.'),
+                    'has_clifton' => str_contains($text, 'CliftonStrengths') || str_contains($text, 'Clifton'),
+                    'text_sample' => substr($text, 0, 500)
+                ]);
 
-            return $isValid;
+                // Для PDF проверяем ключевые слова (поддержка русских и английских)
+                $containsGallupKeywords = str_contains($text, 'Gallup') ||
+                                        str_contains($text, 'CliftonStrengths') ||
+                                        str_contains($text, 'StrengthsFinder') ||
+                                        str_contains($text, 'Clifton') ||
+                                        str_contains($text, 'Клифтон') ||
+                                        str_contains($text, 'талант');
+
+                // Смягчённые условия: минимум 1 страница и ключевые слова ИЛИ 10+ страниц
+                $hasMinimumPages = count($pages) >= 1;
+                $hasManyPages = count($pages) >= 10;
+                $isValid = ($hasMinimumPages && $containsGallupKeywords) || $hasManyPages;
+
+                logger()->info('Gallup PDF validation result', [
+                    'is_valid' => $isValid,
+                    'minimum_pages' => $hasMinimumPages,
+                    'has_keywords' => $containsGallupKeywords
+                ]);
+
+                return $isValid;
+            }
+
+            // Неподдерживаемый формат
+            return false;
         } catch (\Exception $e) {
-            logger()->error('Error checking Gallup PDF: ' . $e->getMessage());
-            // В случае ошибки парсинга, разрешаем загрузку (возможно это корректный PDF)
+            logger()->error('Error checking Gallup file: ' . $e->getMessage());
+            // В случае ошибки, разрешаем загрузку (GPT-4o проанализирует)
             return true;
         }
     }
