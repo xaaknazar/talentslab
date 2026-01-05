@@ -540,7 +540,7 @@ if (! function_exists('clean_git_conflicts')) {
                                                 @foreach(array_filter($experience['main_tasks']) as $task)
                                                     <li style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #374151; font-size: 14px;">
                                                         <span style="color: #9ca3af; margin-right: 8px; flex-shrink: 0;">•</span>
-                                                        <span style="word-wrap: break-word;">{{ $task }}</span>
+                                                        <span style="word-wrap: break-word;">{{ mb_ucfirst($task) }}</span>
                                                     </li>
                                                 @endforeach
                                             </ul>

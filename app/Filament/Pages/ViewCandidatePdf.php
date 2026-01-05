@@ -43,18 +43,21 @@ class ViewCandidatePdf extends Page implements HasForms
 
     private function generateOriginalUrl(string $type): void
     {
+        // Добавляем timestamp для предотвращения кэширования браузером
+        $cacheBuster = '?t=' . time();
+
         if ($type == 'anketa') {
             $gallupController = app(\App\Http\Controllers\GallupController::class);
             $pdfPath = $gallupController->generateAnketaPdfOnDemand($this->candidate);
-            $this->url = Storage::disk('public')->url($pdfPath);
+            $this->url = Storage::disk('public')->url($pdfPath) . $cacheBuster;
         } elseif ($type == 'anketa-reduced') {
             $gallupController = app(\App\Http\Controllers\GallupController::class);
             $pdfPath = $gallupController->generateAnketaPdfOnDemand($this->candidate, 'reduced');
-            $this->url = Storage::disk('public')->url($pdfPath);
+            $this->url = Storage::disk('public')->url($pdfPath) . $cacheBuster;
         } else {
             $report = $this->candidate->gallupReportByType($type);
             abort_if(!$report || !Storage::disk('public')->exists($report->pdf_file), 404);
-            $this->url = Storage::url($report->pdf_file);
+            $this->url = Storage::url($report->pdf_file) . $cacheBuster;
         }
     }
 
@@ -78,7 +81,7 @@ class ViewCandidatePdf extends Page implements HasForms
                 strtolower($this->type) === 'anketa-reduced' ? 'reduced' : 'full'
             );
 
-            $this->translatedUrl = Storage::disk('public')->url($pdfPath);
+            $this->translatedUrl = Storage::disk('public')->url($pdfPath) . '?t=' . time();
 
             Notification::make()
                 ->title('Перевод готов!')
