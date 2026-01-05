@@ -420,18 +420,13 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">{{ __('Language') }}</label>
-                                <div wire:ignore>
-                                    <select id="language-select-{{ $index }}"
-                                            class="language-select-field mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                            data-index="{{ $index }}">
-                                        <option value="">{{ __('Select language') }}</option>
-                                        @foreach($languages ?? [] as $language)
-                                            <option value="{{ $language }}" {{ ($skill['language'] ?? '') == $language ? 'selected' : '' }}>
-                                                {{ $language }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                <select wire:model="language_skills.{{ $index }}.language"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">{{ __('Select language') }}</option>
+                                    @foreach($languages ?? [] as $language)
+                                        <option value="{{ $language }}">{{ $language }}</option>
+                                    @endforeach
+                                </select>
                                 @error("language_skills.{$index}.language") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
 
