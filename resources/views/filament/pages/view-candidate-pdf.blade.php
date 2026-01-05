@@ -29,7 +29,7 @@
                 <label for="language-select" class="text-sm text-gray-500 dark:text-gray-400">Перевести на:</label>
                 <select
                     id="language-select"
-                    wire:model="selectedLanguage"
+                    wire:model.live="selectedLanguage"
                     class="rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm shadow-sm focus:border-primary-500 focus:ring-primary-500"
                 >
                     <option value="">Выберите язык</option>
@@ -55,11 +55,12 @@
 
             {{-- Кнопка перевода --}}
             <button
+                type="button"
                 wire:click="translateAndDownload"
                 wire:loading.attr="disabled"
                 wire:loading.class="opacity-50 cursor-wait"
                 wire:target="translateAndDownload"
-                @if(!$this->selectedLanguage) disabled @endif
+                {{ !$this->selectedLanguage ? 'disabled' : '' }}
                 class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
                 <span wire:loading.remove wire:target="translateAndDownload">
