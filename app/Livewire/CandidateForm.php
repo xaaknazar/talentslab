@@ -2175,13 +2175,21 @@ class CandidateForm extends Component
                 'ip_address' => request()->ip()
             ]);
 
-            // Запускаем обработку Gallup файла в фоновом режиме
+            // Запускаем обработку Gallup файла синхронно (сразу обрабатывается)
             if ($this->candidate->gallup_pdf) {
-                ProcessGallupFile::dispatch($this->candidate);
-                logger()->info('Gallup file processing job dispatched', [
-                    'candidate_id' => $this->candidate->id,
-                    'gallup_pdf' => $this->candidate->gallup_pdf
-                ]);
+                try {
+                    ProcessGallupFile::dispatchSync($this->candidate);
+                    $this->candidate->refresh(); // Обновляем данные после обработки
+                    logger()->info('Gallup file processed successfully', [
+                        'candidate_id' => $this->candidate->id,
+                        'step' => $this->candidate->step
+                    ]);
+                } catch (\Exception $e) {
+                    logger()->error('Gallup file processing failed', [
+                        'candidate_id' => $this->candidate->id,
+                        'error' => $e->getMessage()
+                    ]);
+                }
             }
 
             session()->flash('message', 'Анкета успешно сохранена!');
