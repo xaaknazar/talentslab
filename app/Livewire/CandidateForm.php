@@ -1186,6 +1186,7 @@ class CandidateForm extends Component
     /**
      * Хук для отслеживания изменений в опыте работы
      * Автоматически обновляет поле years при изменении дат
+     * и капитализирует первую букву в полях company, city, position
      */
     public function updatedWorkExperience($value, $key)
     {
@@ -1194,6 +1195,63 @@ class CandidateForm extends Component
             $index = (int)$matches[1];
             $this->updateWorkExperienceYears($index);
         }
+
+        // Автокапитализация для company, city, position
+        if (preg_match('/^(\d+)\.(company|city|position)$/', $key, $matches)) {
+            $index = (int)$matches[1];
+            $field = $matches[2];
+            if (isset($this->work_experience[$index][$field]) && is_string($this->work_experience[$index][$field])) {
+                $this->work_experience[$index][$field] = $this->mbUcfirst($this->work_experience[$index][$field]);
+            }
+        }
+    }
+
+    /**
+     * Автокапитализация названия школы
+     */
+    public function updatedSchoolName($value)
+    {
+        if (is_string($value) && !empty($value)) {
+            $this->school_name = $this->mbUcfirst($value);
+        }
+    }
+
+    /**
+     * Автокапитализация города школы
+     */
+    public function updatedSchoolCity($value)
+    {
+        if (is_string($value) && !empty($value)) {
+            $this->school_city = $this->mbUcfirst($value);
+        }
+    }
+
+    /**
+     * Автокапитализация полей университета (name, speciality, city)
+     */
+    public function updatedUniversities($value, $key)
+    {
+        if (preg_match('/^(\d+)\.(name|speciality|city)$/', $key, $matches)) {
+            $index = (int)$matches[1];
+            $field = $matches[2];
+            if (isset($this->universities[$index][$field]) && is_string($this->universities[$index][$field])) {
+                $this->universities[$index][$field] = $this->mbUcfirst($this->universities[$index][$field]);
+            }
+        }
+    }
+
+    /**
+     * Капитализация первой буквы строки с поддержкой Unicode
+     */
+    private function mbUcfirst(string $string): string
+    {
+        $string = trim($string);
+        if ($string === '') {
+            return '';
+        }
+        $firstChar = mb_substr($string, 0, 1, 'UTF-8');
+        $rest = mb_substr($string, 1, null, 'UTF-8');
+        return mb_strtoupper($firstChar, 'UTF-8') . $rest;
     }
 
     /**

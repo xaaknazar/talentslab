@@ -468,10 +468,10 @@ if (! function_exists('clean_git_conflicts')) {
                                     @foreach($candidate->universities as $index => $university)
                                         @php
                                             $parts = [];
-                                            $parts[] = $university['name'] ?? 'Не указано';
-                                            if (!empty($university['city'])) $parts[] = $university['city'];
+                                            $parts[] = mb_ucfirst($university['name'] ?? 'Не указано');
+                                            if (!empty($university['city'])) $parts[] = mb_ucfirst($university['city']);
                                             $parts[] = $university['graduation_year'] ?? 'Не указано';
-                                            $parts[] = $university['speciality'] ?? 'Не указано';
+                                            $parts[] = mb_ucfirst($university['speciality'] ?? 'Не указано');
                                             if (!empty($university['degree'])) $parts[] = $university['degree'];
                                             if (!empty($university['gpa'])) $parts[] = $university['gpa'];
                                         @endphp
@@ -514,11 +514,11 @@ if (! function_exists('clean_git_conflicts')) {
                                 <div style="padding: 8px 0;">
                                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
                                         <div>
-                                            <span class="text-base font-medium" style="color: #000000;">{{ $experience['position'] ?? 'Не указано' }}</span>
+                                            <span class="text-base font-medium" style="color: #000000;">{{ mb_ucfirst($experience['position'] ?? 'Не указано') }}</span>
                                             <span style="color: #000000; margin: 0 8px;">—</span>
-                                            <span class="text-base font-medium" style="color: #000000;">{{ $experience['company'] ?? 'Не указано' }}</span>
+                                            <span class="text-base font-medium" style="color: #000000;">{{ mb_ucfirst($experience['company'] ?? 'Не указано') }}</span>
                                             @if(!empty($experience['city']))
-                                                <span class="text-base font-medium" style="color: #000000;">, {{ $experience['city'] }}</span>
+                                                <span class="text-base font-medium" style="color: #000000;">, {{ mb_ucfirst($experience['city']) }}</span>
                                             @endif
                                         </div>
                                         <span class="text-base font-medium" style="color: #000000; white-space: nowrap; margin-left: 16px;">{{ $experience['years'] ?? '' }}</span>
@@ -572,11 +572,11 @@ if (! function_exists('clean_git_conflicts')) {
                                             @if($years !== '')
                                                 {{ implode(' - ', array_map('mb_ucfirst', explode(' - ', $years))) }} -
                                             @endif
-                                            {{ $experience['company'] ?? 'Не указано' }}
+                                            {{ mb_ucfirst($experience['company'] ?? 'Не указано') }}
                                             @if(!empty($experience['city']))
-                                                ({{ $experience['city'] }})
+                                                ({{ mb_ucfirst($experience['city']) }})
                                             @endif
-                                             - {{ $experience['position'] ?? 'Не указано' }}
+                                             - {{ mb_ucfirst($experience['position'] ?? 'Не указано') }}
                                         </div>
                                     @endforeach
                                 </div>

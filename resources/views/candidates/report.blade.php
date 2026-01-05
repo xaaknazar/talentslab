@@ -305,9 +305,9 @@ if (! function_exists('mb_ucfirst')) {
                             <div class="flex text-base">
                                 <span class="w-8 text-gray-600">{{ $index + 1 }}.</span>
                                 <span class="flex-1">
-                                    <span class="font-medium">{{ $university['graduation_year'] ?? 'Не указано' }}</span> - 
-                                    <span class="font-medium">{{ $university['name'] ?? 'Не указано' }}</span> - 
-                                    <span>{{ $university['speciality'] ?? 'Не указано' }}</span>
+                                    <span class="font-medium">{{ $university['graduation_year'] ?? 'Не указано' }}</span> -
+                                    <span class="font-medium">{{ mb_ucfirst($university['name'] ?? 'Не указано') }}</span> -
+                                    <span>{{ mb_ucfirst($university['speciality'] ?? 'Не указано') }}</span>
                                     @if(!empty($university['gpa']))
                                         - <span class="text-gray-600">GPA: {{ $university['gpa'] }}</span>
                                     @endif
@@ -344,11 +344,11 @@ if (! function_exists('mb_ucfirst')) {
                                 <div class="py-2">
                                     <div class="flex justify-between items-start mb-1">
                                         <div>
-                                            <span class="text-base font-medium text-black">{{ $experience['position'] ?? 'Не указано' }}</span>
+                                            <span class="text-base font-medium text-black">{{ mb_ucfirst($experience['position'] ?? 'Не указано') }}</span>
                                             <span class="text-black mx-2">—</span>
-                                            <span class="text-base font-medium text-black">{{ $experience['company'] ?? 'Не указано' }}</span>
+                                            <span class="text-base font-medium text-black">{{ mb_ucfirst($experience['company'] ?? 'Не указано') }}</span>
                                             @if(!empty($experience['city']))
-                                                <span class="text-base font-medium text-black">, {{ $experience['city'] }}</span>
+                                                <span class="text-base font-medium text-black">, {{ mb_ucfirst($experience['city']) }}</span>
                                             @endif
                                         </div>
                                         <span class="text-base font-medium text-black whitespace-nowrap ml-4">{{ $experience['years'] ?? '' }}</span>
@@ -400,10 +400,10 @@ if (! function_exists('mb_ucfirst')) {
                                     <span class="w-8 text-gray-600">{{ $index + 1 }}.</span>
                                     <span class="flex-1">
                                         <span class="font-medium">{{ $experience['years'] ?? 'Не указано' }}</span> -
-                                        <span class="font-medium">{{ $experience['company'] ?? 'Не указано' }}</span> -
-                                        <span>{{ $experience['position'] ?? 'Не указано' }}</span>
+                                        <span class="font-medium">{{ mb_ucfirst($experience['company'] ?? 'Не указано') }}</span> -
+                                        <span>{{ mb_ucfirst($experience['position'] ?? 'Не указано') }}</span>
                                         @if(!empty($experience['city']))
-                                            - <span class="text-gray-600">{{ $experience['city'] }}</span>
+                                            - <span class="text-gray-600">{{ mb_ucfirst($experience['city']) }}</span>
                                         @endif
                                     </span>
                                 </div>

@@ -43,6 +43,19 @@
         .text-gray-800 { color: #1f2937; }
         .text-gray-700 { color: #374151; }
     </style>
+    @php
+        if (! function_exists('mb_ucfirst')) {
+            function mb_ucfirst(mixed $value): string
+            {
+                if (!is_string($value) || $value === '') {
+                    return is_string($value) ? $value : '';
+                }
+                $firstChar = mb_substr($value, 0, 1, 'UTF-8');
+                $rest = mb_substr($value, 1, null, 'UTF-8');
+                return mb_strtoupper($firstChar, 'UTF-8') . $rest;
+            }
+        }
+    @endphp
 </head>
 <body class="bg-white font-sans">
     <div class="max-w-full">
@@ -218,9 +231,9 @@
                             <div class="flex text-sm">
                                 <span class="w-6 text-gray-600">{{ $index + 1 }}.</span>
                                 <span class="flex-1">
-                                    <span class="font-medium">{{ $university['graduation_year'] ?? 'Не указано' }}</span> - 
-                                    <span class="font-medium">{{ $university['name'] ?? 'Не указано' }}</span> - 
-                                    <span>{{ $university['speciality'] ?? 'Не указано' }}</span>
+                                    <span class="font-medium">{{ $university['graduation_year'] ?? 'Не указано' }}</span> -
+                                    <span class="font-medium">{{ mb_ucfirst($university['name'] ?? 'Не указано') }}</span> -
+                                    <span>{{ mb_ucfirst($university['speciality'] ?? 'Не указано') }}</span>
                                     @if(!empty($university['gpa']))
                                         - <span class="text-gray-600">GPA: {{ $university['gpa'] }}</span>
                                     @endif
@@ -256,11 +269,11 @@
                                 <div class="py-2">
                                     <div class="flex justify-between items-start mb-1">
                                         <div class="text-xs">
-                                            <span class="font-medium text-black">{{ $experience['position'] ?? 'Не указано' }}</span>
+                                            <span class="font-medium text-black">{{ mb_ucfirst($experience['position'] ?? 'Не указано') }}</span>
                                             <span class="text-black mx-1">—</span>
-                                            <span class="font-medium text-black">{{ $experience['company'] ?? 'Не указано' }}</span>
+                                            <span class="font-medium text-black">{{ mb_ucfirst($experience['company'] ?? 'Не указано') }}</span>
                                             @if(!empty($experience['city']))
-                                                <span class="font-medium text-black">, {{ $experience['city'] }}</span>
+                                                <span class="font-medium text-black">, {{ mb_ucfirst($experience['city']) }}</span>
                                             @endif
                                         </div>
                                         <span class="text-xs font-medium text-black whitespace-nowrap ml-2">{{ $experience['years'] ?? '' }}</span>
@@ -309,10 +322,10 @@
                                     <span class="w-6 text-gray-600">{{ $index + 1 }}.</span>
                                     <span class="flex-1">
                                         <span class="font-medium">{{ $experience['years'] ?? 'Не указано' }}</span> -
-                                        <span class="font-medium">{{ $experience['company'] ?? 'Не указано' }}</span> -
-                                        <span>{{ $experience['position'] ?? 'Не указано' }}</span>
+                                        <span class="font-medium">{{ mb_ucfirst($experience['company'] ?? 'Не указано') }}</span> -
+                                        <span>{{ mb_ucfirst($experience['position'] ?? 'Не указано') }}</span>
                                         @if(!empty($experience['city']))
-                                            - <span class="text-gray-600">{{ $experience['city'] }}</span>
+                                            - <span class="text-gray-600">{{ mb_ucfirst($experience['city']) }}</span>
                                         @endif
                                     </span>
                                 </div>
