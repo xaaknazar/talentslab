@@ -541,7 +541,6 @@ if (! function_exists('clean_git_conflicts')) {
                                     {{-- Правая колонка: основные обязанности --}}
                                     @if(!empty($experience['main_tasks']) && is_array($experience['main_tasks']) && count(array_filter($experience['main_tasks'])) > 0)
                                         <div style="flex: 1; min-width: 0;">
-                                            <div style="color: #9ca3af; font-size: 13px; margin-bottom: 6px;">{{ $labels['main_responsibilities'] }}</div>
                                             <ul style="margin: 0; padding: 0; list-style: none;">
                                                 @foreach(array_filter($experience['main_tasks']) as $task)
                                                     <li style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #374151; font-size: 14px;">
