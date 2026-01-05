@@ -2,247 +2,287 @@
 <div class="step">
     <h2 class="text-2xl font-bold mb-6">{{ __('Additional Information') }}</h2>
 
-    <div class="space-y-6">
+    <div class="grid grid-cols-1 gap-6">
+        <!-- Основная информация -->
+        <div>
+            <label class="block text-base font-medium text-gray-700 mb-3">{{ __('Basic Information') }}</label>
+            <div class="p-4 bg-gray-50 rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Водительские права -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">
+                            {{ __('Driving License') }} <span class="text-red-500">*</span>
+                        </label>
+                        <select wire:model="has_driving_license" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <option value="">{{ __('Select answer') }}</option>
+                            <option value="1">{{ __('Available') }}</option>
+                            <option value="0">{{ __('Not available') }}</option>
+                        </select>
+                        @error('has_driving_license') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    </div>
 
-        <!-- Первые три поля в одной строке -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <!-- Водительские права -->
-            <div>
-                <label class="block text-base font-medium text-gray-700">
-                    {{ __('Driving License') }} <span class="text-red-500">*</span>
-                </label>
-                <select wire:model="has_driving_license" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    <option value="">{{ __('Select answer') }}</option>
-                    <option value="1">{{ __('Available') }}</option>
-                    <option value="0">{{ __('Not available') }}</option>
-                </select>
-                @error('has_driving_license') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-            </div>
+                    <!-- Религия -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">
+                            {{ __('Religion') }} <span class="text-red-500">*</span>
+                        </label>
+                        <select wire:model="religion" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <option value="">{{ __('Select religion') }}</option>
+                            @foreach($religions as $key => $value)
+                                <option value="{{ $value }}">{{ __($value) }}</option>
+                            @endforeach
+                        </select>
+                        @error('religion') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    </div>
 
-            <!-- Религия -->
-            <div>
-                <label class="block text-base font-medium text-gray-700">
-                    {{ __('Religion') }} <span class="text-red-500">*</span>
-                </label>
-                <select wire:model="religion" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    <option value="">{{ __('Select religion') }}</option>
-                    @foreach($religions as $key => $value)
-                        <option value="{{ $value }}">{{ __($value) }}</option>
-                    @endforeach
-                </select>
-                @error('religion') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-            </div>
-
-            <div>
-                <label class="block text-base font-medium text-gray-700">{{ __('Practicing') }}</label>
-                <select wire:model="is_practicing" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    <option value="">{{ __('Select answer') }}</option>
-                    <option value="1">{{ __('Yes') }}</option>
-                    <option value="0">{{ __('No') }}</option>
-                </select>
-                @error('is_practicing') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    <!-- Практикующий -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">{{ __('Practicing') }}</label>
+                        <select wire:model="is_practicing" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <option value="">{{ __('Select answer') }}</option>
+                            <option value="1">{{ __('Yes') }}</option>
+                            <option value="0">{{ __('No') }}</option>
+                        </select>
+                        @error('is_practicing') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Новая структура семьи -->
-        <div class="space-y-6">
-            <!-- Родители -->
-            <div>
-                <label class="block text-base font-medium text-gray-700 mb-3">{{ __('Parents') }}</label>
-                <div class="space-y-4">
-                    @foreach($parents as $index => $parent)
-                        <div wire:key="parent-{{ $index }}" class="p-4 bg-gray-50 rounded-lg">
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">
-                                        {{ __('Relationship') }} <span class="text-red-500">*</span>
-                                    </label>
-                                    <select wire:model.live="parents.{{ $index }}.relation"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                        <option value="">{{ __('Select') }}</option>
-                                        <option value="Отец">{{ __('Father') }}</option>
-                                        <option value="Мать">{{ __('Mother') }}</option>
-                                    </select>
-                                    @error("parents.{$index}.relation") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                                </div>
-
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">
-                                        {{ __('Year of Birth') }} <span class="text-red-500">*</span>
-                                    </label>
-                                    <select wire:model.live="parents.{{ $index }}.birth_year"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                        <option value="">{{ __('Year of Birth') }}</option>
-                                        @foreach($familyYears as $year)
-                                            <option value="{{ $year }}">{{ $year }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error("parents.{$index}.birth_year") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                                </div>
-
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">
-                                        {{ __("Parent's Profession") }} <span class="text-red-500">*</span>
-                                    </label>
-                                    <input type="text"
-                                           wire:model.live.debounce.500ms="parents.{{ $index }}.profession"
-                                           placeholder="{{ __('Profession') }}"
-                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                    @error("parents.{$index}.profession") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                                </div>
+        <!-- Родители -->
+        <div>
+            <label class="block text-base font-medium text-gray-700 mb-3">{{ __('Parents') }}</label>
+            <div class="space-y-4">
+                @foreach($parents as $index => $parent)
+                    <div wire:key="parent-{{ $index }}" class="p-4 bg-gray-50 rounded-lg">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">
+                                    {{ __('Relationship') }} <span class="text-red-500">*</span>
+                                </label>
+                                <select wire:model.live="parents.{{ $index }}.relation"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">{{ __('Select') }}</option>
+                                    <option value="Отец">{{ __('Father') }}</option>
+                                    <option value="Мать">{{ __('Mother') }}</option>
+                                </select>
+                                @error("parents.{$index}.relation") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
-                            <div class="mt-2">
-                                <button type="button" onclick="@this.call('removeParent', {{ $index }})" class="text-red-600 hover:text-red-800">
-                                    {{ __('Delete') }}
-                                </button>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">
+                                    {{ __('Year of Birth') }} <span class="text-red-500">*</span>
+                                </label>
+                                <select wire:model.live="parents.{{ $index }}.birth_year"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">{{ __('Year of Birth') }}</option>
+                                    @foreach($familyYears as $year)
+                                        <option value="{{ $year }}">{{ $year }}</option>
+                                    @endforeach
+                                </select>
+                                @error("parents.{$index}.birth_year") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">
+                                    {{ __("Parent's Profession") }} <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text"
+                                       wire:model.live.debounce.500ms="parents.{{ $index }}.profession"
+                                       placeholder="{{ __('Profession') }}"
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                @error("parents.{$index}.profession") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
                         </div>
-                    @endforeach
-
-                    @if(count($parents) < 2)
-                        <button type="button"
-                                onclick="@this.call('addParent')"
-                                class="mt-4 inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-medium text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                            </svg>
-                            {{ __('Add') }}
-                        </button>
-                    @endif
-                </div>
-            </div>
-
-            <!-- Братья и сестры -->
-            <div>
-                <label class="block text-base font-medium text-gray-700 mb-3">{{ __('Siblings') }}</label>
-                <div class="space-y-4">
-                    @foreach($siblings as $index => $sibling)
-                        <div wire:key="sibling-{{ $index }}" class="p-4 bg-gray-50 rounded-lg">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">
-                                        {{ __('Relationship') }} <span class="text-red-500">*</span>
-                                    </label>
-                                    <select wire:model.live="siblings.{{ $index }}.relation"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                        <option value="">{{ __('Select') }}</option>
-                                        <option value="Брат">{{ __('Brother') }}</option>
-                                        <option value="Сестра">{{ __('Sister') }}</option>
-                                    </select>
-                                    @error("siblings.{$index}.relation") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                                </div>
-
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">
-                                        {{ __('Year of Birth') }} <span class="text-red-500">*</span>
-                                    </label>
-                                    <select wire:model.live="siblings.{{ $index }}.birth_year"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                        <option value="">{{ __('Year of Birth') }}</option>
-                                        @foreach($familyYears as $year)
-                                            <option value="{{ $year }}">{{ $year }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error("siblings.{$index}.birth_year") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                                </div>
-                            </div>
-                            <div class="mt-2">
-                                <button type="button" onclick="@this.call('removeSibling', {{ $index }})" class="text-red-600 hover:text-red-800">
-                                    {{ __('Delete') }}
-                                </button>
-                            </div>
+                        <div class="mt-3">
+                            <button type="button" onclick="@this.call('removeParent', {{ $index }})" class="text-red-600 hover:text-red-800 text-sm">
+                                {{ __('Delete') }}
+                            </button>
                         </div>
-                    @endforeach
+                    </div>
+                @endforeach
 
+                @if(count($parents) < 2)
                     <button type="button"
-                            onclick="@this.call('addSibling')"
-                            class="mt-4 inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-medium text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                            onclick="@this.call('addParent')"
+                            class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-medium text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
                         {{ __('Add') }}
                     </button>
-                </div>
+                @endif
             </div>
+        </div>
 
-            <!-- Дети -->
-            <div>
-                <label class="block text-base font-medium text-gray-700 mb-3">{{ __('Children') }}</label>
-                <div class="space-y-4">
-                    @foreach($children as $index => $child)
-                        <div wire:key="child-{{ $index }}" class="p-4 bg-gray-50 rounded-lg">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">
-                                        {{ __('Gender') }} <span class="text-red-500">*</span>
-                                    </label>
-                                    <select wire:model.live="children.{{ $index }}.gender"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                        <option value="">{{ __('Select') }}</option>
-                                        <option value="М">{{ __('Son') }}</option>
-                                        <option value="Ж">{{ __('Daughter') }}</option>
-                                    </select>
-                                    @error("children.{$index}.gender") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                                </div>
-
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">
-                                        {{ __('Year of Birth') }} <span class="text-red-500">*</span>
-                                    </label>
-                                    <select wire:model.live="children.{{ $index }}.birth_year"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                        <option value="">{{ __('Year of Birth') }}</option>
-                                        @foreach($familyYears as $year)
-                                            <option value="{{ $year }}">{{ $year }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error("children.{$index}.birth_year") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                                </div>
+        <!-- Братья и сестры -->
+        <div>
+            <label class="block text-base font-medium text-gray-700 mb-3">{{ __('Siblings') }}</label>
+            <div class="space-y-4">
+                @foreach($siblings as $index => $sibling)
+                    <div wire:key="sibling-{{ $index }}" class="p-4 bg-gray-50 rounded-lg">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">
+                                    {{ __('Relationship') }} <span class="text-red-500">*</span>
+                                </label>
+                                <select wire:model.live="siblings.{{ $index }}.relation"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">{{ __('Select') }}</option>
+                                    <option value="Брат">{{ __('Brother') }}</option>
+                                    <option value="Сестра">{{ __('Sister') }}</option>
+                                </select>
+                                @error("siblings.{$index}.relation") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
-                            <div class="mt-2">
-                                <button type="button" onclick="@this.call('removeChild', {{ $index }})" class="text-red-600 hover:text-red-800">
-                                    {{ __('Delete') }}
-                                </button>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">
+                                    {{ __('Year of Birth') }} <span class="text-red-500">*</span>
+                                </label>
+                                <select wire:model.live="siblings.{{ $index }}.birth_year"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">{{ __('Year of Birth') }}</option>
+                                    @foreach($familyYears as $year)
+                                        <option value="{{ $year }}">{{ $year }}</option>
+                                    @endforeach
+                                </select>
+                                @error("siblings.{$index}.birth_year") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
                         </div>
-                    @endforeach
+                        <div class="mt-3">
+                            <button type="button" onclick="@this.call('removeSibling', {{ $index }})" class="text-red-600 hover:text-red-800 text-sm">
+                                {{ __('Delete') }}
+                            </button>
+                        </div>
+                    </div>
+                @endforeach
 
-                    <button type="button"
-                            onclick="@this.call('addChild')"
-                            class="mt-4 inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-medium text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        {{ __('Add') }}
-                    </button>
+                <button type="button"
+                        onclick="@this.call('addSibling')"
+                        class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-medium text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    {{ __('Add') }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Дети -->
+        <div>
+            <label class="block text-base font-medium text-gray-700 mb-3">{{ __('Children') }}</label>
+            <div class="space-y-4">
+                @foreach($children as $index => $child)
+                    <div wire:key="child-{{ $index }}" class="p-4 bg-gray-50 rounded-lg">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">
+                                    {{ __('Gender') }} <span class="text-red-500">*</span>
+                                </label>
+                                <select wire:model.live="children.{{ $index }}.gender"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">{{ __('Select') }}</option>
+                                    <option value="М">{{ __('Son') }}</option>
+                                    <option value="Ж">{{ __('Daughter') }}</option>
+                                </select>
+                                @error("children.{$index}.gender") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">
+                                    {{ __('Year of Birth') }} <span class="text-red-500">*</span>
+                                </label>
+                                <select wire:model.live="children.{{ $index }}.birth_year"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">{{ __('Year of Birth') }}</option>
+                                    @foreach($familyYears as $year)
+                                        <option value="{{ $year }}">{{ $year }}</option>
+                                    @endforeach
+                                </select>
+                                @error("children.{$index}.birth_year") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button type="button" onclick="@this.call('removeChild', {{ $index }})" class="text-red-600 hover:text-red-800 text-sm">
+                                {{ __('Delete') }}
+                            </button>
+                        </div>
+                    </div>
+                @endforeach
+
+                <button type="button"
+                        onclick="@this.call('addChild')"
+                        class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-medium text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    {{ __('Add') }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Интересы и увлечения -->
+        <div>
+            <label class="block text-base font-medium text-gray-700 mb-3">{{ __('Interests & Hobbies') }}</label>
+            <div class="p-4 bg-gray-50 rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">
+                            {{ __('Hobbies') }} <span class="text-red-500">*</span>
+                        </label>
+                        <textarea wire:model="hobbies" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="{{ __('Enter your hobbies') }}"></textarea>
+                        @error('hobbies') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">
+                            {{ __('Interests') }} <span class="text-red-500">*</span>
+                        </label>
+                        <textarea wire:model="interests" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="{{ __('Enter your interests') }}"></textarea>
+                        @error('interests') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">
+                            {{ __('Favorite Sports') }} <span class="text-red-500">*</span>
+                        </label>
+                        <textarea wire:model="favorite_sports" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="{{ __('Enter your favorite sports') }}"></textarea>
+                        @error('favorite_sports') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">
+                            {{ __('Books per Year') }}
+                        </label>
+                        <div class="flex items-center gap-3 mt-1">
+                            <input type="number"
+                                   wire:model="books_per_year_min"
+                                   min="0"
+                                   max="100"
+                                   placeholder="{{ __('from') }}"
+                                   class="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <span class="text-gray-400">—</span>
+                            <input type="number"
+                                   wire:model="books_per_year_max"
+                                   min="0"
+                                   max="100"
+                                   placeholder="{{ __('To') }}"
+                                   class="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                        @error('books_per_year_min') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        @error('books_per_year_max') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Хобби и интересы -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div>
-                <label class="block text-base font-medium text-gray-700">{{ __('Hobbies') }} <span class="text-red-500">*</span></label>
-                <textarea wire:model="hobbies" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
-                @error('hobbies') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-            </div>
-
-            <div>
-                <label class="block text-base font-medium text-gray-700">{{ __('Interests') }} <span class="text-red-500">*</span></label>
-                <textarea wire:model="interests" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
-                @error('interests') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-            </div>
-        </div>
-
-        <!-- Посещенные страны и Любимые виды спорта в одном ряду -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Посещенные страны -->
-            <div>
-                <label class="block text-base font-medium text-gray-700 mb-2">{{ __('Visited Countries') }} <span class="text-red-500">*</span></label>
-
+        <!-- Посещённые страны -->
+        <div>
+            <label class="block text-base font-medium text-gray-700 mb-3">{{ __('Visited Countries') }} <span class="text-red-500">*</span></label>
+            <div class="p-4 bg-gray-50 rounded-lg">
                 <!-- Выбранные страны (badges) -->
                 @if(count($visited_countries) > 0)
-                    <div class="flex flex-wrap gap-2 mb-3" id="selected-countries-badges">
+                    <div class="flex flex-wrap gap-2 mb-4" id="selected-countries-badges">
                         @foreach($visited_countries as $country)
                             <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-medium bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-sm hover:shadow-md transition-shadow">
                                 @php
@@ -279,75 +319,51 @@
                         @endforeach
                     </select>
                 </div>
-                @error('visited_countries') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
-            </div>
-
-            <!-- Спорт -->
-            <div>
-                <label class="block text-base font-medium text-gray-700">{{ __('Favorite Sports') }} <span class="text-red-500">*</span></label>
-                <textarea wire:model="favorite_sports" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
-                @error('favorite_sports') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                @error('visited_countries') <span class="text-red-500 text-sm mt-2 block">{{ $message }}</span> @enderror
             </div>
         </div>
 
-        <!-- Время и чтение -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Книг в год -->
-            <div>
-                <label class="block text-base font-medium text-gray-700">{{ __('Books per Year') }}</label>
-                <div class="flex items-center gap-3 mt-1">
-                    <input type="number"
-                           wire:model="books_per_year_min"
-                           min="0"
-                           max="100"
-                           placeholder="{{ __('from') }}"
-                           class="w-20 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                    <span class="text-gray-400">—</span>
-                    <input type="number"
-                           wire:model="books_per_year_max"
-                           min="0"
-                           max="100"
-                           placeholder="{{ __('To') }}"
-                           class="w-20 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+        <!-- Медиа потребление -->
+        <div>
+            <label class="block text-base font-medium text-gray-700 mb-3">{{ __('Media Consumption') }}</label>
+            <div class="p-4 bg-gray-50 rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Развлекательные видео -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">{{ __('Entertainment Videos (hours per week)') }}</label>
+                        <input type="number"
+                               wire:model="entertainment_hours_weekly"
+                               min="0"
+                               max="168"
+                               placeholder="0"
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        @error('entertainment_hours_weekly') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    </div>
+
+                    <!-- Образовательные видео -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">{{ __('Educational Videos (hours per week)') }}</label>
+                        <input type="number"
+                               wire:model="educational_hours_weekly"
+                               min="0"
+                               max="168"
+                               placeholder="0"
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        @error('educational_hours_weekly') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    </div>
+
+                    <!-- Социальные сети -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">{{ __('Social Media (hours per week)') }}</label>
+                        <input type="number"
+                               wire:model="social_media_hours_weekly"
+                               min="0"
+                               max="168"
+                               placeholder="0"
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        @error('social_media_hours_weekly') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    </div>
                 </div>
-                @error('books_per_year_min') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                @error('books_per_year_max') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-            </div>
-
-            <!-- Развлекательные видео -->
-            <div>
-                <label class="block text-base font-medium text-gray-700">{{ __('Entertainment Videos (hours per week)') }}</label>
-                <input type="number"
-                       wire:model="entertainment_hours_weekly"
-                       min="0"
-                       max="168"
-                       placeholder="0"
-                       class="mt-1 w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                @error('entertainment_hours_weekly') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-            </div>
-
-            <!-- Образовательные видео -->
-            <div>
-                <label class="block text-base font-medium text-gray-700">{{ __('Educational Videos (hours per week)') }}</label>
-                <input type="number"
-                       wire:model="educational_hours_weekly"
-                       min="0"
-                       max="168"
-                       placeholder="0"
-                       class="mt-1 w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                @error('educational_hours_weekly') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-            </div>
-
-            <!-- Социальные сети -->
-            <div>
-                <label class="block text-base font-medium text-gray-700">{{ __('Social Media (hours per week)') }}</label>
-                <input type="number"
-                       wire:model="social_media_hours_weekly"
-                       min="0"
-                       max="168"
-                       placeholder="0"
-                       class="mt-1 w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                @error('social_media_hours_weekly') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
             </div>
         </div>
     </div>
