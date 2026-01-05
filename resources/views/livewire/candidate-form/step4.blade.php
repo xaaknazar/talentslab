@@ -222,7 +222,7 @@
         <!-- Gallup тест (рекомендуется) -->
         <div>
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg sm:text-xl font-semibold">Gallup CliftonStrengths 34 PDF</h3>
+                <h3 class="text-lg sm:text-xl font-semibold">Gallup CliftonStrengths 34</h3>
                 <span class="px-3 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-full">{{ __('Recommended') }}</span>
             </div>
             <div class="w-full" x-data="fileUpload()">
@@ -247,14 +247,14 @@
                                     <span class="text-blue-600 underline hover:text-blue-800 text-sm">{{ __('choose') }}</span>
                                 </span>
                                 <span x-show="isDragOver" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" class="text-blue-700 font-semibold">
-                                    {{ __('Drop to upload PDF file') }}
+                                    {{ __('Drop to upload file') }}
                                 </span>
                             </span>
                         </span>
                         <input type="file"
                                wire:model="gallup_pdf"
                                class="hidden"
-                               accept=".pdf"
+                               accept=".pdf,.jpg,.jpeg,.png,.webp"
                                @change="handleFileChange($event)"
                                x-ref="fileInput">
                     </label>
@@ -270,7 +270,7 @@
                             <div class="ml-3">
                                 <h3 class="text-sm font-medium text-blue-800">{{ __('Recommendation') }}</h3>
                                 <div class="mt-2 text-sm text-blue-700">
-                                    <p>{{ __('We recommend uploading the original Gallup CliftonStrengths34 test result PDF file. Divergents reports (FMD, DPT, DPs) are generated based on this document.') }}</p>
+                                    <p>{{ __('Upload your Gallup CliftonStrengths34 test result - PDF file or screenshot of the talent list. Divergents reports (FMD, DPT, DPs) are generated based on this document.') }}</p>
                                 </div>
                             </div>
                         </div>
