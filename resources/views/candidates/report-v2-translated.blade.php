@@ -542,7 +542,7 @@ if (! function_exists('clean_git_conflicts')) {
                                             {{ $experience['years'] ?? '' }}
                                         </div>
                                         {{-- Должность --}}
-                                        <div style="color: #000000; font-weight: 700; font-size: 17px; margin-bottom: 2px;">
+                                        <div style="color: #000000; font-weight: 600; font-size: 17px; margin-bottom: 2px;">
                                             {{ mb_ucfirst($experience['position'] ?? $labels['not_specified']) }}
                                         </div>
                                         {{-- Компания / Город --}}
