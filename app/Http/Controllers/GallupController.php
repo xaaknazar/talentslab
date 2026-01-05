@@ -740,6 +740,99 @@ class GallupController extends Controller
     }
 
     /**
+     * Генерирует переведённую анкету в PDF
+     */
+    public function generateTranslatedAnketaPdf(Candidate $candidate, string $targetLanguage, string $version = 'full')
+    {
+        $translationService = app(\App\Services\TranslationService::class);
+
+        // Получаем переведённые данные
+        $translatedData = $translationService->translateCandidate($candidate, $targetLanguage);
+
+        // Генерируем HTML с переведёнными данными
+        $html = $this->generateTranslatedReportHtml($candidate, $translatedData, $targetLanguage, $version);
+
+        // Создаём PDF
+        $tempHtmlPdf = storage_path("app/temp_translated_{$candidate->id}_{$targetLanguage}.pdf");
+
+        if (file_exists($tempHtmlPdf)) {
+            unlink($tempHtmlPdf);
+        }
+
+        $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+        $html = $this->cleanHtmlForPdf($html);
+        $html = $this->sanitizeUtf8($html);
+
+        $snappy = new \Knp\Snappy\Pdf('/usr/bin/wkhtmltopdf');
+
+        $s_options = [
+            'encoding' => 'utf-8',
+            'page-size' => 'A4',
+            'margin-top' => '10mm',
+            'margin-bottom' => '10mm',
+            'margin-left' => '2mm',
+            'margin-right' => '2mm',
+            'zoom' => 1.30,
+            'disable-smart-shrinking' => true,
+            'print-media-type' => true,
+            'load-error-handling' => 'ignore',
+            'load-media-error-handling' => 'ignore',
+        ];
+
+        $snappy->generateFromHtml($html, $tempHtmlPdf, $s_options, true);
+
+        // Создаём имя файла
+        $languageNames = ['ru' => 'RU', 'en' => 'EN', 'ar' => 'AR'];
+        $langCode = $languageNames[$targetLanguage] ?? strtoupper($targetLanguage);
+        $genderCode = ($candidate->gender === 'Женский' || $candidate->gender === 'female') ? 'G' : 'B';
+        $birthYear = $candidate->birth_date ? substr(date('Y', strtotime($candidate->birth_date)), -2) : '00';
+        $candidateId = str_pad($candidate->id, 4, '0', STR_PAD_LEFT);
+        $versionText = $version === 'full' ? 'full' : 'reduced';
+
+        $tempFileName = "{$candidate->full_name} - TL{$genderCode}{$birthYear}-{$candidateId}-{$langCode}-{$versionText}.pdf";
+        $tempPath = "temp_anketas/{$tempFileName}";
+
+        $tempFullPath = Storage::disk('public')->path($tempPath);
+        Storage::disk('public')->makeDirectory(dirname($tempPath));
+
+        copy($tempHtmlPdf, $tempFullPath);
+        unlink($tempHtmlPdf);
+
+        // Планируем удаление через 30 минут
+        $this->scheduleTempFileDeletion($tempPath, 30);
+
+        return $tempPath;
+    }
+
+    /**
+     * Генерирует HTML отчёта с переведёнными данными
+     */
+    private function generateTranslatedReportHtml(Candidate $candidate, array $translatedData, string $targetLanguage, string $version): string
+    {
+        // Создаём обёртку с переведёнными данными
+        $translatedCandidate = new \App\Services\TranslatedCandidate($candidate, $translatedData, $targetLanguage);
+
+        // Подготавливаем URL фото
+        $photoUrl = null;
+        if ($candidate->photo && Storage::disk('public')->exists($candidate->photo)) {
+            $photoUrl = Storage::disk('public')->url($candidate->photo);
+        }
+
+        $isFullReport = $version === 'full';
+        $isReducedReport = $version === 'reduced';
+
+        // Рендерим view с переведёнными данными
+        return view('candidates.report-v2-translated', [
+            'candidate' => $translatedCandidate,
+            'originalCandidate' => $candidate,
+            'photoUrl' => $photoUrl,
+            'isFullReport' => $isFullReport,
+            'isReducedReport' => $isReducedReport,
+            'targetLanguage' => $targetLanguage,
+        ])->render();
+    }
+
+    /**
      * Получить историю парсинга для кандидата
      */
     public function getParseHistory(Candidate $candidate)
