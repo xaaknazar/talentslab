@@ -493,7 +493,7 @@ if (! function_exists('clean_git_conflicts')) {
         <div style="padding: 0 12px 12px 12px;">
             <!-- Опыт работы -->
             <div class="mb-8">
-                <h2 class="text-xl font-bold text-gray-800 mb-2">Опыт работы</h2>
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Опыт работы</h2>
                 @if($candidate->work_experience && count($candidate->work_experience) > 0)
                     @php
                         // Проверяем, есть ли у кандидата новые поля (main_tasks или activity_sphere)
@@ -511,11 +511,11 @@ if (! function_exists('clean_git_conflicts')) {
                         {{-- Новый дизайн для анкет с заполненными main_tasks/activity_sphere --}}
                         <div style="display: flex; flex-direction: column;">
                             @foreach($candidate->work_experience as $index => $experience)
-                                <div style="display: flex; gap: 24px; {{ !$loop->last ? 'padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid #e5e7eb;' : '' }}">
+                                <div style="display: flex; gap: 24px; {{ !$loop->first ? 'margin-top: 16px;' : '' }} {{ !$loop->last ? 'padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }}">
                                     {{-- Левая колонка: информация о месте работы --}}
                                     <div style="flex: 1; min-width: 0;">
                                         {{-- Дата --}}
-                                        <div style="color: #1e40af; font-size: 13px; margin-bottom: 4px;">
+                                        <div style="color: #1e3a8a; font-size: 15px; margin-bottom: 4px;">
                                             {{ $experience['years'] ?? '' }}
                                         </div>
                                         {{-- Должность --}}
@@ -538,7 +538,7 @@ if (! function_exists('clean_git_conflicts')) {
                                         <div style="flex: 1; min-width: 0;">
                                             <ul style="margin: 0; padding: 0; list-style: none;">
                                                 @foreach(array_filter($experience['main_tasks']) as $task)
-                                                    <li style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #374151; font-size: 14px;">
+                                                    <li style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #000000; font-size: 14px;">
                                                         <span style="color: #9ca3af; margin-right: 8px; flex-shrink: 0;">•</span>
                                                         <span style="word-wrap: break-word;">{{ mb_ucfirst($task) }}</span>
                                                     </li>
