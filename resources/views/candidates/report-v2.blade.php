@@ -26,6 +26,24 @@
             .no-print { display: none; }
         }
 
+        /* Предотвращение разрыва текста между страницами */
+        .mb-8, .data-row, .flex.items-start, .space-y-1 > div {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        /* Не разрывать записи опыта работы */
+        [style*="display: flex"][style*="gap: 24px"] {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        /* Заголовки секций не отрываются от содержимого */
+        h2 {
+            page-break-after: avoid;
+            break-after: avoid;
+        }
+
         .logo-header {
             background: transparent;
         }
@@ -515,7 +533,7 @@ if (! function_exists('clean_git_conflicts')) {
                                     {{-- Левая колонка: информация о месте работы --}}
                                     <div style="flex: 1; min-width: 0;">
                                         {{-- Дата --}}
-                                        <div style="color: #1e3a8a; font-size: 15px; margin-bottom: 4px;">
+                                        <div style="color: #1e3a8a; font-size: 14px; font-weight: 500; margin-bottom: 4px;">
                                             {{ $experience['years'] ?? '' }}
                                         </div>
                                         {{-- Должность --}}
@@ -538,7 +556,7 @@ if (! function_exists('clean_git_conflicts')) {
                                         <div style="flex: 1; min-width: 0;">
                                             <ul style="margin: 0; padding: 0; list-style: none;">
                                                 @foreach(array_filter($experience['main_tasks']) as $task)
-                                                    <li style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #000000; font-size: 14px;">
+                                                    <li style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #000000; font-size: 14px; font-weight: 500;">
                                                         <span style="color: #9ca3af; margin-right: 8px; flex-shrink: 0;">•</span>
                                                         <span style="word-wrap: break-word;">{{ mb_ucfirst($task) }}</span>
                                                     </li>
@@ -553,12 +571,12 @@ if (! function_exists('clean_git_conflicts')) {
                         {{-- Общий стаж и удовлетворённость --}}
                         <div style="margin-top: 16px;">
                             <div style="display: flex; align-items: center; margin-bottom: 4px;">
-                                <span style="color: #6b7280; font-size: 14px; margin-right: 8px;">Общий стаж:</span>
-                                <span style="color: #111827; font-weight: 600; font-size: 14px;">{{ $candidate->total_experience_years ?? 0 }} лет</span>
+                                <span style="color: #000000; font-size: 14px; font-weight: 500; margin-right: 8px;">Общий стаж:</span>
+                                <span style="color: #000000; font-weight: 500; font-size: 14px;">{{ $candidate->total_experience_years ?? 0 }} лет</span>
                             </div>
                             <div style="display: flex; align-items: center;">
-                                <span style="color: #6b7280; font-size: 14px; margin-right: 8px;">Удовлетворённость работой:</span>
-                                <span style="color: #111827; font-weight: 600; font-size: 14px;">{{ $candidate->job_satisfaction ?? '—' }}/5</span>
+                                <span style="color: #000000; font-size: 14px; font-weight: 500; margin-right: 8px;">Удовлетворённость работой:</span>
+                                <span style="color: #000000; font-weight: 500; font-size: 14px;">{{ $candidate->job_satisfaction ?? '—' }}/5</span>
                             </div>
                         </div>
 
