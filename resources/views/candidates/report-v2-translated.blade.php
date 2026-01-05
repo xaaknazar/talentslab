@@ -514,21 +514,21 @@ if (! function_exists('clean_git_conflicts')) {
 
                     @if($hasNewFields)
                         {{-- Новый дизайн для анкет с заполненными main_tasks/activity_sphere --}}
-                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <div style="display: flex; flex-direction: column; gap: 20px;">
                             @foreach($candidate->work_experience as $index => $experience)
-                                <div style="display: flex; gap: 24px; padding-bottom: 16px; {{ !$loop->last ? 'border-bottom: 1px solid #e5e7eb;' : '' }}">
+                                <div style="display: flex; gap: 24px; padding-bottom: 20px; {{ !$loop->last ? 'border-bottom: 1px solid #e5e7eb;' : '' }}">
                                     {{-- Левая колонка: информация о месте работы --}}
                                     <div style="flex: 1; min-width: 0;">
                                         {{-- Дата --}}
-                                        <div style="color: #9ca3af; font-size: 13px; margin-bottom: 4px;">
+                                        <div style="color: #1e40af; font-size: 13px; margin-bottom: 6px;">
                                             {{ $experience['years'] ?? '' }}
                                         </div>
                                         {{-- Должность --}}
-                                        <div style="color: #000000; font-weight: 700; font-size: 17px; margin-bottom: 2px;">
+                                        <div style="color: #000000; font-weight: 700; font-size: 17px; margin-bottom: 4px;">
                                             {{ mb_ucfirst($experience['position'] ?? $labels['not_specified']) }}
                                         </div>
                                         {{-- Компания / Город --}}
-                                        <div style="color: #000000; font-weight: 600; font-size: 15px; margin-bottom: 4px;">
+                                        <div style="color: #000000; font-weight: 600; font-size: 15px; margin-bottom: 6px;">
                                             {{ mb_ucfirst($experience['company'] ?? $labels['not_specified']) }}@if(!empty($experience['city'])), {{ mb_ucfirst($experience['city']) }}@endif
                                         </div>
                                         {{-- Сфера деятельности --}}
@@ -543,7 +543,7 @@ if (! function_exists('clean_git_conflicts')) {
                                         <div style="flex: 1; min-width: 0;">
                                             <ul style="margin: 0; padding: 0; list-style: none;">
                                                 @foreach(array_filter($experience['main_tasks']) as $task)
-                                                    <li style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #374151; font-size: 14px;">
+                                                    <li style="display: flex; align-items: flex-start; margin-bottom: 6px; color: #374151; font-size: 14px;">
                                                         <span style="color: #9ca3af; margin-right: 8px; flex-shrink: 0;">•</span>
                                                         <span style="word-wrap: break-word;">{{ mb_ucfirst($task) }}</span>
                                                     </li>
@@ -556,8 +556,8 @@ if (! function_exists('clean_git_conflicts')) {
                         </div>
 
                         {{-- Общий стаж и удовлетворённость --}}
-                        <div style="margin-top: 20px; display: flex; gap: 32px;">
-                            <div style="display: flex; align-items: center;">
+                        <div style="margin-top: 20px;">
+                            <div style="display: flex; align-items: center; margin-bottom: 6px;">
                                 <span style="color: #6b7280; font-size: 14px; margin-right: 8px;">{{ $labels['total_experience'] }}:</span>
                                 <span style="color: #111827; font-weight: 600; font-size: 14px;">{{ $candidate->total_experience_years ?? 0 }} {{ $labels['years'] }}</span>
                             </div>
