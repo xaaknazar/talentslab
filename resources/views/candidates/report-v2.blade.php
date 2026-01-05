@@ -533,7 +533,7 @@ if (! function_exists('clean_git_conflicts')) {
                                     {{-- Левая колонка: информация о месте работы --}}
                                     <div style="flex: 1; min-width: 0;">
                                         {{-- Дата --}}
-                                        <div style="color: #1e3a8a; font-size: 14px; font-weight: 500; margin-bottom: 4px;">
+                                        <div style="color: #234088; font-size: 14px; font-weight: 500; margin-bottom: 4px;">
                                             {{ $experience['years'] ?? '' }}
                                         </div>
                                         {{-- Должность --}}
@@ -541,13 +541,13 @@ if (! function_exists('clean_git_conflicts')) {
                                             {{ mb_ucfirst($experience['position'] ?? 'Не указано') }}
                                         </div>
                                         {{-- Компания / Город --}}
-                                        <div style="color: #000000; font-weight: 600; font-size: 15px; margin-bottom: 4px;">
+                                        <div style="color: #000000; font-weight: 600; font-size: 15px;">
                                             {{ mb_ucfirst($experience['company'] ?? 'Не указано') }}@if(!empty($experience['city'])), {{ mb_ucfirst($experience['city']) }}@endif
                                         </div>
                                         {{-- Сфера деятельности --}}
                                         @if(!empty($experience['activity_sphere']))
-                                            <div style="color: #6b7280; font-size: 13px;">
-                                                {{ $experience['activity_sphere'] }}
+                                            <div style="color: #6b7280; font-size: 13px; margin-top: 2px;">
+                                                {{ trim($experience['activity_sphere']) }}
                                             </div>
                                         @endif
                                     </div>
