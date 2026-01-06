@@ -325,7 +325,7 @@ if (! function_exists('clean_git_conflicts')) {
         <div class="logo-header p-3">
             <div class="flex justify-between items-center">
                 <div>
-               <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('logos/divergents_logo.png'))) }}" alt="DIVERGENTS talent laboratory" class="h-14 w-auto">
+               <img src="data:image/svg+xml;base64,{{ base64_encode(file_get_contents(public_path('logo.svg'))) }}" alt="DIVERGENTS talent laboratory" class="h-14 w-auto">
                 </div>
                 <div class="text-right">
                     <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('logos/talents_lab_logo.png'))) }}" alt="talents lab" class="h-4 w-auto">
