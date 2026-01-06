@@ -6,7 +6,7 @@
         <title>@yield('title', 'TalentsLab - CV Database')</title>
 
         <!-- Favicon -->
-        <link rel="icon" type="image/jpeg" href="{{ asset('mini-logo.jpeg') }}">
+        <link rel="icon" type="image/jpeg" href="{{ asset('mini-logo.jpg') }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
