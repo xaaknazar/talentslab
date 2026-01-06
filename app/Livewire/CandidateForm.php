@@ -2212,7 +2212,7 @@ class CandidateForm extends Component
                 }
             }
 
-            session()->flash('message', 'Анкета успешно сохранена!');
+            session()->flash('message', 'Резюме успешно сохранено!');
 
             // Определяем, куда перенаправить пользователя
             if (auth()->user()->is_admin) {

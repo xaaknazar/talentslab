@@ -236,18 +236,18 @@ class CandidateSearchResource extends Resource
 //                        ->openUrlInNewTab()
 //                        ->visible(fn (Candidate $record): bool => $record->anketa_pdf && Storage::disk('public')->exists($record->anketa_pdf)),
 
-                    Tables\Actions\Action::make('Анкета полная')
-                        ->label('Анкета полная')
+                    Tables\Actions\Action::make('Резюме полное')
+                        ->label('Резюме полное')
                         ->icon('heroicon-o-document-text')
                         ->color('success')
                         ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'anketa']))
                         ->modal()
-                        ->visible(fn (Candidate $record): bool => 
+                        ->visible(fn (Candidate $record): bool =>
                             $record->gallup_pdf && Storage::disk('public')->exists($record->gallup_pdf)
                         ),
 
-                    Tables\Actions\Action::make('Анкета урезанная')
-                        ->label('Анкета урезанная')
+                    Tables\Actions\Action::make('Резюме урезанное')
+                        ->label('Резюме урезанное')
                         ->icon('heroicon-o-document-text')
                         ->color('info')
                         ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'anketa-reduced']))
