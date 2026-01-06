@@ -820,7 +820,7 @@ if (! function_exists('clean_git_conflicts')) {
                 <h2 class="text-xl font-bold text-gray-800 mb-2">{{ $labels['psychometric_data'] }}</h2>
                 <div class="flex data-row">
                     <span class="text-base text-gray-600 w-60">{{ $labels['mbti_type'] }}:</span>
-                    <span class="text-base font-medium text-blue-600">{{ $candidate->mbti_full_name ?: $labels['not_specified'] }}</span>
+                    <span class="text-base font-medium" style="color: #234088;">{{ $candidate->mbti_full_name ?: $labels['not_specified'] }}</span>
                 </div>
             </div>
 
