@@ -761,9 +761,9 @@ window.updatePeriodDisplay = function(index) {
         8: '{{ __("September") }}', 9: '{{ __("October") }}', 10: '{{ __("November") }}', 11: '{{ __("December") }}'
     };
     const shortMonths = {
-        0: 'Янв', 1: 'Фев', 2: 'Мар', 3: 'Апр',
-        4: 'Май', 5: 'Июн', 6: 'Июл', 7: 'Авг',
-        8: 'Сен', 9: 'Окт', 10: 'Ноя', 11: 'Дек'
+        0: '{{ __("Jan") }}', 1: '{{ __("Feb") }}', 2: '{{ __("Mar") }}', 3: '{{ __("Apr") }}',
+        4: '{{ __("May_short") }}', 5: '{{ __("Jun") }}', 6: '{{ __("Jul") }}', 7: '{{ __("Aug") }}',
+        8: '{{ __("Sep") }}', 9: '{{ __("Oct") }}', 10: '{{ __("Nov") }}', 11: '{{ __("Dec") }}'
     };
 
     const startMonthSelect = document.querySelector(`select[wire\\:model="work_experience.${index}.start_month"]`);

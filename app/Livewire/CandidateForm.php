@@ -519,7 +519,7 @@ class CandidateForm extends Component
                     if ($this->birth_date) {
                         $birthYear = (int) date('Y', strtotime($this->birth_date));
                         if ($birthYear >= 2000 && $value > 2000000) {
-                            $fail('Для кандидатов младше 2000 года рождения максимальная зарплата "От" - 2 000 000 тенге.');
+                            $fail(__("For candidates born after 2000, maximum salary 'From' is 2,000,000 tenge"));
                         }
                     }
                 }
@@ -534,7 +534,7 @@ class CandidateForm extends Component
                     if ($this->birth_date) {
                         $birthYear = (int) date('Y', strtotime($this->birth_date));
                         if ($birthYear >= 2000 && $value > 2000000) {
-                            $fail('Для кандидатов младше 2000 года рождения максимальная зарплата "До" - 2 000 000 тенге.');
+                            $fail(__("For candidates born after 2000, maximum salary 'To' is 2,000,000 tenge"));
                         }
                     }
                 }
@@ -572,83 +572,86 @@ class CandidateForm extends Component
         return $rules;
     }
 
-    protected $messages = [
-        'last_name.required' => 'Фамилия обязательна для заполнения',
-        'last_name.max' => 'Фамилия не должна превышать 255 символов',
-        'first_name.required' => 'Имя обязательно для заполнения',
-        'first_name.max' => 'Имя не должно превышать 255 символов',
-        'birth_place.required' => 'Место рождения обязательно для заполнения',
-        'current_city.required' => 'Введите текущий город',
-        'email.required' => 'Email обязателен для заполнения',
-        'email.email' => 'Введите корректный email адрес',
-        'phone.required' => 'Телефон обязателен для заполнения',
-        'phone.regex' => 'Введите корректный номер телефона (разрешены +, цифры, пробелы, -, ())',
-        'gender.required' => 'Выберите пол',
-        'marital_status.required' => 'Выберите семейное положение',
-        'birth_date.required' => 'Дата рождения обязательна для заполнения',
-        'birth_date.before' => 'Дата рождения должна быть раньше текущей даты',
-        'photo.required' => 'Фото обязательно для загрузки',
-        'photo.image' => 'Загружаемый файл должен быть изображением (jpg, jpeg, png)',
-        'photo.max' => 'Размер изображения не должен превышать 20MB',
-        'gallup_pdf.required' => 'Необходимо загрузить результаты теста Gallup',
-        'gallup_pdf.file' => 'Необходимо загрузить файл',
-        'gallup_pdf.mimes' => 'Файл должен быть в формате PDF или изображение (JPG, PNG, WebP)',
-        'gallup_pdf.max' => 'Размер файла не должен превышать 10MB',
-        'mbti_type.required' => 'Необходимо выбрать тип личности MBTI',
-        'mbti_type.in' => 'Выбран некорректный тип личности MBTI',
-        'expected_salary.required' => 'Ожидаемая зарплата обязательна для заполнения',
-        'expected_salary.numeric' => 'Ожидаемая зарплата должна быть числом',
-        'expected_salary.min' => 'Ожидаемая зарплата должна быть больше 0',
-        'expected_salary.max' => 'Ожидаемая зарплата не может превышать 999,999,999,999 тенге',
-        'expected_salary_from.required' => 'Зарплата от обязательна для заполнения',
-        'expected_salary_from.numeric' => 'Зарплата от должна быть числом',
-        'expected_salary_from.min' => 'Зарплата от должна быть больше 0',
-        'expected_salary_to.required' => 'Зарплата до обязательна для заполнения',
-        'expected_salary_to.numeric' => 'Зарплата до должна быть числом',
-        'expected_salary_to.min' => 'Зарплата до должна быть больше 0',
-        'expected_salary_to.gte' => 'Зарплата до должна быть больше или равна зарплате от',
-        'desired_positions.required' => 'Желаемая должность обязательна для заполнения',
-        'desired_positions.min' => 'Добавьте минимум одну желаемую должность',
-        'desired_positions.max' => 'Максимум 3 желаемых должности',
-        'desired_positions.*.required' => 'Желаемая должность обязательна для заполнения',
-        'desired_positions.*.max' => 'Желаемая должность не должна превышать 255 символов',
-        'activity_sphere.required' => 'Сфера деятельности обязательна для заполнения',
-        'activity_sphere.max' => 'Сфера деятельности не должна превышать 255 символов',
-        'awards.*.max' => 'Награда не должна превышать 500 символов',
-        'work_experience.*.main_tasks.min' => 'Добавьте минимум 3 основные задачи',
-        'work_experience.*.main_tasks.*.max' => 'Задача не должна превышать 500 символов',
-        'instagram.max' => 'Инстаграм не должен превышать 255 символов',
+    protected function messages()
+    {
+        return [
+            'last_name.required' => __('Last name is required'),
+            'last_name.max' => __('Last name must not exceed 255 characters'),
+            'first_name.required' => __('First name is required'),
+            'first_name.max' => __('First name must not exceed 255 characters'),
+            'birth_place.required' => __('Place of birth is required'),
+            'current_city.required' => __('Enter current city'),
+            'email.required' => __('Email is required'),
+            'email.email' => __('Enter a valid email address'),
+            'phone.required' => __('Phone is required'),
+            'phone.regex' => __('Enter a valid phone number (+, digits, spaces, -, () allowed)'),
+            'gender.required' => __('Select gender'),
+            'marital_status.required' => __('Select marital status'),
+            'birth_date.required' => __('Date of birth is required'),
+            'birth_date.before' => __('Date of birth must be before today'),
+            'photo.required' => __('Photo is required'),
+            'photo.image' => __('Uploaded file must be an image (jpg, jpeg, png)'),
+            'photo.max' => __('Image size must not exceed 20MB'),
+            'gallup_pdf.required' => __('Gallup test results required'),
+            'gallup_pdf.file' => __('File upload required'),
+            'gallup_pdf.mimes' => __('File must be PDF or image (JPG, PNG, WebP)'),
+            'gallup_pdf.max' => __('File size must not exceed 10MB'),
+            'mbti_type.required' => __('MBTI personality type selection required'),
+            'mbti_type.in' => __('Invalid MBTI personality type selected'),
+            'expected_salary.required' => __('Expected salary is required'),
+            'expected_salary.numeric' => __('Expected salary must be a number'),
+            'expected_salary.min' => __('Expected salary must be greater than 0'),
+            'expected_salary.max' => __('Expected salary cannot exceed 999,999,999,999'),
+            'expected_salary_from.required' => __('Salary from is required'),
+            'expected_salary_from.numeric' => __('Salary from must be a number'),
+            'expected_salary_from.min' => __('Salary from must be greater than 0'),
+            'expected_salary_to.required' => __('Salary to is required'),
+            'expected_salary_to.numeric' => __('Salary to must be a number'),
+            'expected_salary_to.min' => __('Salary to must be greater than 0'),
+            'expected_salary_to.gte' => __('Salary to must be greater than or equal to salary from'),
+            'desired_positions.required' => __('Desired position is required'),
+            'desired_positions.min' => __('Add at least one desired position'),
+            'desired_positions.max' => __('Maximum 3 desired positions'),
+            'desired_positions.*.required' => __('Desired position is required'),
+            'desired_positions.*.max' => __('Desired position must not exceed 255 characters'),
+            'activity_sphere.required' => __('Field of activity is required'),
+            'activity_sphere.max' => __('Field of activity must not exceed 255 characters'),
+            'awards.*.max' => __('Award must not exceed 500 characters'),
+            'work_experience.*.main_tasks.min' => __('Add at least 3 main tasks'),
+            'work_experience.*.main_tasks.*.max' => __('Task must not exceed 500 characters'),
+            'instagram.max' => __('Instagram must not exceed 255 characters'),
 
-        // Дополнительные сообщения для обязательных полей
-        'hobbies.required' => 'Хобби обязательно для заполнения',
-        'interests.required' => 'Интересы обязательны для заполнения',
-        'favorite_sports.required' => 'Любимые виды спорта обязательны для заполнения',
-        'books_per_year_min.required' => 'Минимальное количество книг в год обязательно для заполнения',
-        'books_per_year_max.required' => 'Максимальное количество книг в год обязательно для заполнения',
-        'books_per_year_max.gte' => 'Максимальное количество книг не может быть меньше минимального',
-        'is_practicing.required' => 'Укажите, являетесь ли вы практикующим',
-        'visited_countries.required' => 'Добавьте хотя бы одну страну',
-        'visited_countries.min' => 'Добавьте хотя бы одну страну',
-        'visited_countries.*.required' => 'Выберите страну из списка',
-        'visited_countries.*.in' => 'Выберите страну из списка',
-        'family_members.required' => 'Добавьте минимум одного члена семьи',
-        'family_members.min' => 'Добавьте минимум одного члена семьи',
-        'parents.required' => 'Добавьте минимум одного родителя',
-        'parents.min' => 'Добавьте минимум одного родителя',
-        'parents.max' => 'Можно добавить максимум двух родителей',
-        'parents.*.relation.required' => 'Укажите родство',
-        'parents.*.birth_year.required' => 'Укажите год рождения родителя',
-        'parents.*.profession.required' => 'Укажите профессию родителя',
-        'siblings.required' => 'Поле "Братья и сестры" обязательно (можно оставить пустым, если их нет)',
-        'siblings.*.relation.required' => 'Укажите родство',
-        'siblings.*.birth_year.required' => 'Укажите год рождения',
-        'computer_skills.required' => 'Укажите компьютерные навыки',
-        'universities.required' => 'Добавьте минимум один университет',
-        'language_skills.required' => 'Добавьте минимум один язык',
-        'work_experience.required' => 'Добавьте минимум одно место работы',
-        'job_satisfaction.required' => 'Укажите уровень удовлетворенности работой',
-        'employer_requirements.required' => 'Укажите пожелания на рабочем месте',
-    ];
+            // Дополнительные сообщения для обязательных полей
+            'hobbies.required' => __('Hobbies are required'),
+            'interests.required' => __('Interests are required'),
+            'favorite_sports.required' => __('Favorite sports are required'),
+            'books_per_year_min.required' => __('Minimum books per year is required'),
+            'books_per_year_max.required' => __('Maximum books per year is required'),
+            'books_per_year_max.gte' => __('Maximum books cannot be less than minimum'),
+            'is_practicing.required' => __('Please indicate if you are practicing'),
+            'visited_countries.required' => __('Add at least one country'),
+            'visited_countries.min' => __('Add at least one country'),
+            'visited_countries.*.required' => __('Select a country from the list'),
+            'visited_countries.*.in' => __('Select a country from the list'),
+            'family_members.required' => __('Add at least one family member'),
+            'family_members.min' => __('Add at least one family member'),
+            'parents.required' => __('Add at least one parent'),
+            'parents.min' => __('Add at least one parent'),
+            'parents.max' => __('Maximum two parents allowed'),
+            'parents.*.relation.required' => __('Specify relationship'),
+            'parents.*.birth_year.required' => __('Specify parent\'s birth year'),
+            'parents.*.profession.required' => __('Specify parent\'s profession'),
+            'siblings.required' => __('Siblings field is required (can be empty if none)'),
+            'siblings.*.relation.required' => __('Specify relationship'),
+            'siblings.*.birth_year.required' => __('Specify birth year'),
+            'computer_skills.required' => __('Specify computer skills'),
+            'universities.required' => __('Add at least one university'),
+            'language_skills.required' => __('Add at least one language'),
+            'work_experience.required' => __('Add at least one work experience'),
+            'job_satisfaction.required' => __('Specify job satisfaction level'),
+            'employer_requirements.required' => __('Specify workplace requirements'),
+        ];
+    }
 
     protected $validationAttributes = [
         // Шаг 1
@@ -1746,23 +1749,35 @@ class CandidateForm extends Component
             }
 
             $this->languages = [];
+            $locale = app()->getLocale();
+            $nameField = $locale === 'en' ? 'name_en' : ($locale === 'ar' ? 'name_en' : 'name_ru');
+
             if (isset($languagesData['languages']) && is_array($languagesData['languages'])) {
                 foreach ($languagesData['languages'] as $language) {
-                    if (isset($language['name_ru']) && !empty($language['name_ru'])) {
-                        $this->languages[] = $language['name_ru'];
+                    if (isset($language[$nameField]) && !empty($language[$nameField])) {
+                        $this->languages[] = $language[$nameField];
                     }
                 }
             }
 
             // Если массив языков пустой, используем fallback
             if (empty($this->languages)) {
-                $this->languages = ['Русский', 'Английский', 'Испанский', 'Французский', 'Немецкий', 'Китайский', 'Японский'];
+                if ($locale === 'en' || $locale === 'ar') {
+                    $this->languages = ['Russian', 'English', 'Spanish', 'French', 'German', 'Chinese', 'Japanese', 'Arabic', 'Kazakh'];
+                } else {
+                    $this->languages = ['Русский', 'Английский', 'Испанский', 'Французский', 'Немецкий', 'Китайский', 'Японский', 'Арабский', 'Казахский'];
+                }
             }
 
         } catch (\Exception $e) {
             logger()->error('Error loading languages: ' . $e->getMessage());
             // Fallback к базовым языкам
-            $this->languages = ['Русский', 'Английский', 'Испанский', 'Французский', 'Немецкий', 'Китайский', 'Японский'];
+            $locale = app()->getLocale();
+            if ($locale === 'en' || $locale === 'ar') {
+                $this->languages = ['Russian', 'English', 'Spanish', 'French', 'German', 'Chinese', 'Japanese', 'Arabic', 'Kazakh'];
+            } else {
+                $this->languages = ['Русский', 'Английский', 'Испанский', 'Французский', 'Немецкий', 'Китайский', 'Японский', 'Арабский', 'Казахский'];
+            }
         }
     }
 
