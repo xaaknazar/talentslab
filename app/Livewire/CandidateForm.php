@@ -73,12 +73,13 @@ class CandidateForm extends Component
     public $work_experience = [];
     public $total_experience_years;
     public $job_satisfaction;
-    public $desired_position;
-    public $activity_sphere;
+    public $desired_positions = []; // Массив желаемых должностей (макс 3)
+    public $activity_sphere; // Оставляем для обратной совместимости
     public $expected_salary;
     public $expected_salary_from;
     public $expected_salary_to;
     public $employer_requirements;
+    public $awards = []; // Награды и достижения
 
     // Step 4: Tests
     public $gallup_pdf;
@@ -129,7 +130,9 @@ class CandidateForm extends Component
                 'first_country' => $countriesData[0] ?? null
             ]);
 
-            $this->countries = collect($countriesData)->map(function($country) {
+            $locale = app()->getLocale();
+
+            $this->countries = collect($countriesData)->map(function($country) use ($locale) {
                 $data = [];
 
                 // Проверяем наличие каждого ключа перед добавлением
@@ -148,11 +151,29 @@ class CandidateForm extends Component
 
                 if (isset($country['iso_code2'])) {
                     $data['iso_code2'] = $country['iso_code2'];
+
+                    // Добавляем локализованное название страны
+                    $isoCode = $country['iso_code2'];
+                    if (class_exists('Locale') && !empty($isoCode)) {
+                        $localeMap = [
+                            'ru' => 'ru_RU',
+                            'en' => 'en_US',
+                            'ar' => 'ar_SA'
+                        ];
+                        $intlLocale = $localeMap[$locale] ?? 'en_US';
+                        $localizedName = \Locale::getDisplayRegion("-{$isoCode}", $intlLocale);
+                        if (!empty($localizedName) && $localizedName !== $isoCode) {
+                            $data['name_localized'] = $localizedName;
+                        }
+                    }
                 }
 
                 if (isset($country['iso_code3'])) {
                     $data['iso_code3'] = $country['iso_code3'];
                 }
+
+                // Устанавливаем display_name - используем локализованное или name_ru как fallback
+                $data['display_name'] = $data['name_localized'] ?? $data['name_ru'] ?? '';
 
                 return $data;
             })
@@ -202,6 +223,8 @@ class CandidateForm extends Component
         $this->language_skills = [];
         $this->work_experience = [];
         $this->computer_skills = '';
+        $this->desired_positions = ['']; // Инициализируем с одной пустой должностью
+        $this->awards = []; // Инициализируем пустым массивом
 
         logger()->debug('Mount: work_experience initialized as empty array');
 
@@ -264,26 +287,33 @@ class CandidateForm extends Component
     }
 
     /**
-     * Проверяет статус прохождения теста Гарднера для текущего пользователя
+     * Проверяет статус прохождения теста Гарднера для кандидата
      */
     public function checkGardnerTestStatus()
     {
-        $user = auth()->user();
-        if ($user) {
-            $this->gardner_test_completed = \App\Models\GardnerTestResult::where('user_id', $user->id)->exists();
+        // Если редактируем существующего кандидата, проверяем его user_id
+        if ($this->candidate && $this->candidate->user_id) {
+            $this->gardner_test_completed = \App\Models\GardnerTestResult::where('user_id', $this->candidate->user_id)->exists();
+        } elseif (auth()->user()) {
+            // Для новых кандидатов проверяем залогиненного пользователя
+            $this->gardner_test_completed = \App\Models\GardnerTestResult::where('user_id', auth()->id())->exists();
         } else {
             $this->gardner_test_completed = false;
         }
     }
 
     /**
-     * Возвращает результаты теста Гарднера для текущего пользователя
+     * Возвращает результаты теста Гарднера для кандидата
      */
     public function getGardnerTestResults()
     {
-        $user = auth()->user();
-        if ($user) {
-            $result = \App\Models\GardnerTestResult::where('user_id', $user->id)->first();
+        // Если редактируем существующего кандидата, получаем его результаты
+        if ($this->candidate && $this->candidate->user_id) {
+            $result = \App\Models\GardnerTestResult::where('user_id', $this->candidate->user_id)->first();
+            return $result ? $result->results : null;
+        } elseif (auth()->user()) {
+            // Для новых кандидатов используем залогиненного пользователя
+            $result = \App\Models\GardnerTestResult::where('user_id', auth()->id())->first();
             return $result ? $result->results : null;
         }
         return null;
@@ -367,8 +397,19 @@ class CandidateForm extends Component
         logger()->debug('Work experience loaded:', ['original' => $this->candidate->work_experience, 'converted' => $this->work_experience]);
         $this->total_experience_years = $this->candidate->total_experience_years;
         $this->job_satisfaction = $this->candidate->job_satisfaction;
-        $this->desired_position = $this->candidate->desired_position;
+
+        // Загружаем желаемые должности - если есть массив, используем его, иначе создаем из строки
+        if (is_array($this->candidate->desired_positions) && !empty($this->candidate->desired_positions)) {
+            $this->desired_positions = $this->candidate->desired_positions;
+        } elseif (!empty($this->candidate->desired_position)) {
+            // Обратная совместимость - преобразуем строку в массив
+            $this->desired_positions = [$this->candidate->desired_position];
+        } else {
+            $this->desired_positions = [''];
+        }
+
         $this->activity_sphere = $this->candidate->activity_sphere;
+        $this->awards = $this->candidate->awards ?? [];
         $this->expected_salary = $this->candidate->expected_salary;
         $this->expected_salary_from = $this->candidate->expected_salary_from;
         $this->expected_salary_to = $this->candidate->expected_salary_to;
@@ -458,10 +499,16 @@ class CandidateForm extends Component
             'work_experience.*.start_period' => 'nullable|integer|min:0|max:420',
             'work_experience.*.end_period' => 'nullable|integer|min:0|max:420',
             'work_experience.*.is_current' => 'nullable|boolean',
+            'work_experience.*.activity_sphere' => 'nullable|string|max:255',
+            'work_experience.*.main_tasks' => 'nullable|array|min:3|max:8',
+            'work_experience.*.main_tasks.*' => 'nullable|string|max:500',
             'total_experience_years' => 'required|integer|min:0',
             'job_satisfaction' => 'required|integer|min:1|max:5',
-            'desired_position' => ['required', 'string', 'max:255'],
-            'activity_sphere' => ['required', 'string', 'max:255'],
+            'desired_positions' => ['required', 'array', 'min:1', 'max:3'],
+            'desired_positions.*' => ['required', 'string', 'max:255'],
+            'activity_sphere' => ['nullable', 'string', 'max:255'],
+            'awards' => 'nullable|array',
+            'awards.*' => 'nullable|string|max:500',
             'expected_salary' => 'nullable|numeric|min:0|max:999999999999',
             'expected_salary_from' => [
                 'required',
@@ -472,7 +519,7 @@ class CandidateForm extends Component
                     if ($this->birth_date) {
                         $birthYear = (int) date('Y', strtotime($this->birth_date));
                         if ($birthYear >= 2000 && $value > 2000000) {
-                            $fail('Для кандидатов младше 2000 года рождения максимальная зарплата "От" - 2 000 000 тенге.');
+                            $fail(__("For candidates born after 2000, maximum salary 'From' is 2,000,000 tenge"));
                         }
                     }
                 }
@@ -487,7 +534,7 @@ class CandidateForm extends Component
                     if ($this->birth_date) {
                         $birthYear = (int) date('Y', strtotime($this->birth_date));
                         if ($birthYear >= 2000 && $value > 2000000) {
-                            $fail('Для кандидатов младше 2000 года рождения максимальная зарплата "До" - 2 000 000 тенге.');
+                            $fail(__("For candidates born after 2000, maximum salary 'To' is 2,000,000 tenge"));
                         }
                     }
                 }
@@ -495,8 +542,8 @@ class CandidateForm extends Component
             'employer_requirements' => ['required', 'string', 'max:2000'],
 
             // Step 4 validation rules
-            // Gallup PDF - необязательный (рекомендуется)
-            'gallup_pdf' => 'nullable|file|mimes:pdf|max:10240',
+            // Gallup файл (PDF или изображение) - необязательный (рекомендуется)
+            'gallup_pdf' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:10240',
             'mbti_type' => [
                 Rule::when($this->currentStep === 4, ['required', 'string']),
                 Rule::when($this->currentStep !== 4, ['nullable']),
@@ -507,12 +554,16 @@ class CandidateForm extends Component
         if ($this->currentStep === 4) {
             $rules['gardner_test_completed'] = [
                 function ($attribute, $value, $fail) {
-                    $user = auth()->user();
-                    if ($user) {
-                        $hasGardnerResult = \App\Models\GardnerTestResult::where('user_id', $user->id)->exists();
-                        if (!$hasGardnerResult) {
-                            $fail('Необходимо пройти тест Гарднера для продолжения.');
-                        }
+                    // Если редактируем кандидата, проверяем его user_id
+                    if ($this->candidate && $this->candidate->user_id) {
+                        $hasGardnerResult = \App\Models\GardnerTestResult::where('user_id', $this->candidate->user_id)->exists();
+                    } else {
+                        // Для нового кандидата проверяем текущего пользователя
+                        $hasGardnerResult = \App\Models\GardnerTestResult::where('user_id', auth()->id())->exists();
+                    }
+
+                    if (!$hasGardnerResult) {
+                        $fail(__('You must complete the Gardner test to continue.'));
                     }
                 }
             ];
@@ -521,159 +572,179 @@ class CandidateForm extends Component
         return $rules;
     }
 
-    protected $messages = [
-        'last_name.required' => 'Фамилия обязательна для заполнения',
-        'last_name.max' => 'Фамилия не должна превышать 255 символов',
-        'first_name.required' => 'Имя обязательно для заполнения',
-        'first_name.max' => 'Имя не должно превышать 255 символов',
-        'birth_place.required' => 'Место рождения обязательно для заполнения',
-        'current_city.required' => 'Введите текущий город',
-        'email.required' => 'Email обязателен для заполнения',
-        'email.email' => 'Введите корректный email адрес',
-        'phone.required' => 'Телефон обязателен для заполнения',
-        'phone.regex' => 'Введите корректный номер телефона (разрешены +, цифры, пробелы, -, ())',
-        'gender.required' => 'Выберите пол',
-        'marital_status.required' => 'Выберите семейное положение',
-        'birth_date.required' => 'Дата рождения обязательна для заполнения',
-        'birth_date.before' => 'Дата рождения должна быть раньше текущей даты',
-        'photo.required' => 'Фото обязательно для загрузки',
-        'photo.image' => 'Загружаемый файл должен быть изображением (jpg, jpeg, png)',
-        'photo.max' => 'Размер изображения не должен превышать 20MB',
-        'gallup_pdf.required' => 'Необходимо загрузить результаты теста Gallup',
-        'gallup_pdf.file' => 'Необходимо загрузить файл',
-        'gallup_pdf.mimes' => 'Файл должен быть в формате PDF',
-        'gallup_pdf.max' => 'Размер файла не должен превышать 10MB',
-        'mbti_type.required' => 'Необходимо выбрать тип личности MBTI',
-        'mbti_type.in' => 'Выбран некорректный тип личности MBTI',
-        'expected_salary.required' => 'Ожидаемая зарплата обязательна для заполнения',
-        'expected_salary.numeric' => 'Ожидаемая зарплата должна быть числом',
-        'expected_salary.min' => 'Ожидаемая зарплата должна быть больше 0',
-        'expected_salary.max' => 'Ожидаемая зарплата не может превышать 999,999,999,999 тенге',
-        'expected_salary_from.required' => 'Зарплата от обязательна для заполнения',
-        'expected_salary_from.numeric' => 'Зарплата от должна быть числом',
-        'expected_salary_from.min' => 'Зарплата от должна быть больше 0',
-        'expected_salary_to.required' => 'Зарплата до обязательна для заполнения',
-        'expected_salary_to.numeric' => 'Зарплата до должна быть числом',
-        'expected_salary_to.min' => 'Зарплата до должна быть больше 0',
-        'expected_salary_to.gte' => 'Зарплата до должна быть больше или равна зарплате от',
-        'desired_position.required' => 'Желаемая должность обязательна для заполнения',
-        'desired_position.max' => 'Желаемая должность не должна превышать 255 символов',
-        'activity_sphere.required' => 'Сфера деятельности обязательна для заполнения',
-        'activity_sphere.max' => 'Сфера деятельности не должна превышать 255 символов',
-        'instagram.max' => 'Инстаграм не должен превышать 255 символов',
+    protected function messages()
+    {
+        return [
+            'last_name.required' => __('Last name is required'),
+            'last_name.max' => __('Last name must not exceed 255 characters'),
+            'first_name.required' => __('First name is required'),
+            'first_name.max' => __('First name must not exceed 255 characters'),
+            'birth_place.required' => __('Place of birth is required'),
+            'current_city.required' => __('Enter current city'),
+            'email.required' => __('Email is required'),
+            'email.email' => __('Enter a valid email address'),
+            'phone.required' => __('Phone is required'),
+            'phone.regex' => __('Enter a valid phone number (+, digits, spaces, -, () allowed)'),
+            'gender.required' => __('Select gender'),
+            'marital_status.required' => __('Select marital status'),
+            'birth_date.required' => __('Date of birth is required'),
+            'birth_date.before' => __('Date of birth must be before today'),
+            'photo.required' => __('Photo is required'),
+            'photo.image' => __('Uploaded file must be an image (jpg, jpeg, png)'),
+            'photo.max' => __('Image size must not exceed 20MB'),
+            'gallup_pdf.required' => __('Gallup test results required'),
+            'gallup_pdf.file' => __('File upload required'),
+            'gallup_pdf.mimes' => __('File must be PDF or image (JPG, PNG, WebP)'),
+            'gallup_pdf.max' => __('File size must not exceed 10MB'),
+            'mbti_type.required' => __('MBTI personality type selection required'),
+            'mbti_type.in' => __('Invalid MBTI personality type selected'),
+            'expected_salary.required' => __('Expected salary is required'),
+            'expected_salary.numeric' => __('Expected salary must be a number'),
+            'expected_salary.min' => __('Expected salary must be greater than 0'),
+            'expected_salary.max' => __('Expected salary cannot exceed 999,999,999,999'),
+            'expected_salary_from.required' => __('Salary from is required'),
+            'expected_salary_from.numeric' => __('Salary from must be a number'),
+            'expected_salary_from.min' => __('Salary from must be greater than 0'),
+            'expected_salary_to.required' => __('Salary to is required'),
+            'expected_salary_to.numeric' => __('Salary to must be a number'),
+            'expected_salary_to.min' => __('Salary to must be greater than 0'),
+            'expected_salary_to.gte' => __('Salary to must be greater than or equal to salary from'),
+            'desired_positions.required' => __('Desired position is required'),
+            'desired_positions.min' => __('Add at least one desired position'),
+            'desired_positions.max' => __('Maximum 3 desired positions'),
+            'desired_positions.*.required' => __('Desired position is required'),
+            'desired_positions.*.max' => __('Desired position must not exceed 255 characters'),
+            'activity_sphere.required' => __('Field of activity is required'),
+            'activity_sphere.max' => __('Field of activity must not exceed 255 characters'),
+            'awards.*.max' => __('Award must not exceed 500 characters'),
+            'work_experience.*.main_tasks.min' => __('Add at least 3 main tasks'),
+            'work_experience.*.main_tasks.*.max' => __('Task must not exceed 500 characters'),
+            'instagram.max' => __('Instagram must not exceed 255 characters'),
 
-        // Дополнительные сообщения для обязательных полей
-        'hobbies.required' => 'Хобби обязательно для заполнения',
-        'interests.required' => 'Интересы обязательны для заполнения',
-        'favorite_sports.required' => 'Любимые виды спорта обязательны для заполнения',
-        'books_per_year_min.required' => 'Минимальное количество книг в год обязательно для заполнения',
-        'books_per_year_max.required' => 'Максимальное количество книг в год обязательно для заполнения',
-        'books_per_year_max.gte' => 'Максимальное количество книг не может быть меньше минимального',
-        'is_practicing.required' => 'Укажите, являетесь ли вы практикующим',
-        'visited_countries.required' => 'Добавьте хотя бы одну страну',
-        'visited_countries.min' => 'Добавьте хотя бы одну страну',
-        'visited_countries.*.required' => 'Выберите страну из списка',
-        'visited_countries.*.in' => 'Выберите страну из списка',
-        'family_members.required' => 'Добавьте минимум одного члена семьи',
-        'family_members.min' => 'Добавьте минимум одного члена семьи',
-        'parents.required' => 'Добавьте минимум одного родителя',
-        'parents.min' => 'Добавьте минимум одного родителя',
-        'parents.max' => 'Можно добавить максимум двух родителей',
-        'parents.*.relation.required' => 'Укажите родство',
-        'parents.*.birth_year.required' => 'Укажите год рождения родителя',
-        'parents.*.profession.required' => 'Укажите профессию родителя',
-        'siblings.required' => 'Поле "Братья и сестры" обязательно (можно оставить пустым, если их нет)',
-        'siblings.*.relation.required' => 'Укажите родство',
-        'siblings.*.birth_year.required' => 'Укажите год рождения',
-        'computer_skills.required' => 'Укажите компьютерные навыки',
-        'universities.required' => 'Добавьте минимум один университет',
-        'language_skills.required' => 'Добавьте минимум один язык',
-        'work_experience.required' => 'Добавьте минимум одно место работы',
-        'job_satisfaction.required' => 'Укажите уровень удовлетворенности работой',
-        'employer_requirements.required' => 'Укажите пожелания на рабочем месте',
-    ];
+            // Дополнительные сообщения для обязательных полей
+            'hobbies.required' => __('Hobbies are required'),
+            'interests.required' => __('Interests are required'),
+            'favorite_sports.required' => __('Favorite sports are required'),
+            'books_per_year_min.required' => __('Minimum books per year is required'),
+            'books_per_year_max.required' => __('Maximum books per year is required'),
+            'books_per_year_max.gte' => __('Maximum books cannot be less than minimum'),
+            'is_practicing.required' => __('Please indicate if you are practicing'),
+            'visited_countries.required' => __('Add at least one country'),
+            'visited_countries.min' => __('Add at least one country'),
+            'visited_countries.*.required' => __('Select a country from the list'),
+            'visited_countries.*.in' => __('Select a country from the list'),
+            'family_members.required' => __('Add at least one family member'),
+            'family_members.min' => __('Add at least one family member'),
+            'parents.required' => __('Add at least one parent'),
+            'parents.min' => __('Add at least one parent'),
+            'parents.max' => __('Maximum two parents allowed'),
+            'parents.*.relation.required' => __('Specify relationship'),
+            'parents.*.birth_year.required' => __('Specify parent\'s birth year'),
+            'parents.*.profession.required' => __('Specify parent\'s profession'),
+            'siblings.required' => __('Siblings field is required (can be empty if none)'),
+            'siblings.*.relation.required' => __('Specify relationship'),
+            'siblings.*.birth_year.required' => __('Specify birth year'),
+            'computer_skills.required' => __('Specify computer skills'),
+            'universities.required' => __('Add at least one university'),
+            'language_skills.required' => __('Add at least one language'),
+            'work_experience.required' => __('Add at least one work experience'),
+            'job_satisfaction.required' => __('Specify job satisfaction level'),
+            'employer_requirements.required' => __('Specify workplace requirements'),
+        ];
+    }
 
-    protected $validationAttributes = [
-        // Шаг 1
-        'last_name' => 'Фамилия',
-        'first_name' => 'Имя',
-        'email' => 'Email',
-        'phone' => 'Телефон',
-        'gender' => 'Пол',
-        'marital_status' => 'Семейное положение',
-        'birth_date' => 'Дата рождения',
-        'birth_place' => 'Место рождения',
-        'current_city' => 'Текущий город',
-        'ready_to_relocate' => 'Готов к переезду',
-        'instagram' => 'Инстаграм',
-        'photo' => 'Фото',
+    protected function validationAttributes()
+    {
+        return [
+            // Step 1
+            'last_name' => __('Last Name'),
+            'first_name' => __('First Name'),
+            'email' => __('Email'),
+            'phone' => __('Phone'),
+            'gender' => __('Gender'),
+            'marital_status' => __('Marital Status'),
+            'birth_date' => __('Date of Birth'),
+            'birth_place' => __('Place of Birth'),
+            'current_city' => __('Current City'),
+            'ready_to_relocate' => __('Ready to Relocate'),
+            'instagram' => __('Instagram'),
+            'photo' => __('Photo'),
 
-        // Шаг 2
-        'has_driving_license' => 'Водительские права',
-        'religion' => 'Вероисповедание',
-        'is_practicing' => 'Практикующий',
-        'family_members' => 'Члены семьи',
-        'family_members.*.type' => 'Тип родства',
-        'family_members.*.birth_year' => 'Год рождения',
-        'family_members.*.profession' => 'Профессия',
+            // Step 2
+            'has_driving_license' => __('Driving License'),
+            'religion' => __('Religion'),
+            'is_practicing' => __('Practicing'),
+            'family_members' => __('Family Members'),
+            'family_members.*.type' => __('Relationship Type'),
+            'family_members.*.birth_year' => __('Birth Year'),
+            'family_members.*.profession' => __('Profession'),
 
-        // Новые атрибуты для категорий семьи
-        'parents' => 'Родители',
-        'parents.*.relation' => 'Родство',
-        'parents.*.birth_year' => 'Год рождения',
-        'parents.*.profession' => 'Профессия',
+            // New family category attributes
+            'parents' => __('Parents'),
+            'parents.*.relation' => __('Relationship'),
+            'parents.*.birth_year' => __('Birth Year'),
+            'parents.*.profession' => __('Profession'),
 
-        'siblings' => 'Братья и сестры',
-        'siblings.*.relation' => 'Родство',
-        'siblings.*.birth_year' => 'Год рождения',
+            'siblings' => __('Siblings'),
+            'siblings.*.relation' => __('Relationship'),
+            'siblings.*.birth_year' => __('Birth Year'),
 
-        'children' => 'Дети',
-        'children.*.gender' => 'Пол ребенка',
-        'children.*.birth_year' => 'Год рождения',
-        'hobbies' => 'Хобби',
-        'interests' => 'Интересы',
-        'visited_countries' => 'Посещенные страны',
-        'visited_countries.*' => 'Страна',
-        'books_per_year_min' => 'Минимальное количество книг в год',
-        'books_per_year_max' => 'Максимальное количество книг в год',
-        'favorite_sports' => 'Любимые виды спорта',
-        'entertainment_hours_weekly' => 'Часы развлекательных видео в неделю',
-        'educational_hours_weekly' => 'Часы образовательных видео в неделю',
-        'social_media_hours_weekly' => 'Часы соцсетей в неделю',
+            'children' => __('Children'),
+            'children.*.gender' => __('Child Gender'),
+            'children.*.birth_year' => __('Birth Year'),
+            'hobbies' => __('Hobbies'),
+            'interests' => __('Interests'),
+            'visited_countries' => __('Visited Countries'),
+            'visited_countries.*' => __('Country'),
+            'books_per_year_min' => __('Minimum Books per Year'),
+            'books_per_year_max' => __('Maximum Books per Year'),
+            'favorite_sports' => __('Favorite Sports'),
+            'entertainment_hours_weekly' => __('Entertainment Hours per Week'),
+            'educational_hours_weekly' => __('Educational Hours per Week'),
+            'social_media_hours_weekly' => __('Social Media Hours per Week'),
 
-        // Шаг 3
-        'school_name' => 'Название школы',
-        'school_city' => 'Город (школа)',
-        'school_graduation_year' => 'Год окончания (школа)',
-        'universities' => 'Университеты',
-        'universities.*.name' => 'Название университета',
-        'universities.*.graduation_year' => 'Год окончания',
-        'universities.*.speciality' => 'Специальность',
-        'universities.*.gpa' => 'GPA',
-        'language_skills' => 'Языковые навыки',
-        'language_skills.*.language' => 'Язык',
-        'language_skills.*.level' => 'Уровень',
-        'computer_skills' => 'Компьютерные навыки',
-        'work_experience' => 'Опыт работы',
-        'work_experience.*.years' => 'Период',
-        'work_experience.*.company' => 'Название компании',
-        'work_experience.*.city' => 'Город',
-        'work_experience.*.position' => 'Должность',
-        'work_experience.*.start_month' => 'Месяц начала',
-        'work_experience.*.start_year' => 'Год начала',
-        'work_experience.*.end_month' => 'Месяц окончания',
-        'work_experience.*.end_year' => 'Год окончания',
-        'total_experience_years' => 'Общий стаж работы',
-        'job_satisfaction' => 'Удовлетворенность работой',
-        'desired_position' => 'Желаемая должность',
-        'activity_sphere' => 'Сфера деятельности',
-        'expected_salary' => 'Ожидаемая зарплата',
-        'employer_requirements' => 'Пожелания на рабочем месте',
+            // Step 3
+            'school_name' => __('School Name'),
+            'school_city' => __('City (School)'),
+            'school_graduation_year' => __('Graduation Year (School)'),
+            'universities' => __('Universities'),
+            'universities.*.name' => __('University Name'),
+            'universities.*.graduation_year' => __('Graduation Year'),
+            'universities.*.speciality' => __('Specialization'),
+            'universities.*.gpa' => __('GPA'),
+            'language_skills' => __('Language Skills'),
+            'language_skills.*.language' => __('Language'),
+            'language_skills.*.level' => __('Level'),
+            'computer_skills' => __('Computer Skills'),
+            'work_experience' => __('Work Experience'),
+            'work_experience.*.years' => __('Period'),
+            'work_experience.*.company' => __('Company Name'),
+            'work_experience.*.city' => __('City'),
+            'work_experience.*.position' => __('Position'),
+            'work_experience.*.start_month' => __('Start Month'),
+            'work_experience.*.start_year' => __('Start Year'),
+            'work_experience.*.end_month' => __('End Month'),
+            'work_experience.*.end_year' => __('End Year'),
+            'work_experience.*.activity_sphere' => __('Field of Activity'),
+            'work_experience.*.main_tasks' => __('Main Tasks'),
+            'work_experience.*.main_tasks.*' => __('Task'),
+            'total_experience_years' => __('Total Work Experience'),
+            'job_satisfaction' => __('Job Satisfaction'),
+            'desired_positions' => __('Desired Position'),
+            'desired_positions.*' => __('Desired Position'),
+            'activity_sphere' => __('Field of Activity'),
+            'awards' => __('Awards and Achievements'),
+            'awards.*' => __('Award'),
+            'expected_salary' => __('Expected Salary'),
+            'expected_salary_from' => __('Salary From'),
+            'expected_salary_to' => __('Salary To'),
+            'employer_requirements' => __('Workplace Requirements'),
 
-        // Шаг 4
-        'gallup_pdf' => 'Gallup PDF',
-        'mbti_type' => 'Тип личности MBTI',
-    ];
+            // Step 4
+            'gallup_pdf' => __('Gallup PDF'),
+            'mbti_type' => __('MBTI Personality Type'),
+        ];
+    }
 
     public function updated($propertyName)
     {
@@ -764,6 +835,18 @@ class CandidateForm extends Component
             return;
         }
 
+        // Если обновляется поле desired_positions (массив желаемых должностей)
+        if (strpos($propertyName, 'desired_positions.') === 0) {
+            $this->resetErrorBag($propertyName);
+            return;
+        }
+
+        // Если обновляется поле awards (массив наград)
+        if (strpos($propertyName, 'awards.') === 0) {
+            $this->resetErrorBag($propertyName);
+            return;
+        }
+
         // Валидируем только поля текущего шага
         $rules = collect($this->rules())->filter(function ($rule, $field) {
             return $this->isFieldInCurrentStep($field);
@@ -775,8 +858,13 @@ class CandidateForm extends Component
 
         // Сохраняем изменение в историю
         if ($this->candidate) {
-            $oldValue = $this->candidate->{$propertyName};
-            $newValue = $this->{$propertyName};
+            // Пропускаем запись для сложных массивных свойств
+            if (strpos($propertyName, '.') !== false) {
+                return;
+            }
+
+            $oldValue = $this->candidate->{$propertyName} ?? null;
+            $newValue = $this->{$propertyName} ?? null;
 
             if ($oldValue !== $newValue) {
                 CandidateHistory::create([
@@ -798,7 +886,7 @@ class CandidateForm extends Component
 
         $step1Fields = ['last_name', 'first_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
         $step2Fields = ['religion', 'is_practicing', 'family_members', 'parents', 'siblings', 'children', 'hobbies', 'interests', 'visited_countries', 'books_per_year_min', 'books_per_year_max', 'favorite_sports', 'entertainment_hours_weekly', 'educational_hours_weekly', 'social_media_hours_weekly', 'has_driving_license', 'newCountry'];
-        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary', 'expected_salary_from', 'expected_salary_to', 'employer_requirements'];
+        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_positions', 'activity_sphere', 'awards', 'expected_salary', 'expected_salary_from', 'expected_salary_to', 'employer_requirements'];
         $step4Fields = ['gallup_pdf', 'mbti_type', 'gardner_test_completed'];
 
         return match($this->currentStep) {
@@ -949,9 +1037,15 @@ class CandidateForm extends Component
                 'work_experience.*.company' => $allRules['work_experience.*.company'],
                 'work_experience.*.city' => $allRules['work_experience.*.city'],
                 'work_experience.*.position' => $allRules['work_experience.*.position'],
+                'work_experience.*.activity_sphere' => $allRules['work_experience.*.activity_sphere'],
+                'work_experience.*.main_tasks' => $allRules['work_experience.*.main_tasks'],
+                'work_experience.*.main_tasks.*' => $allRules['work_experience.*.main_tasks.*'],
                 'total_experience_years' => $allRules['total_experience_years'],
                 'job_satisfaction' => $allRules['job_satisfaction'],
-                'desired_position' => $allRules['desired_position'],
+                'desired_positions' => $allRules['desired_positions'],
+                'desired_positions.*' => $allRules['desired_positions.*'],
+                'awards' => $allRules['awards'],
+                'awards.*' => $allRules['awards.*'],
                 'expected_salary' => $allRules['expected_salary'],
                 'employer_requirements' => $allRules['employer_requirements'],
             ],
@@ -959,10 +1053,10 @@ class CandidateForm extends Component
                 'gallup_pdf' => [
                     $this->currentStep === 4 && $this->candidate && $this->candidate->gallup_pdf ? 'nullable' : 'required',
                     'file',
-                    'mimes:pdf',
+                    'mimes:pdf,jpg,jpeg,png,webp',
                     'max:10240',
                     function ($attribute, $value, $fail) {
-                        if ($value && !is_string($value) && !$this->isGallupPdf($value)) {
+                        if ($value && !is_string($value) && !$this->isValidGallupFile($value)) {
                             $fail('Загруженный файл не является корректным отчетом Gallup.');
                         }
                     }
@@ -982,7 +1076,7 @@ class CandidateForm extends Component
 
         $step1Fields = ['last_name', 'first_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
         $step2Fields = ['religion', 'is_practicing', 'family_members', 'parents', 'siblings', 'children', 'hobbies', 'interests', 'visited_countries', 'books_per_year_min', 'books_per_year_max', 'favorite_sports', 'entertainment_hours_weekly', 'educational_hours_weekly', 'social_media_hours_weekly', 'has_driving_license', 'newCountry'];
-        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_position', 'activity_sphere', 'expected_salary', 'expected_salary_from', 'expected_salary_to', 'employer_requirements'];
+        $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_positions', 'activity_sphere', 'awards', 'expected_salary', 'expected_salary_from', 'expected_salary_to', 'employer_requirements'];
         $step4Fields = ['gallup_pdf', 'mbti_type', 'gardner_test_completed'];
 
         if (in_array($baseField, $step1Fields, true)) return 1;
@@ -1095,6 +1189,118 @@ class CandidateForm extends Component
         logger()->info('updatedChildren hook called', [
             'children' => $this->children
         ]);
+    }
+
+    /**
+     * Хук для отслеживания изменений в опыте работы
+     * Автоматически обновляет поле years при изменении дат
+     * и капитализирует первую букву в полях company, city, position
+     */
+    public function updatedWorkExperience($value, $key)
+    {
+        // Проверяем, изменились ли поля дат
+        if (preg_match('/^(\d+)\.(start_month|start_year|end_month|end_year|is_current)$/', $key, $matches)) {
+            $index = (int)$matches[1];
+            $this->updateWorkExperienceYears($index);
+        }
+
+        // Автокапитализация для company, city, position
+        if (preg_match('/^(\d+)\.(company|city|position)$/', $key, $matches)) {
+            $index = (int)$matches[1];
+            $field = $matches[2];
+            if (isset($this->work_experience[$index][$field]) && is_string($this->work_experience[$index][$field])) {
+                $this->work_experience[$index][$field] = $this->mbUcfirst($this->work_experience[$index][$field]);
+            }
+        }
+    }
+
+    /**
+     * Автокапитализация названия школы
+     */
+    public function updatedSchoolName($value)
+    {
+        if (is_string($value) && !empty($value)) {
+            $this->school_name = $this->mbUcfirst($value);
+        }
+    }
+
+    /**
+     * Автокапитализация города школы
+     */
+    public function updatedSchoolCity($value)
+    {
+        if (is_string($value) && !empty($value)) {
+            $this->school_city = $this->mbUcfirst($value);
+        }
+    }
+
+    /**
+     * Автокапитализация полей университета (name, speciality, city)
+     */
+    public function updatedUniversities($value, $key)
+    {
+        if (preg_match('/^(\d+)\.(name|speciality|city)$/', $key, $matches)) {
+            $index = (int)$matches[1];
+            $field = $matches[2];
+            if (isset($this->universities[$index][$field]) && is_string($this->universities[$index][$field])) {
+                $this->universities[$index][$field] = $this->mbUcfirst($this->universities[$index][$field]);
+            }
+        }
+    }
+
+    /**
+     * Капитализация первой буквы строки с поддержкой Unicode
+     */
+    private function mbUcfirst(string $string): string
+    {
+        $string = trim($string);
+        if ($string === '') {
+            return '';
+        }
+        $firstChar = mb_substr($string, 0, 1, 'UTF-8');
+        $rest = mb_substr($string, 1, null, 'UTF-8');
+        return mb_strtoupper($firstChar, 'UTF-8') . $rest;
+    }
+
+    /**
+     * Обновляет поле years для указанного опыта работы
+     */
+    private function updateWorkExperienceYears($index)
+    {
+        if (!isset($this->work_experience[$index])) {
+            return;
+        }
+
+        $exp = $this->work_experience[$index];
+        $months = [
+            0 => 'Янв', 1 => 'Фев', 2 => 'Мар', 3 => 'Апр',
+            4 => 'Май', 5 => 'Июн', 6 => 'Июл', 7 => 'Авг',
+            8 => 'Сен', 9 => 'Окт', 10 => 'Ноя', 11 => 'Дек'
+        ];
+
+        $startMonth = $exp['start_month'] ?? null;
+        $startYear = $exp['start_year'] ?? null;
+        $endMonth = $exp['end_month'] ?? null;
+        $endYear = $exp['end_year'] ?? null;
+        $isCurrent = $exp['is_current'] ?? false;
+
+        if ($startMonth !== null && $startMonth !== '' && $startYear) {
+            $startStr = ($months[(int)$startMonth] ?? '') . ' ' . $startYear;
+
+            if ($isCurrent) {
+                $endStr = __('Present');
+            } elseif ($endMonth !== null && $endMonth !== '' && $endYear) {
+                $endStr = ($months[(int)$endMonth] ?? '') . ' ' . $endYear;
+            } else {
+                $endStr = '';
+            }
+
+            if ($endStr) {
+                $this->work_experience[$index]['years'] = $startStr . ' — ' . $endStr;
+            } else {
+                $this->work_experience[$index]['years'] = $startStr;
+            }
+        }
     }
 
     /**
@@ -1548,23 +1754,35 @@ class CandidateForm extends Component
             }
 
             $this->languages = [];
+            $locale = app()->getLocale();
+            $nameField = $locale === 'en' ? 'name_en' : ($locale === 'ar' ? 'name_en' : 'name_ru');
+
             if (isset($languagesData['languages']) && is_array($languagesData['languages'])) {
                 foreach ($languagesData['languages'] as $language) {
-                    if (isset($language['name_ru']) && !empty($language['name_ru'])) {
-                        $this->languages[] = $language['name_ru'];
+                    if (isset($language[$nameField]) && !empty($language[$nameField])) {
+                        $this->languages[] = $language[$nameField];
                     }
                 }
             }
 
             // Если массив языков пустой, используем fallback
             if (empty($this->languages)) {
-                $this->languages = ['Русский', 'Английский', 'Испанский', 'Французский', 'Немецкий', 'Китайский', 'Японский'];
+                if ($locale === 'en' || $locale === 'ar') {
+                    $this->languages = ['Russian', 'English', 'Spanish', 'French', 'German', 'Chinese', 'Japanese', 'Arabic', 'Kazakh'];
+                } else {
+                    $this->languages = ['Русский', 'Английский', 'Испанский', 'Французский', 'Немецкий', 'Китайский', 'Японский', 'Арабский', 'Казахский'];
+                }
             }
 
         } catch (\Exception $e) {
             logger()->error('Error loading languages: ' . $e->getMessage());
             // Fallback к базовым языкам
-            $this->languages = ['Русский', 'Английский', 'Испанский', 'Французский', 'Немецкий', 'Китайский', 'Японский'];
+            $locale = app()->getLocale();
+            if ($locale === 'en' || $locale === 'ar') {
+                $this->languages = ['Russian', 'English', 'Spanish', 'French', 'German', 'Chinese', 'Japanese', 'Arabic', 'Kazakh'];
+            } else {
+                $this->languages = ['Русский', 'Английский', 'Испанский', 'Французский', 'Немецкий', 'Китайский', 'Японский', 'Арабский', 'Казахский'];
+            }
         }
     }
 
@@ -1589,7 +1807,9 @@ class CandidateForm extends Component
             'end_year' => '',
             'start_period' => 240, // Примерно 2020 год (240 месяцев с 1990)
             'end_period' => 300,   // Примерно 2025 год (300 месяцев с 1990)
-            'is_current' => false
+            'is_current' => false,
+            'activity_sphere' => '', // Сфера деятельности
+            'main_tasks' => ['', '', ''], // Основные задачи (минимум 3)
         ];
     }
 
@@ -1597,6 +1817,56 @@ class CandidateForm extends Component
     {
         unset($this->work_experience[$index]);
         $this->work_experience = array_values($this->work_experience);
+    }
+
+    // Методы для желаемых должностей
+    public function addDesiredPosition()
+    {
+        if (count($this->desired_positions) < 3) {
+            $this->desired_positions[] = '';
+        }
+    }
+
+    public function removeDesiredPosition($index)
+    {
+        unset($this->desired_positions[$index]);
+        $this->desired_positions = array_values($this->desired_positions);
+    }
+
+    // Методы для добавления задач в опыт работы
+    public function addWorkTask($experienceIndex)
+    {
+        if (isset($this->work_experience[$experienceIndex])) {
+            if (!isset($this->work_experience[$experienceIndex]['main_tasks'])) {
+                $this->work_experience[$experienceIndex]['main_tasks'] = [];
+            }
+            if (count($this->work_experience[$experienceIndex]['main_tasks']) < 8) {
+                $this->work_experience[$experienceIndex]['main_tasks'][] = '';
+            }
+        }
+    }
+
+    public function removeWorkTask($experienceIndex, $taskIndex)
+    {
+        if (isset($this->work_experience[$experienceIndex]['main_tasks'][$taskIndex])) {
+            // Не удаляем если осталось 3 или меньше задач
+            if (count($this->work_experience[$experienceIndex]['main_tasks']) > 3) {
+                unset($this->work_experience[$experienceIndex]['main_tasks'][$taskIndex]);
+                $this->work_experience[$experienceIndex]['main_tasks'] = array_values($this->work_experience[$experienceIndex]['main_tasks']);
+            }
+        }
+    }
+
+    // Методы для наград и достижений
+    public function addAward()
+    {
+        $this->awards[] = '';
+    }
+
+    public function removeAward($index)
+    {
+        unset($this->awards[$index]);
+        $this->awards = array_values($this->awards);
     }
 
     public function updatedPhoto()
@@ -1703,7 +1973,7 @@ class CandidateForm extends Component
 
     public function updatedGallupPdf()
     {
-        logger()->info('Gallup PDF upload started', [
+        logger()->info('Gallup file upload started', [
             'file_present' => $this->gallup_pdf ? 'yes' : 'no',
             'file_type' => $this->gallup_pdf ? get_class($this->gallup_pdf) : 'null'
         ]);
@@ -1711,35 +1981,35 @@ class CandidateForm extends Component
         if ($this->gallup_pdf) {
             try {
                 // Логируем информацию о файле
-                logger()->info('Gallup PDF file info', [
+                logger()->info('Gallup file info', [
                     'original_name' => $this->gallup_pdf->getClientOriginalName(),
                     'size' => $this->gallup_pdf->getSize(),
                     'mime_type' => $this->gallup_pdf->getMimeType(),
                 ]);
 
-                // Базовая валидация файла
+                // Базовая валидация файла (PDF или изображение)
                 $this->validate([
-                    'gallup_pdf' => 'file|mimes:pdf|max:10240'
+                    'gallup_pdf' => 'file|mimes:pdf,jpg,jpeg,png,webp|max:10240'
                 ]);
 
-                logger()->info('Gallup PDF passed basic validation');
+                logger()->info('Gallup file passed basic validation');
 
-                // Проверяем, что это корректный Gallup PDF
-                if (!$this->isGallupPdf($this->gallup_pdf)) {
-                    logger()->warning('Gallup PDF failed content validation');
-                    $this->addError('gallup_pdf', 'Загруженный файл не является корректным отчетом Gallup. Убедитесь, что это официальный PDF с результатами теста Gallup.');
+                // Проверяем, что это корректный Gallup файл
+                if (!$this->isValidGallupFile($this->gallup_pdf)) {
+                    logger()->warning('Gallup file failed content validation');
+                    $this->addError('gallup_pdf', 'Загруженный файл не является корректным отчетом Gallup. Убедитесь, что это официальный PDF или изображение с результатами теста Gallup.');
                     $this->resetGallupFile();
                     return;
                 }
 
-                logger()->info('Gallup PDF validation successful');
+                logger()->info('Gallup file validation successful');
 
                 // Отправляем событие в JavaScript
                 $this->dispatch('gallup-file-uploaded');
 
-                session()->flash('message', 'PDF файл загружен и проверен');
+                session()->flash('message', 'Файл загружен и проверен');
             } catch (\Exception $e) {
-                logger()->error('Error processing Gallup PDF', [
+                logger()->error('Error processing Gallup file', [
                     'message' => $e->getMessage(),
                     'trace' => $e->getTraceAsString()
                 ]);
@@ -1791,10 +2061,10 @@ class CandidateForm extends Component
                 $rules['gallup_pdf'] = [
                     'nullable',
                     'file',
-                    'mimes:pdf',
+                    'mimes:pdf,jpg,jpeg,png,webp',
                     'max:10240',
                     function ($attribute, $value, $fail) {
-                        if ($value && !is_string($value) && !$this->isGallupPdf($value)) {
+                        if ($value && !is_string($value) && !$this->isValidGallupFile($value)) {
                             $fail('Загруженный файл не является корректным отчетом Gallup.');
                         }
                     }
@@ -1891,8 +2161,11 @@ class CandidateForm extends Component
             });
             $this->candidate->total_experience_years = $this->total_experience_years;
             $this->candidate->job_satisfaction = $this->job_satisfaction;
-            $this->candidate->desired_position = $this->desired_position;
+            // Сохраняем желаемые должности как массив и также в старое поле для обратной совместимости
+            $this->candidate->desired_positions = array_filter($this->desired_positions);
+            $this->candidate->desired_position = implode(' / ', array_filter($this->desired_positions));
             $this->candidate->activity_sphere = $this->activity_sphere;
+            $this->candidate->awards = array_filter($this->awards);
             $this->candidate->expected_salary = $this->expected_salary;
             $this->candidate->expected_salary_from = $this->expected_salary_from;
             $this->candidate->expected_salary_to = $this->expected_salary_to;
@@ -1922,16 +2195,24 @@ class CandidateForm extends Component
                 'ip_address' => request()->ip()
             ]);
 
-            // Запускаем обработку Gallup файла в фоновом режиме
+            // Запускаем обработку Gallup файла синхронно (сразу обрабатывается)
             if ($this->candidate->gallup_pdf) {
-                ProcessGallupFile::dispatch($this->candidate);
-                logger()->info('Gallup file processing job dispatched', [
-                    'candidate_id' => $this->candidate->id,
-                    'gallup_pdf' => $this->candidate->gallup_pdf
-                ]);
+                try {
+                    ProcessGallupFile::dispatchSync($this->candidate);
+                    $this->candidate->refresh(); // Обновляем данные после обработки
+                    logger()->info('Gallup file processed successfully', [
+                        'candidate_id' => $this->candidate->id,
+                        'step' => $this->candidate->step
+                    ]);
+                } catch (\Exception $e) {
+                    logger()->error('Gallup file processing failed', [
+                        'candidate_id' => $this->candidate->id,
+                        'error' => $e->getMessage()
+                    ]);
+                }
             }
 
-            session()->flash('message', 'Анкета успешно сохранена!');
+            session()->flash('message', 'Резюме успешно сохранено!');
 
             // Определяем, куда перенаправить пользователя
             if (auth()->user()->is_admin) {
@@ -2042,8 +2323,12 @@ class CandidateForm extends Component
         }
         if ($this->total_experience_years !== null) $this->candidate->total_experience_years = $this->total_experience_years;
         if ($this->job_satisfaction !== null) $this->candidate->job_satisfaction = $this->job_satisfaction;
-        if ($this->desired_position) $this->candidate->desired_position = $this->desired_position;
+        if (!empty($this->desired_positions)) {
+            $this->candidate->desired_positions = array_filter($this->desired_positions);
+            $this->candidate->desired_position = implode(' / ', array_filter($this->desired_positions));
+        }
         if ($this->activity_sphere) $this->candidate->activity_sphere = $this->activity_sphere;
+        if (!empty($this->awards)) $this->candidate->awards = array_filter($this->awards);
         if ($this->expected_salary !== null) $this->candidate->expected_salary = $this->expected_salary;
         if ($this->expected_salary_from !== null) $this->candidate->expected_salary_from = $this->expected_salary_from;
         if ($this->expected_salary_to !== null) $this->candidate->expected_salary_to = $this->expected_salary_to;
@@ -2180,46 +2465,72 @@ class CandidateForm extends Component
     }
 
     /**
-     * Проверяет, является ли загруженный файл корректным Gallup PDF
+     * Проверяет, является ли загруженный файл корректным Gallup файлом (PDF или изображение)
      */
-    private function isGallupPdf($file): bool
+    private function isValidGallupFile($file): bool
     {
         try {
             // Получаем временный путь к файлу
             $tempPath = $file->getRealPath();
+            $extension = strtolower($file->getClientOriginalExtension());
 
-            $parser = new \Smalot\PdfParser\Parser();
-            $pdf = $parser->parseFile($tempPath);
-            $text = $pdf->getText();
-            $pages = $pdf->getPages();
+            // Для изображений - просто проверяем, что это валидное изображение
+            if (in_array($extension, ['jpg', 'jpeg', 'png', 'webp'])) {
+                $imageInfo = @getimagesize($tempPath);
+                $isValidImage = $imageInfo !== false;
 
-            logger()->info('Gallup PDF validation', [
-                'page_count' => count($pages),
-                'has_gallup_inc' => str_contains($text, 'Gallup, Inc.'),
-                'has_clifton' => str_contains($text, 'CliftonStrengths') || str_contains($text, 'Clifton'),
-                'text_sample' => substr($text, 0, 500)
-            ]);
+                logger()->info('Gallup image validation', [
+                    'extension' => $extension,
+                    'is_valid_image' => $isValidImage,
+                    'width' => $imageInfo[0] ?? 0,
+                    'height' => $imageInfo[1] ?? 0
+                ]);
 
-            // Смягченные условия проверки Gallup-отчета
-            $hasMinimumPages = count($pages) >= 10; // Минимум 10 страниц
-            $containsGallupKeywords = str_contains($text, 'Gallup') ||
-                                    str_contains($text, 'CliftonStrengths') ||
-                                    str_contains($text, 'StrengthsFinder') ||
-                                    str_contains($text, 'Clifton');
+                // Изображения принимаем без глубокой проверки - GPT-4o проанализирует
+                return $isValidImage;
+            }
 
-            // Если это PDF и содержит ключевые слова Gallup - считаем валидным
-            $isValid = $hasMinimumPages && $containsGallupKeywords;
+            // Для PDF - проверяем ключевые слова Gallup
+            if ($extension === 'pdf') {
+                $parser = new \Smalot\PdfParser\Parser();
+                $pdf = $parser->parseFile($tempPath);
+                $text = $pdf->getText();
+                $pages = $pdf->getPages();
 
-            logger()->info('Gallup PDF validation result', [
-                'is_valid' => $isValid,
-                'minimum_pages' => $hasMinimumPages,
-                'has_keywords' => $containsGallupKeywords
-            ]);
+                logger()->info('Gallup PDF validation', [
+                    'page_count' => count($pages),
+                    'has_gallup_inc' => str_contains($text, 'Gallup, Inc.'),
+                    'has_clifton' => str_contains($text, 'CliftonStrengths') || str_contains($text, 'Clifton'),
+                    'text_sample' => substr($text, 0, 500)
+                ]);
 
-            return $isValid;
+                // Для PDF проверяем ключевые слова (поддержка русских и английских)
+                $containsGallupKeywords = str_contains($text, 'Gallup') ||
+                                        str_contains($text, 'CliftonStrengths') ||
+                                        str_contains($text, 'StrengthsFinder') ||
+                                        str_contains($text, 'Clifton') ||
+                                        str_contains($text, 'Клифтон') ||
+                                        str_contains($text, 'талант');
+
+                // Смягчённые условия: минимум 1 страница и ключевые слова ИЛИ 10+ страниц
+                $hasMinimumPages = count($pages) >= 1;
+                $hasManyPages = count($pages) >= 10;
+                $isValid = ($hasMinimumPages && $containsGallupKeywords) || $hasManyPages;
+
+                logger()->info('Gallup PDF validation result', [
+                    'is_valid' => $isValid,
+                    'minimum_pages' => $hasMinimumPages,
+                    'has_keywords' => $containsGallupKeywords
+                ]);
+
+                return $isValid;
+            }
+
+            // Неподдерживаемый формат
+            return false;
         } catch (\Exception $e) {
-            logger()->error('Error checking Gallup PDF: ' . $e->getMessage());
-            // В случае ошибки парсинга, разрешаем загрузку (возможно это корректный PDF)
+            logger()->error('Error checking Gallup file: ' . $e->getMessage());
+            // В случае ошибки, разрешаем загрузку (GPT-4o проанализирует)
             return true;
         }
     }
@@ -2273,6 +2584,8 @@ class CandidateForm extends Component
                     'start_period' => $experience['start_period'] ?? 240, // Значение по умолчанию
                     'end_period' => $experience['end_period'] ?? 300,     // Значение по умолчанию
                     'is_current' => $experience['is_current'] ?? false,
+                    'activity_sphere' => $experience['activity_sphere'] ?? '',
+                    'main_tasks' => $experience['main_tasks'] ?? ['', '', ''], // Минимум 3 задачи
                 ];
             }
             // Если это старый формат, конвертируем
@@ -2332,6 +2645,8 @@ class CandidateForm extends Component
                     'start_period' => $startPeriod,
                     'end_period' => $endPeriod,
                     'is_current' => false,
+                    'activity_sphere' => '',
+                    'main_tasks' => ['', '', ''], // Минимум 3 задачи
                 ];
             }
         }

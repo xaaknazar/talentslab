@@ -12,10 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('candidates', function (Blueprint $table) {
-            // Добавляем новые поля для диапазона зарплаты
-            $table->decimal('expected_salary_from', 15, 2)->nullable()->after('expected_salary');
-            $table->decimal('expected_salary_to', 15, 2)->nullable()->after('expected_salary_from');
-            $table->string('salary_currency', 3)->default('KZT')->after('expected_salary_to');
+            // Добавляем новые поля для диапазона зарплаты (проверяем существование)
+            if (!Schema::hasColumn('candidates', 'expected_salary_from')) {
+                $table->decimal('expected_salary_from', 15, 2)->nullable()->after('expected_salary');
+            }
+            if (!Schema::hasColumn('candidates', 'expected_salary_to')) {
+                $table->decimal('expected_salary_to', 15, 2)->nullable()->after('expected_salary_from');
+            }
+            if (!Schema::hasColumn('candidates', 'salary_currency')) {
+                $table->string('salary_currency', 3)->default('KZT')->after('expected_salary_to');
+            }
         });
     }
 
@@ -25,7 +31,15 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('candidates', function (Blueprint $table) {
-            $table->dropColumn(['expected_salary_from', 'expected_salary_to', 'salary_currency']);
+            if (Schema::hasColumn('candidates', 'expected_salary_from')) {
+                $table->dropColumn('expected_salary_from');
+            }
+            if (Schema::hasColumn('candidates', 'expected_salary_to')) {
+                $table->dropColumn('expected_salary_to');
+            }
+            if (Schema::hasColumn('candidates', 'salary_currency')) {
+                $table->dropColumn('salary_currency');
+            }
         });
     }
 };

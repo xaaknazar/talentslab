@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <img src="{{ asset('logo.svg') }}" alt="Divergents Logo" class="brand-logo" style="width: auto; height: 60px">
+                        <img src="{{ asset('logos/talents_lab_logo.png') }}" alt="Talents Lab Logo" class="brand-logo" style="width: auto; height: 30px">
                     </a>
                 </div>
 
@@ -76,9 +76,9 @@
                     @php
                         $currentLocale = app()->getLocale();
                         $languages = [
-                            'ru' => ['flag' => '🇷🇺', 'name' => 'Русский', 'short' => 'RU'],
-                            'en' => ['flag' => '🇬🇧', 'name' => 'English', 'short' => 'EN'],
-                            'ar' => ['flag' => '🇸🇦', 'name' => 'العربية', 'short' => 'AR']
+                            'ru' => ['name' => 'Русский', 'code' => 'Ru'],
+                            'en' => ['name' => 'English', 'code' => 'En'],
+                            'ar' => ['name' => 'العربية', 'code' => 'SA']
                         ];
                         $currentLang = $languages[$currentLocale] ?? $languages['ru'];
                     @endphp
@@ -87,8 +87,8 @@
                             @click.outside="langOpen = false"
                             type="button"
                             class="group flex items-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 hover:border-blue-300 hover:from-blue-50 hover:to-indigo-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm hover:shadow-md">
-                        <span class="text-xl">{{ $currentLang['flag'] }}</span>
-                        <span class="font-medium text-gray-700 group-hover:text-blue-700 text-sm">{{ $currentLang['short'] }}</span>
+                        <span class="font-semibold text-gray-700 group-hover:text-blue-700 text-sm">{{ $currentLang['code'] }}</span>
+                        <span class="text-gray-500 group-hover:text-blue-600 text-sm">{{ $currentLang['name'] }}</span>
                         <svg class="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-transform duration-200"
                              :class="{ 'rotate-180': langOpen }"
                              xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -103,22 +103,15 @@
                          x-transition:leave="transition ease-in duration-150"
                          x-transition:leave-start="opacity-100 scale-100 translate-y-0"
                          x-transition:leave-end="opacity-0 scale-95 translate-y-1"
-                         class="absolute right-0 mt-2 w-56 origin-top-right rounded-xl bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50 overflow-hidden"
+                         class="absolute right-0 mt-2 w-48 origin-top-right rounded-xl bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50 overflow-hidden"
                          style="display: none;">
-
-                        <div class="px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-100">
-                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ __('Choose Language') }}</p>
-                        </div>
 
                         <div class="py-2">
                             @foreach($languages as $locale => $lang)
                                 <a href="{{ route('language.switch', $locale) }}"
                                    class="flex items-center gap-3 px-4 py-3 text-sm transition-all duration-150 {{ $currentLocale === $locale ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-500' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900 border-l-4 border-transparent' }}">
-                                    <span class="text-2xl">{{ $lang['flag'] }}</span>
-                                    <div class="flex flex-col">
-                                        <span class="font-medium">{{ $lang['name'] }}</span>
-                                        <span class="text-xs text-gray-400">{{ $lang['short'] }}</span>
-                                    </div>
+                                    <span class="font-semibold min-w-[24px]">{{ $lang['code'] }}</span>
+                                    <span>{{ $lang['name'] }}</span>
                                     @if($currentLocale === $locale)
                                         <svg class="ml-auto w-5 h-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
@@ -239,6 +232,32 @@
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
                 </form>
+
+                <!-- Language Switcher (Mobile) -->
+                <div class="border-t border-gray-200"></div>
+
+                <div class="block px-4 py-2 text-xs text-gray-400">
+                    {{ __('Language') }}
+                </div>
+
+                @php
+                    $mobileCurrentLocale = app()->getLocale();
+                    $mobileLanguages = [
+                        'ru' => ['name' => 'Русский', 'code' => 'Ru'],
+                        'en' => ['name' => 'English', 'code' => 'En'],
+                        'ar' => ['name' => 'العربية', 'code' => 'SA']
+                    ];
+                @endphp
+
+                <div class="flex gap-2 px-4 py-2">
+                    @foreach($mobileLanguages as $locale => $lang)
+                        <a href="{{ route('language.switch', $locale) }}"
+                           class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 {{ $mobileCurrentLocale === $locale ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                            <span class="font-semibold">{{ $lang['code'] }}</span>
+                            <span class="{{ $mobileCurrentLocale === $locale ? 'text-blue-100' : 'text-gray-500' }}">{{ $lang['name'] }}</span>
+                        </a>
+                    @endforeach
+                </div>
 
                 <!-- Team Management -->
                 @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())

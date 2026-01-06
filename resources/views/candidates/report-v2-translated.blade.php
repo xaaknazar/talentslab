@@ -1,9 +1,14 @@
+@php
+    use App\Helpers\ReportLabels;
+    $labels = ReportLabels::all($targetLanguage);
+    $dir = ReportLabels::getDirection($targetLanguage);
+@endphp
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="{{ $targetLanguage }}" dir="{{ $dir }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@if($isReducedReport)Урезанный отчет о кандидате@elseОтчет о кандидате@endif - {{ $candidate->full_name }}</title>
+    <title>@if($isReducedReport){{ $labels['reduced_report'] }}@else{{ $labels['candidate_report'] }}@endif - {{ $candidate->full_name }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -334,23 +339,23 @@ if (! function_exists('clean_git_conflicts')) {
                 <!-- Фото справа с обтеканием -->
                 <div class="float-right ml-6 flex-shrink-0">
                     @if($photoUrl)
-                        <img src="{{$photoUrl}}" alt="Фото кандидата" class="w-47 h-69 object-cover rounded border-2 border-gray-300">
-{{--                        <img src="data:image/png;base64,{{ base64_encode(file_get_contents($photoUrl)) }}" alt="Фото кандидата" class="w-47 h-69 object-cover rounded border-2 border-gray-300">--}}
+                        <img src="{{$photoUrl}}" alt="{{ $labels['candidate_photo'] }}" class="w-47 h-69 object-cover rounded border-2 border-gray-300">
+{{--                        <img src="data:image/png;base64,{{ base64_encode(file_get_contents($photoUrl)) }}" alt="{{ $labels['candidate_photo'] }}" class="w-47 h-69 object-cover rounded border-2 border-gray-300">--}}
                     @else
                         <div class="w-47 h-69 bg-gray-300 rounded border-2 border-gray-300 flex items-center justify-center">
-                            <span class="text-gray-500 text-sm">Фото</span>
+                            <span class="text-gray-500 text-sm">{{ $labels['photo'] }}</span>
                         </div>
                     @endif
                 </div>
 
                 <div>
                         @if($isReducedReport)
-                            <span class="text-lg text-gray-500 font-normal">(урезанная версия)</span>
+                            <span class="text-lg text-gray-500 font-normal">{{ $labels['reduced_version'] }}</span>
                         @endif
                     <h1 class="text-3xl font-bold mb-4" style="color: #39761d; display: flex; align-items: center; gap: 8px;">
                         {{ clean_git_conflicts($candidate->full_name) }}
                         @if($candidate->gallup_pdf || ($candidate->gallup_talents && count($candidate->gallup_talents) > 0))
-                            <span style="display: inline-flex; align-items: center; justify-content: center; background: #39761d; color: white; width: 20px; height: 20px; border-radius: 50%; margin-left: 10px; flex-shrink: 0;" title="Полный профиль">
+                            <span style="display: inline-flex; align-items: center; justify-content: center; background: #39761d; color: white; width: 20px; height: 20px; border-radius: 50%; margin-left: 10px; flex-shrink: 0;" title="{{ $labels['full_profile'] }}">
                                 <svg style="width: 14px; height: 14px;" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                                 </svg>
@@ -383,40 +388,40 @@ if (! function_exists('clean_git_conflicts')) {
                         </div>
                     </div>
                      @endif
-                    <h2 class="text-xl font-bold text-gray-800 mb-2">Основная информация</h2>
+                    <h2 class="text-xl font-bold text-gray-800 mb-2">{{ $labels['main_info'] }}</h2>
                      <!-- Основная информация -->
                      <div class="space-y-1">
                         <div class="flex items-start">
-                            <span class="w-60 text-base text-gray-600">Желаемая должность:</span>
+                            <span class="w-60 text-base text-gray-600">{{ $labels['desired_position'] }}:</span>
                             <span class="text-base font-medium flex-1">
                                 @if($candidate->desired_positions && is_array($candidate->desired_positions) && count(array_filter($candidate->desired_positions)) > 0)
                                     {{ implode(' / ', array_filter($candidate->desired_positions)) }}
                                 @elseif($candidate->desired_position)
                                     {{ $candidate->desired_position }}
                                 @else
-                                    Не указано
+                                    {{ $labels['not_specified'] }}
                                 @endif
                             </span>
                         </div>
                          <div class="flex data-row">
-                             <span class="w-60 text-base text-gray-600">Ожидаемая заработная плата:</span>
+                             <span class="w-60 text-base text-gray-600">{{ $labels['expected_salary'] }}:</span>
                              <span class="text-base font-medium">{{ $candidate->formatted_salary_range }}</span>
                          </div>
                          <div class="flex data-row">
-                             <span class="w-60 text-base text-gray-600">Дата рождения:</span>
-                             <span class="text-base font-medium">{{ $candidate->birth_date?->format('d.m.Y') ?: 'Не указано' }}</span>
+                             <span class="w-60 text-base text-gray-600">{{ $labels['birth_date'] }}:</span>
+                             <span class="text-base font-medium">{{ $candidate->birth_date?->format('d.m.Y') ?: $labels['not_specified'] }}</span>
                          </div>
                          <div class="flex items-start data-row">
-                             <span class="w-60 text-base text-gray-600">Место рождения:</span>
-                             <span class="text-base font-medium flex-1">{{ $candidate->birth_place ?: 'Не указано' }}</span>
+                             <span class="w-60 text-base text-gray-600">{{ $labels['birth_place'] }}:</span>
+                             <span class="text-base font-medium flex-1">{{ $candidate->birth_place ?: $labels['not_specified'] }}</span>
                          </div>
                          <div class="flex data-row">
-                             <span class="w-60 text-base text-gray-600">Пол:</span>
-                             <span class="text-base font-medium">{{ $candidate->gender ?: 'Не указано' }}</span>
+                             <span class="w-60 text-base text-gray-600">{{ $labels['gender'] }}:</span>
+                             <span class="text-base font-medium">{{ $candidate->gender ?: $labels['not_specified'] }}</span>
                          </div>
                          <div class="flex data-row">
-                             <span class="w-60 text-base text-gray-600">Семейное положение:</span>
-                             <span class="text-base font-medium">{{ $candidate->marital_status ?: 'Не указано' }}</span>
+                             <span class="w-60 text-base text-gray-600">{{ $labels['marital_status'] }}:</span>
+                             <span class="text-base font-medium">{{ $candidate->marital_status ?: $labels['not_specified'] }}</span>
                          </div>
                          @php
                              $family = $candidate->getFamilyStructured();
@@ -425,12 +430,12 @@ if (! function_exists('clean_git_conflicts')) {
                          @if($isFullReport)
                          <!-- Дети -->
                          <div class="flex items-start">
-                             <span class="w-60 text-base text-gray-600">Дети:</span>
+                             <span class="w-60 text-base text-gray-600">{{ $labels['children'] }}:</span>
                              <span class="text-base font-medium flex-1">
                                  @if(!empty($family['children']) && count($family['children']) > 0)
                                      {{ count($family['children']) }}
                                      @foreach($family['children'] as $child)
-                                         ({{ $child['gender'] ?? 'М' }}{{ $child['birth_year'] ?? '' }})
+                                         ({{ $child['gender'] ?? $labels['male_short'] }}{{ $child['birth_year'] ?? '' }})
                                      @endforeach
                                  @else
                                      0
@@ -442,14 +447,14 @@ if (! function_exists('clean_git_conflicts')) {
                         @if($isFullReport)
                         <!-- Родители -->
                         <div class="flex items-start">
-                            <span class="w-60 text-base text-gray-600">Родители:</span>
+                            <span class="w-60 text-base text-gray-600">{{ $labels['parents'] }}:</span>
                             <span class="text-base font-medium flex-1">
                                 @if(!empty($family['parents']))
                                     @foreach($family['parents'] as $parent)
-                                        <div>{{ $parent['relation'] ?? 'Не указано' }} - {{ $parent['birth_year'] ?? 'Не указано' }}{{ !empty($parent['profession']) ? ' - ' . $parent['profession'] : '' }}</div>
+                                        <div>{{ $parent['relation'] ?? $labels['not_specified'] }} - {{ $parent['birth_year'] ?? $labels['not_specified'] }}{{ !empty($parent['profession']) ? ' - ' . $parent['profession'] : '' }}</div>
                                     @endforeach
                                 @else
-                                    Не указано
+                                    {{ $labels['not_specified'] }}
                                 @endif
                             </span>
                         </div>
@@ -458,15 +463,15 @@ if (! function_exists('clean_git_conflicts')) {
                          @if($isFullReport)
                          <!-- Братья и сестры -->
                          <div class="flex items-start">
-                             <span class="w-60 text-base text-gray-600">Кол-во братьев/сестер:</span>
+                             <span class="w-60 text-base text-gray-600">{{ $labels['siblings'] }}:</span>
                              <span class="text-base font-medium flex-1">
                                  @if(!empty($family['siblings']))
                                      {{ count($family['siblings']) }}
                                      @foreach($family['siblings'] as $sibling)
-                                         ({{ ($sibling['relation'] ?? 'Не указано') === 'Брат' ? 'Б' : 'С' }}{{ $sibling['birth_year'] ?? '' }})
+                                         ({{ ($sibling['relation'] ?? $labels['not_specified']) === 'Брат' ? $labels['brother_short'] : $labels['sister_short'] }}{{ $sibling['birth_year'] ?? '' }})
                                      @endforeach
                                  @else
-                                     Не указано
+                                     {{ $labels['not_specified'] }}
                                  @endif
                              </span>
                          </div>
@@ -474,29 +479,29 @@ if (! function_exists('clean_git_conflicts')) {
 
                         <!-- Школа -->
                          <div class="flex items-start">
-                             <span class="w-60 text-base text-gray-600">Школа:</span>
-                             <span class="text-base font-medium flex-1">{{ $candidate->school ?: 'Не указано' }}</span>
+                             <span class="w-60 text-base text-gray-600">{{ $labels['school'] }}:</span>
+                             <span class="text-base font-medium flex-1">{{ $candidate->school ?: $labels['not_specified'] }}</span>
                          </div>
 
                         <!-- Образование -->
                         <div class="flex items-start">
-                             <span class="w-60 text-base text-gray-600">Профессиональное образование:</span>
+                             <span class="w-60 text-base text-gray-600">{{ $labels['professional_education'] }}:</span>
                              <span class="text-base font-medium flex-1">
                                 @if($candidate->universities && count($candidate->universities) > 0)
                                     @foreach($candidate->universities as $index => $university)
                                         @php
                                             $parts = [];
-                                            $parts[] = mb_ucfirst($university['name'] ?? 'Не указано');
+                                            $parts[] = mb_ucfirst($university['name'] ?? $labels['not_specified']);
                                             if (!empty($university['city'])) $parts[] = mb_ucfirst($university['city']);
-                                            $parts[] = $university['graduation_year'] ?? 'Не указано';
-                                            $parts[] = mb_ucfirst($university['speciality'] ?? 'Не указано');
+                                            $parts[] = $university['graduation_year'] ?? $labels['not_specified'];
+                                            $parts[] = mb_ucfirst($university['speciality'] ?? $labels['not_specified']);
                                             if (!empty($university['degree'])) $parts[] = $university['degree'];
                                             if (!empty($university['gpa'])) $parts[] = $university['gpa'];
                                         @endphp
                                         <div>{{ implode(' / ', $parts) }}</div>
                                     @endforeach
                                 @else
-                                    Не указано
+                                    {{ $labels['not_specified'] }}
                                 @endif
                             </span>
                          </div>
@@ -511,7 +516,7 @@ if (! function_exists('clean_git_conflicts')) {
         <div style="padding: 0 12px 12px 12px;">
             <!-- Опыт работы -->
             <div class="mb-8">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">Опыт работы</h2>
+                <h2 class="text-xl font-bold text-gray-800 mb-4">{{ $labels['work_experience'] }}</h2>
                 @if($candidate->work_experience && count($candidate->work_experience) > 0)
                     @php
                         // Проверяем, есть ли у кандидата новые поля (main_tasks или activity_sphere)
@@ -538,11 +543,11 @@ if (! function_exists('clean_git_conflicts')) {
                                         </div>
                                         {{-- Должность --}}
                                         <div style="color: #000000; font-weight: 600; font-size: 17px; margin-bottom: 2px;">
-                                            {{ mb_ucfirst($experience['position'] ?? 'Не указано') }}
+                                            {{ mb_ucfirst($experience['position'] ?? $labels['not_specified']) }}
                                         </div>
                                         {{-- Компания / Город --}}
                                         <div style="color: #000000; font-weight: 600; font-size: 15px;">
-                                            {{ mb_ucfirst($experience['company'] ?? 'Не указано') }}@if(!empty($experience['city'])), {{ mb_ucfirst($experience['city']) }}@endif
+                                            {{ mb_ucfirst($experience['company'] ?? $labels['not_specified']) }}@if(!empty($experience['city'])), {{ mb_ucfirst($experience['city']) }}@endif
                                         </div>
                                         {{-- Сфера деятельности --}}
                                         @if(!empty($experience['activity_sphere']))
@@ -571,11 +576,11 @@ if (! function_exists('clean_git_conflicts')) {
                         {{-- Общий стаж и удовлетворённость --}}
                         <div style="margin-top: 16px;">
                             <div style="display: flex; align-items: center; margin-bottom: 4px;">
-                                <span style="color: #000000; font-size: 14px; font-weight: 500; margin-right: 8px;">Общий стаж:</span>
-                                <span style="color: #000000; font-weight: 500; font-size: 14px;">{{ $candidate->total_experience_years ?? 0 }} лет</span>
+                                <span style="color: #000000; font-size: 14px; font-weight: 500; margin-right: 8px;">{{ $labels['total_experience'] }}:</span>
+                                <span style="color: #000000; font-weight: 500; font-size: 14px;">{{ $candidate->total_experience_years ?? 0 }} {{ $labels['years'] }}</span>
                             </div>
                             <div style="display: flex; align-items: center;">
-                                <span style="color: #000000; font-size: 14px; font-weight: 500; margin-right: 8px;">Удовлетворённость работой:</span>
+                                <span style="color: #000000; font-size: 14px; font-weight: 500; margin-right: 8px;">{{ $labels['job_satisfaction'] }}:</span>
                                 <span style="color: #000000; font-weight: 500; font-size: 14px;">{{ $candidate->job_satisfaction ?? '—' }}/5</span>
                             </div>
                         </div>
@@ -583,7 +588,7 @@ if (! function_exists('clean_git_conflicts')) {
                         {{-- Награды и достижения --}}
                         @if($candidate->awards && is_array($candidate->awards) && count(array_filter($candidate->awards)) > 0)
                             <div style="margin-top: 16px;">
-                                <span style="color: #000000; font-weight: 700; font-size: 16px; display: block; margin-bottom: 8px;">Награды и достижения</span>
+                                <span style="color: #000000; font-weight: 700; font-size: 16px; display: block; margin-bottom: 8px;">{{ $labels['awards_achievements'] }}</span>
                                 <ul style="margin: 0; padding: 0; list-style: none;">
                                     @foreach(array_filter($candidate->awards) as $award)
                                         <li style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #374151; font-size: 14px;">
@@ -598,7 +603,7 @@ if (! function_exists('clean_git_conflicts')) {
                         {{-- Старый компактный дизайн для анкет без новых полей --}}
                         <div class="space-y-1">
                             <div class="flex items-start">
-                                <span class="w-60 text-base text-gray-600">Компании и должности:</span>
+                                <span class="w-60 text-base text-gray-600">{{ $labels['companies_positions'] }}:</span>
                                 <div class="text-base font-medium flex-1 space-y-1">
                                     @foreach($candidate->work_experience as $index => $experience)
                                         <div>
@@ -607,37 +612,37 @@ if (! function_exists('clean_git_conflicts')) {
                                             @if($years !== '')
                                                 {{ implode(' - ', array_map('mb_ucfirst', explode(' - ', $years))) }} -
                                             @endif
-                                            {{ mb_ucfirst($experience['company'] ?? 'Не указано') }}
+                                            {{ mb_ucfirst($experience['company'] ?? $labels['not_specified']) }}
                                             @if(!empty($experience['city']))
                                                 ({{ mb_ucfirst($experience['city']) }})
                                             @endif
-                                             - {{ mb_ucfirst($experience['position'] ?? 'Не указано') }}
+                                             - {{ mb_ucfirst($experience['position'] ?? $labels['not_specified']) }}
                                         </div>
                                     @endforeach
                                 </div>
                             </div>
                             <div class="flex data-row" style="margin-top: 1rem;">
-                                <span class="w-60 text-base text-gray-600">Общий стаж работы (лет):</span>
+                                <span class="w-60 text-base text-gray-600">{{ $labels['total_experience_years'] }}:</span>
                                 <span class="text-base font-medium">{{ $candidate->total_experience_years ?? 0 }}</span>
                             </div>
                             <div class="flex data-row">
-                                <span class="w-60 text-base text-gray-600">Любит свою работу на (из 5):</span>
-                                <span class="text-base font-medium">{{ $candidate->job_satisfaction ?? 'Не указано' }}</span>
+                                <span class="w-60 text-base text-gray-600">{{ $labels['job_satisfaction_out_of_5'] }}:</span>
+                                <span class="text-base font-medium">{{ $candidate->job_satisfaction ?? $labels['not_specified'] }}</span>
                             </div>
                         </div>
                     @endif
                 @else
-                    <p class="text-base text-gray-500">Опыт работы не указан</p>
+                    <p class="text-base text-gray-500">{{ $labels['work_experience_not_specified'] }}</p>
                 @endif
             </div>
 
             <!-- Интересы и развитие -->
             <div class="mb-8">
-                <h2 class="text-xl font-bold text-gray-800 mb-2">Интересы и развитие</h2>
+                <h2 class="text-xl font-bold text-gray-800 mb-2">{{ $labels['interests_development'] }}</h2>
                 <div class="space-y-1">
                     <!-- 1. Хобби -->
                     <div class="flex items-start data-row">
-                        <span class="w-60 text-base text-gray-600">Хобби:</span>
+                        <span class="w-60 text-base text-gray-600">{{ $labels['hobbies'] }}:</span>
                         <span class="text-base font-medium flex-1">
                             @php
                                 $hobbies = trim($candidate->hobbies ?? '');
@@ -647,7 +652,7 @@ if (! function_exists('clean_git_conflicts')) {
                                     $hRest = mb_substr($hLower, 1, null, 'UTF-8');
                                     $hobbies = $hFirst . $hRest;
                                 } else {
-                                    $hobbies = 'Не указано';
+                                    $hobbies = $labels['not_specified'];
                                 }
                             @endphp
                             {{ $hobbies }}
@@ -655,7 +660,7 @@ if (! function_exists('clean_git_conflicts')) {
                     </div>
                     <!-- 2. Интересы -->
                     <div class="flex items-start data-row">
-                        <span class="w-60 text-base text-gray-600">Интересы:</span>
+                        <span class="w-60 text-base text-gray-600">{{ $labels['interests'] }}:</span>
                         <span class="text-base font-medium flex-1">
                             @php
                                 $interests = trim($candidate->interests ?? '');
@@ -665,7 +670,7 @@ if (! function_exists('clean_git_conflicts')) {
                                     $rest = mb_substr($lower, 1, null, 'UTF-8');
                                     $interests = $first . $rest;
                                 } else {
-                                    $interests = 'Не указано';
+                                    $interests = $labels['not_specified'];
                                 }
                             @endphp
                             {{ $interests }}
@@ -673,7 +678,7 @@ if (! function_exists('clean_git_conflicts')) {
                     </div>
                     <!-- 3. Любимые виды спорта -->
                     <div class="flex items-start data-row">
-                        <span class="w-60 text-base text-gray-600">Любимые виды спорта:</span>
+                        <span class="w-60 text-base text-gray-600">{{ $labels['favorite_sports'] }}:</span>
                         <span class="text-base font-medium flex-1">
                             @if($candidate->favorite_sports)
                                 @if(is_array($candidate->favorite_sports))
@@ -682,13 +687,13 @@ if (! function_exists('clean_git_conflicts')) {
                                     {{ mb_convert_case(trim($candidate->favorite_sports), MB_CASE_TITLE, 'UTF-8') }}
                                 @endif
                             @else
-                                Не указано
+                                {{ $labels['not_specified'] }}
                             @endif
                         </span>
                     </div>
                     <!-- 4. Посещенные страны -->
                     <div class="flex items-start data-row">
-                        <span class="w-60 text-base text-gray-600">Посещенные страны:</span>
+                        <span class="w-60 text-base text-gray-600">{{ $labels['visited_countries'] }}:</span>
                         <span class="text-base font-medium flex-1">
                             @if($candidate->visited_countries)
                                 @if(is_array($candidate->visited_countries))
@@ -697,67 +702,67 @@ if (! function_exists('clean_git_conflicts')) {
                                     {{ $candidate->visited_countries }}
                                 @endif
                             @else
-                                Не указано
+                                {{ $labels['not_specified'] }}
                             @endif
                         </span>
                     </div>
                     <!-- 5. Кол-во книг в год -->
                     <div class="flex data-row">
-                        <span class="w-60 text-base text-gray-600">Кол-во книг в год:</span>
-                        <span class="text-base font-medium">{{ $candidate->books_per_year ?? 'Не указано' }}</span>
+                        <span class="w-60 text-base text-gray-600">{{ $labels['books_per_year'] }}:</span>
+                        <span class="text-base font-medium">{{ $candidate->books_per_year ?? $labels['not_specified'] }}</span>
                     </div>
                     <!-- 6-7. Вероисповедание и Рел. практика -->
                     @if($isFullReport)
                     <div class="flex data-row">
-                        <span class="w-60 text-base text-gray-600">Религия:</span>
-                        <span class="text-base font-medium">{{ $candidate->religion ?: 'Не указано' }}</span>
+                        <span class="w-60 text-base text-gray-600">{{ $labels['religion'] }}:</span>
+                        <span class="text-base font-medium">{{ $candidate->religion ?: $labels['not_specified'] }}</span>
                     </div>
                     <div class="flex data-row">
-                        <span class="w-60 text-base text-gray-600">Рел. практика:</span>
-                        <span class="text-base font-medium">{{ $candidate->is_practicing ? 'Да' : 'Нет' }}</span>
+                        <span class="w-60 text-base text-gray-600">{{ $labels['religious_practice'] }}:</span>
+                        <span class="text-base font-medium">{{ $candidate->is_practicing ? $labels['yes'] : $labels['no'] }}</span>
                     </div>
                     @endif
                     <!-- 8. Часы на разв. видео в неделю -->
                     <div class="flex data-row">
-                        <span class="w-60 text-base text-gray-600">Часы на разв. видео в неделю:</span>
+                        <span class="w-60 text-base text-gray-600">{{ $labels['entertainment_hours'] }}:</span>
                         <span class="text-base font-medium">
                             @if($candidate->entertainment_hours_weekly)
-                                {{ $candidate->entertainment_hours_weekly }} час{{ $candidate->entertainment_hours_weekly == 1 ? '' : ($candidate->entertainment_hours_weekly < 5 ? 'а' : 'ов') }}
+                                {{ $candidate->entertainment_hours_weekly }} {{ $candidate->entertainment_hours_weekly == 1 ? $labels['hour_singular'] : ($candidate->entertainment_hours_weekly < 5 ? $labels['hours_2_4'] : $labels['hours_many']) }}
                             @else
-                                Не указано
+                                {{ $labels['not_specified'] }}
                             @endif
                         </span>
                     </div>
                     <!-- 9. Часы на обра. видео в неделю -->
                     <div class="flex data-row">
-                        <span class="w-60 text-base text-gray-600">Часы на обра. видео в неделю:</span>
+                        <span class="w-60 text-base text-gray-600">{{ $labels['educational_hours'] }}:</span>
                         <span class="text-base font-medium">
                             @if($candidate->educational_hours_weekly)
-                                {{ $candidate->educational_hours_weekly }} час{{ $candidate->educational_hours_weekly == 1 ? '' : ($candidate->educational_hours_weekly < 5 ? 'а' : 'ов') }}
+                                {{ $candidate->educational_hours_weekly }} {{ $candidate->educational_hours_weekly == 1 ? $labels['hour_singular'] : ($candidate->educational_hours_weekly < 5 ? $labels['hours_2_4'] : $labels['hours_many']) }}
                             @else
-                                Не указано
+                                {{ $labels['not_specified'] }}
                             @endif
                         </span>
                     </div>
                     <!-- 10. Часы на соц. сети в неделю -->
                     <div class="flex data-row">
-                        <span class="w-60 text-base text-gray-600">Часы на соц. сети в неделю:</span>
+                        <span class="w-60 text-base text-gray-600">{{ $labels['social_media_hours'] }}:</span>
                         <span class="text-base font-medium">
                             @if($candidate->social_media_hours_weekly)
-                                {{ $candidate->social_media_hours_weekly }} час{{ $candidate->social_media_hours_weekly == 1 ? '' : ($candidate->social_media_hours_weekly < 5 ? 'а' : 'ов') }}
+                                {{ $candidate->social_media_hours_weekly }} {{ $candidate->social_media_hours_weekly == 1 ? $labels['hour_singular'] : ($candidate->social_media_hours_weekly < 5 ? $labels['hours_2_4'] : $labels['hours_many']) }}
                             @else
-                                Не указано
+                                {{ $labels['not_specified'] }}
                             @endif
                         </span>
                     </div>
                     <!-- 11. Водительские права -->
                     <div class="flex data-row">
-                        <span class="w-60 text-base text-gray-600">Водительские права:</span>
-                        <span class="text-base font-medium">{{ $candidate->has_driving_license ? 'Есть' : 'Нет' }}</span>
+                        <span class="w-60 text-base text-gray-600">{{ $labels['driving_license'] }}:</span>
+                        <span class="text-base font-medium">{{ $candidate->has_driving_license ? $labels['available'] : $labels['not_available'] }}</span>
                     </div>
                     <!-- 12. Пожелания на рабочем месте -->
                     <div class="flex items-start data-row">
-                        <span class="w-60 text-base text-gray-600">Пожелания на рабочем месте:</span>
+                        <span class="w-60 text-base text-gray-600">{{ $labels['workplace_preferences'] }}:</span>
                         <span class="text-base font-medium flex-1">
                             @php
                                 $workplace = trim($candidate->employer_requirements ?? '');
@@ -767,7 +772,7 @@ if (! function_exists('clean_git_conflicts')) {
                                     $wRest = mb_substr($wLower, 1, null, 'UTF-8');
                                     $workplace = $wFirst . $wRest;
                                 } else {
-                                    $workplace = 'Не указано';
+                                    $workplace = $labels['not_specified'];
                                 }
                             @endphp
                             {{ $workplace }}
@@ -778,13 +783,13 @@ if (! function_exists('clean_git_conflicts')) {
 
             <!-- Языковые навыки -->
             <div class="mb-8">
-                <h2 class="text-xl font-bold text-gray-800 mb-2">Языковые навыки</h2>
+                <h2 class="text-xl font-bold text-gray-800 mb-2">{{ $labels['language_skills'] }}</h2>
                 @if($candidate->language_skills && count($candidate->language_skills) > 0)
                     <div class="space-y-1">
                         @foreach($candidate->language_skills as $skill)
                             <div class="flex text-base">
-                                <span class="w-32 font-medium">{{ $skill['language'] ?? 'Не указано' }}</span>
-                                <span class="w-40">{{ $skill['level'] ?? 'Не указано' }}</span>
+                                <span class="w-32 font-medium">{{ $skill['language'] ?? $labels['not_specified'] }}</span>
+                                <span class="w-40">{{ $skill['level'] ?? $labels['not_specified'] }}</span>
                                 @if(isset($skill['additional_language']) && $skill['additional_language'])
                                     <span class="w-32 font-medium">{{ $skill['additional_language'] ?? '' }}</span>
                                     <span class="text-gray-600">-</span>
@@ -793,29 +798,29 @@ if (! function_exists('clean_git_conflicts')) {
                         @endforeach
                     </div>
                 @else
-                    <p class="text-base text-gray-500">Языковые навыки не указаны</p>
+                    <p class="text-base text-gray-500">{{ $labels['language_skills_not_specified'] }}</p>
                 @endif
             </div>
 
             <!-- Компьютерные навыки -->
             <div class="mb-8">
-                <h2 class="text-xl font-bold text-gray-800 mb-2">Компьютерные навыки</h2>
-                <p class="text-base font-medium">{{ $candidate->computer_skills ?: 'Не указано' }}</p>
+                <h2 class="text-xl font-bold text-gray-800 mb-2">{{ $labels['computer_skills'] }}</h2>
+                <p class="text-base font-medium">{{ $candidate->computer_skills ?: $labels['not_specified'] }}</p>
             </div>
 
             <!-- Дата заполнения -->
             @if($isFullReport)
             <div style="text-align: right; padding: 8px 0; margin-bottom: 16px;">
-                <span style="color: #9ca3af; font-size: 12px;">Дата заполнения: {{ $candidate->created_at->format('d.m.Y') }}</span>
+                <span style="color: #9ca3af; font-size: 12px;">{{ $labels['date_filled'] }}: {{ $candidate->created_at->format('d.m.Y') }}</span>
             </div>
             @endif
 
             <!-- Психометрические данные -->
             <div class="mb-8">
-                <h2 class="text-xl font-bold text-gray-800 mb-2">Психометрические данные</h2>
+                <h2 class="text-xl font-bold text-gray-800 mb-2">{{ $labels['psychometric_data'] }}</h2>
                 <div class="flex data-row">
-                    <span class="text-base text-gray-600 w-60">Тип личности по MBTI:</span>
-                    <span class="text-base font-medium" style="color: #234088;">{{ $candidate->mbti_full_name ?: 'Не указано' }}</span>
+                    <span class="text-base text-gray-600 w-60">{{ $labels['mbti_type'] }}:</span>
+                    <span class="text-base font-medium" style="color: #234088;">{{ $candidate->mbti_full_name ?: $labels['not_specified'] }}</span>
                 </div>
             </div>
 
@@ -856,7 +861,7 @@ if (! function_exists('clean_git_conflicts')) {
                 ];
             @endphp
             <div class="mb-4">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">Виды интеллектов Гарднера</h2>
+                <h2 class="text-xl font-bold text-gray-800 mb-4">{{ $labels['gardner_intelligence'] }}</h2>
                 <div class="bg-gray-100 rounded-lg p-6">
                     <!-- Первый ряд -->
                     <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
@@ -962,7 +967,7 @@ if (! function_exists('clean_git_conflicts')) {
 
         <!-- Footer -->
         <div class="bg-gray-100 p-4 text-center text-xs text-gray-500 no-print">
-            <p>Отчет сгенерирован {{ now()->format('d.m.Y в H:i') }}</p>
+            <p>{{ $labels['report_generated'] }} {{ now()->format('d.m.Y H:i') }}</p>
         </div>
     </div>
 </body>

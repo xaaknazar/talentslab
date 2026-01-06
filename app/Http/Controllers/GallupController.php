@@ -8,6 +8,7 @@ use App\Models\GallupReport;
 use App\Models\GallupReportSheet;
 use App\Models\GallupReportSheetIndex;
 use App\Models\GallupReportSheetValue;
+use App\Services\GallupAnalyzerService;
 use Google\Client;
 use Google\Service\Drive;
 use Illuminate\Support\Facades\Http;
@@ -39,7 +40,25 @@ class GallupController extends Controller
         );
     }
 
-    public function isGallupPdf(string $relativePath):bool
+    /**
+     * Проверяет, является ли файл валидным Gallup отчетом (PDF или изображение)
+     */
+    public function isGallupFile(string $relativePath): bool
+    {
+        if (!Storage::disk('public')->exists($relativePath)) {
+            return false;
+        }
+
+        $fullPath = storage_path('app/public/' . $relativePath);
+        $analyzer = app(GallupAnalyzerService::class);
+
+        return $analyzer->isValidGallupFile($fullPath);
+    }
+
+    /**
+     * Проверяет, является ли файл английским Gallup PDF (старый метод для совместимости)
+     */
+    public function isGallupPdf(string $relativePath): bool
     {
         if (!Storage::disk('public')->exists($relativePath)) {
             return false;
@@ -53,7 +72,7 @@ class GallupController extends Controller
             $text = $pdf->getText();
             $pages = $pdf->getPages();
 
-            // Ключевые признаки Gallup-отчета
+            // Ключевые признаки Gallup-отчета (английский)
             $containsCliftonHeader = str_contains($text, 'Gallup, Inc. All rights reserved.');
             $containsTalentList = preg_match('/1\.\s+[A-Za-z-]+/', $text);
             $containsTalentList34 = preg_match('/34\.\s+[A-Za-z-]+/', $text);
@@ -64,50 +83,67 @@ class GallupController extends Controller
         }
     }
 
+    /**
+     * Парсит Gallup файл (PDF или изображение) и обновляет данные кандидата
+     */
     public function parseGallupFromCandidateFile(Candidate $candidate)
     {
         // Шаг 1: Проверка файла
         $this->logStep($candidate, 'Проверка файла');
 
         if (!$candidate->gallup_pdf || !Storage::disk('public')->exists($candidate->gallup_pdf)) {
-            $this->logStep($candidate, 'Ошибка: Файл не найден', 'error', 'Файл Gallup PDF не найден в файловой системе');
+            $this->logStep($candidate, 'Ошибка: Файл не найден', 'error', 'Файл Gallup не найден в файловой системе');
             return response()->json(['error' => 'Файл не найден.'], 404);
         }
 
-        if (!$this->isGallupPdf($candidate->gallup_pdf)) {
-            $this->logStep($candidate, 'Ошибка: Неверный формат PDF', 'error', 'Файл не является корректным Gallup PDF');
-            return response()->json(['error' => 'Файл не является корректным Gallup PDF.'], 422);
-        }
-
-        // Шаг 2: Парсинг PDF
-        $this->logStep($candidate, 'Парсинг PDF');
-
         $fullPath = storage_path('app/public/' . $candidate->gallup_pdf);
+        $analyzer = app(GallupAnalyzerService::class);
+        $fileType = $analyzer->detectFileType($fullPath);
 
-        $parser = new Parser();
-        $pdf = $parser->parseFile($fullPath);
-        $pages = $pdf->getPages();
-
-        if (empty($pages)) {
-            $this->logStep($candidate, 'Ошибка: PDF не содержит страниц', 'error', 'PDF файл пустой или поврежден');
-            return response()->json(['error' => 'PDF не содержит страниц.'], 422);
+        // Проверяем валидность файла
+        if (!$analyzer->isValidGallupFile($fullPath)) {
+            $this->logStep($candidate, 'Ошибка: Неверный формат файла', 'error', 'Файл не является корректным Gallup отчетом');
+            return response()->json(['error' => 'Файл не является корректным Gallup отчетом.'], 422);
         }
 
-        $firstPageText = $pages[0]->getText();
+        // Шаг 2: Попытка стандартного парсинга (только для английских PDF)
+        $talents = null;
 
-        preg_match_all('/\b([1-9]|[1-2][0-9]|3[0-4])\.\s+([A-Za-z-]+)/', $firstPageText, $matches);
-        $numbers = $matches[1] ?? [];
-        $talents = $matches[2] ?? [];
+        if ($fileType === 'pdf') {
+            $this->logStep($candidate, 'Попытка стандартного парсинга PDF');
 
-        if (count($talents) !== 34 || max($numbers) != 34 || min($numbers) != 1) {
-            $this->logStep($candidate, 'Ошибка: Найдено ' . count($talents) . ' талантов вместо 34', 'error', 'Ожидается 34 таланта, найдено: ' . count($talents));
+            $standardResult = $this->tryStandardPdfParsing($fullPath);
+            if ($standardResult !== null) {
+                $talents = $standardResult;
+                $this->logStep($candidate, 'Стандартный парсинг успешен');
+            }
+        }
+
+        // Шаг 3: Если стандартный парсинг не сработал - используем GPT-4o
+        if ($talents === null) {
+            $this->logStep($candidate, 'Анализ через GPT-4o');
+
+            $result = $analyzer->analyzeGallupFile($fullPath, $fileType);
+
+            if (!$result['success']) {
+                $this->logStep($candidate, 'Ошибка GPT-4o: ' . $result['error'], 'error', $result['error']);
+                return response()->json(['error' => $result['error']], 422);
+            }
+
+            $talents = $result['talents'];
+            $this->logStep($candidate, 'GPT-4o анализ успешен');
+        }
+
+        // Проверка количества талантов
+        if (count($talents) !== 34) {
+            $this->logStep($candidate, 'Ошибка: Найдено ' . count($talents) . ' талантов вместо 34', 'error');
             return response()->json([
                 'error' => 'Найдено ' . count($talents) . ' талантов. Ожидается 34.',
                 'debug' => $talents,
             ], 422);
         }
 
-        // Шаг 3: Обновление талантов
+        // Шаг 4: Обновление талантов
         $this->logStep($candidate, 'Обновление талантов');
 
         // Получаем текущие таланты из базы
@@ -131,14 +167,14 @@ class GallupController extends Controller
             }
         }
 
-        // Шаг 4: Обработка отчетов (всегда выполняем, даже если таланты не изменились)
+        // Шаг 5: Обработка отчетов (всегда выполняем, даже если таланты не изменились)
         $this->logStep($candidate, 'Обработка отчетов');
 
         // Получаем все активные листы отчетов из базы данных
         $reportSheets = GallupReportSheet::with('indices')->orderBy('id', 'desc')->get();
 
         foreach ($reportSheets as $reportSheet) {
-            // Шаг 5: Обновление Google Sheets
+            // Шаг 6: Обновление Google Sheets
             $this->logStep($candidate, "Обновление Google Sheets: {$reportSheet->name_report}");
             $this->updateGoogleSheetByCellMap($candidate, $talents, $reportSheet);
 
@@ -147,11 +183,11 @@ class GallupController extends Controller
                 'candidate_id' => $candidate->id,
             ]);
 
-            // Шаг 6: Импорт формул
+            // Шаг 7: Импорт формул
             $this->logStep($candidate, "Импорт формул: {$reportSheet->name_report}");
             $this->importFormulaValues($reportSheet, $candidate);
 
-            // Шаг 7: Скачивание PDF
+            // Шаг 8: Скачивание PDF
             $this->logStep($candidate, "Скачивание PDF: {$reportSheet->name_report}");
             $this->downloadSheetPdf(
                 $candidate,
@@ -159,18 +195,48 @@ class GallupController extends Controller
             );
         }
 
-        // Шаг 8: Завершение
+        // Шаг 9: Завершение
         $this->logStep($candidate, 'Завершено успешно', 'completed', 'Все отчеты успешно обработаны');
-
-        // Убираем объединение PDF из основного процесса - теперь генерируем по требованию
-        // $mergedPath = $this->mergeCandidateReportPdfs($candidate);
-        // $candidate->anketa_pdf = $mergedPath;
-        // $candidate->save();
 
         return response()->json([
             'message' => 'Данные Gallup обновлены, Google Sheet заполнен.',
             'step' => $candidate->step_parse_gallup
         ]);
+    }
+
+    /**
+     * Попытка стандартного парсинга английского PDF
+     * Возвращает массив талантов или null если парсинг не удался
+     */
+    private function tryStandardPdfParsing(string $fullPath): ?array
+    {
+        try {
+            $parser = new Parser();
+            $pdf = $parser->parseFile($fullPath);
+            $pages = $pdf->getPages();
+
+            if (empty($pages)) {
+                return null;
+            }
+
+            $firstPageText = $pages[0]->getText();
+
+            // Пытаемся найти английские таланты
+            preg_match_all('/\b([1-9]|[1-2][0-9]|3[0-4])\.\s+([A-Za-z-]+)/', $firstPageText, $matches);
+            $numbers = $matches[1] ?? [];
+            $talents = $matches[2] ?? [];
+
+            // Проверяем, что найдено ровно 34 таланта
+            if (count($talents) !== 34 || max($numbers) != 34 || min($numbers) != 1) {
+                return null;
+            }
+
+            return $talents;
+
+        } catch (\Exception $e) {
+            Log::warning('Стандартный парсинг PDF не удался: ' . $e->getMessage());
+            return null;
+        }
     }
 
     protected function updateGoogleSheetByCellMap(Candidate $candidate, array $talents, GallupReportSheet $reportSheet)
@@ -671,6 +737,99 @@ class GallupController extends Controller
     {
         // Используем Queue с задержкой для удаления файла
         \App\Jobs\DeleteTempFile::dispatch($filePath)->delay(now()->addMinutes($minutes));
+    }
+
+    /**
+     * Генерирует переведённую анкету в PDF
+     */
+    public function generateTranslatedAnketaPdf(Candidate $candidate, string $targetLanguage, string $version = 'full')
+    {
+        $translationService = app(\App\Services\TranslationService::class);
+
+        // Получаем переведённые данные
+        $translatedData = $translationService->translateCandidate($candidate, $targetLanguage);
+
+        // Генерируем HTML с переведёнными данными
+        $html = $this->generateTranslatedReportHtml($candidate, $translatedData, $targetLanguage, $version);
+
+        // Создаём PDF
+        $tempHtmlPdf = storage_path("app/temp_translated_{$candidate->id}_{$targetLanguage}.pdf");
+
+        if (file_exists($tempHtmlPdf)) {
+            unlink($tempHtmlPdf);
+        }
+
+        $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+        $html = $this->cleanHtmlForPdf($html);
+        $html = $this->sanitizeUtf8($html);
+
+        $snappy = new \Knp\Snappy\Pdf('/usr/bin/wkhtmltopdf');
+
+        $s_options = [
+            'encoding' => 'utf-8',
+            'page-size' => 'A4',
+            'margin-top' => '10mm',
+            'margin-bottom' => '10mm',
+            'margin-left' => '2mm',
+            'margin-right' => '2mm',
+            'zoom' => 1.30,
+            'disable-smart-shrinking' => true,
+            'print-media-type' => true,
+            'load-error-handling' => 'ignore',
+            'load-media-error-handling' => 'ignore',
+        ];
+
+        $snappy->generateFromHtml($html, $tempHtmlPdf, $s_options, true);
+
+        // Создаём имя файла
+        $languageNames = ['ru' => 'RU', 'en' => 'EN', 'ar' => 'AR'];
+        $langCode = $languageNames[$targetLanguage] ?? strtoupper($targetLanguage);
+        $genderCode = ($candidate->gender === 'Женский' || $candidate->gender === 'female') ? 'G' : 'B';
+        $birthYear = $candidate->birth_date ? substr(date('Y', strtotime($candidate->birth_date)), -2) : '00';
+        $candidateId = str_pad($candidate->id, 4, '0', STR_PAD_LEFT);
+        $versionText = $version === 'full' ? 'full' : 'reduced';
+
+        $tempFileName = "{$candidate->full_name} - TL{$genderCode}{$birthYear}-{$candidateId}-{$langCode}-{$versionText}.pdf";
+        $tempPath = "temp_anketas/{$tempFileName}";
+
+        $tempFullPath = Storage::disk('public')->path($tempPath);
+        Storage::disk('public')->makeDirectory(dirname($tempPath));
+
+        copy($tempHtmlPdf, $tempFullPath);
+        unlink($tempHtmlPdf);
+
+        // Планируем удаление через 30 минут
+        $this->scheduleTempFileDeletion($tempPath, 30);
+
+        return $tempPath;
+    }
+
+    /**
+     * Генерирует HTML отчёта с переведёнными данными
+     */
+    private function generateTranslatedReportHtml(Candidate $candidate, array $translatedData, string $targetLanguage, string $version): string
+    {
+        // Создаём обёртку с переведёнными данными
+        $translatedCandidate = new \App\Services\TranslatedCandidate($candidate, $translatedData, $targetLanguage);
+
+        // Подготавливаем URL фото
+        $photoUrl = null;
+        if ($candidate->photo && Storage::disk('public')->exists($candidate->photo)) {
+            $photoUrl = Storage::disk('public')->url($candidate->photo);
+        }
+
+        $isFullReport = $version === 'full';
+        $isReducedReport = $version === 'reduced';
+
+        // Рендерим view с переведёнными данными
+        return view('candidates.report-v2-translated', [
+            'candidate' => $translatedCandidate,
+            'originalCandidate' => $candidate,
+            'photoUrl' => $photoUrl,
+            'isFullReport' => $isFullReport,
+            'isReducedReport' => $isReducedReport,
+            'targetLanguage' => $targetLanguage,
+        ])->render();
     }
 
     /**
