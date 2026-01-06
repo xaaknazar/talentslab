@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <img src="{{ asset('logo.svg') }}" alt="Divergents Logo" class="brand-logo" style="width: auto; height: 60px">
+                        <img src="{{ asset('logos/talents_lab_logo.png') }}" alt="Talents Lab Logo" class="brand-logo" style="width: auto; height: 60px">
                     </a>
                 </div>
 
