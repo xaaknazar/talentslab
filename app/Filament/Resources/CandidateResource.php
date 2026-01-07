@@ -374,10 +374,7 @@ class CandidateResource extends Resource
                         ->icon('heroicon-o-document-text')
                         ->color('info')
                         ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'anketa-reduced']))
-                        ->modal()
-                        ->visible(fn (Candidate $record): bool => 
-                            $record->gallup_pdf && Storage::disk('public')->exists($record->gallup_pdf)
-                        ),
+                        ->modal(),
 
                     Tables\Actions\Action::make('downloadDPs')
                         ->label('DPs отчет')
