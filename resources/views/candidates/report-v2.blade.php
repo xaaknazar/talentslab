@@ -27,19 +27,19 @@
             .no-print { display: none; }
         }
 
-        /* Предотвращение разрыва текста между страницами */
-        .mb-8, .data-row, .flex.items-start, .space-y-1 > div {
+        /* Только одиночные строки данных не разрываются пополам */
+        .data-row {
             page-break-inside: avoid;
             break-inside: avoid;
         }
 
-        /* Не разрывать записи опыта работы */
-        [style*="display: flex"][style*="gap: 24px"] {
+        /* Записи опыта работы не разрываются */
+        .work-experience-item {
             page-break-inside: avoid;
             break-inside: avoid;
         }
 
-        /* Заголовки секций не отрываются от содержимого */
+        /* Заголовки секций не отрываются от первых строк */
         h2 {
             page-break-after: avoid;
             break-after: avoid;
@@ -546,7 +546,7 @@ if (! function_exists('clean_git_conflicts')) {
                         {{-- Новый дизайн для анкет с заполненными main_tasks/activity_sphere --}}
                         <div style="display: flex; flex-direction: column;">
                             @foreach($candidate->work_experience as $index => $experience)
-                                <div style="display: flex; gap: 24px; {{ !$loop->first ? 'margin-top: 16px;' : '' }} {{ !$loop->last ? 'padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }}">
+                                <div class="work-experience-item" style="display: flex; gap: 24px; {{ !$loop->first ? 'margin-top: 16px;' : '' }} {{ !$loop->last ? 'padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }}">
                                     {{-- Левая колонка: информация о месте работы --}}
                                     <div style="flex: 1; min-width: 0;">
                                         {{-- Дата --}}
