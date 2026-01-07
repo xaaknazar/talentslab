@@ -649,7 +649,6 @@ if (! function_exists('clean_git_conflicts')) {
             </div>
 
             <!-- Интересы и развитие -->
-            @if($isFullReport)
             <div class="mb-8">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Интересы и развитие</h2>
                 <div class="space-y-1">
@@ -657,50 +656,62 @@ if (! function_exists('clean_git_conflicts')) {
                     <div class="flex items-start data-row">
                         <span class="w-60 text-base text-gray-600">Хобби:</span>
                         <span class="text-base font-medium flex-1">
-                            @php
-                                $hobbies = trim($candidate->hobbies ?? '');
-                                if ($hobbies !== '') {
-                                    $hLower = mb_strtolower($hobbies, 'UTF-8');
-                                    $hFirst = mb_strtoupper(mb_substr($hLower, 0, 1, 'UTF-8'), 'UTF-8');
-                                    $hRest = mb_substr($hLower, 1, null, 'UTF-8');
-                                    $hobbies = $hFirst . $hRest;
-                                } else {
-                                    $hobbies = 'Не указано';
-                                }
-                            @endphp
-                            {{ $hobbies }}
+                            @if($isFullReport)
+                                @php
+                                    $hobbies = trim($candidate->hobbies ?? '');
+                                    if ($hobbies !== '') {
+                                        $hLower = mb_strtolower($hobbies, 'UTF-8');
+                                        $hFirst = mb_strtoupper(mb_substr($hLower, 0, 1, 'UTF-8'), 'UTF-8');
+                                        $hRest = mb_substr($hLower, 1, null, 'UTF-8');
+                                        $hobbies = $hFirst . $hRest;
+                                    } else {
+                                        $hobbies = 'Не указано';
+                                    }
+                                @endphp
+                                {{ $hobbies }}
+                            @else
+                                скрыто
+                            @endif
                         </span>
                     </div>
                     <!-- 2. Интересы -->
                     <div class="flex items-start data-row">
                         <span class="w-60 text-base text-gray-600">Интересы:</span>
                         <span class="text-base font-medium flex-1">
-                            @php
-                                $interests = trim($candidate->interests ?? '');
-                                if ($interests !== '') {
-                                    $lower = mb_strtolower($interests, 'UTF-8');
-                                    $first = mb_strtoupper(mb_substr($lower, 0, 1, 'UTF-8'), 'UTF-8');
-                                    $rest = mb_substr($lower, 1, null, 'UTF-8');
-                                    $interests = $first . $rest;
-                                } else {
-                                    $interests = 'Не указано';
-                                }
-                            @endphp
-                            {{ $interests }}
+                            @if($isFullReport)
+                                @php
+                                    $interests = trim($candidate->interests ?? '');
+                                    if ($interests !== '') {
+                                        $lower = mb_strtolower($interests, 'UTF-8');
+                                        $first = mb_strtoupper(mb_substr($lower, 0, 1, 'UTF-8'), 'UTF-8');
+                                        $rest = mb_substr($lower, 1, null, 'UTF-8');
+                                        $interests = $first . $rest;
+                                    } else {
+                                        $interests = 'Не указано';
+                                    }
+                                @endphp
+                                {{ $interests }}
+                            @else
+                                скрыто
+                            @endif
                         </span>
                     </div>
                     <!-- 3. Любимые виды спорта -->
                     <div class="flex items-start data-row">
                         <span class="w-60 text-base text-gray-600">Любимые виды спорта:</span>
                         <span class="text-base font-medium flex-1">
-                            @if($candidate->favorite_sports)
-                                @if(is_array($candidate->favorite_sports))
-                                    {{ implode(', ', mb_convert_case(trim($candidate->favorite_sports), MB_CASE_TITLE, 'UTF-8')) }}
+                            @if($isFullReport)
+                                @if($candidate->favorite_sports)
+                                    @if(is_array($candidate->favorite_sports))
+                                        {{ implode(', ', mb_convert_case(trim($candidate->favorite_sports), MB_CASE_TITLE, 'UTF-8')) }}
+                                    @else
+                                        {{ mb_convert_case(trim($candidate->favorite_sports), MB_CASE_TITLE, 'UTF-8') }}
+                                    @endif
                                 @else
-                                    {{ mb_convert_case(trim($candidate->favorite_sports), MB_CASE_TITLE, 'UTF-8') }}
+                                    Не указано
                                 @endif
                             @else
-                                Не указано
+                                скрыто
                             @endif
                         </span>
                     </div>
@@ -708,21 +719,25 @@ if (! function_exists('clean_git_conflicts')) {
                     <div class="flex items-start data-row">
                         <span class="w-60 text-base text-gray-600">Посещенные страны:</span>
                         <span class="text-base font-medium flex-1">
-                            @if($candidate->visited_countries)
-                                @if(is_array($candidate->visited_countries))
-                                    {{ implode(', ', $candidate->visited_countries) }}
+                            @if($isFullReport)
+                                @if($candidate->visited_countries)
+                                    @if(is_array($candidate->visited_countries))
+                                        {{ implode(', ', $candidate->visited_countries) }}
+                                    @else
+                                        {{ $candidate->visited_countries }}
+                                    @endif
                                 @else
-                                    {{ $candidate->visited_countries }}
+                                    Не указано
                                 @endif
                             @else
-                                Не указано
+                                скрыто
                             @endif
                         </span>
                     </div>
                     <!-- 5. Кол-во книг в год -->
                     <div class="flex data-row">
                         <span class="w-60 text-base text-gray-600">Кол-во книг в год:</span>
-                        <span class="text-base font-medium">{{ $candidate->books_per_year ?? 'Не указано' }}</span>
+                        <span class="text-base font-medium">@if($isFullReport){{ $candidate->books_per_year ?? 'Не указано' }}@elseскрыто@endif</span>
                     </div>
                     <!-- 6-7. Вероисповедание и Рел. практика -->
                     <div class="flex data-row">
@@ -737,10 +752,14 @@ if (! function_exists('clean_git_conflicts')) {
                     <div class="flex data-row">
                         <span class="w-60 text-base text-gray-600">Часы на разв. видео в неделю:</span>
                         <span class="text-base font-medium">
-                            @if($candidate->entertainment_hours_weekly)
-                                {{ $candidate->entertainment_hours_weekly }} час{{ $candidate->entertainment_hours_weekly == 1 ? '' : ($candidate->entertainment_hours_weekly < 5 ? 'а' : 'ов') }}
+                            @if($isFullReport)
+                                @if($candidate->entertainment_hours_weekly)
+                                    {{ $candidate->entertainment_hours_weekly }} час{{ $candidate->entertainment_hours_weekly == 1 ? '' : ($candidate->entertainment_hours_weekly < 5 ? 'а' : 'ов') }}
+                                @else
+                                    Не указано
+                                @endif
                             @else
-                                Не указано
+                                скрыто
                             @endif
                         </span>
                     </div>
@@ -748,10 +767,14 @@ if (! function_exists('clean_git_conflicts')) {
                     <div class="flex data-row">
                         <span class="w-60 text-base text-gray-600">Часы на обра. видео в неделю:</span>
                         <span class="text-base font-medium">
-                            @if($candidate->educational_hours_weekly)
-                                {{ $candidate->educational_hours_weekly }} час{{ $candidate->educational_hours_weekly == 1 ? '' : ($candidate->educational_hours_weekly < 5 ? 'а' : 'ов') }}
+                            @if($isFullReport)
+                                @if($candidate->educational_hours_weekly)
+                                    {{ $candidate->educational_hours_weekly }} час{{ $candidate->educational_hours_weekly == 1 ? '' : ($candidate->educational_hours_weekly < 5 ? 'а' : 'ов') }}
+                                @else
+                                    Не указано
+                                @endif
                             @else
-                                Не указано
+                                скрыто
                             @endif
                         </span>
                     </div>
@@ -759,39 +782,46 @@ if (! function_exists('clean_git_conflicts')) {
                     <div class="flex data-row">
                         <span class="w-60 text-base text-gray-600">Часы на соц. сети в неделю:</span>
                         <span class="text-base font-medium">
-                            @if($candidate->social_media_hours_weekly)
-                                {{ $candidate->social_media_hours_weekly }} час{{ $candidate->social_media_hours_weekly == 1 ? '' : ($candidate->social_media_hours_weekly < 5 ? 'а' : 'ов') }}
+                            @if($isFullReport)
+                                @if($candidate->social_media_hours_weekly)
+                                    {{ $candidate->social_media_hours_weekly }} час{{ $candidate->social_media_hours_weekly == 1 ? '' : ($candidate->social_media_hours_weekly < 5 ? 'а' : 'ов') }}
+                                @else
+                                    Не указано
+                                @endif
                             @else
-                                Не указано
+                                скрыто
                             @endif
                         </span>
                     </div>
                     <!-- 11. Водительские права -->
                     <div class="flex data-row">
                         <span class="w-60 text-base text-gray-600">Водительские права:</span>
-                        <span class="text-base font-medium">{{ $candidate->has_driving_license ? 'Есть' : 'Нет' }}</span>
+                        <span class="text-base font-medium">@if($isFullReport){{ $candidate->has_driving_license ? 'Есть' : 'Нет' }}@elseскрыто@endif</span>
                     </div>
                     <!-- 12. Пожелания на рабочем месте -->
                     <div class="flex items-start data-row">
                         <span class="w-60 text-base text-gray-600">Пожелания на рабочем месте:</span>
                         <span class="text-base font-medium flex-1">
-                            @php
-                                $workplace = trim($candidate->employer_requirements ?? '');
-                                if ($workplace !== '') {
-                                    $wLower = mb_strtolower($workplace, 'UTF-8');
-                                    $wFirst = mb_strtoupper(mb_substr($wLower, 0, 1, 'UTF-8'), 'UTF-8');
-                                    $wRest = mb_substr($wLower, 1, null, 'UTF-8');
-                                    $workplace = $wFirst . $wRest;
-                                } else {
-                                    $workplace = 'Не указано';
-                                }
-                            @endphp
-                            {{ $workplace }}
+                            @if($isFullReport)
+                                @php
+                                    $workplace = trim($candidate->employer_requirements ?? '');
+                                    if ($workplace !== '') {
+                                        $wLower = mb_strtolower($workplace, 'UTF-8');
+                                        $wFirst = mb_strtoupper(mb_substr($wLower, 0, 1, 'UTF-8'), 'UTF-8');
+                                        $wRest = mb_substr($wLower, 1, null, 'UTF-8');
+                                        $workplace = $wFirst . $wRest;
+                                    } else {
+                                        $workplace = 'Не указано';
+                                    }
+                                @endphp
+                                {{ $workplace }}
+                            @else
+                                скрыто
+                            @endif
                         </span>
                     </div>
                 </div>
             </div>
-            @endif
 
             <!-- Языковые навыки -->
             <div class="mb-8">
