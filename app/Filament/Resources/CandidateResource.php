@@ -314,7 +314,7 @@ class CandidateResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('step')
-                    ->label('Шаг анкеты')
+                    ->label('Шаг резюме')
                     ->options([
                         1 => 'Шаг 1 - Основная информация',
                         2 => 'Шаг 2 - Дополнительная информация',

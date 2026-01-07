@@ -134,7 +134,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <div class="stat-number">{{ $this->getTotalCandidates() }}</div>
-                    <div class="stat-label">Всего анкет за период</div>
+                    <div class="stat-label">Всего резюме за период</div>
                 </div>
                 <div class="stat-icon bg-blue-100">
                     <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -229,9 +229,9 @@
 
     <!-- Статистика по статусу и График динамики -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <!-- Статус анкет -->
+        <!-- Статус резюме -->
         <div class="chart-container">
-            <h3 class="chart-title">Статус анкет</h3>
+            <h3 class="chart-title">Статус резюме</h3>
             @php $statusStats = $this->getStatusStats(); @endphp
 
             <div class="space-y-4">
@@ -500,7 +500,7 @@
                     data: {
                         labels: {!! json_encode($timeline['labels']) !!},
                         datasets: [{
-                            label: 'Анкеты',
+                            label: 'Резюме',
                             data: {!! json_encode($timeline['values']) !!},
                             fill: true,
                             backgroundColor: 'rgba(245, 158, 11, 0.1)',
