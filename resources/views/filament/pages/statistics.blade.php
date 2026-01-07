@@ -304,7 +304,7 @@
 
             <div class="flex items-center gap-8">
                 <div class="flex-1" wire:ignore>
-                    <canvas id="genderChart" height="80"></canvas>
+                    <canvas id="genderChart" height="20"></canvas>
                 </div>
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
