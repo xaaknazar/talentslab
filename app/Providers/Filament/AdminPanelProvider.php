@@ -51,33 +51,9 @@ class AdminPanelProvider extends PanelProvider
                     <style>
                         .fi-sidebar {
                             border-right: 1px solid rgb(229 231 235);
-                            background: linear-gradient(180deg, #fefefe 0%, #f8fafc 100%);
                         }
                         .dark .fi-sidebar {
                             border-right: 1px solid rgb(55 65 81);
-                            background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
-                        }
-                        .fi-sidebar-nav-groups {
-                            padding: 0.5rem;
-                        }
-                        .fi-sidebar-group-label {
-                            font-weight: 600;
-                            text-transform: uppercase;
-                            font-size: 0.7rem;
-                            letter-spacing: 0.05em;
-                            color: rgb(107 114 128);
-                            padding: 0.75rem 0.5rem 0.5rem;
-                        }
-                        .fi-sidebar-item {
-                            border-radius: 0.5rem;
-                            margin: 0.125rem 0;
-                        }
-                        .fi-sidebar-item-button {
-                            border-radius: 0.5rem;
-                        }
-                        .fi-sidebar-item-active .fi-sidebar-item-button {
-                            background: rgb(251 191 36 / 0.15);
-                            border-left: 3px solid rgb(245 158 11);
                         }
                     </style>
                 ')
