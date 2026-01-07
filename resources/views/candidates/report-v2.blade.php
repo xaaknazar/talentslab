@@ -409,6 +409,18 @@ if (! function_exists('clean_git_conflicts')) {
                              <span class="w-60 text-base text-gray-600">Место рождения:</span>
                              <span class="text-base font-medium flex-1">{{ $candidate->birth_place ?: 'Не указано' }}</span>
                          </div>
+                         @if($candidate->citizenship)
+                         <div class="flex items-start data-row">
+                             <span class="w-60 text-base text-gray-600">Гражданство:</span>
+                             <span class="text-base font-medium flex-1">{{ $candidate->citizenship }}</span>
+                         </div>
+                         @endif
+                         @if($candidate->work_permits && count($candidate->work_permits) > 0)
+                         <div class="flex items-start data-row">
+                             <span class="w-60 text-base text-gray-600">Разрешение на работу:</span>
+                             <span class="text-base font-medium flex-1">{{ implode(', ', $candidate->work_permits) }}</span>
+                         </div>
+                         @endif
                          <div class="flex data-row">
                              <span class="w-60 text-base text-gray-600">Пол:</span>
                              <span class="text-base font-medium">{{ $candidate->gender ?: 'Не указано' }}</span>

@@ -222,6 +222,85 @@
             @error('birth_place') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
 
+        <!-- Гражданство -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700">
+                {{ __('Citizenship') }}
+            </label>
+            <select wire:model="citizenship"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <option value="">{{ __('Select country') }}</option>
+                @foreach($countries as $country)
+                    <option value="{{ $country['name_ru'] }}">{{ $country['display_name'] ?? $country['name_ru'] }}</option>
+                @endforeach
+            </select>
+            @error('citizenship') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </div>
+
+        <!-- Разрешение на работу -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700">
+                {{ __('Work Permit') }}
+            </label>
+            <div x-data="{
+                open: false,
+                search: '',
+                get filteredCountries() {
+                    if (!this.search) return $wire.countries;
+                    return $wire.countries.filter(c =>
+                        (c.display_name || c.name_ru).toLowerCase().includes(this.search.toLowerCase())
+                    );
+                }
+            }" class="relative">
+                <div @click="open = !open"
+                     class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm bg-white cursor-pointer min-h-[42px] p-2">
+                    <div class="flex flex-wrap gap-1">
+                        @forelse($work_permits as $permit)
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                {{ $permit }}
+                                <button type="button"
+                                        wire:click="removeWorkPermit('{{ $permit }}')"
+                                        @click.stop
+                                        class="ml-1 text-blue-600 hover:text-blue-800">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </span>
+                        @empty
+                            <span class="text-gray-400 text-sm">{{ __('Select countries') }}</span>
+                        @endforelse
+                    </div>
+                </div>
+
+                <div x-show="open"
+                     @click.outside="open = false"
+                     x-transition
+                     class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                    <div class="sticky top-0 bg-white p-2 border-b">
+                        <input type="text"
+                               x-model="search"
+                               @click.stop
+                               placeholder="{{ __('Search...') }}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <template x-for="country in filteredCountries" :key="country.name_ru">
+                        <div @click="$wire.addWorkPermit(country.name_ru); search = ''"
+                             class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                             :class="{ 'bg-blue-50': $wire.work_permits.includes(country.name_ru) }">
+                            <span x-text="country.display_name || country.name_ru"></span>
+                            <template x-if="$wire.work_permits.includes(country.name_ru)">
+                                <svg class="w-4 h-4 inline ml-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            @error('work_permits') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+        </div>
+
         <!-- Текущий город -->
         <div>
             <label class="block text-sm font-medium text-gray-700">
