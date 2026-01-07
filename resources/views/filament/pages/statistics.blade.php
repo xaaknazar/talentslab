@@ -295,7 +295,7 @@
         </div>
     </div>
 
-    <!-- Распределение по полу и возрасту -->
+    <!-- Распределение по полу и образованию -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <!-- Пол -->
         <div class="chart-container">
@@ -334,6 +334,19 @@
             </div>
         </div>
 
+        <!-- Образование -->
+        <div class="chart-container">
+            <h3 class="chart-title">Уровень образования</h3>
+            @php $eduStats = $this->getEducationStats(); @endphp
+
+            <div wire:ignore>
+                <canvas id="educationChart" height="120"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Возраст и Города -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <!-- Возраст -->
         <div class="chart-container">
             <h3 class="chart-title">Распределение по возрасту</h3>
@@ -353,10 +366,7 @@
                 @endforeach
             </div>
         </div>
-    </div>
 
-    <!-- Города и Образование -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <!-- Города -->
         <div class="chart-container">
             <h3 class="chart-title">Топ-15 городов</h3>
@@ -379,16 +389,6 @@
                 @empty
                 <div class="text-gray-500 text-center py-4">Нет данных</div>
                 @endforelse
-            </div>
-        </div>
-
-        <!-- Образование -->
-        <div class="chart-container">
-            <h3 class="chart-title">Уровень образования</h3>
-            @php $eduStats = $this->getEducationStats(); @endphp
-
-            <div wire:ignore>
-                <canvas id="educationChart" height="120"></canvas>
             </div>
         </div>
     </div>
