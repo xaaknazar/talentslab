@@ -85,15 +85,12 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 NavigationGroup::make()
                     ->label('Аналитика')
-                    ->icon('heroicon-o-presentation-chart-line')
                     ->collapsed(false),
                 NavigationGroup::make()
                     ->label('Кандидаты')
-                    ->icon('heroicon-o-user-group')
                     ->collapsed(false),
                 NavigationGroup::make()
                     ->label('Настройки')
-                    ->icon('heroicon-o-cog-6-tooth')
                     ->collapsed(true),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
