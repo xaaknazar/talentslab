@@ -29,6 +29,8 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->authGuard('web')
+            ->brandLogo(asset('logos/talents_lab_logo.png'))
+            ->brandLogoHeight('30px')
             ->colors([
                 'primary' => Color::Amber,
             ])
