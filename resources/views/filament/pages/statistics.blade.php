@@ -303,8 +303,8 @@
             @php $genderStats = $this->getGenderStats(); @endphp
 
             <div class="flex items-center gap-8">
-                <div class="flex-1" wire:ignore>
-                    <canvas id="genderChart" height="20"></canvas>
+                <div style="width: 100px; height: 100px;" wire:ignore>
+                    <canvas id="genderChart"></canvas>
                 </div>
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
@@ -543,7 +543,7 @@
                     },
                     options: {
                         responsive: true,
-                        maintainAspectRatio: true,
+                        maintainAspectRatio: false,
                         animation: { duration: 0 },
                         plugins: {
                             legend: { display: false }
