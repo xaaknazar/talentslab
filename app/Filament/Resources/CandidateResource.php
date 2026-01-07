@@ -423,14 +423,10 @@ class CandidateResource extends Resource
                         ),
                         
                 ])
-                    ->label('Gallup')
+                    ->label('Резюме')
                     ->icon('heroicon-o-document-arrow-down')
                     ->color('success')
-                    ->button()
-                    ->visible(fn (Candidate $record): bool =>
-                        ($record->gallup_pdf && Storage::disk('public')->exists($record->gallup_pdf)) || 
-                        $record->gallupReports()->exists()
-                    ),
+                    ->button(),
                     
                 // Кнопка редактирования анкеты (доступна только администраторам)
                 // Перемещена на место кнопки "Удалить" для лучшей видимости

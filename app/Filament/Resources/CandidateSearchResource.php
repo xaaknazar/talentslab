@@ -272,14 +272,10 @@ class CandidateSearchResource extends Resource
                         ->modal()
                         ->visible(fn (Candidate $record): bool => $record->gallupReports()->where('type', 'FMD')->exists()),
                 ])
-                    ->label('Gallup отчеты')
+                    ->label('Резюме')
                     ->icon('heroicon-o-document-arrow-down')
                     ->color('success')
-                    ->button()
-                    ->visible(fn (Candidate $record): bool =>
-                        ($record->gallup_pdf && Storage::disk('public')->exists($record->gallup_pdf)) || 
-                        $record->gallupReports()->exists()
-                    ),
+                    ->button(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
