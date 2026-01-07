@@ -649,6 +649,7 @@ if (! function_exists('clean_git_conflicts')) {
             </div>
 
             <!-- Интересы и развитие -->
+            @if($isFullReport)
             <div class="mb-8">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Интересы и развитие</h2>
                 <div class="space-y-1">
@@ -790,6 +791,7 @@ if (! function_exists('clean_git_conflicts')) {
                     </div>
                 </div>
             </div>
+            @endif
 
             <!-- Языковые навыки -->
             <div class="mb-8">
