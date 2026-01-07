@@ -216,11 +216,14 @@ class CandidateResource extends Resource
                 Tables\Columns\TextColumn::make('step')
                     ->label('Шаг')
                     ->badge()
+                    ->formatStateUsing(fn (string $state): string => "Шаг {$state}")
                     ->color(fn (string $state): string => match ($state) {
-                        '1' => 'danger',
+                        '6' => 'success',
+                        '5' => 'success',
+                        '4' => 'info',
+                        '3' => 'warning',
                         '2' => 'warning',
-                        '3' => 'info',
-                        '4' => 'success',
+                        '1' => 'danger',
                         default => 'gray',
                     })
                     ->sortable(),
@@ -313,10 +316,12 @@ class CandidateResource extends Resource
                 Tables\Filters\SelectFilter::make('step')
                     ->label('Шаг анкеты')
                     ->options([
-                        1 => 'Основная информация',
-                        2 => 'Дополнительная информация',
-                        3 => 'Образование и работа',
-                        4 => 'Тесты',
+                        1 => 'Шаг 1 - Основная информация',
+                        2 => 'Шаг 2 - Дополнительная информация',
+                        3 => 'Шаг 3 - Образование и работа',
+                        4 => 'Шаг 4 - Тесты',
+                        5 => 'Шаг 5 - Завершено',
+                        6 => 'Шаг 6 - С Gallup',
                     ]),
                 Tables\Filters\SelectFilter::make('gender')
                     ->label('Пол')
@@ -324,46 +329,122 @@ class CandidateResource extends Resource
                         'Мужской' => 'Мужской',
                         'Женский' => 'Женский',
                     ]),
+                Tables\Filters\SelectFilter::make('marital_status')
+                    ->label('Семейное положение')
+                    ->options([
+                        'Холост/Не замужем' => 'Холост/Не замужем',
+                        'Женат/Замужем' => 'Женат/Замужем',
+                        'Разведен(а)' => 'Разведен(а)',
+                        'Вдовец/Вдова' => 'Вдовец/Вдова',
+                    ]),
+                Tables\Filters\SelectFilter::make('birth_year')
+                    ->label('Год рождения')
+                    ->options(function () {
+                        $years = [];
+                        $currentYear = now()->year;
+                        for ($year = $currentYear - 18; $year >= $currentYear - 70; $year--) {
+                            $years[$year] = $year;
+                        }
+                        return $years;
+                    })
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['value'],
+                            fn (Builder $query, $year): Builder => $query->whereYear('birth_date', $year)
+                        );
+                    }),
+                Tables\Filters\SelectFilter::make('current_city')
+                    ->label('Город проживания')
+                    ->options(function () {
+                        return Candidate::query()
+                            ->whereNotNull('current_city')
+                            ->where('current_city', '!=', '')
+                            ->distinct()
+                            ->pluck('current_city', 'current_city')
+                            ->toArray();
+                    })
+                    ->searchable(),
+                Tables\Filters\SelectFilter::make('religion')
+                    ->label('Религия')
+                    ->options(function () {
+                        return Candidate::query()
+                            ->whereNotNull('religion')
+                            ->where('religion', '!=', '')
+                            ->distinct()
+                            ->pluck('religion', 'religion')
+                            ->toArray();
+                    })
+                    ->searchable(),
+                Tables\Filters\SelectFilter::make('activity_sphere')
+                    ->label('Сфера деятельности')
+                    ->options([
+                        'IT и телекоммуникации' => 'IT и телекоммуникации',
+                        'Финансы и банковское дело' => 'Финансы и банковское дело',
+                        'Маркетинг и реклама' => 'Маркетинг и реклама',
+                        'Продажи' => 'Продажи',
+                        'HR и управление персоналом' => 'HR и управление персоналом',
+                        'Производство' => 'Производство',
+                        'Логистика и транспорт' => 'Логистика и транспорт',
+                        'Строительство и недвижимость' => 'Строительство и недвижимость',
+                        'Медицина и фармацевтика' => 'Медицина и фармацевтика',
+                        'Образование и наука' => 'Образование и наука',
+                        'Юриспруденция' => 'Юриспруденция',
+                        'Бухгалтерия и аудит' => 'Бухгалтерия и аудит',
+                        'Государственная служба' => 'Государственная служба',
+                        'Нефть и газ' => 'Нефть и газ',
+                        'Энергетика' => 'Энергетика',
+                        'Сельское хозяйство' => 'Сельское хозяйство',
+                        'Туризм и гостиничный бизнес' => 'Туризм и гостиничный бизнес',
+                        'Общественное питание' => 'Общественное питание',
+                        'Розничная торговля' => 'Розничная торговля',
+                        'СМИ и журналистика' => 'СМИ и журналистика',
+                        'Дизайн и искусство' => 'Дизайн и искусство',
+                        'Консалтинг' => 'Консалтинг',
+                        'Безопасность' => 'Безопасность',
+                        'Другое' => 'Другое',
+                    ])
+                    ->multiple()
+                    ->searchable(),
+                Tables\Filters\SelectFilter::make('language')
+                    ->label('Язык')
+                    ->options([
+                        'Казахский' => 'Казахский',
+                        'Русский' => 'Русский',
+                        'Английский' => 'Английский',
+                        'Турецкий' => 'Турецкий',
+                        'Китайский' => 'Китайский',
+                        'Немецкий' => 'Немецкий',
+                        'Французский' => 'Французский',
+                        'Испанский' => 'Испанский',
+                        'Арабский' => 'Арабский',
+                        'Корейский' => 'Корейский',
+                        'Японский' => 'Японский',
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['value'],
+                            fn (Builder $query, $language): Builder => $query->whereRaw(
+                                "JSON_SEARCH(language_skills, 'one', ?) IS NOT NULL",
+                                [$language]
+                            )
+                        );
+                    })
+                    ->searchable(),
                 Tables\Filters\Filter::make('has_experience')
                     ->label('С опытом работы')
                     ->query(fn (Builder $query): Builder => $query->where('total_experience_years', '>', 0)),
                 Tables\Filters\Filter::make('created_this_month')
                     ->label('Созданы в этом месяце')
                     ->query(fn (Builder $query): Builder => $query->whereMonth('created_at', now()->month)),
+                Tables\Filters\Filter::make('has_gallup')
+                    ->label('С Gallup отчётом')
+                    ->query(fn (Builder $query): Builder => $query->whereNotNull('gallup_pdf')->where('gallup_pdf', '!=', '')),
                 Tables\Filters\Filter::make('has_gardner_test')
                     ->label('Прошли тест Гарднера')
                     ->query(fn (Builder $query): Builder =>
                         $query->whereHas('user.gardnerTestResult')
                     ),
-                Tables\Filters\Filter::make('gardner_test_completed')
-                    ->label('Завершили тест Гарднера')
-                    ->query(fn (Builder $query): Builder =>
-                        $query->whereHas('user.gardnerTestResult', function ($q) {
-                            $q->whereRaw('JSON_LENGTH(answers) >= 56');
-                        })
-                    ),
-                Tables\Filters\SelectFilter::make('step_parse_gallup')
-                    ->label('Статус парсинга Gallup')
-                    ->options([
-                        'Проверка файла' => 'Проверка файла',
-                        'Парсинг PDF' => 'Парсинг PDF',
-                        'Обновление талантов' => 'Обновление талантов',
-                        'Обработка отчетов' => 'Обработка отчетов',
-                        'Обновление Google Sheets: FMD' => 'Обновление Google Sheets: FMD',
-                        'Обновление Google Sheets: DPT' => 'Обновление Google Sheets: DPT',
-                        'Обновление Google Sheets: DPs' => 'Обновление Google Sheets: DPs',
-                        'Импорт формул: FMD' => 'Импорт формул: FMD',
-                        'Импорт формул: DPT' => 'Импорт формул: DPT',
-                        'Импорт формул: DPs' => 'Импорт формул: DPs',
-                        'Скачивание PDF: FMD' => 'Скачивание PDF: FMD',
-                        'Скачивание PDF: DPT' => 'Скачивание PDF: DPT',
-                        'Скачивание PDF: DPs' => 'Скачивание PDF: DPs',
-                        'Завершено успешно' => 'Завершено успешно',
-                        'Изменений не обнаружено' => 'Изменений не обнаружено',
-                    ])
-                    ->searchable()
-                    ->hidden(), // Скрытый фильтр, но доступный при необходимости
-            ])
+            ], layout: Tables\Enums\FiltersLayout::AboveContentCollapsible)
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\Action::make('Резюме полное')
