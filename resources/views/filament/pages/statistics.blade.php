@@ -187,43 +187,63 @@
         </div>
     </div>
 
-    <!-- Распределение по шагам - карточки -->
+    <!-- Распределение по шагам - карточки и график -->
     @php $stepStats = $this->getStepStats(); @endphp
-    <div class="mb-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">Распределение по шагам заполнения</h3>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            @php
-                $stepColors = [
-                    1 => ['from' => '#ef4444', 'to' => '#dc2626'],
-                    2 => ['from' => '#f97316', 'to' => '#ea580c'],
-                    3 => ['from' => '#f59e0b', 'to' => '#d97706'],
-                    4 => ['from' => '#84cc16', 'to' => '#65a30d'],
-                    5 => ['from' => '#22c55e', 'to' => '#16a34a'],
-                    6 => ['from' => '#14b8a6', 'to' => '#0d9488'],
-                ];
-                $stepDescriptions = [
-                    1 => 'Основная инфо',
-                    2 => 'Доп. информация',
-                    3 => 'Образование',
-                    4 => 'Тесты',
-                    5 => 'Завершено',
-                    6 => 'С Gallup',
-                ];
-            @endphp
-            @for($i = 1; $i <= 6; $i++)
-                @php
-                    $step = collect($stepStats)->firstWhere('step', $i);
-                    $count = $step['count'] ?? 0;
-                    $percent = $step['percent'] ?? 0;
-                    $colors = $stepColors[$i];
-                @endphp
-                <div class="step-card" style="--from: {{ $colors['from'] }}; --to: {{ $colors['to'] }};">
-                    <div class="text-xs font-medium opacity-80">Шаг {{ $i }}</div>
-                    <div class="step-number">{{ $count }}</div>
-                    <div class="step-label">{{ $stepDescriptions[$i] }}</div>
-                    <div class="step-percent">{{ $percent }}%</div>
-                </div>
-            @endfor
+    @php
+        $stepColors = [
+            1 => ['from' => '#ef4444', 'to' => '#dc2626'],
+            2 => ['from' => '#f97316', 'to' => '#ea580c'],
+            3 => ['from' => '#f59e0b', 'to' => '#d97706'],
+            4 => ['from' => '#84cc16', 'to' => '#65a30d'],
+            5 => ['from' => '#22c55e', 'to' => '#16a34a'],
+            6 => ['from' => '#14b8a6', 'to' => '#0d9488'],
+        ];
+        $stepDescriptions = [
+            1 => 'Основная инфо',
+            2 => 'Доп. информация',
+            3 => 'Образование',
+            4 => 'Тесты',
+            5 => 'Завершено',
+            6 => 'С Gallup',
+        ];
+        $stepLabelsForChart = [];
+        $stepValuesForChart = [];
+        $stepColorsForChart = [];
+        for ($i = 1; $i <= 6; $i++) {
+            $step = collect($stepStats)->firstWhere('step', $i);
+            $stepLabelsForChart[] = "Шаг {$i}";
+            $stepValuesForChart[] = $step['count'] ?? 0;
+            $stepColorsForChart[] = $stepColors[$i]['from'];
+        }
+    @endphp
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <!-- Карточки по шагам -->
+        <div class="chart-container">
+            <h3 class="chart-title">Распределение по шагам заполнения</h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                @for($i = 1; $i <= 6; $i++)
+                    @php
+                        $step = collect($stepStats)->firstWhere('step', $i);
+                        $count = $step['count'] ?? 0;
+                        $percent = $step['percent'] ?? 0;
+                        $colors = $stepColors[$i];
+                    @endphp
+                    <div class="step-card" style="--from: {{ $colors['from'] }}; --to: {{ $colors['to'] }};">
+                        <div class="text-xs font-medium opacity-80">Шаг {{ $i }}</div>
+                        <div class="step-number">{{ $count }}</div>
+                        <div class="step-label">{{ $stepDescriptions[$i] }}</div>
+                        <div class="step-percent">{{ $percent }}%</div>
+                    </div>
+                @endfor
+            </div>
+        </div>
+
+        <!-- График по шагам -->
+        <div class="chart-container">
+            <h3 class="chart-title">График по шагам</h3>
+            <div wire:ignore>
+                <canvas id="stepsChart" height="180"></canvas>
+            </div>
         </div>
     </div>
 
@@ -304,7 +324,7 @@
 
             <div class="flex items-center gap-8">
                 <div class="flex-1" wire:ignore>
-                    <canvas id="genderChart" height="200"></canvas>
+                    <canvas id="genderChart" height="120"></canvas>
                 </div>
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
@@ -388,7 +408,7 @@
             @php $eduStats = $this->getEducationStats(); @endphp
 
             <div wire:ignore>
-                <canvas id="educationChart" height="200"></canvas>
+                <canvas id="educationChart" height="120"></canvas>
             </div>
         </div>
     </div>
@@ -564,6 +584,37 @@
                             label: 'Кандидаты',
                             data: {!! json_encode(collect($eduStats)->pluck('count')) !!},
                             backgroundColor: ['#6366f1', '#8b5cf6', '#a855f7', '#c084fc', '#d8b4fe'],
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        animation: { duration: 0 },
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { stepSize: 1 }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Шаги - Bar chart
+            const stepsCtx = document.getElementById('stepsChart');
+            if (stepsCtx) {
+                charts.steps = new Chart(stepsCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: {!! json_encode($stepLabelsForChart) !!},
+                        datasets: [{
+                            label: 'Кандидаты',
+                            data: {!! json_encode($stepValuesForChart) !!},
+                            backgroundColor: {!! json_encode($stepColorsForChart) !!},
                             borderRadius: 6
                         }]
                     },
