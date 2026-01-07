@@ -7,8 +7,8 @@ class ReportLabels
     private static array $labels = [
         'ru' => [
             'candidate_report' => 'Отчет о кандидате',
-            'reduced_report' => 'Урезанный отчет о кандидате',
-            'reduced_version' => '(урезанная версия)',
+            'reduced_report' => 'Краткий отчет о кандидате',
+            'reduced_version' => '(краткая версия)',
             'full_name' => 'ФИО',
             'birth_date' => 'Дата рождения',
             'birth_place' => 'Место рождения',

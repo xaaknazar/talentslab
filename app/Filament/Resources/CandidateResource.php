@@ -369,8 +369,8 @@ class CandidateResource extends Resource
                         ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'anketa']))
                         ->modal(),
 
-                    Tables\Actions\Action::make('Резюме урезанное')
-                        ->label('Резюме урезанное')
+                    Tables\Actions\Action::make('Резюме краткое')
+                        ->label('Резюме краткое')
                         ->icon('heroicon-o-document-text')
                         ->color('info')
                         ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'anketa-reduced']))

@@ -473,19 +473,22 @@ class GallupController extends Controller
         // 2️⃣ Получаем все файлы для объединения
         $pdfPaths = [$tempHtmlPdf];
 
-        $reports = GallupReport::where('candidate_id', $candidate->id)->get();
+        // Добавляем Gallup отчёты только для полной версии
+        if ($version === 'full') {
+            $reports = GallupReport::where('candidate_id', $candidate->id)->get();
 
-        foreach ($reports as $report) {
+            foreach ($reports as $report) {
 
-            $file = $report->short_area_pdf_file;
-            if (!$file) continue;
+                $file = $report->short_area_pdf_file;
+                if (!$file) continue;
 
-            $relative = ltrim($file, '/');
+                $relative = ltrim($file, '/');
 
-            $fullPath = Storage::disk('public')->path($relative);
+                $fullPath = Storage::disk('public')->path($relative);
 
-            if (file_exists($fullPath)) {
-                $pdfPaths[] = $fullPath;
+                if (file_exists($fullPath)) {
+                    $pdfPaths[] = $fullPath;
+                }
             }
         }
 
@@ -709,7 +712,7 @@ class GallupController extends Controller
         $genderCode = ($candidate->gender === 'Женский' || $candidate->gender === 'female') ? 'G' : 'B';
         $birthYear = $candidate->birth_date ? substr(date('Y', strtotime($candidate->birth_date)), -2) : '00';
         $candidateId = str_pad($candidate->id, 4, '0', STR_PAD_LEFT);
-        $version_text = $version === 'full' ? 'полная' : 'урезанная';
+        $version_text = $version === 'full' ? 'полная' : 'краткая';
 
         $tempFileName = "{$candidate->full_name} - TL{$genderCode}{$birthYear}-{$candidateId}-{$version_text}.pdf";
 
