@@ -20,13 +20,17 @@ class CandidateResource extends Resource
 {
     protected static ?string $model = Candidate::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $modelLabel = 'Резюме кандидата';
 
     protected static ?string $pluralModelLabel = 'Резюме кандидатов';
 
     protected static ?string $navigationLabel = 'Резюме кандидатов';
+
+    protected static ?string $navigationGroup = 'Кандидаты';
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

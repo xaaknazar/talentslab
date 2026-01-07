@@ -17,13 +17,17 @@ class GallupReportSheetResource extends Resource
 {
     protected static ?string $model = GallupReportSheet::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-chart-bar';
+    protected static ?string $navigationIcon = 'heroicon-o-table-cells';
 
-    protected static ?string $navigationLabel = 'Gallup Report Sheets';
+    protected static ?string $navigationLabel = 'Gallup отчёты';
 
-    protected static ?string $modelLabel = 'Gallup Report Sheet';
+    protected static ?string $modelLabel = 'Gallup отчёт';
 
-    protected static ?string $pluralModelLabel = 'Gallup Report Sheets';
+    protected static ?string $pluralModelLabel = 'Gallup отчёты';
+
+    protected static ?string $navigationGroup = 'Настройки';
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

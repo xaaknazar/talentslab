@@ -21,11 +21,12 @@ class CandidateSearchResource extends Resource
 {
     protected static ?string $model = Candidate::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-magnifying-glass';
+    protected static ?string $navigationIcon = 'heroicon-o-magnifying-glass-circle';
     protected static ?string $navigationLabel = 'Поиск кандидатов';
     protected static ?string $modelLabel = 'Поиск кандидатов';
     protected static ?string $pluralModelLabel = 'Поиск кандидатов';
     protected static ?string $slug = 'candidate-search';
+    protected static ?string $navigationGroup = 'Кандидаты';
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form

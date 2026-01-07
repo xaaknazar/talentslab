@@ -9,9 +9,10 @@ use Illuminate\Support\Facades\DB;
 
 class Statistics extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
+    protected static ?string $navigationIcon = 'heroicon-o-chart-pie';
     protected static ?string $navigationLabel = 'Статистика';
     protected static ?string $title = 'Статистика';
+    protected static ?string $navigationGroup = 'Аналитика';
     protected static ?int $navigationSort = 1;
     protected static string $view = 'filament.pages.statistics';
 
