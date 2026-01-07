@@ -1,6 +1,4 @@
 <x-filament-panels::page>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
         .stat-card {
             background: white;
@@ -44,23 +42,15 @@
             margin-bottom: 16px;
         }
         .progress-bar {
-            height: 8px;
+            height: 10px;
             background: #e5e7eb;
-            border-radius: 4px;
+            border-radius: 5px;
             overflow: hidden;
         }
         .progress-fill {
             height: 100%;
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
+            border-radius: 5px;
+            transition: width 0.3s ease;
         }
         .period-btn {
             padding: 8px 16px;
@@ -90,6 +80,27 @@
         }
         .list-item:last-child {
             border-bottom: none;
+        }
+        .step-card {
+            background: linear-gradient(135deg, var(--from) 0%, var(--to) 100%);
+            border-radius: 12px;
+            padding: 16px;
+            color: white;
+        }
+        .step-number {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+        .step-label {
+            font-size: 0.75rem;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+        .step-percent {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-top: 8px;
         }
     </style>
 
@@ -176,6 +187,46 @@
         </div>
     </div>
 
+    <!-- Распределение по шагам - карточки -->
+    @php $stepStats = $this->getStepStats(); @endphp
+    <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Распределение по шагам заполнения</h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            @php
+                $stepColors = [
+                    1 => ['from' => '#ef4444', 'to' => '#dc2626'],
+                    2 => ['from' => '#f97316', 'to' => '#ea580c'],
+                    3 => ['from' => '#f59e0b', 'to' => '#d97706'],
+                    4 => ['from' => '#84cc16', 'to' => '#65a30d'],
+                    5 => ['from' => '#22c55e', 'to' => '#16a34a'],
+                    6 => ['from' => '#14b8a6', 'to' => '#0d9488'],
+                ];
+                $stepDescriptions = [
+                    1 => 'Основная инфо',
+                    2 => 'Доп. информация',
+                    3 => 'Образование',
+                    4 => 'Тесты',
+                    5 => 'Завершено',
+                    6 => 'С Gallup',
+                ];
+            @endphp
+            @for($i = 1; $i <= 6; $i++)
+                @php
+                    $step = collect($stepStats)->firstWhere('step', $i);
+                    $count = $step['count'] ?? 0;
+                    $percent = $step['percent'] ?? 0;
+                    $colors = $stepColors[$i];
+                @endphp
+                <div class="step-card" style="--from: {{ $colors['from'] }}; --to: {{ $colors['to'] }};">
+                    <div class="text-xs font-medium opacity-80">Шаг {{ $i }}</div>
+                    <div class="step-number">{{ $count }}</div>
+                    <div class="step-label">{{ $stepDescriptions[$i] }}</div>
+                    <div class="step-percent">{{ $percent }}%</div>
+                </div>
+            @endfor
+        </div>
+    </div>
+
     <!-- Статистика по статусу и График динамики -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <!-- Статус анкет -->
@@ -184,47 +235,63 @@
             @php $statusStats = $this->getStatusStats(); @endphp
 
             <div class="space-y-4">
-                <div>
-                    <div class="flex justify-between mb-1">
-                        <span class="text-sm font-medium text-gray-700">Полные (с Gallup)</span>
-                        <span class="text-sm font-bold text-green-600">{{ $statusStats['full']['count'] }} ({{ $statusStats['full']['percent'] }}%)</span>
+                <div class="flex items-center gap-4 p-3 bg-green-50 rounded-lg">
+                    <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
                     </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill bg-green-500" style="width: {{ $statusStats['full']['percent'] }}%"></div>
+                    <div class="flex-1">
+                        <div class="font-semibold text-gray-800">Полные (с Gallup)</div>
+                        <div class="text-sm text-gray-500">Все шаги + отчёт Gallup</div>
                     </div>
-                </div>
-
-                <div>
-                    <div class="flex justify-between mb-1">
-                        <span class="text-sm font-medium text-gray-700">Без Gallup</span>
-                        <span class="text-sm font-bold text-amber-600">{{ $statusStats['without_gallup']['count'] }} ({{ $statusStats['without_gallup']['percent'] }}%)</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill bg-amber-500" style="width: {{ $statusStats['without_gallup']['percent'] }}%"></div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-green-600">{{ $statusStats['full']['count'] }}</div>
+                        <div class="text-sm text-green-600">{{ $statusStats['full']['percent'] }}%</div>
                     </div>
                 </div>
 
-                <div>
-                    <div class="flex justify-between mb-1">
-                        <span class="text-sm font-medium text-gray-700">Неполные</span>
-                        <span class="text-sm font-bold text-red-600">{{ $statusStats['incomplete']['count'] }} ({{ $statusStats['incomplete']['percent'] }}%)</span>
+                <div class="flex items-center gap-4 p-3 bg-amber-50 rounded-lg">
+                    <div class="w-12 h-12 bg-amber-500 rounded-full flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
                     </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill bg-red-500" style="width: {{ $statusStats['incomplete']['percent'] }}%"></div>
+                    <div class="flex-1">
+                        <div class="font-semibold text-gray-800">Без Gallup</div>
+                        <div class="text-sm text-gray-500">Шаг 5+ без отчёта Gallup</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-amber-600">{{ $statusStats['without_gallup']['count'] }}</div>
+                        <div class="text-sm text-amber-600">{{ $statusStats['without_gallup']['percent'] }}%</div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Pie chart для статусов -->
-            <div class="mt-6">
-                <canvas id="statusChart" height="200"></canvas>
+                <div class="flex items-center gap-4 p-3 bg-red-50 rounded-lg">
+                    <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-semibold text-gray-800">Неполные</div>
+                        <div class="text-sm text-gray-500">Шаг меньше 5</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-red-600">{{ $statusStats['incomplete']['count'] }}</div>
+                        <div class="text-sm text-red-600">{{ $statusStats['incomplete']['percent'] }}%</div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- График динамики -->
         <div class="chart-container lg:col-span-2">
             <h3 class="chart-title">Динамика заполнений</h3>
-            <canvas id="timelineChart" height="120"></canvas>
+            @php $timeline = $this->getTimelineData(); @endphp
+            <div wire:ignore>
+                <canvas id="timelineChart" height="120"></canvas>
+            </div>
         </div>
     </div>
 
@@ -236,7 +303,7 @@
             @php $genderStats = $this->getGenderStats(); @endphp
 
             <div class="flex items-center gap-8">
-                <div class="flex-1">
+                <div class="flex-1" wire:ignore>
                     <canvas id="genderChart" height="200"></canvas>
                 </div>
                 <div class="space-y-4">
@@ -288,7 +355,7 @@
         </div>
     </div>
 
-    <!-- Города и Шаги -->
+    <!-- Города и Образование -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <!-- Города -->
         <div class="chart-container">
@@ -315,37 +382,19 @@
             </div>
         </div>
 
-        <!-- Шаги заполнения -->
-        <div class="chart-container">
-            <h3 class="chart-title">Распределение по шагам заполнения</h3>
-            @php $stepStats = $this->getStepStats(); @endphp
-
-            <div class="space-y-3">
-                @foreach($stepStats as $step)
-                <div>
-                    <div class="flex justify-between mb-1">
-                        <span class="text-sm font-medium text-gray-700">{{ $step['label'] }}</span>
-                        <span class="text-sm font-bold text-gray-600">{{ $step['count'] }} ({{ $step['percent'] }}%)</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: {{ $step['percent'] }}%; background: {{ $step['step'] >= 5 ? '#22c55e' : ($step['step'] >= 3 ? '#f59e0b' : '#ef4444') }};"></div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </div>
-
-    <!-- Образование и Языки -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <!-- Образование -->
         <div class="chart-container">
             <h3 class="chart-title">Уровень образования</h3>
             @php $eduStats = $this->getEducationStats(); @endphp
 
-            <canvas id="educationChart" height="200"></canvas>
+            <div wire:ignore>
+                <canvas id="educationChart" height="200"></canvas>
+            </div>
         </div>
+    </div>
 
+    <!-- Языки и Религия -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <!-- Языки -->
         <div class="chart-container">
             <h3 class="chart-title">Знание языков</h3>
@@ -357,7 +406,7 @@
                     <span class="font-medium text-gray-700">{{ $lang['language'] }}</span>
                     <div class="flex items-center gap-4">
                         <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                            <div class="h-full bg-teal-500 rounded-full" style="width: {{ $lang['percent'] }}%"></div>
+                            <div class="h-full bg-teal-500 rounded-full" style="width: {{ min($lang['percent'], 100) }}%"></div>
                         </div>
                         <span class="text-sm font-bold text-gray-600 w-16 text-right">{{ $lang['count'] }}</span>
                     </div>
@@ -367,10 +416,8 @@
                 @endforelse
             </div>
         </div>
-    </div>
 
-    <!-- Религия -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Религия -->
         <div class="chart-container">
             <h3 class="chart-title">Вероисповедание</h3>
             @php $religionStats = $this->getReligionStats(); @endphp
@@ -383,7 +430,7 @@
                         <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
                             <div class="h-full bg-violet-500 rounded-full" style="width: {{ $religion['percent'] }}%"></div>
                         </div>
-                        <span class="text-sm font-bold text-gray-600 w-16 text-right">{{ $religion['count'] }} ({{ $religion['percent'] }}%)</span>
+                        <span class="text-sm font-bold text-gray-600 w-20 text-right">{{ $religion['count'] }} ({{ $religion['percent'] }}%)</span>
                     </div>
                 </div>
                 @empty
@@ -391,81 +438,64 @@
                 @endforelse
             </div>
         </div>
+    </div>
 
-        <!-- Дополнительная статистика -->
-        <div class="chart-container">
-            <h3 class="chart-title">Дополнительно</h3>
+    <!-- Дополнительная статистика -->
+    <div class="chart-container">
+        <h3 class="chart-title">Дополнительная статистика</h3>
 
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4">
-                    <div class="text-2xl font-bold text-blue-700">{{ $this->getAverageCompletionTime() ?? '—' }}</div>
-                    <div class="text-sm text-blue-600">Среднее время заполнения</div>
-                </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4">
+                <div class="text-2xl font-bold text-blue-700">{{ $this->getAverageCompletionTime() ?? '—' }}</div>
+                <div class="text-sm text-blue-600">Среднее время заполнения</div>
+            </div>
 
-                @php
-                    $avgAge = \App\Models\Candidate::whereNotNull('birth_date')
-                        ->selectRaw('AVG(TIMESTAMPDIFF(YEAR, birth_date, CURDATE())) as avg_age')
-                        ->value('avg_age');
-                @endphp
-                <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4">
-                    <div class="text-2xl font-bold text-purple-700">{{ $avgAge ? round($avgAge) : '—' }}</div>
-                    <div class="text-sm text-purple-600">Средний возраст</div>
-                </div>
+            @php
+                $avgAge = \App\Models\Candidate::whereNotNull('birth_date')
+                    ->selectRaw('AVG(TIMESTAMPDIFF(YEAR, birth_date, CURDATE())) as avg_age')
+                    ->value('avg_age');
+            @endphp
+            <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4">
+                <div class="text-2xl font-bold text-purple-700">{{ $avgAge ? round($avgAge) : '—' }} лет</div>
+                <div class="text-sm text-purple-600">Средний возраст</div>
+            </div>
 
-                @php
-                    $avgExperience = \App\Models\Candidate::whereNotNull('total_experience_years')
-                        ->avg('total_experience_years');
-                @endphp
-                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4">
-                    <div class="text-2xl font-bold text-green-700">{{ $avgExperience ? round($avgExperience, 1) : '—' }} лет</div>
-                    <div class="text-sm text-green-600">Средний стаж</div>
-                </div>
+            @php
+                $avgExperience = \App\Models\Candidate::whereNotNull('total_experience_years')
+                    ->avg('total_experience_years');
+            @endphp
+            <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4">
+                <div class="text-2xl font-bold text-green-700">{{ $avgExperience ? round($avgExperience, 1) : '—' }} лет</div>
+                <div class="text-sm text-green-600">Средний стаж</div>
+            </div>
 
-                @php
-                    $avgSalary = \App\Models\Candidate::whereNotNull('expected_salary_from')
-                        ->where('expected_salary_from', '>', 0)
-                        ->avg('expected_salary_from');
-                @endphp
-                <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl p-4">
-                    <div class="text-2xl font-bold text-amber-700">{{ $avgSalary ? number_format($avgSalary, 0, ',', ' ') : '—' }}</div>
-                    <div class="text-sm text-amber-600">Средняя ожид. ЗП (от)</div>
-                </div>
+            @php
+                $avgSalary = \App\Models\Candidate::whereNotNull('expected_salary_from')
+                    ->where('expected_salary_from', '>', 0)
+                    ->avg('expected_salary_from');
+            @endphp
+            <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl p-4">
+                <div class="text-2xl font-bold text-amber-700">{{ $avgSalary ? number_format($avgSalary, 0, ',', ' ') : '—' }} ₸</div>
+                <div class="text-sm text-amber-600">Средняя ожид. ЗП</div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Статус анкет - Pie chart
-            const statusCtx = document.getElementById('statusChart');
-            if (statusCtx) {
-                new Chart(statusCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Полные (с Gallup)', 'Без Gallup', 'Неполные'],
-                        datasets: [{
-                            data: [{{ $statusStats['full']['count'] }}, {{ $statusStats['without_gallup']['count'] }}, {{ $statusStats['incomplete']['count'] }}],
-                            backgroundColor: ['#22c55e', '#f59e0b', '#ef4444'],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        },
-                        cutout: '60%'
-                    }
-                });
-            }
+        let charts = {};
+
+        function initCharts() {
+            // Уничтожаем старые графики
+            Object.values(charts).forEach(chart => {
+                if (chart) chart.destroy();
+            });
+            charts = {};
 
             // Динамика - Line chart
-            @php $timeline = $this->getTimelineData(); @endphp
             const timelineCtx = document.getElementById('timelineChart');
             if (timelineCtx) {
-                new Chart(timelineCtx, {
+                charts.timeline = new Chart(timelineCtx, {
                     type: 'line',
                     data: {
                         labels: {!! json_encode($timeline['labels']) !!},
@@ -483,17 +513,15 @@
                     },
                     options: {
                         responsive: true,
+                        maintainAspectRatio: true,
+                        animation: { duration: 0 },
                         plugins: {
-                            legend: {
-                                display: false
-                            }
+                            legend: { display: false }
                         },
                         scales: {
                             y: {
                                 beginAtZero: true,
-                                ticks: {
-                                    stepSize: 1
-                                }
+                                ticks: { stepSize: 1 }
                             }
                         }
                     }
@@ -503,7 +531,7 @@
             // Пол - Doughnut chart
             const genderCtx = document.getElementById('genderChart');
             if (genderCtx) {
-                new Chart(genderCtx, {
+                charts.gender = new Chart(genderCtx, {
                     type: 'doughnut',
                     data: {
                         labels: ['Мужчины', 'Женщины'{{ $genderStats['unknown']['count'] > 0 ? ", 'Не указано'" : '' }}],
@@ -515,10 +543,10 @@
                     },
                     options: {
                         responsive: true,
+                        maintainAspectRatio: true,
+                        animation: { duration: 0 },
                         plugins: {
-                            legend: {
-                                display: false
-                            }
+                            legend: { display: false }
                         },
                         cutout: '65%'
                     }
@@ -528,7 +556,7 @@
             // Образование - Bar chart
             const educationCtx = document.getElementById('educationChart');
             if (educationCtx) {
-                new Chart(educationCtx, {
+                charts.education = new Chart(educationCtx, {
                     type: 'bar',
                     data: {
                         labels: {!! json_encode(collect($eduStats)->pluck('degree')) !!},
@@ -541,27 +569,23 @@
                     },
                     options: {
                         responsive: true,
+                        maintainAspectRatio: true,
+                        animation: { duration: 0 },
                         plugins: {
-                            legend: {
-                                display: false
-                            }
+                            legend: { display: false }
                         },
                         scales: {
                             y: {
                                 beginAtZero: true,
-                                ticks: {
-                                    stepSize: 1
-                                }
+                                ticks: { stepSize: 1 }
                             }
                         }
                     }
                 });
             }
-        });
+        }
 
-        // Обновление графиков при изменении периода
-        document.addEventListener('livewire:navigated', function() {
-            location.reload();
-        });
+        document.addEventListener('DOMContentLoaded', initCharts);
+        document.addEventListener('livewire:navigated', initCharts);
     </script>
 </x-filament-panels::page>
