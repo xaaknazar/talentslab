@@ -241,10 +241,7 @@ class CandidateSearchResource extends Resource
                         ->icon('heroicon-o-document-text')
                         ->color('success')
                         ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'anketa']))
-                        ->modal()
-                        ->visible(fn (Candidate $record): bool =>
-                            $record->gallup_pdf && Storage::disk('public')->exists($record->gallup_pdf)
-                        ),
+                        ->modal(),
 
                     Tables\Actions\Action::make('Резюме урезанное')
                         ->label('Резюме урезанное')
