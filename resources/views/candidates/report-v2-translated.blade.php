@@ -44,6 +44,12 @@
             break-inside: avoid;
         }
 
+        /* Секция Гарднера не разрывается */
+        .gardner-section {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
         /* Заголовки секций не отрываются от содержимого */
         h2 {
             page-break-after: avoid;
@@ -861,7 +867,7 @@ if (! function_exists('clean_git_conflicts')) {
                     'Экзистенциальный интеллект',
                 ];
             @endphp
-            <div class="mb-4">
+            <div class="mb-4 gardner-section">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">{{ $labels['gardner_intelligence'] }}</h2>
                 <div class="bg-gray-100 rounded-lg p-6">
                     <!-- Первый ряд -->
