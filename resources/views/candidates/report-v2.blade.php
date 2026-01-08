@@ -291,6 +291,171 @@
             page-break-inside: avoid;
             break-inside: avoid;
         }
+
+        /* ========== МОБИЛЬНАЯ АДАПТАЦИЯ (только для экрана, не для печати/PDF) ========== */
+        @media screen and (max-width: 768px) {
+            /* Общие стили */
+            body {
+                padding: 0 !important;
+            }
+
+            .max-w-4xl {
+                max-width: 100% !important;
+                padding: 0 10px !important;
+            }
+
+            .p-6, .p-3 {
+                padding: 0.75rem !important;
+            }
+
+            /* Заголовок кандидата - фото сверху по центру */
+            .candidate-header {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
+            }
+
+            .candidate-header .float-right {
+                float: none !important;
+                margin: 0 0 1rem 0 !important;
+                order: -1 !important;
+            }
+
+            .candidate-header .w-47 {
+                width: 140px !important;
+                height: 175px !important;
+            }
+
+            .candidate-header h1 {
+                justify-content: center !important;
+                text-align: center !important;
+            }
+
+            .candidate-header .text-base {
+                text-align: center !important;
+            }
+
+            .candidate-header [style*="display: flex"][style*="flex-wrap: wrap"] {
+                justify-content: center !important;
+            }
+
+            .text-3xl {
+                font-size: 1.5rem !important;
+                line-height: 2rem !important;
+            }
+
+            .text-xl {
+                font-size: 1.1rem !important;
+            }
+
+            /* Секции данных */
+            .w-60 {
+                width: 100% !important;
+                display: block !important;
+                margin-bottom: 0.25rem !important;
+            }
+
+            .flex.data-row {
+                flex-direction: column !important;
+                margin-bottom: 0.75rem !important;
+            }
+
+            /* Двухколоночные сетки */
+            .grid-cols-2 {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* Секция Гарднера */
+            .gardner-section .bg-gray-100 {
+                padding: 1rem !important;
+                overflow-x: auto !important;
+            }
+
+            .gardner-section [style*="display: flex"][style*="height: 180px"] {
+                min-width: 600px !important;
+            }
+
+            .gardner-section [style*="width: 110px"] {
+                width: 70px !important;
+                margin: 0 8px !important;
+            }
+
+            .gardner-section [style*="font-size: 26px"] {
+                font-size: 16px !important;
+            }
+
+            .gardner-section [style*="width: 120px"] {
+                width: 80px !important;
+            }
+
+            .gardner-section [style*="font-size: 10px"] {
+                font-size: 8px !important;
+            }
+
+            /* Опыт работы */
+            [style*="display: flex"][style*="gap: 24px"] {
+                flex-direction: column !important;
+                gap: 0.5rem !important;
+            }
+
+            [style*="width: 150px"][style*="flex-shrink: 0"] {
+                width: 100% !important;
+            }
+
+            /* Университеты */
+            .ml-8 {
+                margin-left: 1rem !important;
+            }
+
+            /* PDF изображения */
+            .pdf-page-container {
+                margin-bottom: 1rem !important;
+            }
+
+            /* Таблицы */
+            table {
+                font-size: 0.75rem !important;
+            }
+
+            table td, table th {
+                padding: 0.25rem !important;
+            }
+
+            /* Кнопки навигации */
+            .no-print {
+                flex-wrap: wrap !important;
+                gap: 0.5rem !important;
+            }
+
+            .no-print a, .no-print button {
+                font-size: 0.75rem !important;
+                padding: 0.5rem 0.75rem !important;
+            }
+        }
+
+        /* Для очень маленьких экранов */
+        @media screen and (max-width: 480px) {
+            .text-3xl {
+                font-size: 1.25rem !important;
+            }
+
+            .text-xl {
+                font-size: 1rem !important;
+            }
+
+            .text-base {
+                font-size: 0.875rem !important;
+            }
+
+            .p-6 {
+                padding: 0.75rem !important;
+            }
+
+            .mb-8 {
+                margin-bottom: 1.5rem !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -337,7 +502,7 @@ if (! function_exists('clean_git_conflicts')) {
 
         <!-- Candidate Header -->
         <div class="p-3">
-            <div class="mb-8">
+            <div class="mb-8 candidate-header">
                 <!-- Фото справа с обтеканием -->
                 <div class="float-right ml-6 flex-shrink-0">
                     @if($photoUrl)
