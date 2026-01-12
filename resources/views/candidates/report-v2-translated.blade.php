@@ -32,14 +32,14 @@
             .no-print { display: none; }
         }
 
-        /* Предотвращение разрыва текста между страницами */
-        .mb-8, .data-row, .flex.items-start, .space-y-1 > div {
+        /* Только одиночные строки данных не разрываются пополам */
+        .data-row {
             page-break-inside: avoid;
             break-inside: avoid;
         }
 
-        /* Не разрывать записи опыта работы */
-        [style*="display: flex"][style*="gap: 24px"] {
+        /* Записи опыта работы не разрываются */
+        .work-experience-item {
             page-break-inside: avoid;
             break-inside: avoid;
         }
@@ -50,10 +50,33 @@
             break-inside: avoid;
         }
 
-        /* Заголовки секций не отрываются от содержимого */
+        /* Заголовки секций не отрываются от первых строк */
         h2 {
             page-break-after: avoid;
             break-after: avoid;
+        }
+
+        /* Предотвращаем разрыв отдельных строк текста */
+        p, span, div, li {
+            orphans: 3;
+            widows: 3;
+        }
+
+        /* Отдельные текстовые блоки не разрываются */
+        .flex.items-start,
+        .flex.items-center,
+        .space-y-1 > div,
+        .space-y-2 > div,
+        ul > li {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        /* Элементы внутри work-experience-item */
+        .work-experience-item > div,
+        .work-experience-item div[style*="font-weight"] {
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
 
         .logo-header {

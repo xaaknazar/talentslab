@@ -51,6 +51,29 @@
             break-after: avoid;
         }
 
+        /* Предотвращаем разрыв отдельных строк текста */
+        p, span, div, li {
+            orphans: 3;
+            widows: 3;
+        }
+
+        /* Отдельные текстовые блоки не разрываются */
+        .flex.items-start,
+        .flex.items-center,
+        .space-y-1 > div,
+        .space-y-2 > div,
+        ul > li {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        /* Элементы внутри work-experience-item */
+        .work-experience-item > div,
+        .work-experience-item div[style*="font-weight"] {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
         .logo-header {
             background: transparent;
         }
