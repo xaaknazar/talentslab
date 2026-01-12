@@ -25,6 +25,13 @@
         @media print {
             body { font-size: 15px; }
             .no-print { display: none; }
+
+            /* Предотвращаем горизонтальный разрыв текста */
+            .no-break, .data-row, .work-experience-item, li, p {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                padding-bottom: 1px;
+            }
         }
 
         /* Класс для предотвращения разрыва строки */
@@ -33,7 +40,10 @@
             break-inside: avoid !important;
             -webkit-column-break-inside: avoid !important;
             display: block;
-            overflow: hidden;
+            overflow: visible;
+            padding-bottom: 2px;
+            box-decoration-break: clone;
+            -webkit-box-decoration-break: clone;
         }
 
         /* Только одиночные строки данных не разрываются пополам */
