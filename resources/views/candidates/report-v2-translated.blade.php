@@ -30,72 +30,24 @@
         @media print {
             body { font-size: 15px; }
             .no-print { display: none; }
-
-            /* Предотвращаем горизонтальный разрыв текста */
-            .no-break, .data-row, .work-experience-item, li, p {
-                page-break-inside: avoid !important;
-                break-inside: avoid !important;
-                padding-bottom: 1px;
-            }
         }
 
-        /* Класс для предотвращения разрыва строки */
-        .no-break {
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
-            display: block;
-            overflow: visible;
-            padding-bottom: 2px;
-            box-decoration-break: clone;
-            -webkit-box-decoration-break: clone;
-        }
-
-        /* Только одиночные строки данных не разрываются пополам */
-        .data-row {
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
-
-        /* Записи опыта работы не разрываются */
-        .work-experience-item {
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
-
-        /* Секция Гарднера не разрывается */
+        /* ТОЛЬКО секция Гарднера не разрывается */
         .gardner-section {
             page-break-inside: avoid;
             break-inside: avoid;
         }
 
-        /* Заголовки секций не отрываются от первых строк */
-        h2 {
-            page-break-after: avoid;
-            break-after: avoid;
+        /* Увеличенный line-height чтобы разрывы были между строками, а не через них */
+        body {
+            line-height: 1.5;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
 
-        /* Предотвращаем разрыв отдельных строк текста */
-        p, span, div, li {
-            orphans: 3;
-            widows: 3;
-        }
-
-        /* Отдельные текстовые блоки не разрываются */
-        .flex.items-start,
-        .flex.items-center,
-        .space-y-1 > div,
-        .space-y-2 > div,
-        ul > li {
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
-
-        /* Элементы внутри work-experience-item */
-        .work-experience-item > div,
-        .work-experience-item div[style*="font-weight"] {
-            page-break-inside: avoid;
-            break-inside: avoid;
+        /* Текстовые элементы с безопасным line-height */
+        p, span, div, li, h1, h2, h3, h4 {
+            line-height: 1.4;
         }
 
         .logo-header {
