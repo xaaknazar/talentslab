@@ -32,6 +32,15 @@
             .no-print { display: none; }
         }
 
+        /* Класс для предотвращения разрыва строки */
+        .no-break {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+            display: block;
+            overflow: hidden;
+        }
+
         /* Только одиночные строки данных не разрываются пополам */
         .data-row {
             page-break-inside: avoid;
@@ -568,20 +577,20 @@ if (! function_exists('clean_git_conflicts')) {
                                     {{-- Левая колонка: информация о месте работы --}}
                                     <div style="flex: 1; min-width: 0;">
                                         {{-- Дата --}}
-                                        <div style="color: #234088; font-size: 14px; font-weight: 500; margin-bottom: 4px;">
+                                        <div class="no-break" style="color: #234088; font-size: 14px; font-weight: 500; margin-bottom: 4px;">
                                             {{ $experience['years'] ?? '' }}
                                         </div>
                                         {{-- Должность --}}
-                                        <div style="color: #000000; font-weight: 600; font-size: 17px; margin-bottom: 2px;">
+                                        <div class="no-break" style="color: #000000; font-weight: 600; font-size: 17px; margin-bottom: 2px;">
                                             {{ mb_ucfirst($experience['position'] ?? $labels['not_specified']) }}
                                         </div>
                                         {{-- Компания / Город --}}
-                                        <div style="color: #000000; font-weight: 600; font-size: 15px;">
+                                        <div class="no-break" style="color: #000000; font-weight: 600; font-size: 15px;">
                                             {{ mb_ucfirst($experience['company'] ?? $labels['not_specified']) }}@if(!empty($experience['city'])), {{ mb_ucfirst($experience['city']) }}@endif
                                         </div>
                                         {{-- Сфера деятельности --}}
                                         @if(!empty($experience['activity_sphere']))
-                                            <div style="color: #6b7280; font-size: 13px; margin-top: 2px;">
+                                            <div class="no-break" style="color: #6b7280; font-size: 13px; margin-top: 2px;">
                                                 {{ trim($experience['activity_sphere']) }}
                                             </div>
                                         @endif
@@ -591,7 +600,7 @@ if (! function_exists('clean_git_conflicts')) {
                                         <div style="flex: 1; min-width: 0; overflow: hidden;">
                                             <ul style="margin: 0; padding: 0; list-style: none; width: 100%;">
                                                 @foreach(array_filter($experience['main_tasks']) as $task)
-                                                    <li style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #000000; font-size: 14px; font-weight: 500;">
+                                                    <li class="no-break" style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #000000; font-size: 14px; font-weight: 500;">
                                                         <span style="color: #9ca3af; margin-right: 8px; flex-shrink: 0;">•</span>
                                                         <span style="flex: 1; min-width: 0; word-wrap: break-word; overflow-wrap: break-word;">{{ mb_ucfirst($task) }}</span>
                                                     </li>
@@ -605,11 +614,11 @@ if (! function_exists('clean_git_conflicts')) {
 
                         {{-- Общий стаж и удовлетворённость --}}
                         <div style="margin-top: 16px;">
-                            <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                            <div class="no-break" style="display: flex; align-items: center; margin-bottom: 4px;">
                                 <span style="color: #000000; font-size: 14px; font-weight: 500; margin-right: 8px;">{{ $labels['total_experience'] }}:</span>
                                 <span style="color: #000000; font-weight: 500; font-size: 14px;">{{ $candidate->total_experience_years ?? 0 }} {{ $labels['years'] }}</span>
                             </div>
-                            <div style="display: flex; align-items: center;">
+                            <div class="no-break" style="display: flex; align-items: center;">
                                 <span style="color: #000000; font-size: 14px; font-weight: 500; margin-right: 8px;">{{ $labels['job_satisfaction'] }}:</span>
                                 <span style="color: #000000; font-weight: 500; font-size: 14px;">{{ $candidate->job_satisfaction ?? '—' }}/5</span>
                             </div>
