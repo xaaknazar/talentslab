@@ -759,15 +759,32 @@ if (! function_exists('clean_git_conflicts')) {
                             @endforeach
                         </div>
 
-                        {{-- Общий стаж и удовлетворённость --}}
-                        <div style="margin-top: 16px;">
-                            <div class="text-line" style="display: flex; align-items: center; margin-bottom: 4px;">
-                                <span style="color: #000000; font-size: 14px; font-weight: 500; margin-right: 8px;">Общий стаж:</span>
-                                <span style="color: #000000; font-weight: 500; font-size: 14px;">{{ $candidate->total_experience_years ?? 0 }} лет</span>
-                            </div>
-                            <div class="text-line" style="display: flex; align-items: center;">
-                                <span style="color: #000000; font-size: 14px; font-weight: 500; margin-right: 8px;">Удовлетворённость работой:</span>
-                                <span style="color: #000000; font-weight: 500; font-size: 14px;">{{ $candidate->job_satisfaction ?? '—' }}/5</span>
+                        {{-- Общий стаж и удовлетворённость в таком же формате --}}
+                        @php
+                            $years = $candidate->total_experience_years ?? 0;
+                            $lastDigit = $years % 10;
+                            $lastTwoDigits = $years % 100;
+                            if ($lastTwoDigits >= 11 && $lastTwoDigits <= 14) {
+                                $yearWord = 'лет';
+                            } elseif ($lastDigit == 1) {
+                                $yearWord = 'год';
+                            } elseif ($lastDigit >= 2 && $lastDigit <= 4) {
+                                $yearWord = 'года';
+                            } else {
+                                $yearWord = 'лет';
+                            }
+                        @endphp
+                        <div style="display: flex; margin-top: 16px;">
+                            <div style="width: 15rem; flex-shrink: 0; padding-right: 52px;"></div>
+                            <div style="flex: 1; min-width: 0;">
+                                <div class="text-line" style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #000000; font-size: 15px; font-weight: 500;">
+                                    <span style="color: #9ca3af; margin-right: 8px; flex-shrink: 0;">•</span>
+                                    <span>Общий стаж: {{ $years }} {{ $yearWord }}</span>
+                                </div>
+                                <div class="text-line" style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #000000; font-size: 15px; font-weight: 500;">
+                                    <span style="color: #9ca3af; margin-right: 8px; flex-shrink: 0;">•</span>
+                                    <span>Удовлетворённость работой: {{ $candidate->job_satisfaction ?? '—' }}/5</span>
+                                </div>
                             </div>
                         </div>
 
