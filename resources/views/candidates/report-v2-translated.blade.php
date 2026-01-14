@@ -550,20 +550,20 @@ if (! function_exists('clean_git_conflicts')) {
                                     {{-- Левая колонка: информация о месте работы (фиксированная ширина как w-60) --}}
                                     <div style="width: 15rem; flex-shrink: 0; padding-right: 3rem;">
                                         {{-- Дата --}}
-                                        <div class="text-line" style="color: #234088; font-size: 14px; font-weight: 500; margin-bottom: 4px;">
+                                        <div class="text-line" style="color: #234088; font-size: 1rem; font-weight: 500; margin-bottom: 4px;">
                                             {{ $experience['years'] ?? '' }}
                                         </div>
                                         {{-- Должность --}}
-                                        <div class="text-line" style="color: #000000; font-weight: 600; font-size: 17px; margin-bottom: 2px;">
+                                        <div class="text-line" style="color: #000000; font-weight: 600; font-size: 1rem; margin-bottom: 2px;">
                                             {{ mb_ucfirst($experience['position'] ?? $labels['not_specified']) }}
                                         </div>
                                         {{-- Компания / Город --}}
-                                        <div class="text-line" style="color: #000000; font-weight: 600; font-size: 15px;">
+                                        <div class="text-line" style="color: #000000; font-weight: 500; font-size: 1rem;">
                                             {{ mb_ucfirst($experience['company'] ?? $labels['not_specified']) }}@if(!empty($experience['city'])), {{ mb_ucfirst($experience['city']) }}@endif
                                         </div>
                                         {{-- Сфера деятельности --}}
                                         @if(!empty($experience['activity_sphere']))
-                                            <div class="text-line" style="color: #6b7280; font-size: 13px; margin-top: 2px;">
+                                            <div class="text-line" style="color: #6b7280; font-size: 1rem; margin-top: 2px;">
                                                 {{ trim($experience['activity_sphere']) }}
                                             </div>
                                         @endif
@@ -572,7 +572,7 @@ if (! function_exists('clean_git_conflicts')) {
                                     @if(!empty($experience['main_tasks']) && is_array($experience['main_tasks']) && count(array_filter($experience['main_tasks'])) > 0)
                                         <div style="flex: 1; min-width: 0;">
                                             @foreach(array_filter($experience['main_tasks']) as $task)
-                                                <div class="text-line" style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #000000; font-size: 14px; font-weight: 500;">
+                                                <div class="text-line" style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #000000; font-size: 1rem; font-weight: 500;">
                                                     <span style="color: #9ca3af; margin-right: 8px; flex-shrink: 0;">•</span>
                                                     <span style="flex: 1; min-width: 0;">{{ mb_ucfirst($task) }}</span>
                                                 </div>
