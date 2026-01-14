@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         @page {
-            margin: 10mm 0mm 10mm 0mm !important;
+            margin: 5mm 0mm 5mm 0mm !important;
         }
         body {
             /*padding-left: 10mm !important;*/
@@ -32,22 +32,27 @@
             .no-print { display: none; }
         }
 
-        /* ТОЛЬКО секция Гарднера не разрывается */
+        /* Секция Гарднера не разрывается */
         .gardner-section {
             page-break-inside: avoid;
             break-inside: avoid;
         }
 
-        /* Увеличенный line-height чтобы разрывы были между строками, а не через них */
+        /* Одиночная строка - не разрезать пополам, переносить целиком */
+        .text-line {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        /* Увеличенный line-height */
         body {
-            line-height: 1.5;
+            line-height: 1.4;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
 
-        /* Текстовые элементы с безопасным line-height */
         p, span, div, li, h1, h2, h3, h4 {
-            line-height: 1.4;
+            line-height: 1.35;
         }
 
         .logo-header {
@@ -539,20 +544,20 @@ if (! function_exists('clean_git_conflicts')) {
                                     {{-- Левая колонка: информация о месте работы --}}
                                     <div style="flex: 1; min-width: 0;">
                                         {{-- Дата --}}
-                                        <div class="no-break" style="color: #234088; font-size: 14px; font-weight: 500; margin-bottom: 4px;">
+                                        <div class="text-line" style="color: #234088; font-size: 14px; font-weight: 500; margin-bottom: 4px;">
                                             {{ $experience['years'] ?? '' }}
                                         </div>
                                         {{-- Должность --}}
-                                        <div class="no-break" style="color: #000000; font-weight: 600; font-size: 17px; margin-bottom: 2px;">
+                                        <div class="text-line" style="color: #000000; font-weight: 600; font-size: 17px; margin-bottom: 2px;">
                                             {{ mb_ucfirst($experience['position'] ?? $labels['not_specified']) }}
                                         </div>
                                         {{-- Компания / Город --}}
-                                        <div class="no-break" style="color: #000000; font-weight: 600; font-size: 15px;">
+                                        <div class="text-line" style="color: #000000; font-weight: 600; font-size: 15px;">
                                             {{ mb_ucfirst($experience['company'] ?? $labels['not_specified']) }}@if(!empty($experience['city'])), {{ mb_ucfirst($experience['city']) }}@endif
                                         </div>
                                         {{-- Сфера деятельности --}}
                                         @if(!empty($experience['activity_sphere']))
-                                            <div class="no-break" style="color: #6b7280; font-size: 13px; margin-top: 2px;">
+                                            <div class="text-line" style="color: #6b7280; font-size: 13px; margin-top: 2px;">
                                                 {{ trim($experience['activity_sphere']) }}
                                             </div>
                                         @endif
@@ -562,7 +567,7 @@ if (! function_exists('clean_git_conflicts')) {
                                         <div style="flex: 1; min-width: 0; overflow: hidden;">
                                             <ul style="margin: 0; padding: 0; list-style: none; width: 100%;">
                                                 @foreach(array_filter($experience['main_tasks']) as $task)
-                                                    <li class="no-break" style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #000000; font-size: 14px; font-weight: 500;">
+                                                    <li class="text-line" style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #000000; font-size: 14px; font-weight: 500;">
                                                         <span style="color: #9ca3af; margin-right: 8px; flex-shrink: 0;">•</span>
                                                         <span style="flex: 1; min-width: 0; word-wrap: break-word; overflow-wrap: break-word;">{{ mb_ucfirst($task) }}</span>
                                                     </li>
@@ -576,11 +581,11 @@ if (! function_exists('clean_git_conflicts')) {
 
                         {{-- Общий стаж и удовлетворённость --}}
                         <div style="margin-top: 16px;">
-                            <div class="no-break" style="display: flex; align-items: center; margin-bottom: 4px;">
+                            <div class="text-line" style="display: flex; align-items: center; margin-bottom: 4px;">
                                 <span style="color: #000000; font-size: 14px; font-weight: 500; margin-right: 8px;">{{ $labels['total_experience'] }}:</span>
                                 <span style="color: #000000; font-weight: 500; font-size: 14px;">{{ $candidate->total_experience_years ?? 0 }} {{ $labels['years'] }}</span>
                             </div>
-                            <div class="no-break" style="display: flex; align-items: center;">
+                            <div class="text-line" style="display: flex; align-items: center;">
                                 <span style="color: #000000; font-size: 14px; font-weight: 500; margin-right: 8px;">{{ $labels['job_satisfaction'] }}:</span>
                                 <span style="color: #000000; font-weight: 500; font-size: 14px;">{{ $candidate->job_satisfaction ?? '—' }}/5</span>
                             </div>
