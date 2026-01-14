@@ -33,8 +33,14 @@
             break-inside: avoid;
         }
 
-        /* Одиночная строка - не разрезать пополам, переносить целиком */
-        .text-line {
+        /* Все одиночные строки текста - не разрезать пополам */
+        .text-line,
+        .data-row,
+        .flex.items-start,
+        .flex.items-center,
+        .space-y-1 > div,
+        .space-y-2 > div,
+        li {
             page-break-inside: avoid;
             break-inside: avoid;
         }
