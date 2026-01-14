@@ -548,7 +548,7 @@ if (! function_exists('clean_git_conflicts')) {
                             @foreach($candidate->work_experience as $index => $experience)
                                 <div class="work-experience-item" style="display: flex; {{ !$loop->first ? 'margin-top: 16px;' : '' }} {{ !$loop->last ? 'padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }}">
                                     {{-- Левая колонка: информация о месте работы (фиксированная ширина как w-60) --}}
-                                    <div style="width: 15rem; flex-shrink: 0;">
+                                    <div style="width: 15rem; flex-shrink: 0; padding-right: 1rem;">
                                         {{-- Дата --}}
                                         <div class="text-line" style="color: #234088; font-size: 14px; font-weight: 500; margin-bottom: 4px;">
                                             {{ $experience['years'] ?? '' }}
