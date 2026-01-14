@@ -546,9 +546,9 @@ if (! function_exists('clean_git_conflicts')) {
                         {{-- Новый дизайн для анкет с заполненными main_tasks/activity_sphere --}}
                         <div style="display: flex; flex-direction: column;">
                             @foreach($candidate->work_experience as $index => $experience)
-                                <div class="work-experience-item" style="display: flex; gap: 12px; {{ !$loop->first ? 'margin-top: 16px;' : '' }} {{ !$loop->last ? 'padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }}">
-                                    {{-- Левая колонка: информация о месте работы --}}
-                                    <div style="flex: 1; min-width: 0;">
+                                <div class="work-experience-item" style="display: flex; {{ !$loop->first ? 'margin-top: 16px;' : '' }} {{ !$loop->last ? 'padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }}">
+                                    {{-- Левая колонка: информация о месте работы (фиксированная ширина как w-60) --}}
+                                    <div style="width: 15rem; flex-shrink: 0;">
                                         {{-- Дата --}}
                                         <div class="text-line" style="color: #234088; font-size: 14px; font-weight: 500; margin-bottom: 4px;">
                                             {{ $experience['years'] ?? '' }}
@@ -568,7 +568,7 @@ if (! function_exists('clean_git_conflicts')) {
                                             </div>
                                         @endif
                                     </div>
-                                    {{-- Правая колонка: основные задачи --}}
+                                    {{-- Правая колонка: основные задачи (выровнена как ответы в Основная информация) --}}
                                     @if(!empty($experience['main_tasks']) && is_array($experience['main_tasks']) && count(array_filter($experience['main_tasks'])) > 0)
                                         <div style="flex: 1; min-width: 0;">
                                             @foreach(array_filter($experience['main_tasks']) as $task)
