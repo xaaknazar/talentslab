@@ -724,7 +724,7 @@ if (! function_exists('clean_git_conflicts')) {
                             @foreach($candidate->work_experience as $index => $experience)
                                 <div class="work-experience-item" style="display: flex; {{ !$loop->first ? 'margin-top: 16px;' : '' }} {{ !$loop->last ? 'padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }}">
                                     {{-- Левая колонка: информация о месте работы (фиксированная ширина как w-60) --}}
-                                    <div style="width: 15rem; flex-shrink: 0; padding-right: 3rem;">
+                                    <div style="width: 15rem; flex-shrink: 0; padding-right: 52px;">
                                         {{-- Дата --}}
                                         <div class="text-line" style="color: #234088; font-size: 14px; font-weight: 500; margin-bottom: 4px;">
                                             {{ $experience['years'] ?? '' }}
@@ -748,7 +748,7 @@ if (! function_exists('clean_git_conflicts')) {
                                     @if(!empty($experience['main_tasks']) && is_array($experience['main_tasks']) && count(array_filter($experience['main_tasks'])) > 0)
                                         <div style="flex: 1; min-width: 0;">
                                             @foreach(array_filter($experience['main_tasks']) as $task)
-                                                <div class="text-line" style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #000000; font-size: 1rem; font-weight: 500;">
+                                                <div class="text-line" style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #000000; font-size: 15px; font-weight: 500;">
                                                     <span style="color: #9ca3af; margin-right: 8px; flex-shrink: 0;">•</span>
                                                     <span style="flex: 1; min-width: 0;">{{ mb_ucfirst($task) }}</span>
                                                 </div>
