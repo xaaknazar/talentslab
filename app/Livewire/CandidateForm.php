@@ -2513,40 +2513,19 @@ class CandidateForm extends Component
                 return $isValidImage;
             }
 
-            // Для PDF - проверяем ключевые слова Gallup
+            // Для PDF - принимаем любой валидный PDF файл
+            // GPT-4o проанализирует содержимое позже при генерации отчёта
             if ($extension === 'pdf') {
-                $parser = new \Smalot\PdfParser\Parser();
-                $pdf = $parser->parseFile($tempPath);
-                $text = $pdf->getText();
-                $pages = $pdf->getPages();
+                // Просто проверяем, что файл можно прочитать как PDF
+                $fileContent = file_get_contents($tempPath, false, null, 0, 5);
+                $isPdf = $fileContent === '%PDF-';
 
                 logger()->info('Gallup PDF validation', [
-                    'page_count' => count($pages),
-                    'has_gallup_inc' => str_contains($text, 'Gallup, Inc.'),
-                    'has_clifton' => str_contains($text, 'CliftonStrengths') || str_contains($text, 'Clifton'),
-                    'text_sample' => substr($text, 0, 500)
+                    'is_valid_pdf' => $isPdf,
+                    'file_size' => filesize($tempPath)
                 ]);
 
-                // Для PDF проверяем ключевые слова (поддержка русских и английских)
-                $containsGallupKeywords = str_contains($text, 'Gallup') ||
-                                        str_contains($text, 'CliftonStrengths') ||
-                                        str_contains($text, 'StrengthsFinder') ||
-                                        str_contains($text, 'Clifton') ||
-                                        str_contains($text, 'Клифтон') ||
-                                        str_contains($text, 'талант');
-
-                // Смягчённые условия: минимум 1 страница и ключевые слова ИЛИ 10+ страниц
-                $hasMinimumPages = count($pages) >= 1;
-                $hasManyPages = count($pages) >= 10;
-                $isValid = ($hasMinimumPages && $containsGallupKeywords) || $hasManyPages;
-
-                logger()->info('Gallup PDF validation result', [
-                    'is_valid' => $isValid,
-                    'minimum_pages' => $hasMinimumPages,
-                    'has_keywords' => $containsGallupKeywords
-                ]);
-
-                return $isValid;
+                return $isPdf;
             }
 
             // Неподдерживаемый формат
