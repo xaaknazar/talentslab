@@ -489,6 +489,10 @@ class CandidateResource extends Resource
                         ->color('primary')
                         ->requiresConfirmation()
                         ->action(function (Candidate $record) {
+                            // Увеличиваем лимит памяти для обработки PDF
+                            $originalMemoryLimit = ini_get('memory_limit');
+                            ini_set('memory_limit', '512M');
+
                             try {
                                 app(\App\Http\Controllers\GallupController::class)->parseGallupFromCandidateFile($record);
                                 Notification::make()
@@ -501,6 +505,8 @@ class CandidateResource extends Resource
                                     ->body($e->getMessage())
                                     ->danger()
                                     ->send();
+                            } finally {
+                                ini_set('memory_limit', $originalMemoryLimit);
                             }
                         })
                         ->visible(fn (Candidate $record): bool => 
