@@ -1981,13 +1981,13 @@ class CandidateForm extends Component
 
     public function updatedGallupPdf()
     {
-        logger()->info('Gallup file upload started', [
-            'file_present' => $this->gallup_pdf ? 'yes' : 'no',
-            'file_type' => $this->gallup_pdf ? get_class($this->gallup_pdf) : 'null'
-        ]);
+        try {
+            logger()->info('Gallup file upload started', [
+                'file_present' => $this->gallup_pdf ? 'yes' : 'no',
+                'file_type' => $this->gallup_pdf ? get_class($this->gallup_pdf) : 'null'
+            ]);
 
-        if ($this->gallup_pdf) {
-            try {
+            if ($this->gallup_pdf) {
                 // Логируем информацию о файле
                 logger()->info('Gallup file info', [
                     'original_name' => $this->gallup_pdf->getClientOriginalName(),
@@ -2002,10 +2002,10 @@ class CandidateForm extends Component
 
                 logger()->info('Gallup file passed basic validation');
 
-                // Проверяем, что это корректный Gallup файл
+                // Проверяем, что файл доступен для чтения
                 if (!$this->isValidGallupFile($this->gallup_pdf)) {
                     logger()->warning('Gallup file failed content validation');
-                    $this->addError('gallup_pdf', 'Загруженный файл не является корректным отчетом Gallup. Убедитесь, что это официальный PDF или изображение с результатами теста Gallup.');
+                    $this->addError('gallup_pdf', 'Не удалось прочитать файл. Попробуйте загрузить другой файл.');
                     $this->resetGallupFile();
                     return;
                 }
@@ -2016,14 +2016,20 @@ class CandidateForm extends Component
                 $this->dispatch('gallup-file-uploaded');
 
                 session()->flash('message', 'Файл загружен и проверен');
-            } catch (\Exception $e) {
-                logger()->error('Error processing Gallup file', [
-                    'message' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString()
-                ]);
-                $this->addError('gallup_pdf', 'Ошибка при обработке файла: ' . $e->getMessage());
-                $this->resetGallupFile();
             }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            logger()->warning('Gallup file validation failed', [
+                'errors' => $e->errors()
+            ]);
+            // Валидация сама добавит ошибки, просто сбрасываем файл
+            $this->resetGallupFile();
+        } catch (\Throwable $e) {
+            logger()->error('Error processing Gallup file', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            $this->addError('gallup_pdf', 'Ошибка при обработке файла. Попробуйте другой файл.');
+            $this->resetGallupFile();
         }
     }
 
@@ -2516,16 +2522,15 @@ class CandidateForm extends Component
             // Для PDF - принимаем любой валидный PDF файл
             // GPT-4o проанализирует содержимое позже при генерации отчёта
             if ($extension === 'pdf') {
-                // Просто проверяем, что файл можно прочитать как PDF
-                $fileContent = file_get_contents($tempPath, false, null, 0, 5);
-                $isPdf = $fileContent === '%PDF-';
+                // Просто проверяем, что файл существует и доступен
+                $isValid = file_exists($tempPath) && is_readable($tempPath) && filesize($tempPath) > 0;
 
                 logger()->info('Gallup PDF validation', [
-                    'is_valid_pdf' => $isPdf,
-                    'file_size' => filesize($tempPath)
+                    'is_valid_pdf' => $isValid,
+                    'file_size' => filesize($tempPath) ?: 0
                 ]);
 
-                return $isPdf;
+                return $isValid;
             }
 
             // Неподдерживаемый формат
