@@ -38,6 +38,7 @@ class ReportLabels
             'main_info' => 'Основная информация',
             'desired_position' => 'Желаемая должность',
             'expected_salary' => 'Ожидаемая заработная плата',
+            'ready_to_relocate' => 'Готовность к переезду',
             'professional_education' => 'Профессиональное образование',
             'workplace_preferences' => 'Пожелания на рабочем месте',
 
@@ -150,6 +151,7 @@ class ReportLabels
             'main_info' => 'Main Information',
             'desired_position' => 'Desired Position',
             'expected_salary' => 'Expected Salary',
+            'ready_to_relocate' => 'Ready to Relocate',
             'professional_education' => 'Professional Education',
             'workplace_preferences' => 'Workplace Preferences',
 
@@ -262,6 +264,7 @@ class ReportLabels
             'main_info' => 'المعلومات الأساسية',
             'desired_position' => 'المنصب المطلوب',
             'expected_salary' => 'الراتب المتوقع',
+            'ready_to_relocate' => 'الاستعداد للانتقال',
             'professional_education' => 'التعليم المهني',
             'workplace_preferences' => 'تفضيلات مكان العمل',
 

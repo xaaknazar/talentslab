@@ -578,6 +578,10 @@ if (! function_exists('clean_git_conflicts')) {
                              <span class="text-base font-medium">{{ $candidate->formatted_salary_range }}</span>
                          </div>
                          <div class="flex data-row">
+                             <span class="w-60 text-base text-gray-600">Готовность к переезду:</span>
+                             <span class="text-base font-medium">{{ $candidate->ready_to_relocate ? 'Да' : 'Нет' }}</span>
+                         </div>
+                         <div class="flex data-row">
                              <span class="w-60 text-base text-gray-600">Дата рождения:</span>
                              <span class="text-base font-medium">{{ $candidate->birth_date?->format('d.m.Y') ?: 'Не указано' }}</span>
                          </div>

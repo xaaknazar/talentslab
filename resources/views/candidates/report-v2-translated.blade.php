@@ -420,6 +420,10 @@ if (! function_exists('clean_git_conflicts')) {
                              <span class="text-base font-medium">{{ $candidate->formatted_salary_range }}</span>
                          </div>
                          <div class="flex data-row">
+                             <span class="w-60 text-base text-gray-600">{{ $labels['ready_to_relocate'] }}:</span>
+                             <span class="text-base font-medium">{{ $candidate->ready_to_relocate ? $labels['yes'] : $labels['no'] }}</span>
+                         </div>
+                         <div class="flex data-row">
                              <span class="w-60 text-base text-gray-600">{{ $labels['birth_date'] }}:</span>
                              <span class="text-base font-medium">{{ $candidate->birth_date?->format('d.m.Y') ?: $labels['not_specified'] }}</span>
                          </div>
