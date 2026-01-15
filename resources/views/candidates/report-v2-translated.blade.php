@@ -602,18 +602,13 @@ if (! function_exists('clean_git_conflicts')) {
                                 $yearWord = $years == 1 ? ($labels['year_singular'] ?? 'year') : ($labels['years'] ?? 'years');
                             }
                         @endphp
-                        <div style="display: flex; margin-top: 16px;">
-                            <div style="width: 15rem; flex-shrink: 0; padding-right: 52px;"></div>
-                            <div style="flex: 1; min-width: 0;">
-                                <div class="text-line" style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #000000; font-size: 15px; font-weight: 500;">
-                                    <span style="color: #9ca3af; margin-right: 8px; flex-shrink: 0;">•</span>
-                                    <span>{{ $labels['total_experience'] }}: {{ $years }} {{ $yearWord }}</span>
-                                </div>
-                                <div class="text-line" style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #000000; font-size: 15px; font-weight: 500;">
-                                    <span style="color: #9ca3af; margin-right: 8px; flex-shrink: 0;">•</span>
-                                    <span>{{ $labels['job_satisfaction'] }}: {{ $candidate->job_satisfaction ?? '—' }}/5</span>
-                                </div>
-                            </div>
+                        <div class="flex data-row" style="margin-top: 16px;">
+                            <span class="w-60 text-base text-gray-600">{{ $labels['total_experience'] }}:</span>
+                            <span class="text-base font-medium">{{ $years }} {{ $yearWord }}</span>
+                        </div>
+                        <div class="flex data-row">
+                            <span class="w-60 text-base text-gray-600">{{ $labels['job_satisfaction'] }}:</span>
+                            <span class="text-base font-medium">{{ $candidate->job_satisfaction ?? '—' }}/5</span>
                         </div>
 
                         {{-- Награды и достижения --}}
