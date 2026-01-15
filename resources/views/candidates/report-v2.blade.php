@@ -1044,7 +1044,7 @@ if (! function_exists('clean_git_conflicts')) {
             @endif
 
             <!-- Психометрические данные -->
-            <div class="mb-8">
+            <div class="mb-8" style="page-break-inside: avoid; break-inside: avoid;">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Психометрические данные</h2>
                 <div class="flex data-row">
                     <span class="text-base text-gray-600 w-60">Тип личности по MBTI:</span>
