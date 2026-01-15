@@ -242,10 +242,17 @@ class GallupController extends Controller
     protected function updateGoogleSheetByCellMap(Candidate $candidate, array $talents, GallupReportSheet $reportSheet)
     {
         try {
+            $credentialsPath = storage_path('app/google/credentials.json');
+
+            // Проверяем существование файла credentials
+            if (!file_exists($credentialsPath)) {
+                throw new \Exception("Файл credentials.json не найден. Необходимо настроить Google Service Account для генерации отчётов.");
+            }
+
             $client = new \Google\Client();
-            $client->setAuthConfig(storage_path('app/google/credentials.json'));
+            $client->setAuthConfig($credentialsPath);
             $client->addScope(\Google\Service\Sheets::SPREADSHEETS);
-            $client->useApplicationDefaultCredentials();
+            $client->setAccessType('offline');
             $spreadsheetId = $reportSheet->spreadsheet_id;
             $sheets = new \Google\Service\Sheets($client);
 
@@ -287,10 +294,16 @@ class GallupController extends Controller
     {
         try {
             // 1. Настройка Google клиента
+            $credentialsPath = storage_path('app/google/credentials.json');
+
+            if (!file_exists($credentialsPath)) {
+                throw new \Exception("Файл credentials.json не найден. Необходимо настроить Google Service Account для генерации отчётов.");
+            }
+
             $client = new \Google\Client();
-            $client->setAuthConfig(storage_path('app/google/credentials.json'));
+            $client->setAuthConfig($credentialsPath);
             $client->addScope('https://www.googleapis.com/auth/drive.readonly');
-            $client->useApplicationDefaultCredentials();
+            $client->setAccessType('offline');
 
             $accessToken = $client->fetchAccessTokenWithAssertion()['access_token'];
 
