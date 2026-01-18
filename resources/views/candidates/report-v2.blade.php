@@ -285,6 +285,34 @@
             page-break-inside: avoid;
             break-inside: avoid;
         }
+
+        /* Секция "Интересы и развитие" - заполняет страницу */
+        .interests-section {
+            page-break-inside: auto;
+            break-inside: auto;
+        }
+
+        .interests-section .space-y-1 {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .interests-section .space-y-1 > div {
+            page-break-inside: avoid;
+            break-inside: avoid;
+            margin-bottom: 4px;
+        }
+
+        /* Последние элементы секций - добавляем отступ */
+        .interests-section .space-y-1 > div:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Orphans and widows control - не оставлять одинокие строки */
+        .space-y-1 {
+            orphans: 3;
+            widows: 3;
+        }
     </style>
 </head>
 <body>
@@ -633,7 +661,7 @@ if (! function_exists('clean_git_conflicts')) {
             </div>
 
             <!-- Интересы и развитие -->
-            <div class="mb-8">
+            <div class="mb-8 interests-section">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Интересы и развитие</h2>
                 <div class="space-y-1">
                     <!-- 1. Хобби -->
