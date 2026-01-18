@@ -75,11 +75,11 @@ Route::post('/reset-password', function (Illuminate\Http\Request $request) {
 Route::get('/candidate/{candidate}/report', [CandidateReportController::class, 'showV2'])->name('candidate.report');
 Route::get('/candidate/{candidate}/report/{version}', [CandidateReportController::class, 'showV2'])->name('candidate.report.version');
 
-Route::middleware([
+Route::middleware(array_filter([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
-])->group(function () {
+]))->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // AI Resume Analyzer

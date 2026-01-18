@@ -106,20 +106,29 @@ class GallupController extends Controller
             return response()->json(['error' => 'Файл не является корректным Gallup отчетом.'], 422);
         }
 
-        // Шаг 2: Попытка стандартного парсинга (только для английских PDF)
+        // Шаг 2: Определяем метод парсинга
         $talents = null;
 
         if ($fileType === 'pdf') {
-            $this->logStep($candidate, 'Попытка стандартного парсинга PDF');
+            // Проверяем, является ли это оригинальным Gallup PDF
+            $isOriginalGallup = $this->isOriginalGallupPdf($fullPath);
 
-            $standardResult = $this->tryStandardPdfParsing($fullPath);
-            if ($standardResult !== null) {
-                $talents = $standardResult;
-                $this->logStep($candidate, 'Стандартный парсинг успешен');
+            if ($isOriginalGallup) {
+                // Оригинальный Gallup PDF - используем быстрый парсер
+                $this->logStep($candidate, 'Обнаружен оригинальный Gallup PDF, используем стандартный парсинг');
+
+                $standardResult = $this->tryStandardPdfParsing($fullPath);
+                if ($standardResult !== null) {
+                    $talents = $standardResult;
+                    $this->logStep($candidate, 'Стандартный парсинг успешен');
+                }
+            } else {
+                // Не оригинальный Gallup PDF - сразу используем GPT-4o (как для изображений)
+                $this->logStep($candidate, 'PDF не является оригинальным Gallup, используем GPT-4o');
             }
         }
 
-        // Шаг 3: Если стандартный парсинг не сработал - используем GPT-4o
+        // Шаг 3: Если парсинг не сработал или это изображение/неоригинальный PDF - используем GPT-4o
         if ($talents === null) {
             $this->logStep($candidate, 'Анализ через GPT-4o');
 
@@ -205,15 +214,59 @@ class GallupController extends Controller
     }
 
     /**
+     * Проверяет, является ли PDF оригинальным Gallup файлом (быстрая проверка без полного парсинга)
+     */
+    private function isOriginalGallupPdf(string $fullPath): bool
+    {
+        try {
+            // Читаем только первые 50KB файла для быстрой проверки
+            $handle = fopen($fullPath, 'r');
+            if (!$handle) {
+                return false;
+            }
+
+            $content = fread($handle, 50000);
+            fclose($handle);
+
+            // Проверяем наличие ключевых признаков оригинального Gallup PDF
+            $hasGallupInc = strpos($content, 'Gallup, Inc.') !== false;
+            $hasCliftonStrengths = strpos($content, 'CliftonStrengths') !== false;
+            $hasStrengthsFinder = strpos($content, 'StrengthsFinder') !== false;
+
+            $isOriginal = $hasGallupInc || $hasCliftonStrengths || $hasStrengthsFinder;
+
+            Log::info('Проверка оригинального Gallup PDF', [
+                'file' => basename($fullPath),
+                'has_gallup_inc' => $hasGallupInc,
+                'has_clifton' => $hasCliftonStrengths,
+                'is_original' => $isOriginal
+            ]);
+
+            return $isOriginal;
+        } catch (\Exception $e) {
+            Log::warning('Ошибка проверки оригинального Gallup PDF: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Попытка стандартного парсинга английского PDF
      * Возвращает массив талантов или null если парсинг не удался
+     * ВАЖНО: Вызывать только для оригинальных Gallup PDF файлов!
      */
     private function tryStandardPdfParsing(string $fullPath): ?array
     {
         try {
+            // Увеличиваем лимит памяти только для парсинга
+            $originalMemoryLimit = ini_get('memory_limit');
+            ini_set('memory_limit', '256M');
+
             $parser = new Parser();
             $pdf = $parser->parseFile($fullPath);
             $pages = $pdf->getPages();
+
+            // Восстанавливаем лимит памяти
+            ini_set('memory_limit', $originalMemoryLimit);
 
             if (empty($pages)) {
                 return null;
@@ -242,10 +295,17 @@ class GallupController extends Controller
     protected function updateGoogleSheetByCellMap(Candidate $candidate, array $talents, GallupReportSheet $reportSheet)
     {
         try {
+            $credentialsPath = storage_path('app/google/credentials.json');
+
+            // Проверяем существование файла credentials
+            if (!file_exists($credentialsPath)) {
+                throw new \Exception("Файл credentials.json не найден. Необходимо настроить Google Service Account для генерации отчётов.");
+            }
+
             $client = new \Google\Client();
-            $client->setAuthConfig(storage_path('app/google/credentials.json'));
+            $client->setAuthConfig($credentialsPath);
             $client->addScope(\Google\Service\Sheets::SPREADSHEETS);
-            $client->useApplicationDefaultCredentials();
+            $client->setAccessType('offline');
             $spreadsheetId = $reportSheet->spreadsheet_id;
             $sheets = new \Google\Service\Sheets($client);
 
@@ -287,10 +347,16 @@ class GallupController extends Controller
     {
         try {
             // 1. Настройка Google клиента
+            $credentialsPath = storage_path('app/google/credentials.json');
+
+            if (!file_exists($credentialsPath)) {
+                throw new \Exception("Файл credentials.json не найден. Необходимо настроить Google Service Account для генерации отчётов.");
+            }
+
             $client = new \Google\Client();
-            $client->setAuthConfig(storage_path('app/google/credentials.json'));
+            $client->setAuthConfig($credentialsPath);
             $client->addScope('https://www.googleapis.com/auth/drive.readonly');
-            $client->useApplicationDefaultCredentials();
+            $client->setAccessType('offline');
 
             $accessToken = $client->fetchAccessTokenWithAssertion()['access_token'];
 
@@ -473,19 +539,22 @@ class GallupController extends Controller
         // 2️⃣ Получаем все файлы для объединения
         $pdfPaths = [$tempHtmlPdf];
 
-        $reports = GallupReport::where('candidate_id', $candidate->id)->get();
+        // Добавляем Gallup отчёты только для полной версии
+        if ($version === 'full') {
+            $reports = GallupReport::where('candidate_id', $candidate->id)->get();
 
-        foreach ($reports as $report) {
+            foreach ($reports as $report) {
 
-            $file = $report->short_area_pdf_file;
-            if (!$file) continue;
+                $file = $report->short_area_pdf_file;
+                if (!$file) continue;
 
-            $relative = ltrim($file, '/');
+                $relative = ltrim($file, '/');
 
-            $fullPath = Storage::disk('public')->path($relative);
+                $fullPath = Storage::disk('public')->path($relative);
 
-            if (file_exists($fullPath)) {
-                $pdfPaths[] = $fullPath;
+                if (file_exists($fullPath)) {
+                    $pdfPaths[] = $fullPath;
+                }
             }
         }
 
@@ -709,7 +778,7 @@ class GallupController extends Controller
         $genderCode = ($candidate->gender === 'Женский' || $candidate->gender === 'female') ? 'G' : 'B';
         $birthYear = $candidate->birth_date ? substr(date('Y', strtotime($candidate->birth_date)), -2) : '00';
         $candidateId = str_pad($candidate->id, 4, '0', STR_PAD_LEFT);
-        $version_text = $version === 'full' ? 'полная' : 'урезанная';
+        $version_text = $version === 'full' ? 'полная' : 'краткая';
 
         $tempFileName = "{$candidate->full_name} - TL{$genderCode}{$birthYear}-{$candidateId}-{$version_text}.pdf";
 

@@ -21,11 +21,12 @@ class CandidateSearchResource extends Resource
 {
     protected static ?string $model = Candidate::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-magnifying-glass';
+    protected static ?string $navigationIcon = 'heroicon-o-magnifying-glass-circle';
     protected static ?string $navigationLabel = 'Поиск кандидатов';
     protected static ?string $modelLabel = 'Поиск кандидатов';
     protected static ?string $pluralModelLabel = 'Поиск кандидатов';
     protected static ?string $slug = 'candidate-search';
+    protected static ?string $navigationGroup = 'Кандидаты';
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
@@ -243,8 +244,8 @@ class CandidateSearchResource extends Resource
                         ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'anketa']))
                         ->modal(),
 
-                    Tables\Actions\Action::make('Резюме урезанное')
-                        ->label('Резюме урезанное')
+                    Tables\Actions\Action::make('Резюме краткое')
+                        ->label('Резюме краткое')
                         ->icon('heroicon-o-document-text')
                         ->color('info')
                         ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'anketa-reduced']))
@@ -272,14 +273,10 @@ class CandidateSearchResource extends Resource
                         ->modal()
                         ->visible(fn (Candidate $record): bool => $record->gallupReports()->where('type', 'FMD')->exists()),
                 ])
-                    ->label('Gallup отчеты')
+                    ->label('Резюме')
                     ->icon('heroicon-o-document-arrow-down')
                     ->color('success')
-                    ->button()
-                    ->visible(fn (Candidate $record): bool =>
-                        ($record->gallup_pdf && Storage::disk('public')->exists($record->gallup_pdf)) || 
-                        $record->gallupReports()->exists()
-                    ),
+                    ->button(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

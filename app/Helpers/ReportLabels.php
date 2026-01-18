@@ -7,8 +7,8 @@ class ReportLabels
     private static array $labels = [
         'ru' => [
             'candidate_report' => 'Отчет о кандидате',
-            'reduced_report' => 'Урезанный отчет о кандидате',
-            'reduced_version' => '(урезанная версия)',
+            'reduced_report' => 'Краткий отчет о кандидате',
+            'reduced_version' => '(краткая версия)',
             'full_name' => 'ФИО',
             'birth_date' => 'Дата рождения',
             'birth_place' => 'Место рождения',
@@ -38,6 +38,7 @@ class ReportLabels
             'main_info' => 'Основная информация',
             'desired_position' => 'Желаемая должность',
             'expected_salary' => 'Ожидаемая заработная плата',
+            'ready_to_relocate' => 'Готовность к переезду',
             'professional_education' => 'Профессиональное образование',
             'workplace_preferences' => 'Пожелания на рабочем месте',
 
@@ -50,6 +51,7 @@ class ReportLabels
             'job_satisfaction' => 'Удовлетворённость работой',
             'job_satisfaction_out_of_5' => 'Любит свою работу на (из 5)',
             'main_responsibilities' => 'Основные обязанности',
+            'main_tasks' => 'Основные задачи',
             'awards_achievements' => 'Награды и достижения',
             'interests_development' => 'Интересы и развитие',
             'hobbies' => 'Хобби',
@@ -149,6 +151,7 @@ class ReportLabels
             'main_info' => 'Main Information',
             'desired_position' => 'Desired Position',
             'expected_salary' => 'Expected Salary',
+            'ready_to_relocate' => 'Ready to Relocate',
             'professional_education' => 'Professional Education',
             'workplace_preferences' => 'Workplace Preferences',
 
@@ -161,6 +164,7 @@ class ReportLabels
             'job_satisfaction' => 'Job Satisfaction',
             'job_satisfaction_out_of_5' => 'Job satisfaction (out of 5)',
             'main_responsibilities' => 'Main Responsibilities',
+            'main_tasks' => 'Main Tasks',
             'awards_achievements' => 'Awards and Achievements',
             'interests_development' => 'Interests and Development',
             'hobbies' => 'Hobbies',
@@ -260,6 +264,7 @@ class ReportLabels
             'main_info' => 'المعلومات الأساسية',
             'desired_position' => 'المنصب المطلوب',
             'expected_salary' => 'الراتب المتوقع',
+            'ready_to_relocate' => 'الاستعداد للانتقال',
             'professional_education' => 'التعليم المهني',
             'workplace_preferences' => 'تفضيلات مكان العمل',
 
@@ -272,6 +277,7 @@ class ReportLabels
             'job_satisfaction' => 'الرضا الوظيفي',
             'job_satisfaction_out_of_5' => 'الرضا الوظيفي (من 5)',
             'main_responsibilities' => 'المسؤوليات الرئيسية',
+            'main_tasks' => 'المهام الرئيسية',
             'awards_achievements' => 'الجوائز والإنجازات',
             'interests_development' => 'الاهتمامات والتطوير',
             'hobbies' => 'الهوايات',

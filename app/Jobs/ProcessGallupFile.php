@@ -30,11 +30,16 @@ class ProcessGallupFile implements ShouldQueue
      */
     public function handle(): void
     {
+        // Увеличиваем лимит памяти для обработки больших PDF файлов
+        $originalMemoryLimit = ini_get('memory_limit');
+        ini_set('memory_limit', '512M');
+
         try {
             Log::info('Starting Gallup file processing', [
                 'candidate_id' => $this->candidate->id,
                 'candidate_name' => $this->candidate->full_name,
-                'gallup_pdf' => $this->candidate->gallup_pdf
+                'gallup_pdf' => $this->candidate->gallup_pdf,
+                'memory_limit' => ini_get('memory_limit')
             ]);
 
             // Проверяем, что у кандидата есть Gallup PDF файл
@@ -85,6 +90,9 @@ class ProcessGallupFile implements ShouldQueue
 
             // Повторно бросаем исключение для обработки механизмом очередей Laravel
             throw $e;
+        } finally {
+            // Восстанавливаем исходный лимит памяти
+            ini_set('memory_limit', $originalMemoryLimit);
         }
     }
 

@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         @page {
-            margin: 10mm 0mm 10mm 0mm !important;
+            margin: 5mm 0mm 5mm 0mm !important;
         }
         body {
             /*padding-left: 10mm !important;*/
@@ -32,22 +32,33 @@
             .no-print { display: none; }
         }
 
-        /* Предотвращение разрыва текста между страницами */
-        .mb-8, .data-row, .flex.items-start, .space-y-1 > div {
+        /* Секция Гарднера не разрывается */
+        .gardner-section {
             page-break-inside: avoid;
             break-inside: avoid;
         }
 
-        /* Не разрывать записи опыта работы */
-        [style*="display: flex"][style*="gap: 24px"] {
+        /* Все одиночные строки текста - не разрезать пополам */
+        .text-line,
+        .data-row,
+        .flex.items-start,
+        .flex.items-center,
+        .space-y-1 > div,
+        .space-y-2 > div,
+        li {
             page-break-inside: avoid;
             break-inside: avoid;
         }
 
-        /* Заголовки секций не отрываются от содержимого */
-        h2 {
-            page-break-after: avoid;
-            break-after: avoid;
+        /* Увеличенный line-height */
+        body {
+            line-height: 1.4;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        p, span, div, li, h1, h2, h3, h4 {
+            line-height: 1.35;
         }
 
         .logo-header {
@@ -409,6 +420,10 @@ if (! function_exists('clean_git_conflicts')) {
                              <span class="text-base font-medium">{{ $candidate->formatted_salary_range }}</span>
                          </div>
                          <div class="flex data-row">
+                             <span class="w-60 text-base text-gray-600">{{ $labels['ready_to_relocate'] }}:</span>
+                             <span class="text-base font-medium">{{ $candidate->ready_to_relocate ? $labels['yes'] : $labels['no'] }}</span>
+                         </div>
+                         <div class="flex data-row">
                              <span class="w-60 text-base text-gray-600">{{ $labels['birth_date'] }}:</span>
                              <span class="text-base font-medium">{{ $candidate->birth_date?->format('d.m.Y') ?: $labels['not_specified'] }}</span>
                          </div>
@@ -535,55 +550,69 @@ if (! function_exists('clean_git_conflicts')) {
                         {{-- Новый дизайн для анкет с заполненными main_tasks/activity_sphere --}}
                         <div style="display: flex; flex-direction: column;">
                             @foreach($candidate->work_experience as $index => $experience)
-                                <div style="display: flex; gap: 24px; {{ !$loop->first ? 'margin-top: 16px;' : '' }} {{ !$loop->last ? 'padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }}">
-                                    {{-- Левая колонка: информация о месте работы --}}
-                                    <div style="flex: 1; min-width: 0;">
+                                <div class="work-experience-item" style="display: flex; {{ !$loop->first ? 'margin-top: 16px;' : '' }} {{ !$loop->last ? 'padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }}">
+                                    {{-- Левая колонка: информация о месте работы (фиксированная ширина как w-60) --}}
+                                    <div style="width: 15rem; flex-shrink: 0; padding-right: 52px;">
                                         {{-- Дата --}}
-                                        <div style="color: #234088; font-size: 14px; font-weight: 500; margin-bottom: 4px;">
+                                        <div class="text-line" style="color: #234088; font-size: 14px; font-weight: 500; margin-bottom: 4px;">
                                             {{ $experience['years'] ?? '' }}
                                         </div>
                                         {{-- Должность --}}
-                                        <div style="color: #000000; font-weight: 600; font-size: 17px; margin-bottom: 2px;">
+                                        <div class="text-line" style="color: #000000; font-weight: 600; font-size: 17px; margin-bottom: 2px;">
                                             {{ mb_ucfirst($experience['position'] ?? $labels['not_specified']) }}
                                         </div>
                                         {{-- Компания / Город --}}
-                                        <div style="color: #000000; font-weight: 600; font-size: 15px;">
+                                        <div class="text-line" style="color: #000000; font-weight: 600; font-size: 15px;">
                                             {{ mb_ucfirst($experience['company'] ?? $labels['not_specified']) }}@if(!empty($experience['city'])), {{ mb_ucfirst($experience['city']) }}@endif
                                         </div>
                                         {{-- Сфера деятельности --}}
                                         @if(!empty($experience['activity_sphere']))
-                                            <div style="color: #6b7280; font-size: 13px; margin-top: 2px;">
+                                            <div class="text-line" style="color: #6b7280; font-size: 13px; margin-top: 2px;">
                                                 {{ trim($experience['activity_sphere']) }}
                                             </div>
                                         @endif
                                     </div>
-                                    {{-- Правая колонка: основные обязанности --}}
+                                    {{-- Правая колонка: основные задачи (выровнена как ответы в Основная информация) --}}
                                     @if(!empty($experience['main_tasks']) && is_array($experience['main_tasks']) && count(array_filter($experience['main_tasks'])) > 0)
-                                        <div style="flex: 1; min-width: 0; overflow: hidden;">
-                                            <ul style="margin: 0; padding: 0; list-style: none; width: 100%;">
-                                                @foreach(array_filter($experience['main_tasks']) as $task)
-                                                    <li style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #000000; font-size: 14px; font-weight: 500;">
-                                                        <span style="color: #9ca3af; margin-right: 8px; flex-shrink: 0;">•</span>
-                                                        <span style="flex: 1; min-width: 0; word-wrap: break-word; overflow-wrap: break-word;">{{ mb_ucfirst($task) }}</span>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
+                                        <div style="flex: 1; min-width: 0;">
+                                            @foreach(array_filter($experience['main_tasks']) as $task)
+                                                <div class="text-line" style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #000000; font-size: 15px; font-weight: 500;">
+                                                    <span style="color: #9ca3af; margin-right: 8px; flex-shrink: 0;">•</span>
+                                                    <span style="flex: 1; min-width: 0;">{{ mb_ucfirst($task) }}</span>
+                                                </div>
+                                            @endforeach
                                         </div>
                                     @endif
                                 </div>
                             @endforeach
                         </div>
 
-                        {{-- Общий стаж и удовлетворённость --}}
-                        <div style="margin-top: 16px;">
-                            <div style="display: flex; align-items: center; margin-bottom: 4px;">
-                                <span style="color: #000000; font-size: 14px; font-weight: 500; margin-right: 8px;">{{ $labels['total_experience'] }}:</span>
-                                <span style="color: #000000; font-weight: 500; font-size: 14px;">{{ $candidate->total_experience_years ?? 0 }} {{ $labels['years'] }}</span>
-                            </div>
-                            <div style="display: flex; align-items: center;">
-                                <span style="color: #000000; font-size: 14px; font-weight: 500; margin-right: 8px;">{{ $labels['job_satisfaction'] }}:</span>
-                                <span style="color: #000000; font-weight: 500; font-size: 14px;">{{ $candidate->job_satisfaction ?? '—' }}/5</span>
-                            </div>
+                        {{-- Общий стаж и удовлетворённость в таком же формате --}}
+                        @php
+                            $years = $candidate->total_experience_years ?? 0;
+                            $lastDigit = $years % 10;
+                            $lastTwoDigits = $years % 100;
+                            if ($targetLanguage === 'ru') {
+                                if ($lastTwoDigits >= 11 && $lastTwoDigits <= 14) {
+                                    $yearWord = $labels['years_many'] ?? 'лет';
+                                } elseif ($lastDigit == 1) {
+                                    $yearWord = $labels['year_singular'] ?? 'год';
+                                } elseif ($lastDigit >= 2 && $lastDigit <= 4) {
+                                    $yearWord = $labels['years_2_4'] ?? 'года';
+                                } else {
+                                    $yearWord = $labels['years_many'] ?? 'лет';
+                                }
+                            } else {
+                                $yearWord = $years == 1 ? ($labels['year_singular'] ?? 'year') : ($labels['years'] ?? 'years');
+                            }
+                        @endphp
+                        <div class="flex data-row" style="margin-top: 16px;">
+                            <span class="w-60 text-base text-gray-600">{{ $labels['total_experience'] }}:</span>
+                            <span class="text-base font-medium">{{ $years }} {{ $yearWord }}</span>
+                        </div>
+                        <div class="flex data-row">
+                            <span class="w-60 text-base text-gray-600">{{ $labels['job_satisfaction'] }}:</span>
+                            <span class="text-base font-medium">{{ $candidate->job_satisfaction ?? '—' }}/5</span>
                         </div>
 
                         {{-- Награды и достижения --}}
@@ -817,7 +846,7 @@ if (! function_exists('clean_git_conflicts')) {
             @endif
 
             <!-- Психометрические данные -->
-            <div class="mb-8">
+            <div class="mb-8" style="page-break-inside: avoid; break-inside: avoid;">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">{{ $labels['psychometric_data'] }}</h2>
                 <div class="flex data-row">
                     <span class="text-base text-gray-600 w-60">{{ $labels['mbti_type'] }}:</span>
@@ -861,7 +890,7 @@ if (! function_exists('clean_git_conflicts')) {
                     'Экзистенциальный интеллект',
                 ];
             @endphp
-            <div class="mb-4">
+            <div class="mb-4 gardner-section">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">{{ $labels['gardner_intelligence'] }}</h2>
                 <div class="bg-gray-100 rounded-lg p-6">
                     <!-- Первый ряд -->

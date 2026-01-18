@@ -35,6 +35,8 @@ class CandidateForm extends Component
     public $marital_status;
     public $birth_date;
     public $birth_place;
+    public $citizenship;
+    public $work_permits = [];
     public $current_city;
     public $ready_to_relocate;
     public $instagram;
@@ -337,6 +339,8 @@ class CandidateForm extends Component
         $this->marital_status = $this->candidate->marital_status;
         $this->birth_date = $this->candidate->birth_date?->format('Y-m-d');
         $this->birth_place = $this->candidate->birth_place;
+        $this->citizenship = $this->candidate->citizenship;
+        $this->work_permits = $this->candidate->work_permits ?? [];
         $this->current_city = $this->candidate->current_city;
         $this->ready_to_relocate = $this->candidate->ready_to_relocate;
         $this->instagram = $this->candidate->instagram;
@@ -435,6 +439,8 @@ class CandidateForm extends Component
             'marital_status' => 'required|in:Холост/Не замужем,Женат/Замужем,Разведен(а),Вдовец/Вдова',
             'birth_date' => 'required|date|before:today',
             'birth_place' => ['required', 'string', 'max:255'],
+            'citizenship' => 'nullable|string|max:255',
+            'work_permits' => 'nullable|array',
             'current_city' => ['required', 'string', 'max:255'],
             'ready_to_relocate' => 'nullable|boolean',
             'instagram' => 'nullable|string|max:255',
@@ -665,6 +671,8 @@ class CandidateForm extends Component
             'marital_status' => __('Marital Status'),
             'birth_date' => __('Date of Birth'),
             'birth_place' => __('Place of Birth'),
+            'citizenship' => __('Citizenship'),
+            'work_permits' => __('Work Permit'),
             'current_city' => __('Current City'),
             'ready_to_relocate' => __('Ready to Relocate'),
             'instagram' => __('Instagram'),
@@ -884,7 +892,7 @@ class CandidateForm extends Component
         // Извлекаем основное поле из составного имени (например, "universities.0.name" -> "universities")
         $baseField = explode('.', $field)[0];
 
-        $step1Fields = ['last_name', 'first_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
+        $step1Fields = ['last_name', 'first_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'citizenship', 'work_permits', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
         $step2Fields = ['religion', 'is_practicing', 'family_members', 'parents', 'siblings', 'children', 'hobbies', 'interests', 'visited_countries', 'books_per_year_min', 'books_per_year_max', 'favorite_sports', 'entertainment_hours_weekly', 'educational_hours_weekly', 'social_media_hours_weekly', 'has_driving_license', 'newCountry'];
         $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_positions', 'activity_sphere', 'awards', 'expected_salary', 'expected_salary_from', 'expected_salary_to', 'employer_requirements'];
         $step4Fields = ['gallup_pdf', 'mbti_type', 'gardner_test_completed'];
@@ -1061,7 +1069,7 @@ class CandidateForm extends Component
                         }
                     }
                 ],
-                'mbti_type' => 'required|string|in:INTJ-A,INTJ-T,INTP-A,INTP-T,ENTJ-A,ENTJ-T,ENTP-A,ENTP-T,INFJ-A,INFJ-T,INFP-A,INFP-T,ENFJ-A,ENFJ-T,ENFP-A,ENFP-T,ISTJ-A,ISTJ-T,ISFJ-A,ISFJ-T,ESTJ-A,ESTJ-T,ESFJ-A,ESFJ-T,ISTP-A,ISTP-T,ISFP-A,ISFP-T,ESTP-A,ESTP-T,ESFP-A,ESFP-T',
+                'mbti_type' => 'required|string|in:INTJ,INTP,ENTJ,ENTP,INFJ,INFP,ENFJ,ENFP,ISTJ,ISFJ,ESTJ,ESFJ,ISTP,ISFP,ESTP,ESFP',
             ],
             default => [],
         };
@@ -1074,7 +1082,7 @@ class CandidateForm extends Component
     {
         $baseField = explode('.', $field)[0];
 
-        $step1Fields = ['last_name', 'first_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
+        $step1Fields = ['last_name', 'first_name', 'email', 'phone', 'gender', 'marital_status', 'birth_date', 'birth_place', 'citizenship', 'work_permits', 'current_city', 'ready_to_relocate', 'instagram', 'photo'];
         $step2Fields = ['religion', 'is_practicing', 'family_members', 'parents', 'siblings', 'children', 'hobbies', 'interests', 'visited_countries', 'books_per_year_min', 'books_per_year_max', 'favorite_sports', 'entertainment_hours_weekly', 'educational_hours_weekly', 'social_media_hours_weekly', 'has_driving_license', 'newCountry'];
         $step3Fields = ['school_name', 'school_city', 'school_graduation_year', 'universities', 'language_skills', 'computer_skills', 'work_experience', 'total_experience_years', 'job_satisfaction', 'desired_positions', 'activity_sphere', 'awards', 'expected_salary', 'expected_salary_from', 'expected_salary_to', 'employer_requirements'];
         $step4Fields = ['gallup_pdf', 'mbti_type', 'gardner_test_completed'];
@@ -1973,13 +1981,13 @@ class CandidateForm extends Component
 
     public function updatedGallupPdf()
     {
-        logger()->info('Gallup file upload started', [
-            'file_present' => $this->gallup_pdf ? 'yes' : 'no',
-            'file_type' => $this->gallup_pdf ? get_class($this->gallup_pdf) : 'null'
-        ]);
+        try {
+            logger()->info('Gallup file upload started', [
+                'file_present' => $this->gallup_pdf ? 'yes' : 'no',
+                'file_type' => $this->gallup_pdf ? get_class($this->gallup_pdf) : 'null'
+            ]);
 
-        if ($this->gallup_pdf) {
-            try {
+            if ($this->gallup_pdf) {
                 // Логируем информацию о файле
                 logger()->info('Gallup file info', [
                     'original_name' => $this->gallup_pdf->getClientOriginalName(),
@@ -1994,10 +2002,10 @@ class CandidateForm extends Component
 
                 logger()->info('Gallup file passed basic validation');
 
-                // Проверяем, что это корректный Gallup файл
+                // Проверяем, что файл доступен для чтения
                 if (!$this->isValidGallupFile($this->gallup_pdf)) {
                     logger()->warning('Gallup file failed content validation');
-                    $this->addError('gallup_pdf', 'Загруженный файл не является корректным отчетом Gallup. Убедитесь, что это официальный PDF или изображение с результатами теста Gallup.');
+                    $this->addError('gallup_pdf', 'Не удалось прочитать файл. Попробуйте загрузить другой файл.');
                     $this->resetGallupFile();
                     return;
                 }
@@ -2008,14 +2016,20 @@ class CandidateForm extends Component
                 $this->dispatch('gallup-file-uploaded');
 
                 session()->flash('message', 'Файл загружен и проверен');
-            } catch (\Exception $e) {
-                logger()->error('Error processing Gallup file', [
-                    'message' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString()
-                ]);
-                $this->addError('gallup_pdf', 'Ошибка при обработке файла: ' . $e->getMessage());
-                $this->resetGallupFile();
             }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            logger()->warning('Gallup file validation failed', [
+                'errors' => $e->errors()
+            ]);
+            // Валидация сама добавит ошибки, просто сбрасываем файл
+            $this->resetGallupFile();
+        } catch (\Throwable $e) {
+            logger()->error('Error processing Gallup file', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            $this->addError('gallup_pdf', 'Ошибка при обработке файла. Попробуйте другой файл.');
+            $this->resetGallupFile();
         }
     }
 
@@ -2105,6 +2119,8 @@ class CandidateForm extends Component
             $this->candidate->marital_status = $this->marital_status;
             $this->candidate->birth_date = $this->birth_date;
             $this->candidate->birth_place = $this->birth_place;
+            $this->candidate->citizenship = $this->citizenship;
+            $this->candidate->work_permits = $this->work_permits;
             $this->candidate->current_city = $this->current_city;
             $this->candidate->step = 5; // Устанавливаем финальный шаг
 
@@ -2259,6 +2275,8 @@ class CandidateForm extends Component
         if ($this->marital_status) $this->candidate->marital_status = $this->marital_status;
         if ($this->birth_date) $this->candidate->birth_date = $this->birth_date;
         if ($this->birth_place) $this->candidate->birth_place = $this->birth_place;
+        if ($this->citizenship) $this->candidate->citizenship = $this->citizenship;
+        if (!empty($this->work_permits)) $this->candidate->work_permits = $this->work_permits;
         if ($this->current_city) $this->candidate->current_city = $this->current_city;
         if ($this->ready_to_relocate !== null) $this->candidate->ready_to_relocate = $this->ready_to_relocate;
         if ($this->instagram) $this->candidate->instagram = $this->instagram;
@@ -2377,7 +2395,7 @@ class CandidateForm extends Component
     {
         // Если страна передана как параметр (из live search), используем её
         $countryToAdd = $country ?? $this->newCountry;
-        
+
         logger()->debug('Adding country:', [
             'country_param' => $country,
             'newCountry' => $this->newCountry,
@@ -2388,7 +2406,7 @@ class CandidateForm extends Component
         if ($countryToAdd && !in_array($countryToAdd, $this->visited_countries)) {
             $this->visited_countries[] = $countryToAdd;
             $this->newCountry = ''; // Сбрасываем
-            
+
             logger()->debug('Country added:', [
                 'visited_countries' => $this->visited_countries,
                 'last_added' => end($this->visited_countries)
@@ -2396,6 +2414,17 @@ class CandidateForm extends Component
         }
     }
 
+    public function addWorkPermit($country)
+    {
+        if ($country && !in_array($country, $this->work_permits)) {
+            $this->work_permits[] = $country;
+        }
+    }
+
+    public function removeWorkPermit($country)
+    {
+        $this->work_permits = array_values(array_filter($this->work_permits, fn($c) => $c !== $country));
+    }
 
     public function getGallupPdfUrl()
     {
@@ -2490,37 +2519,15 @@ class CandidateForm extends Component
                 return $isValidImage;
             }
 
-            // Для PDF - проверяем ключевые слова Gallup
+            // Для PDF - принимаем любой валидный PDF файл
+            // GPT-4o проанализирует содержимое позже при генерации отчёта
             if ($extension === 'pdf') {
-                $parser = new \Smalot\PdfParser\Parser();
-                $pdf = $parser->parseFile($tempPath);
-                $text = $pdf->getText();
-                $pages = $pdf->getPages();
+                // Просто проверяем, что файл существует и доступен
+                $isValid = file_exists($tempPath) && is_readable($tempPath) && filesize($tempPath) > 0;
 
                 logger()->info('Gallup PDF validation', [
-                    'page_count' => count($pages),
-                    'has_gallup_inc' => str_contains($text, 'Gallup, Inc.'),
-                    'has_clifton' => str_contains($text, 'CliftonStrengths') || str_contains($text, 'Clifton'),
-                    'text_sample' => substr($text, 0, 500)
-                ]);
-
-                // Для PDF проверяем ключевые слова (поддержка русских и английских)
-                $containsGallupKeywords = str_contains($text, 'Gallup') ||
-                                        str_contains($text, 'CliftonStrengths') ||
-                                        str_contains($text, 'StrengthsFinder') ||
-                                        str_contains($text, 'Clifton') ||
-                                        str_contains($text, 'Клифтон') ||
-                                        str_contains($text, 'талант');
-
-                // Смягчённые условия: минимум 1 страница и ключевые слова ИЛИ 10+ страниц
-                $hasMinimumPages = count($pages) >= 1;
-                $hasManyPages = count($pages) >= 10;
-                $isValid = ($hasMinimumPages && $containsGallupKeywords) || $hasManyPages;
-
-                logger()->info('Gallup PDF validation result', [
-                    'is_valid' => $isValid,
-                    'minimum_pages' => $hasMinimumPages,
-                    'has_keywords' => $containsGallupKeywords
+                    'is_valid_pdf' => $isValid,
+                    'file_size' => filesize($tempPath) ?: 0
                 ]);
 
                 return $isValid;

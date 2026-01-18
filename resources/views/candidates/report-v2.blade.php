@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@if($isReducedReport)Урезанный отчет о кандидате@elseОтчет о кандидате@endif - {{ $candidate->full_name }}</title>
+    <title>@if($isReducedReport)Краткий отчет о кандидате@elseОтчет о кандидате@endif - {{ $candidate->full_name }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" href="{{ asset('mini-logo.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         @page {
-            margin: 10mm 0mm 10mm 0mm !important;
+            margin: 5mm 0mm 5mm 0mm !important;
         }
         body {
             /*padding-left: 10mm !important;*/
@@ -27,22 +27,33 @@
             .no-print { display: none; }
         }
 
-        /* Предотвращение разрыва текста между страницами */
-        .mb-8, .data-row, .flex.items-start, .space-y-1 > div {
+        /* Секция Гарднера не разрывается */
+        .gardner-section {
             page-break-inside: avoid;
             break-inside: avoid;
         }
 
-        /* Не разрывать записи опыта работы */
-        [style*="display: flex"][style*="gap: 24px"] {
+        /* Все одиночные строки текста - не разрезать пополам */
+        .text-line,
+        .data-row,
+        .flex.items-start,
+        .flex.items-center,
+        .space-y-1 > div,
+        .space-y-2 > div,
+        li {
             page-break-inside: avoid;
             break-inside: avoid;
         }
 
-        /* Заголовки секций не отрываются от содержимого */
-        h2 {
-            page-break-after: avoid;
-            break-after: avoid;
+        /* Увеличенный line-height */
+        body {
+            line-height: 1.4;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        p, span, div, li, h1, h2, h3, h4 {
+            line-height: 1.35;
         }
 
         .logo-header {
@@ -285,6 +296,171 @@
             page-break-inside: avoid;
             break-inside: avoid;
         }
+
+        /* ========== МОБИЛЬНАЯ АДАПТАЦИЯ (только для экрана, не для печати/PDF) ========== */
+        @media screen and (max-width: 768px) {
+            /* Общие стили */
+            body {
+                padding: 0 !important;
+            }
+
+            .max-w-4xl {
+                max-width: 100% !important;
+                padding: 0 10px !important;
+            }
+
+            .p-6, .p-3 {
+                padding: 0.75rem !important;
+            }
+
+            /* Заголовок кандидата - фото сверху по центру */
+            .candidate-header {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
+            }
+
+            .candidate-header .float-right {
+                float: none !important;
+                margin: 0 0 1rem 0 !important;
+                order: -1 !important;
+            }
+
+            .candidate-header .w-47 {
+                width: 140px !important;
+                height: 175px !important;
+            }
+
+            .candidate-header h1 {
+                justify-content: center !important;
+                text-align: center !important;
+            }
+
+            .candidate-header .text-base {
+                text-align: center !important;
+            }
+
+            .candidate-header [style*="display: flex"][style*="flex-wrap: wrap"] {
+                justify-content: center !important;
+            }
+
+            .text-3xl {
+                font-size: 1.5rem !important;
+                line-height: 2rem !important;
+            }
+
+            .text-xl {
+                font-size: 1.1rem !important;
+            }
+
+            /* Секции данных */
+            .w-60 {
+                width: 100% !important;
+                display: block !important;
+                margin-bottom: 0.25rem !important;
+            }
+
+            .flex.data-row {
+                flex-direction: column !important;
+                margin-bottom: 0.75rem !important;
+            }
+
+            /* Двухколоночные сетки */
+            .grid-cols-2 {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* Секция Гарднера */
+            .gardner-section .bg-gray-100 {
+                padding: 1rem !important;
+                overflow-x: auto !important;
+            }
+
+            .gardner-section [style*="display: flex"][style*="height: 180px"] {
+                min-width: 600px !important;
+            }
+
+            .gardner-section [style*="width: 110px"] {
+                width: 70px !important;
+                margin: 0 8px !important;
+            }
+
+            .gardner-section [style*="font-size: 26px"] {
+                font-size: 16px !important;
+            }
+
+            .gardner-section [style*="width: 120px"] {
+                width: 80px !important;
+            }
+
+            .gardner-section [style*="font-size: 10px"] {
+                font-size: 8px !important;
+            }
+
+            /* Опыт работы */
+            [style*="display: flex"][style*="gap: 24px"] {
+                flex-direction: column !important;
+                gap: 0.5rem !important;
+            }
+
+            [style*="width: 150px"][style*="flex-shrink: 0"] {
+                width: 100% !important;
+            }
+
+            /* Университеты */
+            .ml-8 {
+                margin-left: 1rem !important;
+            }
+
+            /* PDF изображения */
+            .pdf-page-container {
+                margin-bottom: 1rem !important;
+            }
+
+            /* Таблицы */
+            table {
+                font-size: 0.75rem !important;
+            }
+
+            table td, table th {
+                padding: 0.25rem !important;
+            }
+
+            /* Кнопки навигации */
+            .no-print {
+                flex-wrap: wrap !important;
+                gap: 0.5rem !important;
+            }
+
+            .no-print a, .no-print button {
+                font-size: 0.75rem !important;
+                padding: 0.5rem 0.75rem !important;
+            }
+        }
+
+        /* Для очень маленьких экранов */
+        @media screen and (max-width: 480px) {
+            .text-3xl {
+                font-size: 1.25rem !important;
+            }
+
+            .text-xl {
+                font-size: 1rem !important;
+            }
+
+            .text-base {
+                font-size: 0.875rem !important;
+            }
+
+            .p-6 {
+                padding: 0.75rem !important;
+            }
+
+            .mb-8 {
+                margin-bottom: 1.5rem !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -331,7 +507,7 @@ if (! function_exists('clean_git_conflicts')) {
 
         <!-- Candidate Header -->
         <div class="p-3">
-            <div class="mb-8">
+            <div class="mb-8 candidate-header">
                 <!-- Фото справа с обтеканием -->
                 <div class="float-right ml-6 flex-shrink-0">
                     @if($photoUrl)
@@ -346,7 +522,7 @@ if (! function_exists('clean_git_conflicts')) {
 
                 <div>
                         @if($isReducedReport)
-                            <span class="text-lg text-gray-500 font-normal">(урезанная версия)</span>
+                            <span class="text-lg text-gray-500 font-normal">(краткая версия)</span>
                         @endif
                     <h1 class="text-3xl font-bold mb-4" style="color: #39761d; display: flex; align-items: center; gap: 8px;">
                         {{ clean_git_conflicts($candidate->full_name) }}
@@ -358,8 +534,7 @@ if (! function_exists('clean_git_conflicts')) {
                             </span>
                         @endif
                     </h1>
-                     @if($isFullReport)
-                    <div class="text-base mb-6" style="line-height: 1.8;">
+                     <div class="text-base mb-6" style="line-height: 1.8;">
                         <div style="display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 8px;">
                             <span class="font-medium text-gray-800" style="display: inline-flex; align-items: center; margin-right: 24px;">
                                 <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4cd.svg" alt="📍" style="width: 16px; height: 16px; margin-right: 6px;">
@@ -367,23 +542,22 @@ if (! function_exists('clean_git_conflicts')) {
                             </span>
                             <span class="font-medium text-gray-800" style="display: inline-flex; align-items: center;">
                                 <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4e7.svg" alt="📧" style="width: 16px; height: 16px; margin-right: 6px;">
-                                {{ $candidate->email }}
+                                @if($isFullReport){{ $candidate->email }}@elseскрыто@endif
                             </span>
                         </div>
                         <div style="display: flex; flex-wrap: wrap; align-items: center;">
                             <span class="font-medium text-gray-800" style="display: inline-flex; align-items: center; margin-right: 24px;">
                                 <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4de.svg" alt="📞" style="width: 16px; height: 16px; margin-right: 6px;">
-                                {{ $candidate->phone }}
+                                @if($isFullReport){{ $candidate->phone }}@elseскрыто@endif
                             </span>
-                            @if($candidate->instagram)
+                            @if($candidate->instagram || !$isFullReport)
                                 <span class="font-medium text-gray-800" style="display: inline-flex; align-items: center;">
                                     <svg style="width: 16px; height: 16px; margin-right: 6px;" viewBox="0 0 24 24" fill="#E4405F"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.757-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/></svg>
-                                    {{ $candidate->instagram }}
+                                    @if($isFullReport){{ $candidate->instagram }}@elseскрыто@endif
                                 </span>
                             @endif
                         </div>
                     </div>
-                     @endif
                     <h2 class="text-xl font-bold text-gray-800 mb-2">Основная информация</h2>
                      <!-- Основная информация -->
                      <div class="space-y-1">
@@ -404,6 +578,10 @@ if (! function_exists('clean_git_conflicts')) {
                              <span class="text-base font-medium">{{ $candidate->formatted_salary_range }}</span>
                          </div>
                          <div class="flex data-row">
+                             <span class="w-60 text-base text-gray-600">Готовность к переезду:</span>
+                             <span class="text-base font-medium">{{ $candidate->ready_to_relocate ? 'Да' : 'Нет' }}</span>
+                         </div>
+                         <div class="flex data-row">
                              <span class="w-60 text-base text-gray-600">Дата рождения:</span>
                              <span class="text-base font-medium">{{ $candidate->birth_date?->format('d.m.Y') ?: 'Не указано' }}</span>
                          </div>
@@ -411,67 +589,85 @@ if (! function_exists('clean_git_conflicts')) {
                              <span class="w-60 text-base text-gray-600">Место рождения:</span>
                              <span class="text-base font-medium flex-1">{{ $candidate->birth_place ?: 'Не указано' }}</span>
                          </div>
+                         @if($candidate->citizenship)
+                         <div class="flex items-start data-row">
+                             <span class="w-60 text-base text-gray-600">Гражданство:</span>
+                             <span class="text-base font-medium flex-1">{{ $candidate->citizenship }}</span>
+                         </div>
+                         @endif
+                         @if($candidate->work_permits && count($candidate->work_permits) > 0)
+                         <div class="flex items-start data-row">
+                             <span class="w-60 text-base text-gray-600">Разрешение на работу:</span>
+                             <span class="text-base font-medium flex-1">{{ implode(', ', $candidate->work_permits) }}</span>
+                         </div>
+                         @endif
                          <div class="flex data-row">
                              <span class="w-60 text-base text-gray-600">Пол:</span>
                              <span class="text-base font-medium">{{ $candidate->gender ?: 'Не указано' }}</span>
                          </div>
                          <div class="flex data-row">
                              <span class="w-60 text-base text-gray-600">Семейное положение:</span>
-                             <span class="text-base font-medium">{{ $candidate->marital_status ?: 'Не указано' }}</span>
+                             <span class="text-base font-medium">@if($isFullReport){{ $candidate->marital_status ?: 'Не указано' }}@elseскрыто@endif</span>
                          </div>
                          @php
                              $family = $candidate->getFamilyStructured();
                          @endphp
 
-                         @if($isFullReport)
                          <!-- Дети -->
                          <div class="flex items-start">
                              <span class="w-60 text-base text-gray-600">Дети:</span>
                              <span class="text-base font-medium flex-1">
-                                 @if(!empty($family['children']) && count($family['children']) > 0)
-                                     {{ count($family['children']) }}
-                                     @foreach($family['children'] as $child)
-                                         ({{ $child['gender'] ?? 'М' }}{{ $child['birth_year'] ?? '' }})
-                                     @endforeach
+                                 @if($isFullReport)
+                                     @if(!empty($family['children']) && count($family['children']) > 0)
+                                         {{ count($family['children']) }}
+                                         @foreach($family['children'] as $child)
+                                             ({{ $child['gender'] ?? 'М' }}{{ $child['birth_year'] ?? '' }})
+                                         @endforeach
+                                     @else
+                                         0
+                                     @endif
                                  @else
-                                     0
+                                     скрыто
                                  @endif
                              </span>
                          </div>
-                         @endif
 
-                        @if($isFullReport)
                         <!-- Родители -->
                         <div class="flex items-start">
                             <span class="w-60 text-base text-gray-600">Родители:</span>
                             <span class="text-base font-medium flex-1">
-                                @if(!empty($family['parents']))
-                                    @foreach($family['parents'] as $parent)
-                                        <div>{{ $parent['relation'] ?? 'Не указано' }} - {{ $parent['birth_year'] ?? 'Не указано' }}{{ !empty($parent['profession']) ? ' - ' . $parent['profession'] : '' }}</div>
-                                    @endforeach
+                                @if($isFullReport)
+                                    @if(!empty($family['parents']))
+                                        @foreach($family['parents'] as $parent)
+                                            <div>{{ $parent['relation'] ?? 'Не указано' }} - {{ $parent['birth_year'] ?? 'Не указано' }}{{ !empty($parent['profession']) ? ' - ' . $parent['profession'] : '' }}</div>
+                                        @endforeach
+                                    @else
+                                        Не указано
+                                    @endif
                                 @else
-                                    Не указано
+                                    скрыто
                                 @endif
                             </span>
                         </div>
-                        @endif
 
-                         @if($isFullReport)
                          <!-- Братья и сестры -->
                          <div class="flex items-start">
                              <span class="w-60 text-base text-gray-600">Кол-во братьев/сестер:</span>
                              <span class="text-base font-medium flex-1">
-                                 @if(!empty($family['siblings']))
-                                     {{ count($family['siblings']) }}
-                                     @foreach($family['siblings'] as $sibling)
-                                         ({{ ($sibling['relation'] ?? 'Не указано') === 'Брат' ? 'Б' : 'С' }}{{ $sibling['birth_year'] ?? '' }})
-                                     @endforeach
+                                 @if($isFullReport)
+                                     @if(!empty($family['siblings']))
+                                         {{ count($family['siblings']) }}
+                                         @foreach($family['siblings'] as $sibling)
+                                             ({{ ($sibling['relation'] ?? 'Не указано') === 'Брат' ? 'Б' : 'С' }}{{ $sibling['birth_year'] ?? '' }})
+                                         @endforeach
+                                     @else
+                                         Не указано
+                                     @endif
                                  @else
-                                     Не указано
+                                     скрыто
                                  @endif
                              </span>
                          </div>
-                         @endif
 
                         <!-- Школа -->
                          <div class="flex items-start">
@@ -530,55 +726,65 @@ if (! function_exists('clean_git_conflicts')) {
                         {{-- Новый дизайн для анкет с заполненными main_tasks/activity_sphere --}}
                         <div style="display: flex; flex-direction: column;">
                             @foreach($candidate->work_experience as $index => $experience)
-                                <div style="display: flex; gap: 24px; {{ !$loop->first ? 'margin-top: 16px;' : '' }} {{ !$loop->last ? 'padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }}">
-                                    {{-- Левая колонка: информация о месте работы --}}
-                                    <div style="flex: 1; min-width: 0;">
+                                <div class="work-experience-item" style="display: flex; {{ !$loop->first ? 'margin-top: 16px;' : '' }} {{ !$loop->last ? 'padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }}">
+                                    {{-- Левая колонка: информация о месте работы (фиксированная ширина как w-60) --}}
+                                    <div style="width: 15rem; flex-shrink: 0; padding-right: 52px;">
                                         {{-- Дата --}}
-                                        <div style="color: #234088; font-size: 14px; font-weight: 500; margin-bottom: 4px;">
+                                        <div class="text-line" style="color: #234088; font-size: 14px; font-weight: 500; margin-bottom: 4px;">
                                             {{ $experience['years'] ?? '' }}
                                         </div>
                                         {{-- Должность --}}
-                                        <div style="color: #000000; font-weight: 600; font-size: 17px; margin-bottom: 2px;">
+                                        <div class="text-line" style="color: #000000; font-weight: 600; font-size: 17px; margin-bottom: 2px;">
                                             {{ mb_ucfirst($experience['position'] ?? 'Не указано') }}
                                         </div>
                                         {{-- Компания / Город --}}
-                                        <div style="color: #000000; font-weight: 600; font-size: 15px;">
+                                        <div class="text-line" style="color: #000000; font-weight: 600; font-size: 15px;">
                                             {{ mb_ucfirst($experience['company'] ?? 'Не указано') }}@if(!empty($experience['city'])), {{ mb_ucfirst($experience['city']) }}@endif
                                         </div>
                                         {{-- Сфера деятельности --}}
                                         @if(!empty($experience['activity_sphere']))
-                                            <div style="color: #6b7280; font-size: 13px; margin-top: 2px;">
+                                            <div class="text-line" style="color: #6b7280; font-size: 13px; margin-top: 2px;">
                                                 {{ trim($experience['activity_sphere']) }}
                                             </div>
                                         @endif
                                     </div>
-                                    {{-- Правая колонка: основные обязанности --}}
+                                    {{-- Правая колонка: основные задачи (выровнена как ответы в Основная информация) --}}
                                     @if(!empty($experience['main_tasks']) && is_array($experience['main_tasks']) && count(array_filter($experience['main_tasks'])) > 0)
-                                        <div style="flex: 1; min-width: 0; overflow: hidden;">
-                                            <ul style="margin: 0; padding: 0; list-style: none; width: 100%;">
-                                                @foreach(array_filter($experience['main_tasks']) as $task)
-                                                    <li style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #000000; font-size: 14px; font-weight: 500;">
-                                                        <span style="color: #9ca3af; margin-right: 8px; flex-shrink: 0;">•</span>
-                                                        <span style="flex: 1; min-width: 0; word-wrap: break-word; overflow-wrap: break-word;">{{ mb_ucfirst($task) }}</span>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
+                                        <div style="flex: 1; min-width: 0;">
+                                            @foreach(array_filter($experience['main_tasks']) as $task)
+                                                <div class="text-line" style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #000000; font-size: 15px; font-weight: 500;">
+                                                    <span style="color: #9ca3af; margin-right: 8px; flex-shrink: 0;">•</span>
+                                                    <span style="flex: 1; min-width: 0;">{{ mb_ucfirst($task) }}</span>
+                                                </div>
+                                            @endforeach
                                         </div>
                                     @endif
                                 </div>
                             @endforeach
                         </div>
 
-                        {{-- Общий стаж и удовлетворённость --}}
-                        <div style="margin-top: 16px;">
-                            <div style="display: flex; align-items: center; margin-bottom: 4px;">
-                                <span style="color: #000000; font-size: 14px; font-weight: 500; margin-right: 8px;">Общий стаж:</span>
-                                <span style="color: #000000; font-weight: 500; font-size: 14px;">{{ $candidate->total_experience_years ?? 0 }} лет</span>
-                            </div>
-                            <div style="display: flex; align-items: center;">
-                                <span style="color: #000000; font-size: 14px; font-weight: 500; margin-right: 8px;">Удовлетворённость работой:</span>
-                                <span style="color: #000000; font-weight: 500; font-size: 14px;">{{ $candidate->job_satisfaction ?? '—' }}/5</span>
-                            </div>
+                        {{-- Общий стаж и удовлетворённость в таком же формате --}}
+                        @php
+                            $years = $candidate->total_experience_years ?? 0;
+                            $lastDigit = $years % 10;
+                            $lastTwoDigits = $years % 100;
+                            if ($lastTwoDigits >= 11 && $lastTwoDigits <= 14) {
+                                $yearWord = 'лет';
+                            } elseif ($lastDigit == 1) {
+                                $yearWord = 'год';
+                            } elseif ($lastDigit >= 2 && $lastDigit <= 4) {
+                                $yearWord = 'года';
+                            } else {
+                                $yearWord = 'лет';
+                            }
+                        @endphp
+                        <div class="flex data-row" style="margin-top: 16px;">
+                            <span class="w-60 text-base text-gray-600">Общий стаж:</span>
+                            <span class="text-base font-medium">{{ $years }} {{ $yearWord }}</span>
+                        </div>
+                        <div class="flex data-row">
+                            <span class="w-60 text-base text-gray-600">Удовлетворённость работой:</span>
+                            <span class="text-base font-medium">{{ $candidate->job_satisfaction ?? '—' }}/5</span>
                         </div>
 
                         {{-- Награды и достижения --}}
@@ -640,50 +846,62 @@ if (! function_exists('clean_git_conflicts')) {
                     <div class="flex items-start data-row">
                         <span class="w-60 text-base text-gray-600">Хобби:</span>
                         <span class="text-base font-medium flex-1">
-                            @php
-                                $hobbies = trim($candidate->hobbies ?? '');
-                                if ($hobbies !== '') {
-                                    $hLower = mb_strtolower($hobbies, 'UTF-8');
-                                    $hFirst = mb_strtoupper(mb_substr($hLower, 0, 1, 'UTF-8'), 'UTF-8');
-                                    $hRest = mb_substr($hLower, 1, null, 'UTF-8');
-                                    $hobbies = $hFirst . $hRest;
-                                } else {
-                                    $hobbies = 'Не указано';
-                                }
-                            @endphp
-                            {{ $hobbies }}
+                            @if($isFullReport)
+                                @php
+                                    $hobbies = trim($candidate->hobbies ?? '');
+                                    if ($hobbies !== '') {
+                                        $hLower = mb_strtolower($hobbies, 'UTF-8');
+                                        $hFirst = mb_strtoupper(mb_substr($hLower, 0, 1, 'UTF-8'), 'UTF-8');
+                                        $hRest = mb_substr($hLower, 1, null, 'UTF-8');
+                                        $hobbies = $hFirst . $hRest;
+                                    } else {
+                                        $hobbies = 'Не указано';
+                                    }
+                                @endphp
+                                {{ $hobbies }}
+                            @else
+                                скрыто
+                            @endif
                         </span>
                     </div>
                     <!-- 2. Интересы -->
                     <div class="flex items-start data-row">
                         <span class="w-60 text-base text-gray-600">Интересы:</span>
                         <span class="text-base font-medium flex-1">
-                            @php
-                                $interests = trim($candidate->interests ?? '');
-                                if ($interests !== '') {
-                                    $lower = mb_strtolower($interests, 'UTF-8');
-                                    $first = mb_strtoupper(mb_substr($lower, 0, 1, 'UTF-8'), 'UTF-8');
-                                    $rest = mb_substr($lower, 1, null, 'UTF-8');
-                                    $interests = $first . $rest;
-                                } else {
-                                    $interests = 'Не указано';
-                                }
-                            @endphp
-                            {{ $interests }}
+                            @if($isFullReport)
+                                @php
+                                    $interests = trim($candidate->interests ?? '');
+                                    if ($interests !== '') {
+                                        $lower = mb_strtolower($interests, 'UTF-8');
+                                        $first = mb_strtoupper(mb_substr($lower, 0, 1, 'UTF-8'), 'UTF-8');
+                                        $rest = mb_substr($lower, 1, null, 'UTF-8');
+                                        $interests = $first . $rest;
+                                    } else {
+                                        $interests = 'Не указано';
+                                    }
+                                @endphp
+                                {{ $interests }}
+                            @else
+                                скрыто
+                            @endif
                         </span>
                     </div>
                     <!-- 3. Любимые виды спорта -->
                     <div class="flex items-start data-row">
                         <span class="w-60 text-base text-gray-600">Любимые виды спорта:</span>
                         <span class="text-base font-medium flex-1">
-                            @if($candidate->favorite_sports)
-                                @if(is_array($candidate->favorite_sports))
-                                    {{ implode(', ', mb_convert_case(trim($candidate->favorite_sports), MB_CASE_TITLE, 'UTF-8')) }}
+                            @if($isFullReport)
+                                @if($candidate->favorite_sports)
+                                    @if(is_array($candidate->favorite_sports))
+                                        {{ implode(', ', mb_convert_case(trim($candidate->favorite_sports), MB_CASE_TITLE, 'UTF-8')) }}
+                                    @else
+                                        {{ mb_convert_case(trim($candidate->favorite_sports), MB_CASE_TITLE, 'UTF-8') }}
+                                    @endif
                                 @else
-                                    {{ mb_convert_case(trim($candidate->favorite_sports), MB_CASE_TITLE, 'UTF-8') }}
+                                    Не указано
                                 @endif
                             @else
-                                Не указано
+                                скрыто
                             @endif
                         </span>
                     </div>
@@ -691,41 +909,47 @@ if (! function_exists('clean_git_conflicts')) {
                     <div class="flex items-start data-row">
                         <span class="w-60 text-base text-gray-600">Посещенные страны:</span>
                         <span class="text-base font-medium flex-1">
-                            @if($candidate->visited_countries)
-                                @if(is_array($candidate->visited_countries))
-                                    {{ implode(', ', $candidate->visited_countries) }}
+                            @if($isFullReport)
+                                @if($candidate->visited_countries)
+                                    @if(is_array($candidate->visited_countries))
+                                        {{ implode(', ', $candidate->visited_countries) }}
+                                    @else
+                                        {{ $candidate->visited_countries }}
+                                    @endif
                                 @else
-                                    {{ $candidate->visited_countries }}
+                                    Не указано
                                 @endif
                             @else
-                                Не указано
+                                скрыто
                             @endif
                         </span>
                     </div>
                     <!-- 5. Кол-во книг в год -->
                     <div class="flex data-row">
                         <span class="w-60 text-base text-gray-600">Кол-во книг в год:</span>
-                        <span class="text-base font-medium">{{ $candidate->books_per_year ?? 'Не указано' }}</span>
+                        <span class="text-base font-medium">@if($isFullReport){{ $candidate->books_per_year ?? 'Не указано' }}@elseскрыто@endif</span>
                     </div>
                     <!-- 6-7. Вероисповедание и Рел. практика -->
-                    @if($isFullReport)
                     <div class="flex data-row">
                         <span class="w-60 text-base text-gray-600">Религия:</span>
-                        <span class="text-base font-medium">{{ $candidate->religion ?: 'Не указано' }}</span>
+                        <span class="text-base font-medium">@if($isFullReport){{ $candidate->religion ?: 'Не указано' }}@elseскрыто@endif</span>
                     </div>
                     <div class="flex data-row">
                         <span class="w-60 text-base text-gray-600">Рел. практика:</span>
-                        <span class="text-base font-medium">{{ $candidate->is_practicing ? 'Да' : 'Нет' }}</span>
+                        <span class="text-base font-medium">@if($isFullReport){{ $candidate->is_practicing ? 'Да' : 'Нет' }}@elseскрыто@endif</span>
                     </div>
-                    @endif
                     <!-- 8. Часы на разв. видео в неделю -->
                     <div class="flex data-row">
                         <span class="w-60 text-base text-gray-600">Часы на разв. видео в неделю:</span>
                         <span class="text-base font-medium">
-                            @if($candidate->entertainment_hours_weekly)
-                                {{ $candidate->entertainment_hours_weekly }} час{{ $candidate->entertainment_hours_weekly == 1 ? '' : ($candidate->entertainment_hours_weekly < 5 ? 'а' : 'ов') }}
+                            @if($isFullReport)
+                                @if($candidate->entertainment_hours_weekly)
+                                    {{ $candidate->entertainment_hours_weekly }} час{{ $candidate->entertainment_hours_weekly == 1 ? '' : ($candidate->entertainment_hours_weekly < 5 ? 'а' : 'ов') }}
+                                @else
+                                    Не указано
+                                @endif
                             @else
-                                Не указано
+                                скрыто
                             @endif
                         </span>
                     </div>
@@ -733,10 +957,14 @@ if (! function_exists('clean_git_conflicts')) {
                     <div class="flex data-row">
                         <span class="w-60 text-base text-gray-600">Часы на обра. видео в неделю:</span>
                         <span class="text-base font-medium">
-                            @if($candidate->educational_hours_weekly)
-                                {{ $candidate->educational_hours_weekly }} час{{ $candidate->educational_hours_weekly == 1 ? '' : ($candidate->educational_hours_weekly < 5 ? 'а' : 'ов') }}
+                            @if($isFullReport)
+                                @if($candidate->educational_hours_weekly)
+                                    {{ $candidate->educational_hours_weekly }} час{{ $candidate->educational_hours_weekly == 1 ? '' : ($candidate->educational_hours_weekly < 5 ? 'а' : 'ов') }}
+                                @else
+                                    Не указано
+                                @endif
                             @else
-                                Не указано
+                                скрыто
                             @endif
                         </span>
                     </div>
@@ -744,34 +972,42 @@ if (! function_exists('clean_git_conflicts')) {
                     <div class="flex data-row">
                         <span class="w-60 text-base text-gray-600">Часы на соц. сети в неделю:</span>
                         <span class="text-base font-medium">
-                            @if($candidate->social_media_hours_weekly)
-                                {{ $candidate->social_media_hours_weekly }} час{{ $candidate->social_media_hours_weekly == 1 ? '' : ($candidate->social_media_hours_weekly < 5 ? 'а' : 'ов') }}
+                            @if($isFullReport)
+                                @if($candidate->social_media_hours_weekly)
+                                    {{ $candidate->social_media_hours_weekly }} час{{ $candidate->social_media_hours_weekly == 1 ? '' : ($candidate->social_media_hours_weekly < 5 ? 'а' : 'ов') }}
+                                @else
+                                    Не указано
+                                @endif
                             @else
-                                Не указано
+                                скрыто
                             @endif
                         </span>
                     </div>
                     <!-- 11. Водительские права -->
                     <div class="flex data-row">
                         <span class="w-60 text-base text-gray-600">Водительские права:</span>
-                        <span class="text-base font-medium">{{ $candidate->has_driving_license ? 'Есть' : 'Нет' }}</span>
+                        <span class="text-base font-medium">@if($isFullReport){{ $candidate->has_driving_license ? 'Есть' : 'Нет' }}@elseскрыто@endif</span>
                     </div>
                     <!-- 12. Пожелания на рабочем месте -->
                     <div class="flex items-start data-row">
                         <span class="w-60 text-base text-gray-600">Пожелания на рабочем месте:</span>
                         <span class="text-base font-medium flex-1">
-                            @php
-                                $workplace = trim($candidate->employer_requirements ?? '');
-                                if ($workplace !== '') {
-                                    $wLower = mb_strtolower($workplace, 'UTF-8');
-                                    $wFirst = mb_strtoupper(mb_substr($wLower, 0, 1, 'UTF-8'), 'UTF-8');
-                                    $wRest = mb_substr($wLower, 1, null, 'UTF-8');
-                                    $workplace = $wFirst . $wRest;
-                                } else {
-                                    $workplace = 'Не указано';
-                                }
-                            @endphp
-                            {{ $workplace }}
+                            @if($isFullReport)
+                                @php
+                                    $workplace = trim($candidate->employer_requirements ?? '');
+                                    if ($workplace !== '') {
+                                        $wLower = mb_strtolower($workplace, 'UTF-8');
+                                        $wFirst = mb_strtoupper(mb_substr($wLower, 0, 1, 'UTF-8'), 'UTF-8');
+                                        $wRest = mb_substr($wLower, 1, null, 'UTF-8');
+                                        $workplace = $wFirst . $wRest;
+                                    } else {
+                                        $workplace = 'Не указано';
+                                    }
+                                @endphp
+                                {{ $workplace }}
+                            @else
+                                скрыто
+                            @endif
                         </span>
                     </div>
                 </div>
@@ -812,7 +1048,7 @@ if (! function_exists('clean_git_conflicts')) {
             @endif
 
             <!-- Психометрические данные -->
-            <div class="mb-8">
+            <div class="mb-8" style="page-break-inside: avoid; break-inside: avoid;">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Психометрические данные</h2>
                 <div class="flex data-row">
                     <span class="text-base text-gray-600 w-60">Тип личности по MBTI:</span>
@@ -856,7 +1092,7 @@ if (! function_exists('clean_git_conflicts')) {
                     'Экзистенциальный интеллект',
                 ];
             @endphp
-            <div class="mb-4">
+            <div class="mb-4 gardner-section">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Виды интеллектов Гарднера</h2>
                 <div class="bg-gray-100 rounded-lg p-6">
                     <!-- Первый ряд -->

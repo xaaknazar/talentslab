@@ -20,13 +20,17 @@ class CandidateResource extends Resource
 {
     protected static ?string $model = Candidate::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $modelLabel = 'Резюме кандидата';
 
     protected static ?string $pluralModelLabel = 'Резюме кандидатов';
 
     protected static ?string $navigationLabel = 'Резюме кандидатов';
+
+    protected static ?string $navigationGroup = 'Кандидаты';
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -212,11 +216,14 @@ class CandidateResource extends Resource
                 Tables\Columns\TextColumn::make('step')
                     ->label('Шаг')
                     ->badge()
+                    ->formatStateUsing(fn (string $state): string => "Шаг {$state}")
                     ->color(fn (string $state): string => match ($state) {
-                        '1' => 'danger',
+                        '6' => 'success',
+                        '5' => 'success',
+                        '4' => 'info',
+                        '3' => 'warning',
                         '2' => 'warning',
-                        '3' => 'info',
-                        '4' => 'success',
+                        '1' => 'danger',
                         default => 'gray',
                     })
                     ->sortable(),
@@ -307,12 +314,14 @@ class CandidateResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('step')
-                    ->label('Шаг анкеты')
+                    ->label('Шаг резюме')
                     ->options([
-                        1 => 'Основная информация',
-                        2 => 'Дополнительная информация',
-                        3 => 'Образование и работа',
-                        4 => 'Тесты',
+                        1 => 'Шаг 1 - Основная информация',
+                        2 => 'Шаг 2 - Дополнительная информация',
+                        3 => 'Шаг 3 - Образование и работа',
+                        4 => 'Шаг 4 - Тесты',
+                        5 => 'Шаг 5 - Завершено',
+                        6 => 'Шаг 6 - С Gallup',
                     ]),
                 Tables\Filters\SelectFilter::make('gender')
                     ->label('Пол')
@@ -320,46 +329,122 @@ class CandidateResource extends Resource
                         'Мужской' => 'Мужской',
                         'Женский' => 'Женский',
                     ]),
+                Tables\Filters\SelectFilter::make('marital_status')
+                    ->label('Семейное положение')
+                    ->options([
+                        'Холост/Не замужем' => 'Холост/Не замужем',
+                        'Женат/Замужем' => 'Женат/Замужем',
+                        'Разведен(а)' => 'Разведен(а)',
+                        'Вдовец/Вдова' => 'Вдовец/Вдова',
+                    ]),
+                Tables\Filters\SelectFilter::make('birth_year')
+                    ->label('Год рождения')
+                    ->options(function () {
+                        $years = [];
+                        $currentYear = now()->year;
+                        for ($year = $currentYear - 18; $year >= $currentYear - 70; $year--) {
+                            $years[$year] = $year;
+                        }
+                        return $years;
+                    })
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['value'],
+                            fn (Builder $query, $year): Builder => $query->whereYear('birth_date', $year)
+                        );
+                    }),
+                Tables\Filters\SelectFilter::make('current_city')
+                    ->label('Город проживания')
+                    ->options(function () {
+                        return Candidate::query()
+                            ->whereNotNull('current_city')
+                            ->where('current_city', '!=', '')
+                            ->distinct()
+                            ->pluck('current_city', 'current_city')
+                            ->toArray();
+                    })
+                    ->searchable(),
+                Tables\Filters\SelectFilter::make('religion')
+                    ->label('Религия')
+                    ->options(function () {
+                        return Candidate::query()
+                            ->whereNotNull('religion')
+                            ->where('religion', '!=', '')
+                            ->distinct()
+                            ->pluck('religion', 'religion')
+                            ->toArray();
+                    })
+                    ->searchable(),
+                Tables\Filters\SelectFilter::make('activity_sphere')
+                    ->label('Сфера деятельности')
+                    ->options([
+                        'IT и телекоммуникации' => 'IT и телекоммуникации',
+                        'Финансы и банковское дело' => 'Финансы и банковское дело',
+                        'Маркетинг и реклама' => 'Маркетинг и реклама',
+                        'Продажи' => 'Продажи',
+                        'HR и управление персоналом' => 'HR и управление персоналом',
+                        'Производство' => 'Производство',
+                        'Логистика и транспорт' => 'Логистика и транспорт',
+                        'Строительство и недвижимость' => 'Строительство и недвижимость',
+                        'Медицина и фармацевтика' => 'Медицина и фармацевтика',
+                        'Образование и наука' => 'Образование и наука',
+                        'Юриспруденция' => 'Юриспруденция',
+                        'Бухгалтерия и аудит' => 'Бухгалтерия и аудит',
+                        'Государственная служба' => 'Государственная служба',
+                        'Нефть и газ' => 'Нефть и газ',
+                        'Энергетика' => 'Энергетика',
+                        'Сельское хозяйство' => 'Сельское хозяйство',
+                        'Туризм и гостиничный бизнес' => 'Туризм и гостиничный бизнес',
+                        'Общественное питание' => 'Общественное питание',
+                        'Розничная торговля' => 'Розничная торговля',
+                        'СМИ и журналистика' => 'СМИ и журналистика',
+                        'Дизайн и искусство' => 'Дизайн и искусство',
+                        'Консалтинг' => 'Консалтинг',
+                        'Безопасность' => 'Безопасность',
+                        'Другое' => 'Другое',
+                    ])
+                    ->multiple()
+                    ->searchable(),
+                Tables\Filters\SelectFilter::make('language')
+                    ->label('Язык')
+                    ->options([
+                        'Казахский' => 'Казахский',
+                        'Русский' => 'Русский',
+                        'Английский' => 'Английский',
+                        'Турецкий' => 'Турецкий',
+                        'Китайский' => 'Китайский',
+                        'Немецкий' => 'Немецкий',
+                        'Французский' => 'Французский',
+                        'Испанский' => 'Испанский',
+                        'Арабский' => 'Арабский',
+                        'Корейский' => 'Корейский',
+                        'Японский' => 'Японский',
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when(
+                            $data['value'],
+                            fn (Builder $query, $language): Builder => $query->whereRaw(
+                                "JSON_SEARCH(language_skills, 'one', ?) IS NOT NULL",
+                                [$language]
+                            )
+                        );
+                    })
+                    ->searchable(),
                 Tables\Filters\Filter::make('has_experience')
                     ->label('С опытом работы')
                     ->query(fn (Builder $query): Builder => $query->where('total_experience_years', '>', 0)),
                 Tables\Filters\Filter::make('created_this_month')
                     ->label('Созданы в этом месяце')
                     ->query(fn (Builder $query): Builder => $query->whereMonth('created_at', now()->month)),
+                Tables\Filters\Filter::make('has_gallup')
+                    ->label('С Gallup отчётом')
+                    ->query(fn (Builder $query): Builder => $query->whereNotNull('gallup_pdf')->where('gallup_pdf', '!=', '')),
                 Tables\Filters\Filter::make('has_gardner_test')
                     ->label('Прошли тест Гарднера')
                     ->query(fn (Builder $query): Builder =>
                         $query->whereHas('user.gardnerTestResult')
                     ),
-                Tables\Filters\Filter::make('gardner_test_completed')
-                    ->label('Завершили тест Гарднера')
-                    ->query(fn (Builder $query): Builder =>
-                        $query->whereHas('user.gardnerTestResult', function ($q) {
-                            $q->whereRaw('JSON_LENGTH(answers) >= 56');
-                        })
-                    ),
-                Tables\Filters\SelectFilter::make('step_parse_gallup')
-                    ->label('Статус парсинга Gallup')
-                    ->options([
-                        'Проверка файла' => 'Проверка файла',
-                        'Парсинг PDF' => 'Парсинг PDF',
-                        'Обновление талантов' => 'Обновление талантов',
-                        'Обработка отчетов' => 'Обработка отчетов',
-                        'Обновление Google Sheets: FMD' => 'Обновление Google Sheets: FMD',
-                        'Обновление Google Sheets: DPT' => 'Обновление Google Sheets: DPT',
-                        'Обновление Google Sheets: DPs' => 'Обновление Google Sheets: DPs',
-                        'Импорт формул: FMD' => 'Импорт формул: FMD',
-                        'Импорт формул: DPT' => 'Импорт формул: DPT',
-                        'Импорт формул: DPs' => 'Импорт формул: DPs',
-                        'Скачивание PDF: FMD' => 'Скачивание PDF: FMD',
-                        'Скачивание PDF: DPT' => 'Скачивание PDF: DPT',
-                        'Скачивание PDF: DPs' => 'Скачивание PDF: DPs',
-                        'Завершено успешно' => 'Завершено успешно',
-                        'Изменений не обнаружено' => 'Изменений не обнаружено',
-                    ])
-                    ->searchable()
-                    ->hidden(), // Скрытый фильтр, но доступный при необходимости
-            ])
+            ], layout: Tables\Enums\FiltersLayout::AboveContentCollapsible)
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\Action::make('Резюме полное')
@@ -367,35 +452,35 @@ class CandidateResource extends Resource
                         ->icon('heroicon-o-document-text')
                         ->color('success')
                         ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'anketa']))
-                        ->modal(),
+                        ->openUrlInNewTab(),
 
-                    Tables\Actions\Action::make('Резюме урезанное')
-                        ->label('Резюме урезанное')
+                    Tables\Actions\Action::make('Резюме краткое')
+                        ->label('Резюме краткое')
                         ->icon('heroicon-o-document-text')
                         ->color('info')
                         ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'anketa-reduced']))
-                        ->modal(),
+                        ->openUrlInNewTab(),
 
                     Tables\Actions\Action::make('downloadDPs')
                         ->label('DPs отчет')
                         ->icon('heroicon-o-document-text')
                         ->color('info')
                         ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'DPs']))
-                        ->modal()
+                        ->openUrlInNewTab()
                         ->visible(fn (Candidate $record): bool => $record->gallupReports()->where('type', 'DPs')->exists()),
                     Tables\Actions\Action::make('downloadDPT')
                         ->label('DPT отчет')
                         ->icon('heroicon-o-document-text')
                         ->color('warning')
                         ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'DPT']))
-                        ->modal()
+                        ->openUrlInNewTab()
                         ->visible(fn (Candidate $record): bool => $record->gallupReports()->where('type', 'DPT')->exists()),
                     Tables\Actions\Action::make('downloadFMD')
                         ->label('FMD отчет')
                         ->icon('heroicon-o-document-text')
                         ->color('danger')
                         ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'FMD']))
-                        ->modal()
+                        ->openUrlInNewTab()
                         ->visible(fn (Candidate $record): bool => $record->gallupReports()->where('type', 'FMD')->exists()),
                     
                     Tables\Actions\Action::make('refresh_gallup_report')
@@ -404,6 +489,10 @@ class CandidateResource extends Resource
                         ->color('primary')
                         ->requiresConfirmation()
                         ->action(function (Candidate $record) {
+                            // Увеличиваем лимит памяти для обработки PDF
+                            $originalMemoryLimit = ini_get('memory_limit');
+                            ini_set('memory_limit', '512M');
+
                             try {
                                 app(\App\Http\Controllers\GallupController::class)->parseGallupFromCandidateFile($record);
                                 Notification::make()
@@ -416,6 +505,8 @@ class CandidateResource extends Resource
                                     ->body($e->getMessage())
                                     ->danger()
                                     ->send();
+                            } finally {
+                                ini_set('memory_limit', $originalMemoryLimit);
                             }
                         })
                         ->visible(fn (Candidate $record): bool => 
@@ -423,14 +514,10 @@ class CandidateResource extends Resource
                         ),
                         
                 ])
-                    ->label('Gallup')
+                    ->label('Резюме')
                     ->icon('heroicon-o-document-arrow-down')
                     ->color('success')
-                    ->button()
-                    ->visible(fn (Candidate $record): bool =>
-                        ($record->gallup_pdf && Storage::disk('public')->exists($record->gallup_pdf)) || 
-                        $record->gallupReports()->exists()
-                    ),
+                    ->button(),
                     
                 // Кнопка редактирования анкеты (доступна только администраторам)
                 // Перемещена на место кнопки "Удалить" для лучшей видимости

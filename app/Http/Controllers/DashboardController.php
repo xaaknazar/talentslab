@@ -67,8 +67,8 @@ class DashboardController extends Controller
             'employer_requirements' => 'Требования к работодателю',
             'gallup_pdf' => 'Тест Gallup',
             'mbti_type' => 'Тип личности MBTI',
-            'step' => 'Шаг анкеты',
-            'status' => 'Статус анкеты',
+            'step' => 'Шаг резюме',
+            'status' => 'Статус резюме',
         ];
 
         return $fieldNames[$fieldName] ?? $fieldName;
