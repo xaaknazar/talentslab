@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="ltr">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,13 +17,6 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-        <!-- RTL Support for Arabic -->
-        @if(app()->getLocale() === 'ar')
-        <style>
-            body { direction: rtl; text-align: right; }
-            input, textarea, select { text-align: right; }
-        </style>
-        @endif
 
         <!-- Styles -->
         @livewireStyles

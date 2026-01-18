@@ -78,7 +78,6 @@
                         $languages = [
                             'ru' => ['name' => 'Русский', 'code' => 'Ru'],
                             'en' => ['name' => 'English', 'code' => 'En'],
-                            'ar' => ['name' => 'العربية', 'code' => 'SA']
                         ];
                         $currentLang = $languages[$currentLocale] ?? $languages['ru'];
                     @endphp
@@ -245,7 +244,6 @@
                     $mobileLanguages = [
                         'ru' => ['name' => 'Русский', 'code' => 'Ru'],
                         'en' => ['name' => 'English', 'code' => 'En'],
-                        'ar' => ['name' => 'العربية', 'code' => 'SA']
                     ];
                 @endphp
 

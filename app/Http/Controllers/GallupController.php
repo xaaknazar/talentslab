@@ -782,7 +782,7 @@ class GallupController extends Controller
         $snappy->generateFromHtml($html, $tempHtmlPdf, $s_options, true);
 
         // Создаём имя файла
-        $languageNames = ['ru' => 'RU', 'en' => 'EN', 'ar' => 'AR'];
+        $languageNames = ['ru' => 'RU', 'en' => 'EN'];
         $langCode = $languageNames[$targetLanguage] ?? strtoupper($targetLanguage);
         $genderCode = ($candidate->gender === 'Женский' || $candidate->gender === 'female') ? 'G' : 'B';
         $birthYear = $candidate->birth_date ? substr(date('Y', strtotime($candidate->birth_date)), -2) : '00';

@@ -14,7 +14,7 @@
                         </label>
                         <input type="text"
                                wire:model="school_name"
-                               placeholder="{{ app()->getLocale() == 'ar' ? 'المدرسة رقم 25' : (app()->getLocale() == 'en' ? 'School #25' : 'Школа №25') }}"
+                               placeholder="{{ app()->getLocale() == 'en' ? 'School #25' : 'Школа №25' }}"
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         @error('school_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
@@ -25,7 +25,7 @@
                         </label>
                         <input type="text"
                                wire:model="school_city"
-                               placeholder="{{ app()->getLocale() == 'ar' ? 'الرياض' : (app()->getLocale() == 'en' ? 'London' : 'Актау') }}"
+                               placeholder="{{ app()->getLocale() == 'en' ? 'London' : 'Актау' }}"
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         @error('school_city') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
@@ -70,7 +70,7 @@
                                 </label>
                                 <input type="text"
                                        wire:model="universities.{{ $index }}.city"
-                                       placeholder="{{ app()->getLocale() == 'ar' ? 'دبي' : (app()->getLocale() == 'en' ? 'New York' : 'Алматы') }}"
+                                       placeholder="{{ app()->getLocale() == 'en' ? 'New York' : 'Алматы' }}"
                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                 @error("universities.{$index}.city") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
@@ -349,9 +349,16 @@
                             @if(count($tasks) < 8)
                                 <button type="button"
                                         wire:click="addWorkTask({{ $index }})"
-                                        class="mt-2 inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        wire:loading.attr="disabled"
+                                        wire:loading.class="opacity-50 cursor-not-allowed"
+                                        wire:target="addWorkTask"
+                                        class="mt-2 inline-flex items-center text-sm text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity">
+                                    <svg wire:loading.remove wire:target="addWorkTask({{ $index }})" class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                    </svg>
+                                    <svg wire:loading wire:target="addWorkTask({{ $index }})" class="w-4 h-4 mr-1 animate-spin" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
                                     {{ __('Add task') }}
                                 </button>

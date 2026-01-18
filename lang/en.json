@@ -864,5 +864,12 @@
     "Award": "Award",
     "Salary From": "Salary From",
     "Salary To": "Salary To",
-    "MBTI Personality Type": "MBTI Personality Type"
+    "MBTI Personality Type": "MBTI Personality Type",
+
+    "Email Verification": "Email Verification",
+    "Before continuing, please verify your email address by clicking on the link we just sent you. If you did not receive the email, we will gladly send you another.": "Before continuing, please verify your email address by clicking on the link we just sent you. If you did not receive the email, we will gladly send you another.",
+    "Did not find the email?": "Did not find the email?",
+    "Check your SPAM or Junk folder - sometimes emails end up there automatically.": "Check your SPAM or Junk folder - sometimes emails end up there automatically.",
+    "We sent a new link to the email specified in your profile.": "We sent a new link to the email specified in your profile.",
+    "Resend email": "Resend email"
 }

@@ -768,5 +768,12 @@
     "Award": "Награда",
     "Salary From": "Зарплата от",
     "Salary To": "Зарплата до",
-    "MBTI Personality Type": "Тип личности MBTI"
+    "MBTI Personality Type": "Тип личности MBTI",
+
+    "Email Verification": "Подтверждение email",
+    "Before continuing, please verify your email address by clicking on the link we just sent you. If you did not receive the email, we will gladly send you another.": "Перед продолжением, пожалуйста, подтвердите ваш адрес электронной почты, нажав на ссылку, которую мы только что отправили вам. Если вы не получили письмо, мы с удовольствием отправим вам другое.",
+    "Did not find the email?": "Не нашли письмо?",
+    "Check your SPAM or Junk folder - sometimes emails end up there automatically.": "Проверьте папку \"СПАМ\" или \"Нежелательная почта\" - иногда письма попадают туда автоматически.",
+    "We sent a new link to the email specified in your profile.": "Мы отправили новую ссылку на почту, указанную в профиле.",
+    "Resend email": "Отправить письмо повторно"
 }

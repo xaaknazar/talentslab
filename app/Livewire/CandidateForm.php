@@ -980,6 +980,45 @@ class CandidateForm extends Component
         }
     }
 
+    /**
+     * Переход к конкретному шагу с сохранением прогресса
+     * Используется при клике на номер шага в навигации
+     */
+    public function goToStep($step)
+    {
+        try {
+            logger()->debug('Starting goToStep method', ['targetStep' => $step, 'currentStep' => $this->currentStep]);
+
+            // Валидация номера шага
+            if ($step < 1 || $step > $this->totalSteps) {
+                return;
+            }
+
+            // Если уже на этом шаге, ничего не делаем
+            if ($step === $this->currentStep) {
+                return;
+            }
+
+            // Сохраняем текущий прогресс перед сменой шага
+            $this->saveProgress();
+            logger()->debug('Progress saved before step change');
+
+            // Меняем шаг
+            $this->currentStep = $step;
+            logger()->debug('Step changed to: ' . $this->currentStep);
+
+            // Переинициализируем валидацию для нового шага
+            $this->reinitializeValidation();
+            logger()->debug('Validation reinitialized for new step');
+
+        } catch (\Exception $e) {
+            logger()->error('Error in goToStep:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+
     protected function getStepRules()
     {
         $allRules = $this->rules();
@@ -1755,7 +1794,7 @@ class CandidateForm extends Component
 
             $this->languages = [];
             $locale = app()->getLocale();
-            $nameField = $locale === 'en' ? 'name_en' : ($locale === 'ar' ? 'name_en' : 'name_ru');
+            $nameField = $locale === 'en' ? 'name_en' : 'name_ru';
 
             if (isset($languagesData['languages']) && is_array($languagesData['languages'])) {
                 foreach ($languagesData['languages'] as $language) {
@@ -1767,7 +1806,7 @@ class CandidateForm extends Component
 
             // Если массив языков пустой, используем fallback
             if (empty($this->languages)) {
-                if ($locale === 'en' || $locale === 'ar') {
+                if ($locale === 'en') {
                     $this->languages = ['Russian', 'English', 'Spanish', 'French', 'German', 'Chinese', 'Japanese', 'Arabic', 'Kazakh'];
                 } else {
                     $this->languages = ['Русский', 'Английский', 'Испанский', 'Французский', 'Немецкий', 'Китайский', 'Японский', 'Арабский', 'Казахский'];
@@ -1778,7 +1817,7 @@ class CandidateForm extends Component
             logger()->error('Error loading languages: ' . $e->getMessage());
             // Fallback к базовым языкам
             $locale = app()->getLocale();
-            if ($locale === 'en' || $locale === 'ar') {
+            if ($locale === 'en') {
                 $this->languages = ['Russian', 'English', 'Spanish', 'French', 'German', 'Chinese', 'Japanese', 'Arabic', 'Kazakh'];
             } else {
                 $this->languages = ['Русский', 'Английский', 'Испанский', 'Французский', 'Немецкий', 'Китайский', 'Японский', 'Арабский', 'Казахский'];

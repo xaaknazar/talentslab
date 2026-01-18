@@ -1,18 +1,18 @@
 @extends('layouts.auth')
 
-@section('title', 'Подтверждение email - Divergents')
+@section('title', __('Email Verification') . ' - Divergents')
 
 @section('content')
-<h1>Подтверждение email</h1>
-<p>Перед продолжением, пожалуйста, подтвердите ваш адрес электронной почты, нажав на ссылку, которую мы только что отправили вам. Если вы не получили письмо, мы с удовольствием отправим вам другое.</p>
+<h1>{{ __('Email Verification') }}</h1>
+<p>{{ __('Before continuing, please verify your email address by clicking on the link we just sent you. If you did not receive the email, we will gladly send you another.') }}</p>
 
 <div class="spam-notice">
-    <p><strong>Не нашли письмо?</strong> Проверьте папку "СПАМ" или "Нежелательная почта" - иногда письма попадают туда автоматически.</p>
+    <p><strong>{{ __('Did not find the email?') }}</strong> {{ __('Check your SPAM or Junk folder - sometimes emails end up there automatically.') }}</p>
 </div>
 
 @if (session('status') == 'verification-link-sent')
     <div class="success-message">
-        Мы отправили новую ссылку на почту, указанную в профиле.
+        {{ __('We sent a new link to the email specified in your profile.') }}
     </div>
 @endif
 
@@ -20,16 +20,16 @@
 <form method="POST" action="{{ route('verification.send') }}">
     @csrf
     <button type="submit" class="btn-auth">
-        Отправить письмо повторно
+        {{ __('Resend email') }}
     </button>
 </form>
 
-<div class="auth-footer">x`
-    <a href="{{ route('profile.show') }}">Редактировать профиль</a>
+<div class="auth-footer">
+    <a href="{{ route('profile.show') }}">{{ __('Edit Profile') }}</a>
     <form method="POST" action="{{ route('logout') }}" class="inline">
         @csrf
         <button type="submit" class="logout-link">
-            Выйти
+            {{ __('Logout') }}
         </button>
     </form>
 </div>

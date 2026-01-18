@@ -15,7 +15,7 @@
                         ['step' => 4, 'title' => __('Tests')]
                     ] as $stepInfo)
                     <button type="button" 
-                            wire:click="$set('currentStep', {{ $stepInfo['step'] }})"
+                            wire:click="goToStep({{ $stepInfo['step'] }})"
                             class="relative flex items-center p-3 rounded-lg border-2 transition-all duration-200 {{ $currentStep === $stepInfo['step'] ? 'border-blue-600 bg-blue-50' : 'border-gray-200 bg-white hover:border-gray-300' }} {{ $this->hasErrorsOnStep($stepInfo['step']) ? 'border-red-300 bg-red-50' : '' }}">
                         <!-- Индикатор ошибки -->
                         @if($this->hasErrorsOnStep($stepInfo['step']))
@@ -78,7 +78,7 @@
                                 @endif
                             </div>
                             <div class="ml-3">
-                                <button type="button" wire:click="$set('currentStep', {{ $stepInfo['step'] }})" class="text-sm font-medium {{ $currentStep >= $stepInfo['step'] ? 'text-blue-600' : 'text-gray-500' }} {{ $this->hasErrorsOnStep($stepInfo['step']) ? 'text-red-600' : '' }}">
+                                <button type="button" wire:click="goToStep({{ $stepInfo['step'] }})" class="text-sm font-medium {{ $currentStep >= $stepInfo['step'] ? 'text-blue-600' : 'text-gray-500' }} {{ $this->hasErrorsOnStep($stepInfo['step']) ? 'text-red-600' : '' }}">
                                     {{ $stepInfo['title'] }}
                                 </button>
                             </div>
@@ -114,8 +114,8 @@
                     @foreach($errorsByStep as $step => $errorKeys)
                         @if(!empty($errorKeys))
                             <div class="mb-3 last:mb-0">
-                                <button type="button" 
-                                        wire:click="$set('currentStep', {{ $step }})"
+                                <button type="button"
+                                        wire:click="goToStep({{ $step }})"
                                         class="inline-flex items-center px-3 py-1.5 mb-2 bg-red-100 hover:bg-red-200 text-red-800 font-medium rounded-lg transition-colors duration-200">
                                     <svg class="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
