@@ -373,15 +373,26 @@
                         <div>
                             <span class="block text-xs font-medium text-gray-600 mb-1">Любимые виды спорта:</span>
                             <span class="text-xs text-gray-800">
-                                @if($candidate->favorite_sports)
-                                    @if(is_array($candidate->favorite_sports))
-                                        {{ implode(', ', $candidate->favorite_sports) }}
-                                    @else
-                                        {{ $candidate->favorite_sports }}
-                                    @endif
-                                @else
-                                    Не указано
-                                @endif
+                                @php
+                                    $sports = $candidate->favorite_sports ?? '';
+                                    if (!empty($sports)) {
+                                        if (is_array($sports)) {
+                                            $sports = implode(', ', array_map(function($s) {
+                                                $s = trim($s);
+                                                if ($s === '') return '';
+                                                $lower = mb_strtolower($s, 'UTF-8');
+                                                return mb_strtoupper(mb_substr($lower, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr($lower, 1, null, 'UTF-8');
+                                            }, $sports));
+                                        } else {
+                                            $sports = trim($sports);
+                                            $lower = mb_strtolower($sports, 'UTF-8');
+                                            $sports = mb_strtoupper(mb_substr($lower, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr($lower, 1, null, 'UTF-8');
+                                        }
+                                    } else {
+                                        $sports = 'Не указано';
+                                    }
+                                @endphp
+                                {{ $sports }}
                             </span>
                         </div>
                     </div>

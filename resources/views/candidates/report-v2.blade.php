@@ -704,15 +704,28 @@ if (! function_exists('clean_git_conflicts')) {
                     <div class="flex items-start data-row">
                         <span class="w-60 text-base text-gray-600">Любимые виды спорта:</span>
                         <span class="text-base font-medium flex-1">
-                            @if($candidate->favorite_sports)
-                                @if(is_array($candidate->favorite_sports))
-                                    {{ implode(', ', mb_convert_case(trim($candidate->favorite_sports), MB_CASE_TITLE, 'UTF-8')) }}
-                                @else
-                                    {{ mb_convert_case(trim($candidate->favorite_sports), MB_CASE_TITLE, 'UTF-8') }}
-                                @endif
-                            @else
-                                Не указано
-                            @endif
+                            @php
+                                $sports = $candidate->favorite_sports ?? '';
+                                if (!empty($sports)) {
+                                    if (is_array($sports)) {
+                                        // Для каждого элемента массива: первая буква заглавная, остальные маленькие
+                                        $sports = implode(', ', array_map(function($s) {
+                                            $s = trim($s);
+                                            if ($s === '') return '';
+                                            $lower = mb_strtolower($s, 'UTF-8');
+                                            return mb_strtoupper(mb_substr($lower, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr($lower, 1, null, 'UTF-8');
+                                        }, $sports));
+                                    } else {
+                                        // Для строки: первая буква заглавная, остальные маленькие
+                                        $sports = trim($sports);
+                                        $lower = mb_strtolower($sports, 'UTF-8');
+                                        $sports = mb_strtoupper(mb_substr($lower, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr($lower, 1, null, 'UTF-8');
+                                    }
+                                } else {
+                                    $sports = 'Не указано';
+                                }
+                            @endphp
+                            {{ $sports }}
                         </span>
                     </div>
                     <!-- 4. Посещенные страны -->

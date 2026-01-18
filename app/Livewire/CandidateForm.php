@@ -2013,6 +2013,22 @@ class CandidateForm extends Component
         }
     }
 
+    /**
+     * Автоформатирование любимых видов спорта
+     * Первая буква заглавная, остальные строчные
+     */
+    public function updatedFavoriteSports()
+    {
+        if (!empty($this->favorite_sports) && is_string($this->favorite_sports)) {
+            $text = trim($this->favorite_sports);
+            if ($text !== '') {
+                // Приводим к нижнему регистру, затем первую букву делаем заглавной
+                $lower = mb_strtolower($text, 'UTF-8');
+                $this->favorite_sports = mb_strtoupper(mb_substr($lower, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr($lower, 1, null, 'UTF-8');
+            }
+        }
+    }
+
     public function updatedGallupPdf()
     {
         logger()->info('Gallup file upload started', [
