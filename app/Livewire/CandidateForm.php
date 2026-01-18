@@ -2505,6 +2505,8 @@ class CandidateForm extends Component
 
     /**
      * Проверяет, является ли загруженный файл корректным Gallup файлом (PDF или изображение)
+     * Упрощённая валидация - просто проверяем, что файл можно прочитать.
+     * Детальный анализ содержимого выполняется позже через GPT-4o.
      */
     private function isValidGallupFile($file): bool
     {
@@ -2529,40 +2531,28 @@ class CandidateForm extends Component
                 return $isValidImage;
             }
 
-            // Для PDF - проверяем ключевые слова Gallup
+            // Для PDF - проверяем только что файл читается (без проверки ключевых слов)
+            // GPT-4o проанализирует содержимое позже
             if ($extension === 'pdf') {
-                $parser = new \Smalot\PdfParser\Parser();
-                $pdf = $parser->parseFile($tempPath);
-                $text = $pdf->getText();
-                $pages = $pdf->getPages();
+                try {
+                    $parser = new \Smalot\PdfParser\Parser();
+                    $pdf = $parser->parseFile($tempPath);
+                    $pages = $pdf->getPages();
 
-                logger()->info('Gallup PDF validation', [
-                    'page_count' => count($pages),
-                    'has_gallup_inc' => str_contains($text, 'Gallup, Inc.'),
-                    'has_clifton' => str_contains($text, 'CliftonStrengths') || str_contains($text, 'Clifton'),
-                    'text_sample' => substr($text, 0, 500)
-                ]);
+                    logger()->info('Gallup PDF validation', [
+                        'page_count' => count($pages),
+                        'extension' => $extension
+                    ]);
 
-                // Для PDF проверяем ключевые слова (поддержка русских и английских)
-                $containsGallupKeywords = str_contains($text, 'Gallup') ||
-                                        str_contains($text, 'CliftonStrengths') ||
-                                        str_contains($text, 'StrengthsFinder') ||
-                                        str_contains($text, 'Clifton') ||
-                                        str_contains($text, 'Клифтон') ||
-                                        str_contains($text, 'талант');
-
-                // Смягчённые условия: минимум 1 страница и ключевые слова ИЛИ 10+ страниц
-                $hasMinimumPages = count($pages) >= 1;
-                $hasManyPages = count($pages) >= 10;
-                $isValid = ($hasMinimumPages && $containsGallupKeywords) || $hasManyPages;
-
-                logger()->info('Gallup PDF validation result', [
-                    'is_valid' => $isValid,
-                    'minimum_pages' => $hasMinimumPages,
-                    'has_keywords' => $containsGallupKeywords
-                ]);
-
-                return $isValid;
+                    // Принимаем любой PDF, который удалось прочитать
+                    // Детальный анализ будет выполнен через GPT-4o
+                    return count($pages) >= 1;
+                } catch (\Exception $e) {
+                    logger()->warning('PDF parsing failed, trying to accept anyway: ' . $e->getMessage());
+                    // Если парсер не смог прочитать, пробуем принять файл
+                    // GPT-4o Vision может работать с изображениями PDF
+                    return true;
+                }
             }
 
             // Неподдерживаемый формат
