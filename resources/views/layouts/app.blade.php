@@ -24,6 +24,9 @@
         <!-- Cropper CSS -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
 
+        <!-- Preload Cropper.js for faster photo upload -->
+        <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" as="script">
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 

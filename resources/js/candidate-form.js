@@ -221,7 +221,7 @@ function handlePhotoChange(e) {
     const file = e.target.files[0];
     if (!file) return;
 
-    console.log('File selected:', file.name);
+    console.log('File selected:', file.name, 'Size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
 
     // Проверки
     if (file.size > 20 * 1024 * 1024) {
@@ -238,8 +238,80 @@ function handlePhotoChange(e) {
 
     currentFile = file;
 
-    // Показываем модальное окно для кропа
-    showCropModal(file);
+    // Показываем индикатор загрузки сразу
+    const loadingIndicator = document.getElementById('loading-indicator');
+    if (loadingIndicator) {
+        loadingIndicator.classList.remove('hidden');
+        loadingIndicator.querySelector('span').textContent = 'Подготовка изображения...';
+    }
+
+    // Предварительно сжимаем большие изображения для быстрой работы кроппера
+    preResizeImage(file, 1200).then(resizedFile => {
+        currentFile = resizedFile;
+        if (loadingIndicator) loadingIndicator.classList.add('hidden');
+        showCropModal(resizedFile);
+    }).catch(error => {
+        console.error('Pre-resize error:', error);
+        if (loadingIndicator) loadingIndicator.classList.add('hidden');
+        // Используем оригинальный файл если сжатие не удалось
+        showCropModal(file);
+    });
+}
+
+// Предварительное сжатие изображения для ускорения работы кроппера
+function preResizeImage(file, maxSize) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = function() {
+            // Если изображение уже маленькое, возвращаем как есть
+            if (img.width <= maxSize && img.height <= maxSize) {
+                console.log('Image already small enough, skipping pre-resize');
+                resolve(file);
+                return;
+            }
+
+            console.log('Pre-resizing image from', img.width, 'x', img.height);
+
+            // Вычисляем новые размеры
+            let newWidth, newHeight;
+            if (img.width > img.height) {
+                newWidth = maxSize;
+                newHeight = Math.round(img.height * (maxSize / img.width));
+            } else {
+                newHeight = maxSize;
+                newWidth = Math.round(img.width * (maxSize / img.height));
+            }
+
+            // Создаём canvas и рисуем сжатое изображение
+            const canvas = document.createElement('canvas');
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(img, 0, 0, newWidth, newHeight);
+
+            console.log('Pre-resized to', newWidth, 'x', newHeight);
+
+            // Конвертируем в blob
+            canvas.toBlob(function(blob) {
+                if (blob) {
+                    const resizedFile = new File([blob], file.name, {
+                        type: 'image/jpeg',
+                        lastModified: Date.now()
+                    });
+                    console.log('Pre-resize complete, new size:', (resizedFile.size / 1024).toFixed(2), 'KB');
+                    resolve(resizedFile);
+                } else {
+                    reject(new Error('Failed to create blob'));
+                }
+            }, 'image/jpeg', 0.92);
+        };
+        img.onerror = function() {
+            reject(new Error('Failed to load image'));
+        };
+        img.src = URL.createObjectURL(file);
+    });
 }
 
 // Показать модальное окно кропа
@@ -254,30 +326,34 @@ function showCropModal(file) {
         return;
     }
 
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        cropImage.src = e.target.result;
+    // Используем URL.createObjectURL вместо FileReader - это быстрее
+    const objectUrl = URL.createObjectURL(file);
+
+    // Ждем загрузки изображения
+    cropImage.onload = function() {
         cropModal.classList.remove('hidden');
 
         // Инициализация Cropper.js
         if (stepCropper) {
             stepCropper.destroy();
+            stepCropper = null;
         }
 
-        // Ждем загрузки Cropper.js с повторными попытками
+        // Ждем загрузки Cropper.js с повторными попытками (быстрее)
         let attempts = 0;
-        const maxAttempts = 20; // 20 попыток = 2 секунды
+        const maxAttempts = 30; // 30 попыток по 50ms = 1.5 секунды
 
         function initCropper() {
             attempts++;
 
             if (typeof Cropper === 'undefined') {
                 if (attempts < maxAttempts) {
-                    console.log(`Cropper.js not loaded yet, attempt ${attempts}/${maxAttempts}`);
-                    setTimeout(initCropper, 100);
+                    setTimeout(initCropper, 50); // Быстрее проверяем
                     return;
                 } else {
-                    console.error('Cropper.js not loaded after max attempts, using simple upload');
+                    console.error('Cropper.js not loaded, using simple upload');
+                    cropModal.classList.add('hidden');
+                    URL.revokeObjectURL(objectUrl);
                     uploadFileDirectly(file);
                     return;
                 }
@@ -288,7 +364,7 @@ function showCropModal(file) {
                     aspectRatio: 3 / 4,
                     viewMode: 1,
                     dragMode: 'move',
-                    autoCropArea: 0.8,
+                    autoCropArea: 0.85,
                     restore: false,
                     guides: true,
                     center: true,
@@ -298,32 +374,35 @@ function showCropModal(file) {
                     toggleDragModeOnDblclick: false,
                     minCropBoxWidth: 100,
                     minCropBoxHeight: 133,
+                    checkCrossOrigin: false,
                     ready: function() {
-                        console.log('Cropper ready event fired');
-                        // Добавляем флаг готовности
+                        console.log('Cropper ready');
                         stepCropper.isReady = true;
-                    },
-                    cropstart: function() {
-                        console.log('Cropper cropstart event fired');
-                    },
-                    error: function(error) {
-                        console.error('Cropper error:', error);
-                        alert('Ошибка инициализации кроппера: ' + error.message);
+                        // Освобождаем URL после инициализации кроппера
+                        URL.revokeObjectURL(objectUrl);
                     }
                 });
 
-                console.log('Cropper initialized successfully:', stepCropper);
+                console.log('Cropper initialized');
             } catch (error) {
                 console.error('Error initializing Cropper:', error);
-                alert('Ошибка при инициализации кроппера. Используем простую загрузку.');
+                cropModal.classList.add('hidden');
+                URL.revokeObjectURL(objectUrl);
                 uploadFileDirectly(file);
             }
         }
 
-        // Запускаем инициализацию с небольшой задержкой
-        setTimeout(initCropper, 150);
+        // Запускаем инициализацию сразу
+        initCropper();
     };
-    reader.readAsDataURL(file);
+
+    cropImage.onerror = function() {
+        console.error('Failed to load image');
+        URL.revokeObjectURL(objectUrl);
+        uploadFileDirectly(file);
+    };
+
+    cropImage.src = objectUrl;
 }
 
 // Простая загрузка файла без кропа
@@ -362,12 +441,23 @@ export function saveCrop() {
     }
 
     const loadingIndicator = document.getElementById('loading-indicator');
-    if (loadingIndicator) loadingIndicator.classList.remove('hidden');
+    if (loadingIndicator) {
+        loadingIndicator.classList.remove('hidden');
+        const loadingText = loadingIndicator.querySelector('span');
+        if (loadingText) loadingText.textContent = 'Обработка изображения...';
+    }
+
+    // Блокируем кнопку сохранения
+    const saveBtn = document.querySelector('[onclick="saveCrop()"]');
+    if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.classList.add('opacity-50', 'cursor-not-allowed');
+    }
 
     try {
         console.log('Getting cropped canvas...');
 
-        // Получаем обрезанное изображение с проверкой
+        // Получаем обрезанное изображение (300x400 для паспортного фото)
         const canvas = stepCropper.getCroppedCanvas({
             width: 300,
             height: 400,
@@ -377,25 +467,31 @@ export function saveCrop() {
 
         if (!canvas) {
             console.error('getCroppedCanvas returned null');
-            if (loadingIndicator) loadingIndicator.classList.add('hidden');
+            resetSaveCropState(loadingIndicator, saveBtn);
             alert('Ошибка: не удалось получить обрезанное изображение. Попробуйте выбрать область для обрезки.');
             return;
         }
 
         console.log('Canvas obtained, converting to blob...');
 
+        // Качество 0.85 даёт хороший баланс между качеством и размером
         canvas.toBlob(function(blob) {
             if (!blob) {
                 console.error('toBlob returned null');
-                if (loadingIndicator) loadingIndicator.classList.add('hidden');
+                resetSaveCropState(loadingIndicator, saveBtn);
                 alert('Ошибка: не удалось преобразовать изображение');
                 return;
             }
 
-            console.log('Blob created:', blob.size, 'bytes');
+            console.log('Blob created:', (blob.size / 1024).toFixed(2), 'KB');
+
+            if (loadingIndicator) {
+                const loadingText = loadingIndicator.querySelector('span');
+                if (loadingText) loadingText.textContent = 'Загрузка на сервер...';
+            }
 
             // Создаем File объект
-            const file = new File([blob], currentFile.name, {
+            const file = new File([blob], 'photo.jpg', {
                 type: 'image/jpeg',
                 lastModified: Date.now()
             });
@@ -408,23 +504,35 @@ export function saveCrop() {
                 fallbackInput.files = dataTransfer.files;
                 fallbackInput.dispatchEvent(new Event('change', { bubbles: true }));
 
-                console.log('Cropped photo uploaded via Livewire');
+                console.log('Cropped photo uploaded via Livewire, size:', (file.size / 1024).toFixed(2), 'KB');
 
                 // Закрываем модальное окно
                 cancelCrop();
 
-                if (loadingIndicator) loadingIndicator.classList.add('hidden');
+                // Скрываем индикатор загрузки с небольшой задержкой
+                setTimeout(() => {
+                    resetSaveCropState(loadingIndicator, saveBtn);
+                }, 500);
             } else {
                 console.error('Fallback input not found');
-                if (loadingIndicator) loadingIndicator.classList.add('hidden');
+                resetSaveCropState(loadingIndicator, saveBtn);
                 alert('Ошибка: не удается загрузить обрезанное фото');
             }
-        }, 'image/jpeg', 0.9);
+        }, 'image/jpeg', 0.85);
 
     } catch (error) {
         console.error('Error in saveCrop:', error);
-        if (loadingIndicator) loadingIndicator.classList.add('hidden');
+        resetSaveCropState(loadingIndicator, saveBtn);
         alert('Ошибка при обрезке изображения: ' + error.message);
+    }
+}
+
+// Сброс состояния кнопки сохранения
+function resetSaveCropState(loadingIndicator, saveBtn) {
+    if (loadingIndicator) loadingIndicator.classList.add('hidden');
+    if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.classList.remove('opacity-50', 'cursor-not-allowed');
     }
 }
 
