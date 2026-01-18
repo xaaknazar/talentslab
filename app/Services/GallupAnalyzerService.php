@@ -753,85 +753,152 @@ PROMPT;
             return $talents;
         }
 
-        // 2. Ищем русские таланты
-        $russianTalents = [];
-
-        // Официальные переводы (с заглавной буквы как в PDF)
-        $officialRussian = [
-            'Достижение' => 'Achiever',
-            'Дисциплинированность' => 'Discipline',
-            'Организатор' => 'Arranger',
-            'Сосредоточенность' => 'Focus',
-            'Убеждение' => 'Belief',
-            'Ответственность' => 'Responsibility',
-            'Последовательность' => 'Consistency',
-            'Восстановление' => 'Restorative',
-            'Осмотрительность' => 'Deliberative',
-            'Катализатор' => 'Activator',
-            'Максимизатор' => 'Maximizer',
-            'Распорядитель' => 'Command',
-            'Уверенность' => 'Self-Assurance',
-            'Коммуникация' => 'Communication',
-            'Значимость' => 'Significance',
-            'Конкуренция' => 'Competition',
-            'Обаяние' => 'Woo',
-            'Приспособляемость' => 'Adaptability',
-            'Включенность' => 'Includer',
-            'Взаимосвязанность' => 'Connectedness',
-            'Индивидуализация' => 'Individualization',
-            'Развитие' => 'Developer',
-            'Позитивность' => 'Positivity',
-            'Эмпатия' => 'Empathy',
-            'Отношения' => 'Relator',
-            'Гармония' => 'Harmony',
-            'Аналитик' => 'Analytical',
-            'Вклад' => 'Input',
-            'Контекст' => 'Context',
-            'Мышление' => 'Intellection',
-            'Будущее' => 'Futuristic',
-            'Ученик' => 'Learner',
-            'Генератор идей' => 'Ideation',
-            'Стратегия' => 'Strategic',
+        // 2. Ищем русские таланты - расширенный список с альтернативами
+        // Официальные переводы + альтернативные варианты написания
+        $russianVariants = [
+            // Achiever
+            ['Достижение', 'Achiever'],
+            // Discipline
+            ['Дисциплинированность', 'Discipline'],
+            ['Дисциплина', 'Discipline'],
+            // Arranger
+            ['Организатор', 'Arranger'],
+            ['Упорядоченность', 'Arranger'],
+            // Focus
+            ['Сосредоточенность', 'Focus'],
+            ['Фокус', 'Focus'],
+            // Belief
+            ['Убеждение', 'Belief'],
+            ['Вера', 'Belief'],
+            ['Убеждённость', 'Belief'],
+            // Responsibility
+            ['Ответственность', 'Responsibility'],
+            // Consistency
+            ['Последовательность', 'Consistency'],
+            ['Беспристрастность', 'Consistency'],
+            // Restorative
+            ['Восстановление', 'Restorative'],
+            ['Восстановитель', 'Restorative'],
+            // Deliberative
+            ['Осмотрительность', 'Deliberative'],
+            ['Рассудительность', 'Deliberative'],
+            // Activator
+            ['Катализатор', 'Activator'],
+            ['Активатор', 'Activator'],
+            // Maximizer
+            ['Максимизатор', 'Maximizer'],
+            // Command
+            ['Распорядитель', 'Command'],
+            ['Командование', 'Command'],
+            // Self-Assurance
+            ['Уверенность', 'Self-Assurance'],
+            ['Уверенность в себе', 'Self-Assurance'],
+            ['Самоуверенность', 'Self-Assurance'],
+            // Communication
+            ['Коммуникация', 'Communication'],
+            ['Общение', 'Communication'],
+            // Significance
+            ['Значимость', 'Significance'],
+            ['Значительность', 'Significance'],
+            // Competition
+            ['Конкуренция', 'Competition'],
+            ['Соревновательность', 'Competition'],
+            // Woo
+            ['Обаяние', 'Woo'],
+            ['Очарование', 'Woo'],
+            // Adaptability
+            ['Приспособляемость', 'Adaptability'],
+            ['Адаптивность', 'Adaptability'],
+            // Includer
+            ['Включенность', 'Includer'],
+            ['Включённость', 'Includer'],
+            // Connectedness
+            ['Взаимосвязанность', 'Connectedness'],
+            ['Связанность', 'Connectedness'],
+            // Individualization
+            ['Индивидуализация', 'Individualization'],
+            ['Индивидуальный подход', 'Individualization'],
+            // Developer
+            ['Развитие', 'Developer'],
+            ['Развитие других', 'Developer'],
+            // Positivity
+            ['Позитивность', 'Positivity'],
+            ['Позитив', 'Positivity'],
+            // Empathy
+            ['Эмпатия', 'Empathy'],
+            ['Сопереживание', 'Empathy'],
+            // Relator
+            ['Отношения', 'Relator'],
+            // Harmony
+            ['Гармония', 'Harmony'],
+            // Analytical
+            ['Аналитик', 'Analytical'],
+            ['Аналитическое мышление', 'Analytical'],
+            // Input
+            ['Вклад', 'Input'],
+            ['Коллекционер', 'Input'],
+            ['Накопитель', 'Input'],
+            // Context
+            ['Контекст', 'Context'],
+            // Intellection
+            ['Мышление', 'Intellection'],
+            ['Интеллект', 'Intellection'],
+            ['Размышления', 'Intellection'],
+            // Futuristic
+            ['Будущее', 'Futuristic'],
+            ['Футуристичность', 'Futuristic'],
+            // Learner
+            ['Ученик', 'Learner'],
+            ['Обучаемость', 'Learner'],
+            // Ideation
+            ['Генератор идей', 'Ideation'],
+            ['Идеи', 'Ideation'],
+            ['Генерация идей', 'Ideation'],
+            // Strategic
+            ['Стратегия', 'Strategic'],
+            ['Стратег', 'Strategic'],
+            ['Стратегическое мышление', 'Strategic'],
         ];
 
-        foreach ($officialRussian as $russian => $english) {
+        foreach ($russianVariants as [$russian, $english]) {
             if (isset($talents[$english])) {
-                continue; // Уже найден на английском
+                continue; // Уже найден
             }
 
             // Паттерн: номер + точка/пробел + русское название
             $pattern = '/(\d{1,2})\s*\.?\s*' . preg_quote($russian, '/') . '/iu';
             if (preg_match($pattern, $text, $match)) {
                 $number = (int)$match[1];
-                if ($number >= 1 && $number <= 34 && !in_array($number, $russianTalents)) {
-                    $russianTalents[$english] = $number;
+                if ($number >= 1 && $number <= 34 && !in_array($number, $talents)) {
+                    $talents[$english] = $number;
+                    Log::debug("Regex найден: {$russian} -> {$english} = {$number}");
                 }
             }
         }
 
-        Log::info('Regex: найдено ' . count($russianTalents) . ' русских талантов');
-
-        // Объединяем результаты
-        $talents = array_merge($talents, $russianTalents);
-
         // 3. Если всё ещё мало - пробуем более гибкий поиск
-        if (count($talents) < 30) {
-            Log::info('Regex: пробуем гибкий поиск...');
-
-            foreach ($officialRussian as $russian => $english) {
+        if (count($talents) < 34) {
+            foreach ($russianVariants as [$russian, $english]) {
                 if (isset($talents[$english])) {
                     continue;
                 }
 
-                // Более гибкий паттерн без учёта регистра
-                $pattern = '/(\d{1,2})\s*[.\-–—]?\s*' . preg_quote($russian, '/') . '/iu';
+                // Более гибкий паттерн с разными разделителями
+                $pattern = '/(\d{1,2})\s*[.\-–—:)]*\s*' . preg_quote($russian, '/') . '/iu';
                 if (preg_match($pattern, $text, $match)) {
                     $number = (int)$match[1];
                     if ($number >= 1 && $number <= 34 && !in_array($number, $talents)) {
                         $talents[$english] = $number;
+                        Log::debug("Regex гибкий найден: {$russian} -> {$english} = {$number}");
                     }
                 }
             }
+        }
+
+        // Логируем какие таланты НЕ найдены
+        $missingTalents = array_diff($this->allTalentKeys, array_keys($talents));
+        if (!empty($missingTalents)) {
+            Log::warning('Regex: не найдены таланты: ' . implode(', ', $missingTalents));
         }
 
         Log::info('Regex: итого найдено ' . count($talents) . ' талантов');
