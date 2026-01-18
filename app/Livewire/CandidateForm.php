@@ -485,7 +485,7 @@ class CandidateForm extends Component
             'universities.*.gpa' => 'nullable|numeric|min:0|max:4',
             'language_skills' => 'required|array|min:1',
             'language_skills.*.language' => 'required|string|max:255',
-            'language_skills.*.level' => 'required|in:Начальный,Средний,Выше среднего,Продвинутый,В совершенстве',
+            'language_skills.*.level' => 'required|in:A1,A2,B1,B2,C1,C2',
             'computer_skills' => 'required|string',
             'work_experience' => 'nullable|array|min:0',
             'work_experience.*.years' => 'required|string|max:255',

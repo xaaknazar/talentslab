@@ -442,11 +442,12 @@
                                 <select wire:model="language_skills.{{ $index }}.level"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                     <option value="">{{ __('Select level') }}</option>
-                                    <option value="Начальный">{{ __('Beginner') }}</option>
-                                    <option value="Средний">{{ __('Intermediate') }}</option>
-                                    <option value="Выше среднего">{{ __('Upper Intermediate') }}</option>
-                                    <option value="Продвинутый">{{ __('Advanced') }}</option>
-                                    <option value="В совершенстве">{{ __('Fluent') }}</option>
+                                    <option value="A1">{{ __('A1 - Beginner') }}</option>
+                                    <option value="A2">{{ __('A2 - Basic') }}</option>
+                                    <option value="B1">{{ __('B1 - Intermediate') }}</option>
+                                    <option value="B2">{{ __('B2 - Confident') }}</option>
+                                    <option value="C1">{{ __('C1 - Very High') }}</option>
+                                    <option value="C2">{{ __('C2 - Advanced') }}</option>
                                 </select>
                                 @error("language_skills.{$index}.level") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
