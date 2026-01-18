@@ -351,7 +351,10 @@
     "Place of Birth": "Место рождения",
     "Current City": "Текущий город",
     "Ready to Relocate": "Готовность к переезду",
-    "Yes, ready to relocate": "Да, готов к переезду",
+    "Yes, ready to relocate": "Да, готов(а) к переезду",
+    "No, not ready to relocate": "Нет, не готов(а) к переезду",
+    "Please upload a quality photo.": "Пожалуйста, загрузите качественное фото.",
+    "The photo is used for initial review by employers and should correspond to a business format.": "Фото используется для первичной оценки и просмотра работодателями, оно должно соответствовать деловому формату.",
 
     "Click to upload": "Нажмите для загрузки",
     "or drag and drop": "или перетащите сюда",
@@ -545,7 +548,7 @@
 
     "in format @username": "в формате @username",
     "username (@ sign will be added automatically)": "имя пользователя (знак @ добавится автоматически)",
-    "in format +77081992519": "в формате +77081992519",
+    "in format +77050102030": "в формате +77050102030",
 
     "Talents Lab is a modern online platform with a resume database reflecting a holistic psychometric portrait of personality.": "Talents Lab — современная онлайн-платформа с базой данных резюме, отражающих целостный психометрический портрет личности.",
     "By completing the questionnaire, you will create a resume and be able to find a vacancy that best matches your abilities and potential.": "Пройдя анкетирование, вы сформируете резюме и сможете подобрать вакансию, максимально соответствующую вашим способностям и потенциалу.",

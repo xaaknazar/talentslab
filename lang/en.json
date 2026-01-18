@@ -259,6 +259,9 @@
     "Current City": "Current City",
     "Ready to Relocate": "Ready to Relocate",
     "Yes, ready to relocate": "Yes, ready to relocate",
+    "No, not ready to relocate": "No, not ready to relocate",
+    "Please upload a quality photo.": "Please upload a quality photo.",
+    "The photo is used for initial review by employers and should correspond to a business format.": "The photo is used for initial review by employers and should correspond to a business format.",
 
     "Photo": "Photo",
     "Click to upload": "Click to upload",
@@ -450,7 +453,7 @@
 
     "in format @username": "in format @username",
     "username (@ sign will be added automatically)": "username (@ sign will be added automatically)",
-    "in format +77081992519": "in format +77081992519",
+    "in format +77050102030": "in format +77050102030",
 
     "Ислам": "Islam",
     "Христианство": "Christianity",
