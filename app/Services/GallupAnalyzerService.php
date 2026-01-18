@@ -214,14 +214,6 @@ class GallupAnalyzerService
      */
     public function analyzeGallupFile(string $filePath, string $fileType = 'pdf'): array
     {
-        if (empty($this->apiKey)) {
-            return [
-                'success' => false,
-                'talents' => null,
-                'error' => 'API ключ OpenAI не настроен. Добавьте OPENAI_API_KEY в .env файл.',
-            ];
-        }
-
         if (!file_exists($filePath)) {
             return [
                 'success' => false,
@@ -231,8 +223,32 @@ class GallupAnalyzerService
         }
 
         try {
-            // Анализируем файл через GPT-4o
-            $rawTalents = $this->analyzeWithGpt4o($filePath, $fileType);
+            $rawTalents = [];
+
+            // Для PDF сначала пробуем regex-извлечение (быстро и бесплатно)
+            if ($fileType === 'pdf') {
+                Log::info('Пробуем извлечь таланты через regex...');
+                $rawTalents = $this->extractTalentsWithRegex($filePath);
+
+                if (count($rawTalents) >= 30) {
+                    Log::info('Regex извлечение успешно: ' . count($rawTalents) . ' талантов');
+                } else {
+                    Log::info('Regex нашёл только ' . count($rawTalents) . ' талантов, пробуем GPT-4o...');
+                    $rawTalents = [];
+                }
+            }
+
+            // Если regex не помог или это изображение - используем GPT-4o
+            if (empty($rawTalents) || count($rawTalents) < 30) {
+                if (empty($this->apiKey)) {
+                    return [
+                        'success' => false,
+                        'talents' => null,
+                        'error' => 'Не удалось извлечь таланты из PDF. API ключ OpenAI не настроен для fallback анализа.',
+                    ];
+                }
+                $rawTalents = $this->analyzeWithGpt4o($filePath, $fileType);
+            }
 
             if (empty($rawTalents)) {
                 return [
@@ -696,6 +712,143 @@ PROMPT;
         }
 
         return $text;
+    }
+
+    /**
+     * Извлекает таланты из PDF через regex (как в Python коде)
+     * Сначала ищет английские, потом русские названия
+     */
+    private function extractTalentsWithRegex(string $filePath): array
+    {
+        $text = $this->extractTextFromPdf($filePath);
+        if (empty($text)) {
+            return [];
+        }
+
+        // Очищаем текст
+        $text = $this->cleanText($text);
+
+        // Исправляем известные опечатки
+        $text = str_replace('SelfAssurance', 'Self-Assurance', $text);
+        $text = str_replace('SigniLcance', 'Significance', $text);
+
+        $talents = [];
+
+        // 1. Сначала ищем английские таланты: "1. Achiever" или "1 Achiever"
+        foreach ($this->allTalentKeys as $talent) {
+            // Паттерн: номер + точка/пробел + название таланта
+            $pattern = '/(\d{1,2})\s*\.?\s*' . preg_quote($talent, '/') . '/iu';
+            if (preg_match($pattern, $text, $match)) {
+                $number = (int)$match[1];
+                if ($number >= 1 && $number <= 34 && !in_array($number, $talents)) {
+                    $talents[$talent] = $number;
+                }
+            }
+        }
+
+        Log::info('Regex: найдено ' . count($talents) . ' английских талантов');
+
+        // Если нашли достаточно английских - возвращаем
+        if (count($talents) >= 30) {
+            return $talents;
+        }
+
+        // 2. Ищем русские таланты
+        $russianTalents = [];
+
+        // Официальные переводы (с заглавной буквы как в PDF)
+        $officialRussian = [
+            'Достижение' => 'Achiever',
+            'Дисциплинированность' => 'Discipline',
+            'Организатор' => 'Arranger',
+            'Сосредоточенность' => 'Focus',
+            'Убеждение' => 'Belief',
+            'Ответственность' => 'Responsibility',
+            'Последовательность' => 'Consistency',
+            'Восстановление' => 'Restorative',
+            'Осмотрительность' => 'Deliberative',
+            'Катализатор' => 'Activator',
+            'Максимизатор' => 'Maximizer',
+            'Распорядитель' => 'Command',
+            'Уверенность' => 'Self-Assurance',
+            'Коммуникация' => 'Communication',
+            'Значимость' => 'Significance',
+            'Конкуренция' => 'Competition',
+            'Обаяние' => 'Woo',
+            'Приспособляемость' => 'Adaptability',
+            'Включенность' => 'Includer',
+            'Взаимосвязанность' => 'Connectedness',
+            'Индивидуализация' => 'Individualization',
+            'Развитие' => 'Developer',
+            'Позитивность' => 'Positivity',
+            'Эмпатия' => 'Empathy',
+            'Отношения' => 'Relator',
+            'Гармония' => 'Harmony',
+            'Аналитик' => 'Analytical',
+            'Вклад' => 'Input',
+            'Контекст' => 'Context',
+            'Мышление' => 'Intellection',
+            'Будущее' => 'Futuristic',
+            'Ученик' => 'Learner',
+            'Генератор идей' => 'Ideation',
+            'Стратегия' => 'Strategic',
+        ];
+
+        foreach ($officialRussian as $russian => $english) {
+            if (isset($talents[$english])) {
+                continue; // Уже найден на английском
+            }
+
+            // Паттерн: номер + точка/пробел + русское название
+            $pattern = '/(\d{1,2})\s*\.?\s*' . preg_quote($russian, '/') . '/iu';
+            if (preg_match($pattern, $text, $match)) {
+                $number = (int)$match[1];
+                if ($number >= 1 && $number <= 34 && !in_array($number, $russianTalents)) {
+                    $russianTalents[$english] = $number;
+                }
+            }
+        }
+
+        Log::info('Regex: найдено ' . count($russianTalents) . ' русских талантов');
+
+        // Объединяем результаты
+        $talents = array_merge($talents, $russianTalents);
+
+        // 3. Если всё ещё мало - пробуем более гибкий поиск
+        if (count($talents) < 30) {
+            Log::info('Regex: пробуем гибкий поиск...');
+
+            foreach ($officialRussian as $russian => $english) {
+                if (isset($talents[$english])) {
+                    continue;
+                }
+
+                // Более гибкий паттерн без учёта регистра
+                $pattern = '/(\d{1,2})\s*[.\-–—]?\s*' . preg_quote($russian, '/') . '/iu';
+                if (preg_match($pattern, $text, $match)) {
+                    $number = (int)$match[1];
+                    if ($number >= 1 && $number <= 34 && !in_array($number, $talents)) {
+                        $talents[$english] = $number;
+                    }
+                }
+            }
+        }
+
+        Log::info('Regex: итого найдено ' . count($talents) . ' талантов');
+
+        return $talents;
+    }
+
+    /**
+     * Очищает текст от переносов и лишних пробелов
+     */
+    private function cleanText(string $text): string
+    {
+        // Убираем переносы слов
+        $text = preg_replace('/(\w)-\s+(\w)/u', '$1$2', $text);
+        // Нормализуем пробелы
+        $text = preg_replace('/\s+/', ' ', $text);
+        return trim($text);
     }
 
     /**
