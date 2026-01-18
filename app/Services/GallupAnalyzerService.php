@@ -649,11 +649,53 @@ PROMPT;
                 }
             }
 
-            return trim($text);
+            $text = trim($text);
+
+            // Санитизация UTF-8 для корректной работы с русским текстом
+            $text = $this->sanitizeUtf8($text);
+
+            return $text;
         } catch (\Exception $e) {
             Log::error('Ошибка извлечения текста из PDF: ' . $e->getMessage());
             return null;
         }
+    }
+
+    /**
+     * Санитизирует текст для корректной кодировки UTF-8
+     * Исправляет проблемы с русским текстом из PDF файлов
+     */
+    private function sanitizeUtf8(string $text): string
+    {
+        // Удаляем BOM если есть
+        $text = preg_replace('/^\xEF\xBB\xBF/', '', $text);
+
+        // Пробуем определить и конвертировать кодировку
+        $encoding = mb_detect_encoding($text, ['UTF-8', 'Windows-1251', 'ISO-8859-1', 'KOI8-R', 'CP866'], true);
+
+        if ($encoding && $encoding !== 'UTF-8') {
+            $converted = @mb_convert_encoding($text, 'UTF-8', $encoding);
+            if ($converted !== false) {
+                $text = $converted;
+            }
+        }
+
+        // Удаляем невалидные UTF-8 символы
+        $text = mb_convert_encoding($text, 'UTF-8', 'UTF-8');
+
+        // Заменяем проблемные символы
+        $text = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $text);
+
+        // Финальная проверка - если json_encode все ещё падает, агрессивно чистим
+        if (json_encode($text) === false) {
+            // Удаляем все non-UTF8 байты через iconv
+            $text = @iconv('UTF-8', 'UTF-8//IGNORE', $text);
+            if ($text === false) {
+                $text = '';
+            }
+        }
+
+        return $text;
     }
 
     /**
