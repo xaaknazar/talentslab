@@ -350,10 +350,18 @@
 
         /* Каждая запись опыта работы - не разрывается */
         .work-experience-section .work-experience-item {
+            display: table !important;
+            width: 100% !important;
             page-break-inside: avoid !important;
             break-inside: avoid !important;
             -webkit-column-break-inside: avoid !important;
             margin-bottom: 16px;
+        }
+
+        .work-experience-section .work-experience-item > div {
+            display: table-cell !important;
+            vertical-align: top !important;
+            width: 50% !important;
         }
 
         /* Общий стаж и награды - не разрывать */
