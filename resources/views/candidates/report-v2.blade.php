@@ -341,6 +341,36 @@
             break-inside: avoid !important;
             -webkit-column-break-inside: avoid !important;
         }
+
+        /* Секция "Опыт работы" - не разрывать записи пополам */
+        .work-experience-section {
+            page-break-inside: auto;
+            break-inside: auto;
+        }
+
+        /* Каждая запись опыта работы - не разрывается */
+        .work-experience-section .work-experience-item {
+            display: block !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+            margin-bottom: 16px;
+        }
+
+        /* Общий стаж и награды - не разрывать */
+        .work-experience-section .work-summary,
+        .work-experience-section .work-awards {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        /* Старый формат опыта работы */
+        .work-experience-section .space-y-1 > div {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
     </style>
 </head>
 <body>
@@ -567,7 +597,7 @@ if (! function_exists('clean_git_conflicts')) {
         <!-- Main Content -->
         <div style="padding: 0 12px 12px 12px;">
             <!-- Опыт работы -->
-            <div class="mb-8">
+            <div class="mb-8 work-experience-section">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Опыт работы</h2>
                 @if($candidate->work_experience && count($candidate->work_experience) > 0)
                     @php
@@ -586,7 +616,7 @@ if (! function_exists('clean_git_conflicts')) {
                         {{-- Новый дизайн для анкет с заполненными main_tasks/activity_sphere --}}
                         <div style="display: flex; flex-direction: column;">
                             @foreach($candidate->work_experience as $index => $experience)
-                                <div style="display: flex; gap: 24px; {{ !$loop->first ? 'margin-top: 16px;' : '' }} {{ !$loop->last ? 'padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }}">
+                                <div class="work-experience-item" style="display: flex; gap: 24px; {{ !$loop->first ? 'margin-top: 16px;' : '' }} {{ !$loop->last ? 'padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }}">
                                     {{-- Левая колонка: информация о месте работы --}}
                                     <div style="flex: 1; min-width: 0;">
                                         {{-- Дата --}}
@@ -626,7 +656,7 @@ if (! function_exists('clean_git_conflicts')) {
                         </div>
 
                         {{-- Общий стаж и удовлетворённость --}}
-                        <div style="margin-top: 16px;">
+                        <div class="work-summary" style="margin-top: 16px;">
                             <div style="display: flex; align-items: center; margin-bottom: 4px;">
                                 <span style="color: #000000; font-size: 14px; font-weight: 500; margin-right: 8px;">Общий стаж:</span>
                                 <span style="color: #000000; font-weight: 500; font-size: 14px;">{{ $candidate->total_experience_years ?? 0 }} лет</span>
@@ -639,7 +669,7 @@ if (! function_exists('clean_git_conflicts')) {
 
                         {{-- Награды и достижения --}}
                         @if($candidate->awards && is_array($candidate->awards) && count(array_filter($candidate->awards)) > 0)
-                            <div style="margin-top: 16px;">
+                            <div class="work-awards" style="margin-top: 16px;">
                                 <span style="color: #000000; font-weight: 700; font-size: 16px; display: block; margin-bottom: 8px;">Награды и достижения</span>
                                 <ul style="margin: 0; padding: 0; list-style: none;">
                                     @foreach(array_filter($candidate->awards) as $award)
