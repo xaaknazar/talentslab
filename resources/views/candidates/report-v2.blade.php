@@ -441,6 +441,12 @@ if (! function_exists('clean_git_conflicts')) {
                             <span class="text-gray-500 text-sm">Фото</span>
                         </div>
                     @endif
+                    <!-- Дата заполнения под фото -->
+                    @if($isFullReport)
+                    <div style="text-align: center; margin-top: 6px;">
+                        <span style="color: #9ca3af; font-size: 11px;">{{ $candidate->created_at->format('d.m.Y') }}</span>
+                    </div>
+                    @endif
                 </div>
 
                 <div>
@@ -911,20 +917,13 @@ if (! function_exists('clean_git_conflicts')) {
             </div>
 
             <!-- Компьютерные навыки -->
-            <div class="mb-8">
+            <div class="mb-4">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Компьютерные навыки</h2>
                 <p class="text-base font-medium">{{ $candidate->computer_skills ?: 'Не указано' }}</p>
             </div>
 
-            <!-- Дата заполнения -->
-            @if($isFullReport)
-            <div style="text-align: right; padding: 8px 0; margin-bottom: 16px;">
-                <span style="color: #9ca3af; font-size: 12px;">Дата заполнения: {{ $candidate->created_at->format('d.m.Y') }}</span>
-            </div>
-            @endif
-
             <!-- Психометрические данные -->
-            <div class="mb-8 psychometric-section">
+            <div class="mb-4 psychometric-section">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Психометрические данные</h2>
                 <div class="flex data-row">
                     <span class="text-base text-gray-600 w-60">Тип личности по MBTI:</span>
