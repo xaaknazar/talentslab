@@ -443,8 +443,9 @@ if (! function_exists('clean_git_conflicts')) {
                     @endif
                     <!-- Дата заполнения под фото -->
                     @if($isFullReport)
-                    <div style="text-align: center; margin-top: 6px;">
-                        <span style="color: #9ca3af; font-size: 11px;">{{ $candidate->created_at->format('d.m.Y') }}</span>
+                    <div style="text-align: center; margin-top: 8px;">
+                        <div style="color: #6b7280; font-size: 10px; line-height: 1.4;">Дата заполнения:</div>
+                        <div style="color: #374151; font-size: 12px; font-weight: 500;">{{ $candidate->created_at->format('d.m.Y') }}</div>
                     </div>
                     @endif
                 </div>
@@ -896,7 +897,7 @@ if (! function_exists('clean_git_conflicts')) {
             </div>
 
             <!-- Языковые навыки -->
-            <div class="mb-4">
+            <div class="mb-8">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Языковые навыки</h2>
                 @if($candidate->language_skills && count($candidate->language_skills) > 0)
                     <div class="space-y-1">
@@ -917,13 +918,13 @@ if (! function_exists('clean_git_conflicts')) {
             </div>
 
             <!-- Компьютерные навыки -->
-            <div class="mb-4">
+            <div class="mb-8">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Компьютерные навыки</h2>
                 <p class="text-base font-medium">{{ $candidate->computer_skills ?: 'Не указано' }}</p>
             </div>
 
             <!-- Психометрические данные -->
-            <div class="mb-4 psychometric-section">
+            <div class="mb-8 psychometric-section">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Психометрические данные</h2>
                 <div class="flex data-row">
                     <span class="text-base text-gray-600 w-60">Тип личности по MBTI:</span>
