@@ -896,7 +896,7 @@ if (! function_exists('clean_git_conflicts')) {
             </div>
 
             <!-- Языковые навыки -->
-            <div class="mb-8">
+            <div class="mb-4">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Языковые навыки</h2>
                 @if($candidate->language_skills && count($candidate->language_skills) > 0)
                     <div class="space-y-1">
