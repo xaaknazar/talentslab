@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', __('Email Verification') . ' - Divergents')
+@section('title', __('Email Verification') . ' - TalentsLab')
 
 @section('content')
 <h1>{{ __('Email Verification') }}</h1>

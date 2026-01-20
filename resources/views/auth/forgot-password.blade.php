@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'Восстановление пароля - Divergents')
+@section('title', 'Восстановление пароля - TalentsLab')
 
 @section('content')
 <h1>Восстановление пароля</h1>
