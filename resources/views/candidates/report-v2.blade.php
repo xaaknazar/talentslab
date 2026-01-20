@@ -371,6 +371,20 @@
             break-inside: avoid !important;
             -webkit-column-break-inside: avoid !important;
         }
+
+        /* Секция "Психометрические данные" - не разрывать */
+        .psychometric-section {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        /* Секция "Виды интеллектов Гарднера" - не разрывать (график) */
+        .gardner-section {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
     </style>
 </head>
 <body>
@@ -911,7 +925,7 @@ if (! function_exists('clean_git_conflicts')) {
             @endif
 
             <!-- Психометрические данные -->
-            <div class="mb-8">
+            <div class="mb-8 psychometric-section">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Психометрические данные</h2>
                 <div class="flex data-row">
                     <span class="text-base text-gray-600 w-60">Тип личности по MBTI:</span>
@@ -955,7 +969,7 @@ if (! function_exists('clean_git_conflicts')) {
                     'Экзистенциальный интеллект',
                 ];
             @endphp
-            <div class="mb-4">
+            <div class="mb-4 gardner-section">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Виды интеллектов Гарднера</h2>
                 <div class="bg-gray-100 rounded-lg p-6">
                     <!-- Первый ряд -->
