@@ -444,8 +444,8 @@ if (! function_exists('clean_git_conflicts')) {
                     <!-- Дата заполнения под фото -->
                     @if($isFullReport)
                     <div style="text-align: center; margin-top: 8px;">
-                        <div style="color: #6b7280; font-size: 10px; line-height: 1.4;">Дата заполнения:</div>
-                        <div style="color: #374151; font-size: 12px; font-weight: 500;">{{ $candidate->created_at->format('d.m.Y') }}</div>
+                        <span style="color: #6b7280; font-size: 11px;">Дата заполнения:</span>
+                        <span style="color: #374151; font-size: 11px; font-weight: 500;">{{ $candidate->created_at->format('d.m.Y') }}</span>
                     </div>
                     @endif
                 </div>
