@@ -379,11 +379,10 @@
             -webkit-column-break-inside: avoid !important;
         }
 
-        /* Секция "Виды интеллектов Гарднера" - не разрывать (график) */
+        /* Секция "Виды интеллектов Гарднера" - начать с новой страницы */
         .gardner-section {
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
+            page-break-before: always !important;
+            break-before: page !important;
         }
     </style>
 </head>
