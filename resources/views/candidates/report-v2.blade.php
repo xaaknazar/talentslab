@@ -350,7 +350,6 @@
 
         /* Каждая запись опыта работы - не разрывается */
         .work-experience-section .work-experience-item {
-            display: block !important;
             page-break-inside: avoid !important;
             break-inside: avoid !important;
             -webkit-column-break-inside: avoid !important;
