@@ -350,18 +350,14 @@
 
         /* Каждая запись опыта работы - не разрывается */
         .work-experience-section .work-experience-item {
-            display: table !important;
-            width: 100% !important;
             page-break-inside: avoid !important;
             break-inside: avoid !important;
             -webkit-column-break-inside: avoid !important;
-            margin-bottom: 16px;
         }
 
-        .work-experience-section .work-experience-item > div {
-            display: table-cell !important;
-            vertical-align: top !important;
-            width: 50% !important;
+        .work-experience-section table.work-experience-item tr {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
         }
 
         /* Общий стаж и награды - не разрывать */
@@ -640,11 +636,11 @@ if (! function_exists('clean_git_conflicts')) {
 
                     @if($hasNewFields)
                         {{-- Новый дизайн для анкет с заполненными main_tasks/activity_sphere --}}
-                        <div style="display: flex; flex-direction: column;">
-                            @foreach($candidate->work_experience as $index => $experience)
-                                <div class="work-experience-item" style="display: flex; gap: 24px; {{ !$loop->first ? 'margin-top: 16px;' : '' }} {{ !$loop->last ? 'padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }}">
+                        @foreach($candidate->work_experience as $index => $experience)
+                            <table class="work-experience-item" style="width: 100%; border-collapse: collapse; {{ !$loop->last ? 'margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }}">
+                                <tr>
                                     {{-- Левая колонка: информация о месте работы --}}
-                                    <div style="flex: 1; min-width: 0;">
+                                    <td style="width: 50%; vertical-align: top; padding-right: 12px;">
                                         {{-- Дата --}}
                                         <div style="color: #234088; font-size: 14px; font-weight: 500; margin-bottom: 4px;">
                                             {{ $experience['years'] ?? '' }}
@@ -663,23 +659,20 @@ if (! function_exists('clean_git_conflicts')) {
                                                 {{ trim($experience['activity_sphere']) }}
                                             </div>
                                         @endif
-                                    </div>
+                                    </td>
                                     {{-- Правая колонка: основные обязанности --}}
-                                    @if(!empty($experience['main_tasks']) && is_array($experience['main_tasks']) && count(array_filter($experience['main_tasks'])) > 0)
-                                        <div style="flex: 1; min-width: 0; overflow: hidden;">
-                                            <ul style="margin: 0; padding: 0; list-style: none; width: 100%;">
-                                                @foreach(array_filter($experience['main_tasks']) as $task)
-                                                    <li style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #000000; font-size: 14px; font-weight: 500;">
-                                                        <span style="color: #9ca3af; margin-right: 8px; flex-shrink: 0;">•</span>
-                                                        <span style="flex: 1; min-width: 0; word-wrap: break-word; overflow-wrap: break-word;">{{ mb_ucfirst($task) }}</span>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
-                                </div>
-                            @endforeach
-                        </div>
+                                    <td style="width: 50%; vertical-align: top; padding-left: 12px;">
+                                        @if(!empty($experience['main_tasks']) && is_array($experience['main_tasks']) && count(array_filter($experience['main_tasks'])) > 0)
+                                            @foreach(array_filter($experience['main_tasks']) as $task)
+                                                <div style="margin-bottom: 4px; color: #000000; font-size: 14px; font-weight: 500;">
+                                                    <span style="color: #9ca3af; margin-right: 8px;">•</span>{{ mb_ucfirst($task) }}
+                                                </div>
+                                            @endforeach
+                                        @endif
+                                    </td>
+                                </tr>
+                            </table>
+                        @endforeach
 
                         {{-- Общий стаж и удовлетворённость --}}
                         <div class="work-summary" style="margin-top: 16px;">
