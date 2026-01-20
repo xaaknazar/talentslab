@@ -350,14 +350,11 @@
 
         /* Каждая запись опыта работы - не разрывается */
         .work-experience-section .work-experience-item {
+            display: block !important;
+            overflow: hidden !important;
             page-break-inside: avoid !important;
             break-inside: avoid !important;
             -webkit-column-break-inside: avoid !important;
-        }
-
-        .work-experience-section table.work-experience-item tr {
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
         }
 
         /* Общий стаж и награды - не разрывать */
@@ -637,41 +634,43 @@ if (! function_exists('clean_git_conflicts')) {
                     @if($hasNewFields)
                         {{-- Новый дизайн для анкет с заполненными main_tasks/activity_sphere --}}
                         @foreach($candidate->work_experience as $index => $experience)
-                            <table class="work-experience-item" style="width: 100%; border-collapse: collapse; {{ !$loop->last ? 'margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }}">
-                                <tr>
-                                    {{-- Левая колонка: информация о месте работы --}}
-                                    <td style="width: 50%; vertical-align: top; padding-right: 12px;">
-                                        {{-- Дата --}}
-                                        <div style="color: #234088; font-size: 14px; font-weight: 500; margin-bottom: 4px;">
-                                            {{ $experience['years'] ?? '' }}
-                                        </div>
-                                        {{-- Должность --}}
-                                        <div style="color: #000000; font-weight: 600; font-size: 17px; margin-bottom: 2px;">
-                                            {{ mb_ucfirst($experience['position'] ?? 'Не указано') }}
-                                        </div>
-                                        {{-- Компания / Город --}}
-                                        <div style="color: #000000; font-weight: 600; font-size: 15px;">
-                                            {{ mb_ucfirst($experience['company'] ?? 'Не указано') }}@if(!empty($experience['city'])), {{ mb_ucfirst($experience['city']) }}@endif
-                                        </div>
-                                        {{-- Сфера деятельности --}}
-                                        @if(!empty($experience['activity_sphere']))
-                                            <div style="color: #6b7280; font-size: 13px; margin-top: 2px;">
-                                                {{ trim($experience['activity_sphere']) }}
+                            <div class="work-experience-item" style="{{ !$loop->last ? 'margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }}">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tr>
+                                        {{-- Левая колонка: информация о месте работы --}}
+                                        <td style="width: 50%; vertical-align: top; padding-right: 12px;">
+                                            {{-- Дата --}}
+                                            <div style="color: #234088; font-size: 14px; font-weight: 500; margin-bottom: 4px;">
+                                                {{ $experience['years'] ?? '' }}
                                             </div>
-                                        @endif
-                                    </td>
-                                    {{-- Правая колонка: основные обязанности --}}
-                                    <td style="width: 50%; vertical-align: top; padding-left: 12px;">
-                                        @if(!empty($experience['main_tasks']) && is_array($experience['main_tasks']) && count(array_filter($experience['main_tasks'])) > 0)
-                                            @foreach(array_filter($experience['main_tasks']) as $task)
-                                                <div style="margin-bottom: 4px; color: #000000; font-size: 14px; font-weight: 500;">
-                                                    <span style="color: #9ca3af; margin-right: 8px;">•</span>{{ mb_ucfirst($task) }}
+                                            {{-- Должность --}}
+                                            <div style="color: #000000; font-weight: 600; font-size: 17px; margin-bottom: 2px;">
+                                                {{ mb_ucfirst($experience['position'] ?? 'Не указано') }}
+                                            </div>
+                                            {{-- Компания / Город --}}
+                                            <div style="color: #000000; font-weight: 600; font-size: 15px;">
+                                                {{ mb_ucfirst($experience['company'] ?? 'Не указано') }}@if(!empty($experience['city'])), {{ mb_ucfirst($experience['city']) }}@endif
+                                            </div>
+                                            {{-- Сфера деятельности --}}
+                                            @if(!empty($experience['activity_sphere']))
+                                                <div style="color: #6b7280; font-size: 13px; margin-top: 2px;">
+                                                    {{ trim($experience['activity_sphere']) }}
                                                 </div>
-                                            @endforeach
-                                        @endif
-                                    </td>
-                                </tr>
-                            </table>
+                                            @endif
+                                        </td>
+                                        {{-- Правая колонка: основные обязанности --}}
+                                        <td style="width: 50%; vertical-align: top; padding-left: 12px;">
+                                            @if(!empty($experience['main_tasks']) && is_array($experience['main_tasks']) && count(array_filter($experience['main_tasks'])) > 0)
+                                                @foreach(array_filter($experience['main_tasks']) as $task)
+                                                    <div style="margin-bottom: 4px; color: #000000; font-size: 14px; font-weight: 500;">
+                                                        <span style="color: #9ca3af; margin-right: 8px;">•</span>{{ mb_ucfirst($task) }}
+                                                    </div>
+                                                @endforeach
+                                            @endif
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         @endforeach
 
                         {{-- Общий стаж и удовлетворённость --}}
