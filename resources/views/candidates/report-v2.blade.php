@@ -354,19 +354,26 @@
             -webkit-column-break-inside: avoid !important;
         }
 
-        /* Секция "Виды интеллектов Гарднера" - не разрывать */
+        /* Секция "Виды интеллектов Гарднера" - разрешаем разрыв между рядами */
         .gardner-section {
+            display: block !important;
+            page-break-inside: auto;
+            break-inside: auto;
+        }
+
+        /* Заголовок Гарднера не отрывается от первого ряда */
+        .gardner-section h2 {
+            page-break-after: avoid !important;
+            break-after: avoid !important;
+        }
+
+        /* Каждый ряд графика не разрывается */
+        .gardner-section .gardner-row {
             display: block !important;
             overflow: hidden !important;
             page-break-inside: avoid !important;
             break-inside: avoid !important;
             -webkit-column-break-inside: avoid !important;
-        }
-
-        /* Заголовок Гарднера не отрывается от графика */
-        .gardner-section h2 {
-            page-break-after: avoid !important;
-            break-after: avoid !important;
         }
     </style>
 </head>
@@ -954,6 +961,7 @@ if (! function_exists('clean_git_conflicts')) {
                 <h2 class="text-xl font-bold text-gray-800 mb-4" style="page-break-after: avoid !important;">Виды интеллектов Гарднера</h2>
                 <div class="bg-gray-100 rounded-lg p-6">
                     <!-- Первый ряд -->
+                    <div class="gardner-row">
                     <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
                         <!-- Ось Y -->
                         <div style="width: 28px; height: 180px; position: relative; margin-right: 8px;">
@@ -1001,8 +1009,10 @@ if (! function_exists('clean_git_conflicts')) {
                             </div>
                         @endforeach
                     </div>
+                    </div>
 
                     <!-- Второй ряд -->
+                    <div class="gardner-row">
                     <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
                         <!-- Ось Y -->
                         <div style="width: 28px; height: 180px; position: relative; margin-right: 8px;">
@@ -1049,6 +1059,7 @@ if (! function_exists('clean_git_conflicts')) {
                                 </div>
                             </div>
                         @endforeach
+                    </div>
                     </div>
                 </div>
             </div>
