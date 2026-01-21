@@ -173,7 +173,7 @@
                         <option value="">{{ __('Select MBTI type') }}</option>
                         <optgroup label="{{ __('Analysts') }}">
                             <option value="INTJ">INTJ - {{ __('Architect') }}</option>
-                            <option value="INTP">INTP - {{ __('Thinker') }}</option>
+                            <option value="INTP">INTP - {{ __('Logician') }}</option>
                             <option value="ENTJ">ENTJ - {{ __('Commander') }}</option>
                             <option value="ENTP">ENTP - {{ __('Debater') }}</option>
                         </optgroup>

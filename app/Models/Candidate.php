@@ -112,21 +112,21 @@ class Candidate extends Model
 
         $mbtiTypes = [
             'INTJ' => 'INTJ - Архитектор',
-            'INTP' => 'INTP - Мыслитель',
+            'INTP' => 'INTP - Логик',
             'ENTJ' => 'ENTJ - Командир',
             'ENTP' => 'ENTP - Полемист',
-            'INFJ' => 'INFJ - Активист',
+            'INFJ' => 'INFJ - Заступник',
             'INFP' => 'INFP - Посредник',
-            'ENFJ' => 'ENFJ - Тренер',
-            'ENFP' => 'ENFP - Борец',
+            'ENFJ' => 'ENFJ - Протагонист',
+            'ENFP' => 'ENFP - Активист',
             'ISTJ' => 'ISTJ - Логист',
             'ISFJ' => 'ISFJ - Защитник',
             'ESTJ' => 'ESTJ - Менеджер',
             'ESFJ' => 'ESFJ - Консул',
             'ISTP' => 'ISTP - Виртуоз',
             'ISFP' => 'ISFP - Авантюрист',
-            'ESTP' => 'ESTP - Делец',
-            'ESFP' => 'ESFP - Развлекатель',
+            'ESTP' => 'ESTP - Предприниматель',
+            'ESFP' => 'ESFP - Артист',
         ];
 
         return $mbtiTypes[$this->mbti_type] ?? $this->mbti_type;
