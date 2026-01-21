@@ -292,47 +292,11 @@
             break-inside: auto;
         }
 
-        .interests-section .space-y-1 {
-            display: block !important;
-        }
-
         /* Каждая строка данных в секции интересов - НЕ разрывается между страницами */
-        .interests-section .data-row,
-        .interests-section .flex.items-start.data-row,
-        .interests-section .flex.data-row,
-        .interests-section div.data-row {
-            display: block !important;
-            overflow: hidden !important;
+        .interests-section .data-row {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
             -webkit-column-break-inside: avoid !important;
-            margin-bottom: 6px;
-            padding: 2px 0;
-        }
-
-        .interests-section .data-row > span:first-child {
-            display: inline-block !important;
-            width: 240px !important;
-            vertical-align: top;
-        }
-
-        .interests-section .data-row > span:last-child,
-        .interests-section .data-row > span.flex-1 {
-            display: inline-block !important;
-            width: calc(100% - 240px) !important;
-            vertical-align: top;
-            flex: none !important;
-        }
-
-        /* Последние элементы секций */
-        .interests-section .space-y-1 > div:last-child {
-            margin-bottom: 0;
-        }
-
-        /* Orphans and widows control - не оставлять одинокие строки */
-        .space-y-1 {
-            orphans: 3;
-            widows: 3;
         }
 
         /* Универсальное правило для всех data-row - не разрывать пополам */
