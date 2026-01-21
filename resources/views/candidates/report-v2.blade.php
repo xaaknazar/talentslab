@@ -319,7 +319,7 @@
         .interests-section .data-row > span:last-child,
         .interests-section .data-row > span.flex-1 {
             display: inline-block !important;
-            width: calc(100% - 250px) !important;
+            width: calc(100% - 240px) !important;
             vertical-align: top;
             flex: none !important;
         }
@@ -374,15 +374,29 @@
 
         /* Секция "Психометрические данные" - не разрывать */
         .psychometric-section {
+            display: block !important;
+            overflow: hidden !important;
             page-break-inside: avoid !important;
             break-inside: avoid !important;
             -webkit-column-break-inside: avoid !important;
         }
 
-        /* Секция "Виды интеллектов Гарднера" - начать с новой страницы */
+        /* Секция "Компьютерные навыки" - не разрывать */
+        .computer-skills-section {
+            display: block !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        /* Секция "Виды интеллектов Гарднера" - не разрывать */
         .gardner-section {
-            page-break-before: always !important;
-            break-before: page !important;
+            display: block !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
         }
     </style>
 </head>
@@ -916,7 +930,7 @@ if (! function_exists('clean_git_conflicts')) {
             </div>
 
             <!-- Компьютерные навыки -->
-            <div class="mb-8">
+            <div class="mb-8 computer-skills-section">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Компьютерные навыки</h2>
                 <p class="text-base font-medium">{{ $candidate->computer_skills ?: 'Не указано' }}</p>
             </div>
