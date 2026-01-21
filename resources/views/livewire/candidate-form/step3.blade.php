@@ -331,7 +331,7 @@
                                     <div class="flex items-center gap-2">
                                         <span class="text-sm text-gray-500 w-6 text-center">{{ $taskIndex + 1 }}.</span>
                                         <input type="text"
-                                               wire:model="work_experience.{{ $index }}.main_tasks.{{ $taskIndex }}"
+                                               wire:model.blur="work_experience.{{ $index }}.main_tasks.{{ $taskIndex }}"
                                                class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
                                                placeholder="{{ __('Describe one task in one sentence') }}">
                                         @if(count($tasks) > 3)
@@ -348,10 +348,10 @@
                             </div>
                             @if(count($tasks) < 8)
                                 <button type="button"
-                                        wire:click="addWorkTask({{ $index }})"
+                                        wire:click.prevent="addWorkTask({{ $index }})"
                                         wire:loading.attr="disabled"
                                         wire:loading.class="opacity-50 cursor-not-allowed"
-                                        wire:target="addWorkTask"
+                                        wire:target="addWorkTask({{ $index }})"
                                         class="mt-2 inline-flex items-center text-sm text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity">
                                     <svg wire:loading.remove wire:target="addWorkTask({{ $index }})" class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />

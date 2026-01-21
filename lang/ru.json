@@ -789,5 +789,14 @@
     "B1": "B1 - Средний",
     "B2": "B2 - Уверенный",
     "C1": "C1 - Очень высокий",
-    "C2": "C2 - Продвинутый"
+    "C2": "C2 - Продвинутый",
+
+    "Password Recovery": "Восстановление пароля",
+    "Enter your email address and we will send you a password reset link": "Введите ваш email адрес, и мы отправим вам ссылку для сброса пароля",
+    "Email address": "Email адрес",
+    "Send password reset link": "Отправить ссылку для сброса пароля",
+    "Want to resend the link?": "Хотите отправить ссылку повторно?",
+    "Resend": "Отправить повторно",
+    "Back to login": "Вернуться к входу",
+    "Your session has expired. Please try again.": "Ваша сессия истекла. Пожалуйста, попробуйте еще раз."
 }

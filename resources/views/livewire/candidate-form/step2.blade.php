@@ -296,10 +296,16 @@
                                 @endif
                                 {{ $displayName }}
                                 <button type="button"
-                                        wire:click="removeCountry('{{ $country }}')"
-                                        class="ml-2 text-white/80 hover:text-white focus:outline-none">
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        wire:click.prevent="removeCountry('{{ $country }}')"
+                                        wire:loading.attr="disabled"
+                                        wire:target="removeCountry('{{ $country }}')"
+                                        class="ml-2 text-white/80 hover:text-white focus:outline-none disabled:opacity-50">
+                                    <svg wire:loading.remove wire:target="removeCountry('{{ $country }}')" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                    <svg wire:loading wire:target="removeCountry('{{ $country }}')" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
                                 </button>
                             </span>

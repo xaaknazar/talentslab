@@ -404,6 +404,30 @@ if (! function_exists('clean_git_conflicts')) {
         return trim($text);
     }
 }
+
+// Функция для склонения слова "год" в русском языке
+if (! function_exists('pluralize_years')) {
+    function pluralize_years(int $number): string
+    {
+        $absNumber = abs($number);
+        $lastTwo = $absNumber % 100;
+        $lastOne = $absNumber % 10;
+
+        if ($lastTwo >= 11 && $lastTwo <= 19) {
+            return $number . ' лет';
+        }
+
+        if ($lastOne === 1) {
+            return $number . ' год';
+        }
+
+        if ($lastOne >= 2 && $lastOne <= 4) {
+            return $number . ' года';
+        }
+
+        return $number . ' лет';
+    }
+}
 @endphp
 
     <div class="max-w-4xl mx-auto bg-white ">
@@ -668,7 +692,7 @@ if (! function_exists('clean_git_conflicts')) {
                         <div class="work-summary" style="margin-top: 16px;">
                             <div style="display: flex; align-items: center; margin-bottom: 4px;">
                                 <span style="color: #000000; font-size: 14px; font-weight: 500; margin-right: 8px;">Общий стаж:</span>
-                                <span style="color: #000000; font-weight: 500; font-size: 14px;">{{ $candidate->total_experience_years ?? 0 }} лет</span>
+                                <span style="color: #000000; font-weight: 500; font-size: 14px;">{{ pluralize_years($candidate->total_experience_years ?? 0) }}</span>
                             </div>
                             <div style="display: flex; align-items: center;">
                                 <span style="color: #000000; font-size: 14px; font-weight: 500; margin-right: 8px;">Удовлетворённость работой:</span>

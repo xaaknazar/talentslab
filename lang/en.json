@@ -884,5 +884,14 @@
     "Did not find the email?": "Did not find the email?",
     "Check your SPAM or Junk folder - sometimes emails end up there automatically.": "Check your SPAM or Junk folder - sometimes emails end up there automatically.",
     "We sent a new link to the email specified in your profile.": "We sent a new link to the email specified in your profile.",
-    "Resend email": "Resend email"
+    "Resend email": "Resend email",
+
+    "Password Recovery": "Password Recovery",
+    "Enter your email address and we will send you a password reset link": "Enter your email address and we will send you a password reset link",
+    "Email address": "Email address",
+    "Send password reset link": "Send password reset link",
+    "Want to resend the link?": "Want to resend the link?",
+    "Resend": "Resend",
+    "Back to login": "Back to login",
+    "Your session has expired. Please try again.": "Your session has expired. Please try again."
 }
