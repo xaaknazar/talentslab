@@ -951,8 +951,8 @@ if (! function_exists('clean_git_conflicts')) {
                 ];
             @endphp
             <div class="mb-4 gardner-section">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">Виды интеллектов Гарднера</h2>
                 <div class="bg-gray-100 rounded-lg p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4" style="page-break-after: avoid !important;">Виды интеллектов Гарднера</h2>
                     <!-- Первый ряд -->
                     <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
                         <!-- Ось Y -->
