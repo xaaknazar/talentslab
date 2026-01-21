@@ -362,6 +362,12 @@
             break-inside: avoid !important;
             -webkit-column-break-inside: avoid !important;
         }
+
+        /* Заголовок Гарднера не отрывается от графика */
+        .gardner-section h2 {
+            page-break-after: avoid !important;
+            break-after: avoid !important;
+        }
     </style>
 </head>
 <body>
