@@ -1,6 +1,47 @@
 <?php
 // resources/views/livewire/candidate-form.blade.php
 ?>
+<!-- Loading Overlay для формирования отчётов -->
+<div wire:loading.flex wire:target="submit"
+     class="fixed inset-0 z-[9999] items-center justify-center bg-gray-900/80 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 mx-4 max-w-md w-full text-center">
+        <!-- Анимированный спиннер -->
+        <div class="relative w-20 h-20 mx-auto mb-6">
+            <div class="absolute inset-0 border-4 border-blue-200 rounded-full"></div>
+            <div class="absolute inset-0 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
+            <div class="absolute inset-3 border-4 border-green-200 rounded-full"></div>
+            <div class="absolute inset-3 border-4 border-green-500 rounded-full border-t-transparent animate-spin" style="animation-direction: reverse; animation-duration: 0.8s;"></div>
+        </div>
+
+        <!-- Иконка документа -->
+        <div class="mb-4">
+            <svg class="w-12 h-12 mx-auto text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+        </div>
+
+        <!-- Текст -->
+        <h3 class="text-xl font-bold text-gray-800 mb-2">
+            {{ __('Generating your resume') }}
+        </h3>
+        <p class="text-gray-600 mb-4">
+            {{ __('Please wait, we are processing your data and creating reports...') }}
+        </p>
+
+        <!-- Прогресс точки -->
+        <div class="flex justify-center space-x-2">
+            <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0s;"></div>
+            <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+            <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.4s;"></div>
+        </div>
+
+        <!-- Подсказка -->
+        <p class="mt-4 text-sm text-gray-400">
+            {{ __('This may take a few minutes') }}
+        </p>
+    </div>
+</div>
+
 <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
     <div class="bg-white overflow-hidden shadow-xl rounded-lg">
         <!-- Step Navigation -->
@@ -167,11 +208,24 @@
                 @else
                     <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                         <button type="submit"
-                                class="inline-flex items-center justify-center px-6 py-3 bg-green-600 border border-transparent rounded-md font-semibold text-sm text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:ring focus:ring-green-300 disabled:opacity-25 transition">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                            </svg>
-                            {{ __('Save and finish') }}
+                                wire:loading.attr="disabled"
+                                wire:target="submit"
+                                class="inline-flex items-center justify-center px-6 py-3 bg-green-600 border border-transparent rounded-md font-semibold text-sm text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:ring focus:ring-green-300 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                            <!-- Обычное состояние -->
+                            <span wire:loading.remove wire:target="submit" class="inline-flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                {{ __('Save and finish') }}
+                            </span>
+                            <!-- Состояние загрузки -->
+                            <span wire:loading wire:target="submit" class="inline-flex items-center">
+                                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                {{ __('Processing...') }}
+                            </span>
                         </button>
                         @if ($errors->any())
                             <div class="text-sm text-red-600 flex items-center">
