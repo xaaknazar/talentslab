@@ -30,6 +30,10 @@ class ProcessGallupFile implements ShouldQueue
      */
     public function handle(): void
     {
+        // Увеличиваем лимит памяти для парсинга PDF
+        $originalMemoryLimit = ini_get('memory_limit');
+        ini_set('memory_limit', '512M');
+
         try {
             Log::info('Starting Gallup file processing', [
                 'candidate_id' => $this->candidate->id,

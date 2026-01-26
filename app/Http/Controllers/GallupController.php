@@ -88,6 +88,9 @@ class GallupController extends Controller
      */
     public function parseGallupFromCandidateFile(Candidate $candidate)
     {
+        // Увеличиваем лимит памяти для парсинга PDF (некоторые PDF требуют много памяти)
+        ini_set('memory_limit', '512M');
+
         // Шаг 1: Проверка файла
         $this->logStep($candidate, 'Проверка файла');
 
