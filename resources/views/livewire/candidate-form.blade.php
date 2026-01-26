@@ -1,48 +1,49 @@
 <?php
 // resources/views/livewire/candidate-form.blade.php
 ?>
-<!-- Loading Overlay для формирования отчётов -->
-<div wire:loading.flex wire:target="submit"
-     class="fixed inset-0 z-[9999] items-center justify-center bg-gray-900/80 backdrop-blur-sm">
-    <div class="bg-white rounded-2xl shadow-2xl p-8 mx-4 max-w-md w-full text-center">
-        <!-- Анимированный спиннер -->
-        <div class="relative w-20 h-20 mx-auto mb-6">
-            <div class="absolute inset-0 border-4 border-blue-200 rounded-full"></div>
-            <div class="absolute inset-0 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
-            <div class="absolute inset-3 border-4 border-green-200 rounded-full"></div>
-            <div class="absolute inset-3 border-4 border-green-500 rounded-full border-t-transparent animate-spin" style="animation-direction: reverse; animation-duration: 0.8s;"></div>
+<div>
+    <!-- Loading Overlay для формирования отчётов -->
+    <div wire:loading.flex wire:target="submit"
+         class="fixed inset-0 z-[9999] items-center justify-center bg-gray-900/80 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 mx-4 max-w-md w-full text-center">
+            <!-- Анимированный спиннер -->
+            <div class="relative w-20 h-20 mx-auto mb-6">
+                <div class="absolute inset-0 border-4 border-blue-200 rounded-full"></div>
+                <div class="absolute inset-0 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
+                <div class="absolute inset-3 border-4 border-green-200 rounded-full"></div>
+                <div class="absolute inset-3 border-4 border-green-500 rounded-full border-t-transparent animate-spin" style="animation-direction: reverse; animation-duration: 0.8s;"></div>
+            </div>
+
+            <!-- Иконка документа -->
+            <div class="mb-4">
+                <svg class="w-12 h-12 mx-auto text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+            </div>
+
+            <!-- Текст -->
+            <h3 class="text-xl font-bold text-gray-800 mb-2">
+                {{ __('Generating your resume') }}
+            </h3>
+            <p class="text-gray-600 mb-4">
+                {{ __('Please wait, we are processing your data and creating reports...') }}
+            </p>
+
+            <!-- Прогресс точки -->
+            <div class="flex justify-center space-x-2">
+                <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0s;"></div>
+                <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+                <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.4s;"></div>
+            </div>
+
+            <!-- Подсказка -->
+            <p class="mt-4 text-sm text-gray-400">
+                {{ __('This may take a few minutes') }}
+            </p>
         </div>
-
-        <!-- Иконка документа -->
-        <div class="mb-4">
-            <svg class="w-12 h-12 mx-auto text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-            </svg>
-        </div>
-
-        <!-- Текст -->
-        <h3 class="text-xl font-bold text-gray-800 mb-2">
-            {{ __('Generating your resume') }}
-        </h3>
-        <p class="text-gray-600 mb-4">
-            {{ __('Please wait, we are processing your data and creating reports...') }}
-        </p>
-
-        <!-- Прогресс точки -->
-        <div class="flex justify-center space-x-2">
-            <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0s;"></div>
-            <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
-            <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.4s;"></div>
-        </div>
-
-        <!-- Подсказка -->
-        <p class="mt-4 text-sm text-gray-400">
-            {{ __('This may take a few minutes') }}
-        </p>
     </div>
-</div>
 
-<div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
     <div class="bg-white overflow-hidden shadow-xl rounded-lg">
         <!-- Step Navigation -->
         <div class="mb-6 px-3 sm:px-6 pt-6">
@@ -237,6 +238,7 @@
             </div>
         </form>
     </div>
+</div>
 </div>
 
 @push('scripts')
