@@ -4,44 +4,71 @@
 <div>
     <!-- Loading Overlay для формирования отчётов -->
     <div wire:loading.flex wire:target="submit"
-         class="fixed inset-0 z-[9999] items-center justify-center bg-gray-900/80 backdrop-blur-sm">
-        <div class="bg-white rounded-2xl shadow-2xl p-8 mx-4 max-w-md w-full text-center">
-            <!-- Анимированный спиннер -->
-            <div class="relative w-20 h-20 mx-auto mb-6">
-                <div class="absolute inset-0 border-4 border-blue-200 rounded-full"></div>
-                <div class="absolute inset-0 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
-                <div class="absolute inset-3 border-4 border-green-200 rounded-full"></div>
-                <div class="absolute inset-3 border-4 border-green-500 rounded-full border-t-transparent animate-spin" style="animation-direction: reverse; animation-duration: 0.8s;"></div>
+         class="fixed inset-0 z-[9999] items-center justify-center bg-gradient-to-br from-slate-900/90 via-blue-900/80 to-slate-900/90 backdrop-blur-md">
+        <div class="bg-white/95 backdrop-blur rounded-3xl shadow-2xl p-6 sm:p-10 mx-3 sm:mx-4 max-w-sm sm:max-w-md w-full text-center transform transition-all">
+
+            <!-- Большой анимированный спиннер -->
+            <div class="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-6 sm:mb-8">
+                <!-- Внешнее кольцо -->
+                <div class="absolute inset-0 rounded-full border-4 border-blue-100"></div>
+                <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-500 border-r-blue-500 animate-spin" style="animation-duration: 1.5s;"></div>
+
+                <!-- Среднее кольцо -->
+                <div class="absolute inset-3 sm:inset-4 rounded-full border-4 border-green-100"></div>
+                <div class="absolute inset-3 sm:inset-4 rounded-full border-4 border-transparent border-t-green-500 border-l-green-500 animate-spin" style="animation-duration: 1s; animation-direction: reverse;"></div>
+
+                <!-- Внутреннее кольцо -->
+                <div class="absolute inset-6 sm:inset-8 rounded-full border-4 border-purple-100"></div>
+                <div class="absolute inset-6 sm:inset-8 rounded-full border-4 border-transparent border-b-purple-500 border-r-purple-500 animate-spin" style="animation-duration: 0.75s;"></div>
+
+                <!-- Иконка документа в центре -->
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <svg class="w-8 h-8 sm:w-10 sm:h-10 text-blue-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
             </div>
 
-            <!-- Иконка документа -->
-            <div class="mb-4">
-                <svg class="w-12 h-12 mx-auto text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-            </div>
-
-            <!-- Текст -->
-            <h3 class="text-xl font-bold text-gray-800 mb-2">
+            <!-- Заголовок с градиентом -->
+            <h3 class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2 sm:mb-3">
                 {{ __('Generating your resume') }}
             </h3>
-            <p class="text-gray-600 mb-4">
+
+            <!-- Описание -->
+            <p class="text-gray-600 text-sm sm:text-base mb-5 sm:mb-6 px-2">
                 {{ __('Please wait, we are processing your data and creating reports...') }}
             </p>
 
-            <!-- Прогресс точки -->
-            <div class="flex justify-center space-x-2">
-                <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0s;"></div>
-                <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
-                <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.4s;"></div>
+            <!-- Прогресс бар с анимацией -->
+            <div class="w-full bg-gray-200 rounded-full h-2 mb-4 sm:mb-5 overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 h-2 rounded-full animate-pulse"
+                     style="width: 100%; background-size: 200% 100%; animation: shimmer 2s linear infinite;">
+                </div>
+            </div>
+
+            <!-- Анимированные точки -->
+            <div class="flex justify-center items-center space-x-1.5 sm:space-x-2 mb-4">
+                <span class="text-gray-500 text-sm">{{ __('Processing') }}</span>
+                <div class="flex space-x-1">
+                    <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0s;"></div>
+                    <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-purple-500 rounded-full animate-bounce" style="animation-delay: 0.15s;"></div>
+                    <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.3s;"></div>
+                </div>
             </div>
 
             <!-- Подсказка -->
-            <p class="mt-4 text-sm text-gray-400">
+            <p class="text-xs sm:text-sm text-gray-400">
                 {{ __('This may take a few minutes') }}
             </p>
         </div>
     </div>
+
+    <style>
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
 
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
     <div class="bg-white overflow-hidden shadow-xl rounded-lg">
