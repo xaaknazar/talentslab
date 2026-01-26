@@ -4,8 +4,8 @@
 <div>
     <!-- Loading Overlay для формирования отчётов -->
     <div wire:loading.flex wire:target="submit"
-         class="fixed inset-0 z-[9999] items-center justify-center bg-gradient-to-br from-slate-900/90 via-blue-900/80 to-slate-900/90 backdrop-blur-md">
-        <div class="bg-white/95 backdrop-blur rounded-3xl shadow-2xl p-6 sm:p-10 mx-3 sm:mx-4 max-w-sm sm:max-w-md w-full text-center transform transition-all">
+         class="fixed inset-0 z-[9999] items-center justify-center bg-gradient-to-br from-slate-800 via-blue-900 to-slate-900">
+        <div class="bg-white rounded-3xl shadow-2xl p-6 sm:p-10 mx-3 sm:mx-4 max-w-sm sm:max-w-md w-full text-center transform transition-all">
 
             <!-- Большой анимированный спиннер -->
             <div class="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-6 sm:mb-8">
