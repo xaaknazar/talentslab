@@ -354,14 +354,22 @@
             -webkit-column-break-inside: avoid !important;
         }
 
-        /* Секция "Виды интеллектов Гарднера" - разрешаем разрыв между рядами */
+        /* Секция "Виды интеллектов Гарднера" - вся секция на одной странице если возможно */
         .gardner-section {
             display: block !important;
-            page-break-inside: auto;
-            break-inside: auto;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
         }
 
-        /* Заголовок Гарднера не отрывается от первого ряда */
+        /* Контейнер графика Гарднера */
+        .gardner-chart-container {
+            display: block !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            overflow: hidden !important;
+        }
+
+        /* Заголовок Гарднера не отрывается от графика */
         .gardner-section h2 {
             page-break-after: avoid !important;
             break-after: avoid !important;
@@ -981,9 +989,9 @@ if (! function_exists('pluralize_years')) {
                     'Экзистенциальный интеллект',
                 ];
             @endphp
-            <div class="mb-4 gardner-section">
+            <div class="mb-4 gardner-section" style="page-break-inside: avoid !important;">
                 <h2 class="text-xl font-bold text-gray-800 mb-4" style="page-break-after: avoid !important;">Виды интеллектов Гарднера</h2>
-                <div class="bg-gray-100 rounded-lg p-6">
+                <div class="bg-gray-100 rounded-lg p-6 gardner-chart-container" style="page-break-inside: avoid !important;">
                     <!-- Первый ряд -->
                     <div class="gardner-row">
                     <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
