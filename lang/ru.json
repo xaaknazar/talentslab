@@ -427,6 +427,9 @@
     "Enter value from 0 to 4.0": "Введите значение от 0 до 4.0",
 
     "Work Experience": "Опыт работы",
+    "No work experience": "Нет опыта работы",
+    "Work experience section is skipped": "Раздел опыта работы пропущен",
+    "Add at least one work experience": "Добавьте хотя бы один опыт работы",
     "Work Period": "Период работы",
     "Select period": "Выберите период",
     "Start Date": "Дата начала",

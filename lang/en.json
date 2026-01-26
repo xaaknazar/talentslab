@@ -328,6 +328,9 @@
     "Enter value from 0 to 4.0": "Enter value from 0 to 4.0",
 
     "Work Experience": "Work Experience",
+    "No work experience": "No work experience",
+    "Work experience section is skipped": "Work experience section is skipped",
+    "Add at least one work experience": "Add at least one work experience",
     "Work Period": "Work Period",
     "Select period": "Select period",
     "Start Date": "Start Date",

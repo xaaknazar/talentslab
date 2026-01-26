@@ -71,6 +71,7 @@ class CandidateForm extends Component
     public $language_skills = [];
     public $computer_skills;
     public $work_experience = [];
+    public $has_no_work_experience = false;
     public $total_experience_years;
     public $job_satisfaction;
     public $desired_positions = []; // Массив желаемых должностей (макс 3)
@@ -394,7 +395,8 @@ class CandidateForm extends Component
         $this->language_skills = $this->candidate->language_skills ?? [];
         $this->computer_skills = $this->candidate->computer_skills ?? '';
         $this->work_experience = $this->convertWorkExperienceFormat($this->candidate->work_experience ?? []);
-        logger()->debug('Work experience loaded:', ['original' => $this->candidate->work_experience, 'converted' => $this->work_experience]);
+        $this->has_no_work_experience = $this->candidate->has_no_work_experience ?? false;
+        logger()->debug('Work experience loaded:', ['original' => $this->candidate->work_experience, 'converted' => $this->work_experience, 'has_no_work_experience' => $this->has_no_work_experience]);
         $this->total_experience_years = $this->candidate->total_experience_years;
         $this->job_satisfaction = $this->candidate->job_satisfaction;
 
@@ -487,8 +489,9 @@ class CandidateForm extends Component
             'language_skills.*.language' => 'required|string|max:255',
             'language_skills.*.level' => 'required|in:A1,A2,B1,B2,C1,C2',
             'computer_skills' => 'required|string',
-            'work_experience' => 'nullable|array|min:0',
-            'work_experience.*.years' => 'required|string|max:255',
+            'has_no_work_experience' => 'boolean',
+            'work_experience' => $this->has_no_work_experience ? 'nullable|array' : 'required|array|min:1',
+            'work_experience.*.years' => 'required_unless:has_no_work_experience,true|string|max:255',
             'work_experience.*.company' => 'required|string|max:255',
             'work_experience.*.city' => 'required|string|max:255',
             'work_experience.*.position' => 'required|string|max:255',
@@ -1252,6 +1255,23 @@ class CandidateForm extends Component
             $field = $matches[2];
             if (isset($this->work_experience[$index][$field]) && is_string($this->work_experience[$index][$field])) {
                 $this->work_experience[$index][$field] = $this->mbUcfirst($this->work_experience[$index][$field]);
+            }
+        }
+    }
+
+    /**
+     * Обработка изменения чекбокса "Нет опыта работы"
+     */
+    public function updatedHasNoWorkExperience($value)
+    {
+        if ($value) {
+            // Если отмечено "Нет опыта работы", очищаем список опыта и ставим стаж 0
+            $this->work_experience = [];
+            $this->total_experience_years = 0;
+        } else {
+            // Если снято, добавляем пустую запись опыта работы
+            if (empty($this->work_experience)) {
+                $this->addWorkExperience();
             }
         }
     }
@@ -2217,6 +2237,7 @@ class CandidateForm extends Component
             $this->candidate->work_experience = array_filter($this->work_experience, function($experience) {
                 return !empty($experience['years']) || !empty($experience['company']) || !empty($experience['city']) || !empty($experience['position']);
             });
+            $this->candidate->has_no_work_experience = $this->has_no_work_experience;
             $this->candidate->total_experience_years = $this->total_experience_years;
             $this->candidate->job_satisfaction = $this->job_satisfaction;
             // Сохраняем желаемые должности как массив и также в старое поле для обратной совместимости
@@ -2379,6 +2400,7 @@ class CandidateForm extends Component
             });
             $this->candidate->work_experience = array_values($filteredWorkExperience);
         }
+        $this->candidate->has_no_work_experience = $this->has_no_work_experience;
         if ($this->total_experience_years !== null) $this->candidate->total_experience_years = $this->total_experience_years;
         if ($this->job_satisfaction !== null) $this->candidate->job_satisfaction = $this->job_satisfaction;
         if (!empty($this->desired_positions)) {
