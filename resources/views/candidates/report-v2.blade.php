@@ -345,6 +345,13 @@
             -webkit-column-break-inside: avoid !important;
         }
 
+        /* Строка MBTI не должна разрываться */
+        .mbti-row {
+            display: block !important;
+            white-space: nowrap !important;
+            page-break-inside: avoid !important;
+        }
+
         /* Секция "Компьютерные навыки" - не разрывать */
         .computer-skills-section {
             display: block !important;
@@ -354,34 +361,29 @@
             -webkit-column-break-inside: avoid !important;
         }
 
-        /* Секция "Виды интеллектов Гарднера" - вся секция на одной странице если возможно */
+        /* Секция "Виды интеллектов Гарднера" - разрешаем разрыв между рядами если не помещается */
         .gardner-section {
             display: block !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
+            page-break-inside: auto;
         }
 
-        /* Контейнер графика Гарднера */
-        .gardner-chart-container {
-            display: block !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            overflow: hidden !important;
-        }
-
-        /* Заголовок Гарднера не отрывается от графика */
+        /* Заголовок Гарднера не отрывается от первого ряда */
         .gardner-section h2 {
             page-break-after: avoid !important;
             break-after: avoid !important;
         }
 
-        /* Каждый ряд графика не разрывается */
-        .gardner-section .gardner-row {
+        /* Контейнер графика - каждый ряд на одной странице */
+        .gardner-chart-container {
             display: block !important;
-            overflow: hidden !important;
+        }
+
+        /* Каждый ряд графика НЕ разрывается */
+        .gardner-row {
+            display: block !important;
             page-break-inside: avoid !important;
             break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
+            overflow: hidden !important;
         }
     </style>
 </head>
@@ -945,11 +947,11 @@ if (! function_exists('pluralize_years')) {
             </div>
 
             <!-- Психометрические данные -->
-            <div class="mb-8 psychometric-section">
+            <div class="mb-8 psychometric-section" style="page-break-inside: avoid;">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Психометрические данные</h2>
-                <div class="flex data-row">
-                    <span class="text-base text-gray-600 w-60">Тип личности по MBTI:</span>
-                    <span class="text-base font-medium" style="color: #234088;">{{ $candidate->mbti_full_name ?: 'Не указано' }}</span>
+                <div class="mbti-row" style="page-break-inside: avoid; white-space: nowrap;">
+                    <span class="text-base text-gray-600" style="display: inline;">Тип личности по MBTI: </span>
+                    <span class="text-base font-medium" style="color: #234088; display: inline;">{{ $candidate->mbti_full_name ?: 'Не указано' }}</span>
                 </div>
             </div>
 
@@ -989,11 +991,11 @@ if (! function_exists('pluralize_years')) {
                     'Экзистенциальный интеллект',
                 ];
             @endphp
-            <div class="mb-4 gardner-section" style="page-break-inside: avoid !important;">
+            <div class="mb-4 gardner-section">
                 <h2 class="text-xl font-bold text-gray-800 mb-4" style="page-break-after: avoid !important;">Виды интеллектов Гарднера</h2>
-                <div class="bg-gray-100 rounded-lg p-6 gardner-chart-container" style="page-break-inside: avoid !important;">
+                <div class="bg-gray-100 rounded-lg p-6 gardner-chart-container">
                     <!-- Первый ряд -->
-                    <div class="gardner-row">
+                    <div class="gardner-row" style="page-break-inside: avoid; display: block; overflow: hidden;">
                     <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
                         <!-- Ось Y -->
                         <div style="width: 28px; height: 180px; position: relative; margin-right: 8px;">
@@ -1044,7 +1046,7 @@ if (! function_exists('pluralize_years')) {
                     </div>
 
                     <!-- Второй ряд -->
-                    <div class="gardner-row">
+                    <div class="gardner-row" style="page-break-inside: avoid; display: block; overflow: hidden;">
                     <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
                         <!-- Ось Y -->
                         <div style="width: 28px; height: 180px; position: relative; margin-right: 8px;">
