@@ -71,6 +71,19 @@
                     </div>
                 @endif
 
+                <!-- Admin: Candidates Database Link -->
+                @if(auth()->user()->is_admin)
+                    <div class="ms-3">
+                        <a href="/admin/candidates"
+                           class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 hover:text-gray-900 transition-colors">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                            </svg>
+                            {{ __('Candidates database') }}
+                        </a>
+                    </div>
+                @endif
+
                 <!-- Language Switcher -->
                 <div class="ms-3 relative" x-data="{ langOpen: false }">
                     @php
@@ -193,6 +206,12 @@
             <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            @if(auth()->user()->is_admin)
+                <x-responsive-nav-link href="/admin/candidates" :active="request()->is('admin/candidates*')">
+                    {{ __('Candidates database') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->
