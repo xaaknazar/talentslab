@@ -239,8 +239,15 @@ body {
 .logos-container {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
     margin-bottom: 40px;
+}
+
+.logos-separator {
+    font-size: 24px;
+    font-weight: 300;
+    color: #9ca3af;
+    line-height: 1;
 }
 
 .brand-logo {
@@ -368,7 +375,11 @@ body {
 
     .logos-container {
         margin-bottom: 24px;
-        gap: 16px;
+        gap: 12px;
+    }
+
+    .logos-separator {
+        font-size: 20px;
     }
 
     .brand-logo-left {
@@ -414,6 +425,14 @@ body {
 
     .auth-section h1 {
         font-size: 24px;
+    }
+
+    .logos-container {
+        gap: 10px;
+    }
+
+    .logos-separator {
+        font-size: 18px;
     }
 
     .brand-logo-left {
