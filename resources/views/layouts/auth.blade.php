@@ -205,7 +205,7 @@
                 <!-- Right Panel - Branding -->
                 <div class="right-panel">
                     <div class="logos-container">
-                        <img src="{{ asset('logos/divergents_logo.png') }}" alt="Divergents Logo" class="brand-logo brand-logo-left">
+                        <img src="{{ asset('logos/divergents_logo.png') }}" alt="Divergents Logo" class="brand-logo brand-logo-left" style="position: relative; top: 5px;">
                         <span class="logos-separator">×</span>
                         <img src="{{ asset('logos/talents_lab_logo.png') }}" alt="Talents Lab Logo" class="brand-logo brand-logo-right">
                     </div>
