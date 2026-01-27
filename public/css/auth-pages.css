@@ -265,47 +265,18 @@ body {
     width: auto;
 }
 
-.brand-content {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-}
-
-.brand-feature {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-}
-
-.feature-icon {
-    flex-shrink: 0;
-    width: 44px;
-    height: 44px;
-    background: linear-gradient(135deg, #eff6ff 0%, #e0e7ff 100%);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.feature-icon svg {
-    width: 22px;
-    height: 22px;
-    color: #3b82f6;
-}
-
-.feature-text h3 {
+.brand-description {
     font-size: 15px;
-    font-weight: 600;
-    color: #111827;
-    margin-bottom: 6px;
+    line-height: 1.7;
+    color: #374151;
+    font-weight: 400;
+    max-width: 420px;
 }
 
-.feature-text p {
-    font-size: 14px;
-    line-height: 1.6;
-    color: #6b7280;
-    margin: 0;
+.brand-description br {
+    display: block;
+    content: "";
+    margin-top: 16px;
 }
 
 .btn-dashboard {
@@ -419,28 +390,6 @@ body {
         height: 24px;
     }
 
-    .brand-content {
-        gap: 20px;
-    }
-
-    .feature-icon {
-        width: 40px;
-        height: 40px;
-    }
-
-    .feature-icon svg {
-        width: 20px;
-        height: 20px;
-    }
-
-    .feature-text h3 {
-        font-size: 14px;
-    }
-
-    .feature-text p {
-        font-size: 13px;
-    }
-
     .brand-description {
         font-size: 14px;
         line-height: 1.6;
@@ -492,24 +441,5 @@ body {
 
     .brand-logo-right {
         height: 20px;
-    }
-
-    .brand-content {
-        gap: 16px;
-    }
-
-    .feature-icon {
-        width: 36px;
-        height: 36px;
-        border-radius: 10px;
-    }
-
-    .feature-icon svg {
-        width: 18px;
-        height: 18px;
-    }
-
-    .brand-feature {
-        gap: 12px;
     }
 }

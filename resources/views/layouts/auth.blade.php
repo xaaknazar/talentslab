@@ -209,30 +209,11 @@
                         <span class="logos-separator">×</span>
                         <img src="{{ asset('logos/talents_lab_logo.png') }}" alt="Talents Lab Logo" class="brand-logo brand-logo-right">
                     </div>
-                    <div class="brand-content">
-                        <div class="brand-feature">
-                            <div class="feature-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="22" height="22" style="width: 22px; height: 22px; flex-shrink: 0;">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z" />
-                                </svg>
-                            </div>
-                            <div class="feature-text">
-                                <h3>{{ __('Resume Database') }}</h3>
-                                <p>{{ __('A modern online platform with a resume database reflecting a holistic psychometric portrait of personality.') }}</p>
-                            </div>
-                        </div>
-                        <div class="brand-feature">
-                            <div class="feature-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="22" height="22" style="width: 22px; height: 22px; flex-shrink: 0;">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.745 3.745 0 011.043 3.296A3.745 3.745 0 0121 12z" />
-                                </svg>
-                            </div>
-                            <div class="feature-text">
-                                <h3>{{ __('Find Your Vacancy') }}</h3>
-                                <p>{{ __('Complete the questionnaire, create your resume and find a vacancy that best matches your abilities.') }}</p>
-                            </div>
-                        </div>
-                    </div>
+                    <p class="brand-description">
+                        {{ __('Talents Lab is a modern online platform with a resume database reflecting a holistic psychometric portrait of personality.') }}
+                        <br><br>
+                        {{ __('By completing the questionnaire, you will create a resume and be able to find a vacancy that best matches your abilities and potential.') }}
+                    </p>
                 </div>
             </div>
         </div>
