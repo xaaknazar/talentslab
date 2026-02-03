@@ -361,6 +361,7 @@ class CandidateResource extends Resource
                     ->hidden(), // Скрытый фильтр, но доступный при необходимости
             ])
             ->actions([
+                // Резюме - всегда доступны при step >= 4
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\Action::make('Резюме полное')
                         ->label('Резюме полное')
@@ -375,7 +376,15 @@ class CandidateResource extends Resource
                         ->color('info')
                         ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'anketa-reduced']))
                         ->modal(),
+                ])
+                    ->label('Резюме')
+                    ->icon('heroicon-o-document-text')
+                    ->color('success')
+                    ->button()
+                    ->visible(fn (Candidate $record): bool => $record->step >= 4),
 
+                // Gallup отчёты
+                Tables\Actions\ActionGroup::make([
                     Tables\Actions\Action::make('downloadDPs')
                         ->label('DPs отчет')
                         ->icon('heroicon-o-document-text')
@@ -397,7 +406,7 @@ class CandidateResource extends Resource
                         ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'FMD']))
                         ->modal()
                         ->visible(fn (Candidate $record): bool => $record->gallupReports()->where('type', 'FMD')->exists()),
-                    
+
                     Tables\Actions\Action::make('refresh_gallup_report')
                         ->label('Обновить gallup Отчет')
                         ->icon('heroicon-o-arrow-path')
@@ -418,17 +427,17 @@ class CandidateResource extends Resource
                                     ->send();
                             }
                         })
-                        ->visible(fn (Candidate $record): bool => 
+                        ->visible(fn (Candidate $record): bool =>
                             $record->gallup_pdf && Storage::disk('public')->exists($record->gallup_pdf)
                         ),
-                        
+
                 ])
                     ->label('Gallup')
                     ->icon('heroicon-o-document-arrow-down')
-                    ->color('success')
+                    ->color('warning')
                     ->button()
                     ->visible(fn (Candidate $record): bool =>
-                        ($record->gallup_pdf && Storage::disk('public')->exists($record->gallup_pdf)) || 
+                        ($record->gallup_pdf && Storage::disk('public')->exists($record->gallup_pdf)) ||
                         $record->gallupReports()->exists()
                     ),
                     
