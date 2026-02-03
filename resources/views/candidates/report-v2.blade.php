@@ -659,8 +659,8 @@ if (! function_exists('pluralize_years')) {
                     @if($hasNewFields)
                         {{-- Новый дизайн для анкет с заполненными main_tasks/activity_sphere --}}
                         @foreach($candidate->work_experience as $index => $experience)
-                            <div class="work-experience-item" style="{{ !$loop->last ? 'margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }}">
-                                <table style="width: 100%; border-collapse: collapse;">
+                            <div class="work-experience-item" style="{{ !$loop->last ? 'margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }} page-break-inside: avoid; break-inside: avoid;">
+                                <table style="width: 100%; border-collapse: collapse; page-break-inside: avoid; break-inside: avoid;">
                                     <tr>
                                         {{-- Левая колонка: информация о месте работы --}}
                                         <td style="width: 15rem; vertical-align: top; padding-right: 12px;">
