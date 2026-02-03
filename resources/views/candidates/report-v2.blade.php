@@ -674,7 +674,7 @@ if (! function_exists('pluralize_years')) {
                             <div class="work-experience-item" style="{{ !$loop->last ? 'margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }}">
                                 <div class="flex items-start">
                                     {{-- Левая колонка: информация о месте работы --}}
-                                    <div class="w-60" style="flex-shrink: 0; padding-right: 12px;">
+                                    <div class="w-60" style="flex-shrink: 0; padding-right: 4px;">
                                         {{-- Дата --}}
                                         <div style="color: #234088; font-size: 14px; font-weight: 500; margin-bottom: 4px;">
                                             {{ $experience['years'] ?? '' }}
