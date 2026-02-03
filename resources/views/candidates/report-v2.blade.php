@@ -684,7 +684,7 @@ if (! function_exists('pluralize_years')) {
                                             @endif
                                         </td>
                                         {{-- Правая колонка: основные обязанности --}}
-                                        <td style="vertical-align: top; padding-left: 12px;">
+                                        <td style="vertical-align: top; padding-left: 32px;">
                                             @if(!empty($experience['main_tasks']) && is_array($experience['main_tasks']) && count(array_filter($experience['main_tasks'])) > 0)
                                                 @foreach(array_filter($experience['main_tasks']) as $task)
                                                     <div style="margin-bottom: 4px; color: #000000; font-size: 14px; font-weight: 500;">
