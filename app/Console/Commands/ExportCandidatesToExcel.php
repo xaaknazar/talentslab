@@ -199,15 +199,15 @@ class ExportCandidatesToExcel extends Command
                 }
             }
 
-            $sheet->setCellValue('AN' . $row, $gardnerResults['linguistic'] ?? '');
-            $sheet->setCellValue('AO' . $row, $gardnerResults['logical_mathematical'] ?? '');
-            $sheet->setCellValue('AP' . $row, $gardnerResults['spatial'] ?? '');
-            $sheet->setCellValue('AQ' . $row, $gardnerResults['musical'] ?? '');
-            $sheet->setCellValue('AR' . $row, $gardnerResults['bodily_kinesthetic'] ?? '');
-            $sheet->setCellValue('AS' . $row, $gardnerResults['intrapersonal'] ?? '');
-            $sheet->setCellValue('AT' . $row, $gardnerResults['interpersonal'] ?? '');
-            $sheet->setCellValue('AU' . $row, $gardnerResults['naturalistic'] ?? '');
-            $sheet->setCellValue('AV' . $row, $gardnerResults['existential'] ?? '');
+            $sheet->setCellValue('AN' . $row, $gardnerResults['Лингвистический интеллект'] ?? '');
+            $sheet->setCellValue('AO' . $row, $gardnerResults['Логико-математический интеллект'] ?? '');
+            $sheet->setCellValue('AP' . $row, $gardnerResults['Пространственный интеллект'] ?? '');
+            $sheet->setCellValue('AQ' . $row, $gardnerResults['Музыкальный интеллект'] ?? '');
+            $sheet->setCellValue('AR' . $row, $gardnerResults['Телесно-кинестетический интеллект'] ?? '');
+            $sheet->setCellValue('AS' . $row, $gardnerResults['Внутриличностный интеллект'] ?? '');
+            $sheet->setCellValue('AT' . $row, $gardnerResults['Межличностный интеллект'] ?? '');
+            $sheet->setCellValue('AU' . $row, $gardnerResults['Натуралистический интеллект'] ?? '');
+            $sheet->setCellValue('AV' . $row, $gardnerResults['Экзистенциальный интеллект'] ?? '');
 
             $row++;
             $progressBar->advance();
