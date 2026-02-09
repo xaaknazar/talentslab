@@ -71,18 +71,16 @@ class ExportCandidatesToExcel extends Command
             'AK' => 'Пожелания на рабочем месте',
             'AL' => 'MBTI тип',
             'AM' => 'Дата создания',
-            // Gallup таланты
-            'AN' => 'Gallup ТОП-10',
             // Тест Гарднера
-            'AO' => 'Гарднер: Лингвистический',
-            'AP' => 'Гарднер: Логико-математический',
-            'AQ' => 'Гарднер: Пространственный',
-            'AR' => 'Гарднер: Музыкальный',
-            'AS' => 'Гарднер: Телесно-кинестетический',
-            'AT' => 'Гарднер: Внутриличностный',
-            'AU' => 'Гарднер: Межличностный',
-            'AV' => 'Гарднер: Натуралистический',
-            'AW' => 'Гарднер: Экзистенциальный',
+            'AN' => 'Гарднер: Лингвистический',
+            'AO' => 'Гарднер: Логико-математический',
+            'AP' => 'Гарднер: Пространственный',
+            'AQ' => 'Гарднер: Музыкальный',
+            'AR' => 'Гарднер: Телесно-кинестетический',
+            'AS' => 'Гарднер: Внутриличностный',
+            'AT' => 'Гарднер: Межличностный',
+            'AU' => 'Гарднер: Натуралистический',
+            'AV' => 'Гарднер: Экзистенциальный',
         ];
 
         // Записываем заголовки
@@ -106,7 +104,7 @@ class ExportCandidatesToExcel extends Command
                 'allBorders' => ['borderStyle' => Border::BORDER_THIN]
             ]
         ];
-        $sheet->getStyle('A1:AW1')->applyFromArray($headerStyle);
+        $sheet->getStyle('A1:AV1')->applyFromArray($headerStyle);
         $sheet->getRowDimension(1)->setRowHeight(30);
 
         // Заполняем данные
@@ -192,27 +190,24 @@ class ExportCandidatesToExcel extends Command
             $sheet->setCellValue('AL' . $row, $candidate->mbti_full_name);
             $sheet->setCellValue('AM' . $row, $candidate->created_at ? $candidate->created_at->format('d.m.Y H:i') : '');
 
-            // Gallup таланты (ТОП-10)
-            $gallupTalents = $candidate->gallupTalents()->orderBy('position')->limit(10)->get();
-            $gallupList = $gallupTalents->map(fn($t) => $t->position . '. ' . $t->name)->implode("\n");
-            $sheet->setCellValue('AN' . $row, $gallupList);
-
-            // Тест Гарднера
-            $gardnerResult = null;
-            if ($candidate->user_id) {
-                $gardnerResult = GardnerTestResult::where('user_id', $candidate->user_id)->first();
+            // Тест Гарднера - получаем через связь с User
+            $gardnerResults = [];
+            if ($candidate->user) {
+                $gardnerResult = $candidate->user->gardnerTestResult;
+                if ($gardnerResult) {
+                    $gardnerResults = $gardnerResult->results ?? [];
+                }
             }
-            $gardnerResults = $gardnerResult ? ($gardnerResult->results ?? []) : [];
 
-            $sheet->setCellValue('AO' . $row, $gardnerResults['linguistic'] ?? '');
-            $sheet->setCellValue('AP' . $row, $gardnerResults['logical_mathematical'] ?? '');
-            $sheet->setCellValue('AQ' . $row, $gardnerResults['spatial'] ?? '');
-            $sheet->setCellValue('AR' . $row, $gardnerResults['musical'] ?? '');
-            $sheet->setCellValue('AS' . $row, $gardnerResults['bodily_kinesthetic'] ?? '');
-            $sheet->setCellValue('AT' . $row, $gardnerResults['intrapersonal'] ?? '');
-            $sheet->setCellValue('AU' . $row, $gardnerResults['interpersonal'] ?? '');
-            $sheet->setCellValue('AV' . $row, $gardnerResults['naturalistic'] ?? '');
-            $sheet->setCellValue('AW' . $row, $gardnerResults['existential'] ?? '');
+            $sheet->setCellValue('AN' . $row, $gardnerResults['linguistic'] ?? '');
+            $sheet->setCellValue('AO' . $row, $gardnerResults['logical_mathematical'] ?? '');
+            $sheet->setCellValue('AP' . $row, $gardnerResults['spatial'] ?? '');
+            $sheet->setCellValue('AQ' . $row, $gardnerResults['musical'] ?? '');
+            $sheet->setCellValue('AR' . $row, $gardnerResults['bodily_kinesthetic'] ?? '');
+            $sheet->setCellValue('AS' . $row, $gardnerResults['intrapersonal'] ?? '');
+            $sheet->setCellValue('AT' . $row, $gardnerResults['interpersonal'] ?? '');
+            $sheet->setCellValue('AU' . $row, $gardnerResults['naturalistic'] ?? '');
+            $sheet->setCellValue('AV' . $row, $gardnerResults['existential'] ?? '');
 
             $row++;
             $progressBar->advance();
@@ -225,7 +220,7 @@ class ExportCandidatesToExcel extends Command
         foreach (range('A', 'Z') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
-        foreach (['AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AV', 'AW'] as $col) {
+        foreach (['AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AV'] as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
@@ -241,7 +236,7 @@ class ExportCandidatesToExcel extends Command
         ];
         $lastRow = $row - 1;
         if ($lastRow >= 2) {
-            $sheet->getStyle("A2:AW{$lastRow}")->applyFromArray($dataStyle);
+            $sheet->getStyle("A2:AV{$lastRow}")->applyFromArray($dataStyle);
         }
 
         // Сохраняем файл
