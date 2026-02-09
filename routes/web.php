@@ -140,6 +140,40 @@ Route::middleware([
         ])->deleteFileAfterSend(true);
     })->name('export.candidates');
 
+    // Импорт кандидатов из Excel (только для админов)
+    Route::get('/import/candidates', function () {
+        if (!auth()->user()->is_admin) {
+            abort(403, 'Доступ запрещён');
+        }
+        return view('admin.import-candidates');
+    })->name('import.candidates.form');
+
+    Route::post('/import/candidates', function (\Illuminate\Http\Request $request) {
+        if (!auth()->user()->is_admin) {
+            abort(403, 'Доступ запрещён');
+        }
+
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls'
+        ]);
+
+        $file = $request->file('file');
+        $path = $file->store('imports');
+        $fullPath = storage_path('app/' . $path);
+
+        // Запускаем команду импорта
+        \Illuminate\Support\Facades\Artisan::call('candidates:import', [
+            'file' => $fullPath
+        ]);
+
+        $output = \Illuminate\Support\Facades\Artisan::output();
+
+        // Удаляем временный файл
+        \Illuminate\Support\Facades\Storage::delete($path);
+
+        return back()->with('success', 'Импорт завершён')->with('output', $output);
+    })->name('import.candidates');
+
 });
 
 Route::post('/gallup/process', [GallupController::class, 'process']);
