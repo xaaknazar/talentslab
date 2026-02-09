@@ -12,11 +12,37 @@ class Candidate extends Model
 {
     use HasFactory;
 
+    /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Автоматически присваиваем display_number при создании нового кандидата
+        static::creating(function ($candidate) {
+            if (is_null($candidate->display_number)) {
+                $maxNumber = static::max('display_number') ?? 0;
+                $candidate->display_number = $maxNumber + 1;
+            }
+        });
+    }
+
+    /**
+     * Get the route key for the model.
+     * Используем display_number для URL вместо id
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'display_number';
+    }
+
     protected $fillable = [
         // Basic Information
         'user_id',
         'step',
         'step_parse_gallup',
+        'display_number',
         'full_name',
         'email',
         'phone',

@@ -178,6 +178,10 @@ class CandidateResource extends Resource
         return $table
             ->modifyQueryUsing(fn (Builder $query) => $query->with(['gallupReports', 'user.gardnerTestResult']))
             ->columns([
+                Tables\Columns\TextColumn::make('display_number')
+                    ->label('№')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('full_name')
                     ->label('Полное имя')
                     ->searchable()
@@ -367,14 +371,14 @@ class CandidateResource extends Resource
                         ->label('Резюме полное')
                         ->icon('heroicon-o-document-text')
                         ->color('success')
-                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'anketa']))
+                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->display_number, 'type' => 'anketa']))
                         ->modal(),
 
                     Tables\Actions\Action::make('Резюме урезанное')
                         ->label('Резюме урезанное')
                         ->icon('heroicon-o-document-text')
                         ->color('info')
-                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'anketa-reduced']))
+                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->display_number, 'type' => 'anketa-reduced']))
                         ->modal(),
                 ])
                     ->label('Резюме')
@@ -389,21 +393,21 @@ class CandidateResource extends Resource
                         ->label('DPs отчет')
                         ->icon('heroicon-o-document-text')
                         ->color('info')
-                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'DPs']))
+                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->display_number, 'type' => 'DPs']))
                         ->modal()
                         ->visible(fn (Candidate $record): bool => $record->gallupReports()->where('type', 'DPs')->exists()),
                     Tables\Actions\Action::make('downloadDPT')
                         ->label('DPT отчет')
                         ->icon('heroicon-o-document-text')
                         ->color('warning')
-                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'DPT']))
+                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->display_number, 'type' => 'DPT']))
                         ->modal()
                         ->visible(fn (Candidate $record): bool => $record->gallupReports()->where('type', 'DPT')->exists()),
                     Tables\Actions\Action::make('downloadFMD')
                         ->label('FMD отчет')
                         ->icon('heroicon-o-document-text')
                         ->color('danger')
-                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'FMD']))
+                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->display_number, 'type' => 'FMD']))
                         ->modal()
                         ->visible(fn (Candidate $record): bool => $record->gallupReports()->where('type', 'FMD')->exists()),
 
@@ -447,7 +451,7 @@ class CandidateResource extends Resource
                     ->label('Редактировать')
                     ->icon('heroicon-o-pencil')
                     ->color('primary')
-                    ->url(fn (Candidate $record): string => route('candidate.form', $record->id))
+                    ->url(fn (Candidate $record): string => route('candidate.form', $record->display_number))
                     ->openUrlInNewTab(false)
                     ->visible(fn (): bool => auth()->user()->is_admin ?? false),
                     
