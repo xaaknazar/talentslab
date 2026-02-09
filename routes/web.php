@@ -120,6 +120,25 @@ Route::middleware([
     // Тестовый роут для создания Word документа
     Route::get('/candidate/{candidate}/test-word-document', [GallupController::class, 'testWordDocument'])->name('candidate.test-word-document');
 
+    // Экспорт всех кандидатов в Excel (только для админов)
+    Route::get('/export/candidates', function () {
+        if (!auth()->user()->is_admin) {
+            abort(403, 'Доступ запрещён');
+        }
+
+        $outputFile = 'candidates_' . date('Y-m-d_H-i-s') . '.xlsx';
+        $outputPath = storage_path('app/' . $outputFile);
+
+        // Запускаем команду экспорта
+        \Illuminate\Support\Facades\Artisan::call('candidates:export', [
+            '--output' => $outputFile
+        ]);
+
+        // Скачиваем файл
+        return response()->download($outputPath, $outputFile, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ])->deleteFileAfterSend(true);
+    })->name('export.candidates');
 
 });
 
