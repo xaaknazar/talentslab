@@ -3,7 +3,12 @@
 namespace App\Console\Commands;
 
 use App\Models\Candidate;
+use App\Models\GallupTalent;
+use App\Models\GardnerTestResult;
+use App\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class ImportCandidatesFromExcel extends Command
@@ -52,6 +57,17 @@ class ImportCandidatesFromExcel extends Command
         'AJ' => 'expected_salary',
         'AK' => 'employer_requirements',
         'AL' => 'mbti_type',
+        // AM - дата создания (пропускаем)
+        'AN' => 'gallup_talents',
+        'AO' => 'gardner_linguistic',
+        'AP' => 'gardner_logical_mathematical',
+        'AQ' => 'gardner_spatial',
+        'AR' => 'gardner_musical',
+        'AS' => 'gardner_bodily_kinesthetic',
+        'AT' => 'gardner_intrapersonal',
+        'AU' => 'gardner_interpersonal',
+        'AV' => 'gardner_naturalistic',
+        'AW' => 'gardner_existential',
     ];
 
     public function handle()
@@ -106,6 +122,14 @@ class ImportCandidatesFromExcel extends Command
                         $candidate = Candidate::where('phone', $rowData['phone'])->first();
                     }
 
+                    // Извлекаем данные Gallup и Gardner перед сохранением кандидата
+                    $gallupTalents = $rowData['gallup_talents'] ?? null;
+                    $gardnerData = $this->extractGardnerData($rowData);
+                    unset($rowData['gallup_talents']);
+                    foreach (array_keys($gardnerData) as $key) {
+                        unset($rowData['gardner_' . $key]);
+                    }
+
                     if ($dryRun) {
                         if ($candidate) {
                             $this->newLine();
@@ -121,8 +145,18 @@ class ImportCandidatesFromExcel extends Command
                             $candidate->update($rowData);
                             $updated++;
                         } else {
-                            Candidate::create($rowData);
+                            $candidate = Candidate::create($rowData);
                             $created++;
+                        }
+
+                        // Сохраняем Gallup таланты
+                        if (!empty($gallupTalents)) {
+                            $this->saveGallupTalents($candidate, $gallupTalents);
+                        }
+
+                        // Сохраняем результаты теста Гарднера
+                        if (!empty(array_filter($gardnerData))) {
+                            $this->saveGardnerResults($candidate, $gardnerData);
                         }
                     }
                 } catch (\Exception $e) {
@@ -467,5 +501,82 @@ class ImportCandidatesFromExcel extends Command
         }
 
         return null;
+    }
+
+    private function extractGardnerData(array $rowData): array
+    {
+        $types = [
+            'linguistic', 'logical_mathematical', 'spatial', 'musical',
+            'bodily_kinesthetic', 'intrapersonal', 'interpersonal',
+            'naturalistic', 'existential'
+        ];
+
+        $data = [];
+        foreach ($types as $type) {
+            $key = 'gardner_' . $type;
+            if (isset($rowData[$key]) && is_numeric($rowData[$key])) {
+                $data[$type] = (int)$rowData[$key];
+            }
+        }
+
+        return $data;
+    }
+
+    private function saveGallupTalents(Candidate $candidate, string $talents): void
+    {
+        // Удаляем существующие таланты
+        GallupTalent::where('candidate_id', $candidate->id)->delete();
+
+        // Парсим таланты из формата "1. Название\n2. Название\n..."
+        $lines = explode("\n", $talents);
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if (empty($line)) continue;
+
+            // Формат: "1. Название таланта"
+            if (preg_match('/^(\d+)\.\s*(.+)$/', $line, $matches)) {
+                GallupTalent::create([
+                    'candidate_id' => $candidate->id,
+                    'position' => (int)$matches[1],
+                    'name' => trim($matches[2]),
+                ]);
+            }
+        }
+    }
+
+    private function saveGardnerResults(Candidate $candidate, array $results): void
+    {
+        // Для сохранения результатов Гарднера нужен user_id
+        // Если у кандидата нет user_id, создаём временного пользователя
+        $userId = $candidate->user_id;
+
+        if (!$userId && !empty($candidate->email)) {
+            // Проверяем, есть ли пользователь с таким email
+            $user = User::where('email', $candidate->email)->first();
+
+            if (!$user) {
+                // Создаём пользователя с временным паролем
+                $user = User::create([
+                    'name' => $candidate->full_name ?? 'Кандидат',
+                    'email' => $candidate->email,
+                    'password' => Hash::make(Str::random(16)),
+                ]);
+            }
+
+            // Привязываем пользователя к кандидату
+            $candidate->update(['user_id' => $user->id]);
+            $userId = $user->id;
+        }
+
+        if (!$userId) {
+            return; // Не можем сохранить без user_id
+        }
+
+        // Обновляем или создаём результаты теста Гарднера
+        GardnerTestResult::updateOrCreate(
+            ['user_id' => $userId],
+            ['results' => $results, 'answers' => []]
+        );
     }
 }
