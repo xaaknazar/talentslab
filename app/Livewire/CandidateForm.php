@@ -440,7 +440,7 @@ class CandidateForm extends Component
             'current_city' => ['required', 'string', 'max:255'],
             'ready_to_relocate' => 'nullable|boolean',
             'instagram' => 'nullable|string|max:255',
-            'photo' => !$this->candidate?->photo ? 'required|image|max:20480' : 'nullable|image|max:20480',
+            'photo' => (!$this->candidate?->photo && !(is_string($this->photo) && !empty($this->photo))) ? 'required|image|max:20480' : 'nullable|image|max:20480',
 
             // Step 2 validation rules
             'religion' => 'required|string|in:' . implode(',', array_values(config('lists.religions'))),
@@ -924,8 +924,8 @@ class CandidateForm extends Component
 
             // Специальная обработка для фото на первом шаге
             if ($this->currentStep === 1) {
-                // Если фото уже загружено в базу или есть предпросмотр, не требуем его
-                if ($this->candidate?->photo || $this->photoPreview) {
+                // Если фото уже загружено в базу, есть предпросмотр, или photo уже сохранено как строка пути, не требуем его
+                if ($this->candidate?->photo || $this->photoPreview || (is_string($this->photo) && !empty($this->photo))) {
                     unset($rules['photo']);
                 }
             }
@@ -1040,7 +1040,7 @@ class CandidateForm extends Component
                 'birth_date' => $allRules['birth_date'],
                 'birth_place' => $allRules['birth_place'],
                 'current_city' => $allRules['current_city'],
-                'photo' => !$this->candidate?->photo ? 'required|image|max:20480' : 'nullable|image|max:20480',
+                'photo' => (!$this->candidate?->photo && !(is_string($this->photo) && !empty($this->photo))) ? 'required|image|max:20480' : 'nullable|image|max:20480',
             ],
             2 => [
                 'religion' => $allRules['religion'],
@@ -2121,7 +2121,8 @@ class CandidateForm extends Component
             $rules = $this->rules();
 
             // Если фото уже сохранено (строка) и не загружается новое, исключаем из валидации
-            if ($this->candidate && $this->candidate->photo && is_string($this->photo)) {
+            // Также проверяем случай когда photo - это строка пути (уже сохранено), независимо от состояния candidate
+            if (($this->candidate && $this->candidate->photo && is_string($this->photo)) || (is_string($this->photo) && !empty($this->photo))) {
                 unset($rules['photo']);
                 logger()->debug('Photo validation removed (existing file)');
             } else if ($this->candidate && $this->candidate->photo) {
