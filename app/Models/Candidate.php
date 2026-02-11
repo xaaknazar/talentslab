@@ -301,8 +301,15 @@ class Candidate extends Model
     public function getFormattedParents()
     {
         $family = $this->getFamilyStructured();
+
+        // Проверяем флаг "нет родителей"
+        $familyData = $this->family_members ?? [];
+        if (is_array($familyData) && !empty($familyData['no_parents'])) {
+            return ['Нет родителей'];
+        }
+
         $formatted = [];
-        
+
         foreach ($family['parents'] as $parent) {
             $line = $parent['relation'] ?? 'Не указано';
             $line .= ' - ' . ($parent['birth_year'] ?? 'Не указано') . ' г.р.';
@@ -311,7 +318,7 @@ class Candidate extends Model
             }
             $formatted[] = $line;
         }
-        
+
         return $formatted;
     }
 
@@ -321,14 +328,26 @@ class Candidate extends Model
     public function getFormattedSiblings()
     {
         $family = $this->getFamilyStructured();
+
+        // Проверяем флаг "единственный ребенок"
+        $familyData = $this->family_members ?? [];
+        if (is_array($familyData) && !empty($familyData['only_child'])) {
+            return ['Единственный ребенок'];
+        }
+
         $formatted = [];
-        
+
         foreach ($family['siblings'] as $sibling) {
             $line = $sibling['relation'] ?? 'Не указано';
             $line .= ' - ' . ($sibling['birth_year'] ?? 'Не указано') . ' г.р.';
             $formatted[] = $line;
         }
-        
+
+        // Если нет братьев/сестёр и флаг не установлен, возвращаем "Не указано"
+        if (empty($formatted)) {
+            return ['Не указано'];
+        }
+
         return $formatted;
     }
 

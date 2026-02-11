@@ -49,6 +49,9 @@ class CandidateForm extends Component
     public $parents = [];
     public $siblings = [];
     public $children = [];
+    // Флаги для особых случаев семьи
+    public $no_parents = false;
+    public $only_child = false;
     public $hobbies;
     public $interests;
     public $visited_countries = [];
@@ -452,7 +455,11 @@ class CandidateForm extends Component
             // 'family_members.*.profession' => ['required', 'string', 'max:255'],
 
             // Новые правила валидации для категорий семьи
-            'parents' => 'required|array|min:1|max:2',
+            // Флаги для особых случаев
+            'no_parents' => 'sometimes|boolean',
+            'only_child' => 'sometimes|boolean',
+            // Родители обязательны только если no_parents не выбран
+            'parents' => $this->no_parents ? 'sometimes|array|max:2' : 'required|array|min:1|max:2',
             'parents.*.relation' => 'required|string|in:Отец,Мать',
             'parents.*.birth_year' => 'required|integer|min:1900|max:' . date('Y'),
             'parents.*.profession' => 'required|string|max:255',
@@ -1445,6 +1452,9 @@ class CandidateForm extends Component
             $this->parents = $familyData['parents'] ?? [];
             $this->siblings = $familyData['siblings'] ?? [];
             $this->children = $familyData['children'] ?? [];
+            // Загружаем флаги для особых случаев
+            $this->no_parents = $familyData['no_parents'] ?? false;
+            $this->only_child = $familyData['only_child'] ?? false;
         } else {
             // Старая структура - мигрируем данные
             $this->parents = [];
@@ -1491,7 +1501,9 @@ class CandidateForm extends Component
         $structure = [
             'parents' => $this->parents ?? [],
             'siblings' => $this->siblings ?? [],
-            'children' => $this->children ?? []
+            'children' => $this->children ?? [],
+            'no_parents' => $this->no_parents ?? false,
+            'only_child' => $this->only_child ?? false,
         ];
         
         logger()->info('buildFamilyStructure called', [
@@ -1564,17 +1576,19 @@ class CandidateForm extends Component
         logger()->debug('CUSTOM VALIDATION - Family data:', [
             'parents' => $this->parents,
             'siblings' => $this->siblings,
-            'children' => $this->children
+            'children' => $this->children,
+            'no_parents' => $this->no_parents,
+            'only_child' => $this->only_child
         ]);
 
         $errors = [];
 
-        // Проверяем, что добавлен хотя бы один родитель
-        if (empty($this->parents) || count($this->parents) === 0) {
-            $errors['parents'] = 'Добавьте минимум одного родителя';
+        // Проверяем, что добавлен хотя бы один родитель (если не выбран флаг "нет родителей")
+        if (!$this->no_parents && (empty($this->parents) || count($this->parents) === 0)) {
+            $errors['parents'] = 'Добавьте минимум одного родителя или отметьте "Нет родителей"';
         }
 
-        // Валидируем родителей
+        // Валидируем родителей (только если есть родители и не выбран флаг no_parents)
         foreach ($this->parents as $index => $parent) {
             if (empty($parent['relation'])) {
                 $errors["parents.{$index}.relation"] = 'Поле Родство обязательно.';

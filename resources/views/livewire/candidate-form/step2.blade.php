@@ -52,7 +52,18 @@
         <!-- Родители -->
         <div>
             <label class="block text-base font-medium text-gray-700 mb-3">{{ __('Parents') }}</label>
-            <div class="space-y-4">
+
+            <!-- Чекбокс "Нет родителей" -->
+            <div class="mb-4">
+                <label class="inline-flex items-center cursor-pointer">
+                    <input type="checkbox"
+                           wire:model.live="no_parents"
+                           class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <span class="ml-2 text-sm text-gray-700">{{ __('No parents') }}</span>
+                </label>
+            </div>
+
+            <div class="space-y-4" @if($no_parents) style="display: none;" @endif>
                 @foreach($parents as $index => $parent)
                     <div wire:key="parent-{{ $index }}" class="p-4 bg-gray-50 rounded-lg">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -118,7 +129,18 @@
         <!-- Братья и сестры -->
         <div>
             <label class="block text-base font-medium text-gray-700 mb-3">{{ __('Siblings') }}</label>
-            <div class="space-y-4">
+
+            <!-- Чекбокс "Единственный ребенок" -->
+            <div class="mb-4">
+                <label class="inline-flex items-center cursor-pointer">
+                    <input type="checkbox"
+                           wire:model.live="only_child"
+                           class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <span class="ml-2 text-sm text-gray-700">{{ __('Only child (no siblings)') }}</span>
+                </label>
+            </div>
+
+            <div class="space-y-4" @if($only_child) style="display: none;" @endif>
                 @foreach($siblings as $index => $sibling)
                     <div wire:key="sibling-{{ $index }}" class="p-4 bg-gray-50 rounded-lg">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
