@@ -13,10 +13,20 @@
         @page {
             margin: 10mm 0mm 10mm 0mm !important;
         }
+        html {
+            -webkit-text-size-adjust: 100%;
+            -moz-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
         body {
             /*padding-left: 10mm !important;*/
             /*padding-right: 10mm !important;*/
             margin: 0 !important;
+            -webkit-text-size-adjust: 100%;
+            -moz-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-size-adjust: 100%;
         }
         * {
             margin: 0;
