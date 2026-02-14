@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=900">
     <title>@if($isReducedReport)Урезанный отчет о кандидате@elseОтчет о кандидате@endif - {{ $candidate->full_name }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" href="{{ asset('mini-logo.png') }}">
@@ -398,22 +398,6 @@
             -webkit-column-break-inside: avoid !important;
         }
 
-        /* ===== МОБИЛЬНАЯ АДАПТАЦИЯ - PDF-like вид ===== */
-        /* Сохраняем десктопную вёрстку, добавляем горизонтальную прокрутку */
-        @media (max-width: 768px) {
-            html {
-                overflow-x: auto;
-            }
-
-            body {
-                min-width: 900px; /* Фиксированная минимальная ширина как на десктопе */
-                overflow-x: auto;
-            }
-
-            .max-w-4xl {
-                min-width: 850px;
-            }
-        }
     </style>
 </head>
 <body>
