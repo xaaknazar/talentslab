@@ -242,7 +242,8 @@ class CandidateResource extends Resource
                     ->limit(30)
                     ->tooltip(fn (?string $state): string => $state ?? 'Не начат')
                     ->toggleable(isToggledHiddenByDefault: true)
-                    ->sortable(),
+                    ->sortable()
+                    ->visible(fn (): bool => auth()->user()->is_admin ?? false),
                 Tables\Columns\IconColumn::make('has_driving_license')
                     ->label('Вод. права')
                     ->boolean()
@@ -270,7 +271,8 @@ class CandidateResource extends Resource
                         str_contains($state, 'отчета') => 'warning',
                         default => 'gray',
                     })
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->visible(fn (): bool => auth()->user()->is_admin ?? false),
                 Tables\Columns\TextColumn::make('gardner_status')
                     ->label('Тест Гарднера')
                     ->getStateUsing(function (Candidate $record): string {
@@ -441,8 +443,9 @@ class CandidateResource extends Resource
                     ->color('warning')
                     ->button()
                     ->visible(fn (Candidate $record): bool =>
-                        ($record->gallup_pdf && Storage::disk('public')->exists($record->gallup_pdf)) ||
-                        $record->gallupReports()->exists()
+                        (auth()->user()->is_admin ?? false) &&
+                        (($record->gallup_pdf && Storage::disk('public')->exists($record->gallup_pdf)) ||
+                        $record->gallupReports()->exists())
                     ),
                     
                 // Заметки рекрутера

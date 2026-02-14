@@ -397,6 +397,224 @@
             break-inside: avoid !important;
             -webkit-column-break-inside: avoid !important;
         }
+
+        /* ===== МОБИЛЬНАЯ АДАПТАЦИЯ ===== */
+        @media (max-width: 768px) {
+            /* Базовые стили для мобильных */
+            body {
+                font-size: 14px;
+            }
+
+            .max-w-4xl {
+                max-width: 100%;
+                padding: 0 8px;
+            }
+
+            /* Заголовок и логотипы */
+            .logo-header {
+                padding: 8px !important;
+            }
+
+            .logo-header .h-14 {
+                height: 2.5rem !important;
+            }
+
+            .logo-header .h-4 {
+                height: 1rem !important;
+            }
+
+            /* Фото кандидата - по центру сверху на мобильных */
+            .float-right.ml-6 {
+                float: none !important;
+                margin-left: 0 !important;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-bottom: 16px;
+            }
+
+            .w-47 {
+                width: 140px !important;
+            }
+
+            .h-69 {
+                height: 200px !important;
+            }
+
+            /* Имя кандидата */
+            .text-3xl {
+                font-size: 1.5rem !important;
+                line-height: 2rem !important;
+            }
+
+            .text-xl {
+                font-size: 1.125rem !important;
+            }
+
+            /* Контактная информация - в колонку */
+            .text-base.mb-6 > div {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+            }
+
+            .text-base.mb-6 span {
+                margin-right: 0 !important;
+                margin-bottom: 8px;
+            }
+
+            /* Строки данных - в колонку на мобильных */
+            .flex.items-start,
+            .flex.data-row {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+            }
+
+            .w-60 {
+                width: 100% !important;
+                margin-bottom: 4px;
+                font-weight: 600 !important;
+            }
+
+            .flex-1 {
+                width: 100%;
+            }
+
+            /* Опыт работы - новый формат */
+            .work-experience-item .flex.items-start {
+                flex-direction: column !important;
+            }
+
+            .work-experience-item .w-60 {
+                width: 100% !important;
+                padding-right: 0 !important;
+                margin-bottom: 12px;
+            }
+
+            /* Языковые навыки */
+            .space-y-1 .flex.text-base {
+                flex-wrap: wrap !important;
+            }
+
+            .w-32 {
+                width: 100% !important;
+            }
+
+            .w-40 {
+                width: 100% !important;
+            }
+
+            /* Секция психометрических данных */
+            .mbti-row {
+                white-space: normal !important;
+            }
+
+            /* Интеллекты Гарднера - адаптация графиков */
+            .gardner-section .bg-gray-100 {
+                padding: 12px !important;
+                overflow-x: auto;
+            }
+
+            .gardner-chart-container {
+                min-width: 600px;
+            }
+
+            /* Первый и второй ряд графиков */
+            .gardner-row > div:first-child {
+                height: auto !important;
+                min-height: 140px;
+            }
+
+            /* Уменьшаем размер столбцов на мобильных */
+            .gardner-row div[style*="width: 110px"] {
+                width: 70px !important;
+                margin: 0 8px !important;
+            }
+
+            .gardner-row span[style*="font-size: 26px"] {
+                font-size: 16px !important;
+            }
+
+            .gardner-row div[style*="font-size: 15px"] {
+                font-size: 11px !important;
+            }
+
+            .gardner-row img[style*="width: 24px"] {
+                width: 18px !important;
+                height: 18px !important;
+            }
+
+            /* Подвал */
+            .no-print {
+                padding: 12px !important;
+            }
+
+            /* Padding для основного контента */
+            [style*="padding: 0 12px"] {
+                padding: 0 8px 8px 8px !important;
+            }
+
+            .p-3 {
+                padding: 8px !important;
+            }
+
+            .mb-8 {
+                margin-bottom: 1.5rem !important;
+            }
+
+            /* PDF-like стиль на мобильных */
+            .bg-white {
+                box-shadow: none !important;
+                border: 1px solid #e5e7eb;
+            }
+        }
+
+        /* Очень маленькие экраны (до 480px) */
+        @media (max-width: 480px) {
+            body {
+                font-size: 13px;
+            }
+
+            .text-3xl {
+                font-size: 1.25rem !important;
+            }
+
+            .text-xl {
+                font-size: 1rem !important;
+            }
+
+            .text-base {
+                font-size: 0.875rem !important;
+            }
+
+            .w-47 {
+                width: 120px !important;
+            }
+
+            .h-69 {
+                height: 170px !important;
+            }
+
+            /* Ещё сильнее сжимаем графики Гарднера */
+            .gardner-chart-container {
+                min-width: 500px;
+            }
+
+            .gardner-row div[style*="width: 110px"],
+            .gardner-row div[style*="width: 70px"] {
+                width: 55px !important;
+                margin: 0 4px !important;
+            }
+
+            .gardner-row span[style*="font-size: 26px"],
+            .gardner-row span[style*="font-size: 16px"] {
+                font-size: 12px !important;
+            }
+
+            .gardner-row div[style*="font-size: 15px"],
+            .gardner-row div[style*="font-size: 11px"] {
+                font-size: 9px !important;
+            }
+        }
     </style>
 </head>
 <body>
