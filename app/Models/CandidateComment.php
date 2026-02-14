@@ -12,6 +12,7 @@ class CandidateComment extends Model
 
     protected $fillable = [
         'candidate_id',
+        'user_id',
         'comment',
         'commented_by',
         'is_private'
@@ -25,4 +26,9 @@ class CandidateComment extends Model
     {
         return $this->belongsTo(Candidate::class);
     }
-} 
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+}
