@@ -98,12 +98,19 @@ class CandidateReportController extends Controller
 
     public function downloadAnketaPublic(Candidate $candidate)
     {
-        if (!$candidate->anketa_pdf || !Storage::disk('public')->exists($candidate->anketa_pdf)) {
-            abort(404, 'Файл анкеты не найден');
+        // Если есть сохранённый PDF, используем его
+        if ($candidate->anketa_pdf && Storage::disk('public')->exists($candidate->anketa_pdf)) {
+            $filePath = storage_path('app/public/' . $candidate->anketa_pdf);
+            $fileName = $candidate->full_name . ' - анкета.pdf';
+            return response()->download($filePath, $fileName);
         }
 
-        $filePath = storage_path('app/public/' . $candidate->anketa_pdf);
-        $fileName = $candidate->full_name . ' - анкета.pdf';
+        // Иначе генерируем PDF на лету
+        $gallupController = app(\App\Http\Controllers\GallupController::class);
+        $tempPath = $gallupController->generateAnketaPdfOnDemand($candidate, 'full');
+
+        $filePath = storage_path('app/public/' . $tempPath);
+        $fileName = basename($tempPath);
 
         return response()->download($filePath, $fileName);
     }
