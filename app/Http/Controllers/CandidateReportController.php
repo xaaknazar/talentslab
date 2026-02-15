@@ -7,6 +7,7 @@ use App\Models\GallupReport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Knp\Snappy\Pdf;
 
 class CandidateReportController extends Controller
 {
@@ -98,20 +99,83 @@ class CandidateReportController extends Controller
 
     public function downloadAnketaPublic(Candidate $candidate)
     {
-        // Если есть сохранённый PDF, используем его
-        if ($candidate->anketa_pdf && Storage::disk('public')->exists($candidate->anketa_pdf)) {
-            $filePath = storage_path('app/public/' . $candidate->anketa_pdf);
-            $fileName = $candidate->full_name . ' - анкета.pdf';
-            return response()->download($filePath, $fileName);
-        }
-
-        // Иначе генерируем PDF на лету
-        $gallupController = app(\App\Http\Controllers\GallupController::class);
-        $tempPath = $gallupController->generateAnketaPdfOnDemand($candidate, 'full');
+        // Генерируем PDF анкеты на лету (без Gallup отчётов)
+        $tempPath = $this->generateAnketaOnlyPdf($candidate);
 
         $filePath = storage_path('app/public/' . $tempPath);
-        $fileName = basename($tempPath);
 
-        return response()->download($filePath, $fileName);
+        // Формируем имя файла
+        $genderCode = ($candidate->gender === 'Женский' || $candidate->gender === 'female') ? 'G' : 'B';
+        $birthYear = $candidate->birth_date ? substr(date('Y', strtotime($candidate->birth_date)), -2) : '00';
+        $candidateNumber = str_pad($candidate->display_number ?? $candidate->id, 4, '0', STR_PAD_LEFT);
+        $fileName = "{$candidate->full_name} - TL{$genderCode}{$birthYear}-{$candidateNumber}.pdf";
+
+        return response()->download($filePath, $fileName)->deleteFileAfterSend(true);
+    }
+
+    /**
+     * Генерирует PDF только анкеты (без Gallup отчётов)
+     */
+    protected function generateAnketaOnlyPdf(Candidate $candidate): string
+    {
+        $tempPdfPath = storage_path("app/temp_anketa_{$candidate->id}.pdf");
+
+        // Удаляем если существует
+        if (file_exists($tempPdfPath)) {
+            unlink($tempPdfPath);
+        }
+
+        // Генерируем HTML из view
+        $html = $this->showV2($candidate, 'full')->render();
+        $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
+        $html = $this->cleanHtmlForPdf($html);
+        $html = $this->sanitizeUtf8($html);
+
+        $snappy = new Pdf('/usr/bin/wkhtmltopdf');
+
+        $options = [
+            'encoding' => 'utf-8',
+            'page-size' => 'A4',
+            'margin-top' => '10mm',
+            'margin-bottom' => '10mm',
+            'margin-left' => '2mm',
+            'margin-right' => '2mm',
+            'zoom' => 1.30,
+            'disable-smart-shrinking' => true,
+            'print-media-type' => true,
+            'load-error-handling' => 'ignore',
+            'load-media-error-handling' => 'ignore',
+        ];
+
+        $snappy->generateFromHtml($html, $tempPdfPath, $options, true);
+
+        // Копируем во временную папку public для скачивания
+        $relativePath = "temp_anketas/anketa_{$candidate->id}_" . time() . ".pdf";
+        Storage::disk('public')->makeDirectory('temp_anketas');
+
+        $publicPath = storage_path('app/public/' . $relativePath);
+        copy($tempPdfPath, $publicPath);
+        unlink($tempPdfPath);
+
+        return $relativePath;
+    }
+
+    /**
+     * Очищает HTML для корректной генерации PDF
+     */
+    protected function cleanHtmlForPdf(string $html): string
+    {
+        // Удаляем no-print элементы
+        $html = preg_replace('/<[^>]+class="[^"]*no-print[^"]*"[^>]*>.*?<\/[^>]+>/s', '', $html);
+
+        return $html;
+    }
+
+    /**
+     * Очищает строку от некорректных UTF-8 символов
+     */
+    protected function sanitizeUtf8(string $string): string
+    {
+        return mb_convert_encoding($string, 'UTF-8', 'UTF-8');
     }
 }
