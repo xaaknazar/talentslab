@@ -95,4 +95,16 @@ class CandidateReportController extends Controller
 
         return response()->download($filePath);
     }
+
+    public function downloadAnketaPublic(Candidate $candidate)
+    {
+        if (!$candidate->anketa_pdf || !Storage::disk('public')->exists($candidate->anketa_pdf)) {
+            abort(404, 'Файл анкеты не найден');
+        }
+
+        $filePath = storage_path('app/public/' . $candidate->anketa_pdf);
+        $fileName = $candidate->full_name . ' - анкета.pdf';
+
+        return response()->download($filePath, $fileName);
+    }
 }
