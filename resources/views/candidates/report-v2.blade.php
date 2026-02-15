@@ -1296,15 +1296,26 @@ if (! function_exists('pluralize_years')) {
         // Данные для шаринга
         const reportUrl = window.location.href.split('?')[0];
         const candidateName = @json($candidate->full_name);
-        const shareText = `Отчёт о кандидате: ${candidateName}`;
+        const shareText = `Резюме: ${candidateName}`;
+
+        // URL для скачивания PDF (если есть)
+        @if($candidate->anketa_pdf)
+        const pdfUrl = @json(route('candidate.anketa.download.public', $candidate));
+        const shareUrl = pdfUrl; // Отправляем ссылку на PDF
+        const shareBody = `${shareText}\n\nСкачать PDF: ${pdfUrl}`;
+        @else
+        const pdfUrl = null;
+        const shareUrl = reportUrl; // Если PDF нет, отправляем ссылку на страницу
+        const shareBody = `${shareText}\n\n${reportUrl}`;
+        @endif
 
         // Инициализация ссылок
         document.getElementById('share-whatsapp').href =
-            `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + '\n' + reportUrl)}`;
+            `https://api.whatsapp.com/send?text=${encodeURIComponent(shareBody)}`;
         document.getElementById('share-telegram').href =
-            `https://t.me/share/url?url=${encodeURIComponent(reportUrl)}&text=${encodeURIComponent(shareText)}`;
+            `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
         document.getElementById('share-email').href =
-            `mailto:?subject=${encodeURIComponent(shareText)}&body=${encodeURIComponent(shareText + '\n\n' + reportUrl)}`;
+            `mailto:?subject=${encodeURIComponent(shareText)}&body=${encodeURIComponent(shareBody)}`;
 
         let sharePanelOpen = false;
 
