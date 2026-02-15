@@ -165,8 +165,23 @@ class CandidateReportController extends Controller
      */
     protected function cleanHtmlForPdf(string $html): string
     {
-        // Удаляем no-print элементы
-        $html = preg_replace('/<[^>]+class="[^"]*no-print[^"]*"[^>]*>.*?<\/[^>]+>/s', '', $html);
+        // Используем DOMDocument для корректного удаления no-print элементов
+        $dom = new \DOMDocument();
+        @$dom->loadHTML('<?xml encoding="UTF-8">' . $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+        $xpath = new \DOMXPath($dom);
+
+        // Находим все элементы с классом no-print
+        $noPrintElements = $xpath->query('//*[contains(@class, "no-print")]');
+
+        foreach ($noPrintElements as $element) {
+            $element->parentNode->removeChild($element);
+        }
+
+        $html = $dom->saveHTML();
+
+        // Убираем добавленный XML заголовок
+        $html = str_replace('<?xml encoding="UTF-8">', '', $html);
 
         return $html;
     }
