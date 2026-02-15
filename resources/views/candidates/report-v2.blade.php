@@ -1128,7 +1128,6 @@ if (! function_exists('pluralize_years')) {
     </div>
 
     <!-- Кнопка Save Resume -->
-    @if($candidate->anketa_pdf)
     <div class="no-print" style="
         position: fixed;
         bottom: 24px;
@@ -1155,6 +1154,5 @@ if (! function_exists('pluralize_years')) {
             Save Resume
         </a>
     </div>
-    @endif
 </body>
 </html>
