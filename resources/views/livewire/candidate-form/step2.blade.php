@@ -52,7 +52,18 @@
         <!-- Родители -->
         <div>
             <label class="block text-base font-medium text-gray-700 mb-3">{{ __('Parents') }}</label>
-            <div class="space-y-4">
+
+            <!-- Чекбокс "Нет родителей" -->
+            <div class="mb-4">
+                <label class="inline-flex items-center cursor-pointer">
+                    <input type="checkbox"
+                           wire:model.live="no_parents"
+                           class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <span class="ml-2 text-sm text-gray-700">{{ __('No parents') }}</span>
+                </label>
+            </div>
+
+            <div class="space-y-4" @if($no_parents) style="display: none;" @endif>
                 @foreach($parents as $index => $parent)
                     <div wire:key="parent-{{ $index }}" class="p-4 bg-gray-50 rounded-lg">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -118,7 +129,18 @@
         <!-- Братья и сестры -->
         <div>
             <label class="block text-base font-medium text-gray-700 mb-3">{{ __('Siblings') }}</label>
-            <div class="space-y-4">
+
+            <!-- Чекбокс "Единственный ребенок" -->
+            <div class="mb-4">
+                <label class="inline-flex items-center cursor-pointer">
+                    <input type="checkbox"
+                           wire:model.live="only_child"
+                           class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <span class="ml-2 text-sm text-gray-700">{{ __('Only child (no siblings)') }}</span>
+                </label>
+            </div>
+
+            <div class="space-y-4" @if($only_child) style="display: none;" @endif>
                 @foreach($siblings as $index => $sibling)
                     <div wire:key="sibling-{{ $index }}" class="p-4 bg-gray-50 rounded-lg">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -296,10 +318,16 @@
                                 @endif
                                 {{ $displayName }}
                                 <button type="button"
-                                        wire:click="removeCountry('{{ $country }}')"
-                                        class="ml-2 text-white/80 hover:text-white focus:outline-none">
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        wire:click.prevent="removeCountry('{{ $country }}')"
+                                        wire:loading.attr="disabled"
+                                        wire:target="removeCountry('{{ $country }}')"
+                                        class="ml-2 text-white/80 hover:text-white focus:outline-none disabled:opacity-50">
+                                    <svg wire:loading.remove wire:target="removeCountry('{{ $country }}')" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                    <svg wire:loading wire:target="removeCountry('{{ $country }}')" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
                                 </button>
                             </span>

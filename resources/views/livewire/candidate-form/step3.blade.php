@@ -14,7 +14,7 @@
                         </label>
                         <input type="text"
                                wire:model="school_name"
-                               placeholder="{{ app()->getLocale() == 'ar' ? 'المدرسة رقم 25' : (app()->getLocale() == 'en' ? 'School #25' : 'Школа №25') }}"
+                               placeholder="{{ app()->getLocale() == 'en' ? 'School #25' : 'Школа №25' }}"
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         @error('school_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
@@ -25,7 +25,7 @@
                         </label>
                         <input type="text"
                                wire:model="school_city"
-                               placeholder="{{ app()->getLocale() == 'ar' ? 'الرياض' : (app()->getLocale() == 'en' ? 'London' : 'Актау') }}"
+                               placeholder="{{ app()->getLocale() == 'en' ? 'London' : 'Актау' }}"
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         @error('school_city') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
@@ -70,7 +70,7 @@
                                 </label>
                                 <input type="text"
                                        wire:model="universities.{{ $index }}.city"
-                                       placeholder="{{ app()->getLocale() == 'ar' ? 'دبي' : (app()->getLocale() == 'en' ? 'New York' : 'Алматы') }}"
+                                       placeholder="{{ app()->getLocale() == 'en' ? 'New York' : 'Алматы' }}"
                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                 @error("universities.{$index}.city") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>
@@ -151,9 +151,31 @@
 
         <!-- Опыт работы -->
         <div>
-            <label class="block text-base font-medium text-gray-700">{{ __('Work Experience') }}</label>
+            <div class="flex items-center justify-between mb-2">
+                <label class="block text-base font-medium text-gray-700">
+                    {{ __('Work Experience') }}
+                    @if(!$has_no_work_experience)
+                        <span class="text-red-500">*</span>
+                    @endif
+                </label>
+                <label class="inline-flex items-center cursor-pointer">
+                    <input type="checkbox"
+                           wire:model.live="has_no_work_experience"
+                           class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <span class="ml-2 text-sm text-gray-600">{{ __('No work experience') }}</span>
+                </label>
+            </div>
+
+            @if($has_no_work_experience)
+                <div class="p-4 bg-gray-50 rounded-lg text-center text-gray-500">
+                    <svg class="mx-auto h-12 w-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <p>{{ __('Work experience section is skipped') }}</p>
+                </div>
+            @else
             <div class="space-y-4">
-                @foreach($work_experience as $index => $experience)
+                @forelse($work_experience as $index => $experience)
                     <div class="p-4 bg-gray-50 rounded-lg">
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <!-- Левая колонка: Период работы -->
@@ -331,7 +353,7 @@
                                     <div class="flex items-center gap-2">
                                         <span class="text-sm text-gray-500 w-6 text-center">{{ $taskIndex + 1 }}.</span>
                                         <input type="text"
-                                               wire:model="work_experience.{{ $index }}.main_tasks.{{ $taskIndex }}"
+                                               wire:model.blur="work_experience.{{ $index }}.main_tasks.{{ $taskIndex }}"
                                                class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
                                                placeholder="{{ __('Describe one task in one sentence') }}">
                                         @if(count($tasks) > 3)
@@ -348,10 +370,17 @@
                             </div>
                             @if(count($tasks) < 8)
                                 <button type="button"
-                                        wire:click="addWorkTask({{ $index }})"
-                                        class="mt-2 inline-flex items-center text-sm text-blue-600 hover:text-blue-800">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        wire:click.prevent="addWorkTask({{ $index }})"
+                                        wire:loading.attr="disabled"
+                                        wire:loading.class="opacity-50 cursor-not-allowed"
+                                        wire:target="addWorkTask({{ $index }})"
+                                        class="mt-2 inline-flex items-center text-sm text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity">
+                                    <svg wire:loading.remove wire:target="addWorkTask({{ $index }})" class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                    </svg>
+                                    <svg wire:loading wire:target="addWorkTask({{ $index }})" class="w-4 h-4 mr-1 animate-spin" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
                                     {{ __('Add task') }}
                                 </button>
@@ -365,7 +394,11 @@
                             </button>
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
+                        <p class="text-yellow-700">{{ __('Add at least one work experience') }}</p>
+                    </div>
+                @endforelse
 
                 <button type="button"
                         wire:click="addWorkExperience"
@@ -375,7 +408,12 @@
                     </svg>
                     {{ __('Add') }}
                 </button>
+
+                @error('work_experience')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
             </div>
+            @endif
         </div>
 
         <!-- Общий стаж и удовлетворенность работой -->
@@ -435,11 +473,12 @@
                                 <select wire:model="language_skills.{{ $index }}.level"
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                     <option value="">{{ __('Select level') }}</option>
-                                    <option value="Начальный">{{ __('Beginner') }}</option>
-                                    <option value="Средний">{{ __('Intermediate') }}</option>
-                                    <option value="Выше среднего">{{ __('Upper Intermediate') }}</option>
-                                    <option value="Продвинутый">{{ __('Advanced') }}</option>
-                                    <option value="В совершенстве">{{ __('Fluent') }}</option>
+                                    <option value="A1">{{ __('A1 - Beginner') }}</option>
+                                    <option value="A2">{{ __('A2 - Basic') }}</option>
+                                    <option value="B1">{{ __('B1 - Intermediate') }}</option>
+                                    <option value="B2">{{ __('B2 - Confident') }}</option>
+                                    <option value="C1">{{ __('C1 - Very High') }}</option>
+                                    <option value="C2">{{ __('C2 - Advanced') }}</option>
                                 </select>
                                 @error("language_skills.{$index}.level") <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </div>

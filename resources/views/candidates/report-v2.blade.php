@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=900">
     <title>@if($isReducedReport)Урезанный отчет о кандидате@elseОтчет о кандидате@endif - {{ $candidate->full_name }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" href="{{ asset('mini-logo.png') }}">
@@ -13,10 +13,20 @@
         @page {
             margin: 10mm 0mm 10mm 0mm !important;
         }
+        html {
+            -webkit-text-size-adjust: 100%;
+            -moz-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
         body {
             /*padding-left: 10mm !important;*/
             /*padding-right: 10mm !important;*/
             margin: 0 !important;
+            -webkit-text-size-adjust: 100%;
+            -moz-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-size-adjust: 100%;
         }
         * {
             margin: 0;
@@ -285,6 +295,119 @@
             page-break-inside: avoid;
             break-inside: avoid;
         }
+
+        /* Секция "Интересы и развитие" - заполняет страницу */
+        .interests-section {
+            page-break-inside: auto;
+            break-inside: auto;
+        }
+
+        /* Каждая строка данных в секции интересов - НЕ разрывается между страницами */
+        .interests-section .data-row {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        /* Универсальное правило для всех data-row - не разрывать пополам */
+        .data-row {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        /* Секция "Опыт работы" - не разрывать записи пополам */
+        .work-experience-section {
+            page-break-inside: auto;
+            break-inside: auto;
+        }
+
+        /* Каждая запись опыта работы - не разрывается */
+        .work-experience-section .work-experience-item {
+            display: block !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        /* Общий стаж и награды - не разрывать */
+        .work-experience-section .work-summary,
+        .work-experience-section .work-awards {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        /* Старый формат опыта работы */
+        .work-experience-section .space-y-1 > div {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        /* Секция "Психометрические данные" - не разрывать */
+        .psychometric-section {
+            display: block !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        /* Строка MBTI не должна разрываться */
+        .mbti-row {
+            display: block !important;
+            white-space: nowrap !important;
+            page-break-inside: avoid !important;
+        }
+
+        /* Секция "Компьютерные навыки" - не разрывать */
+        .computer-skills-section {
+            display: block !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        /* Секция "Виды интеллектов Гарднера" - НЕ разрывать вообще, целиком на следующую страницу */
+        .gardner-section {
+            display: block !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        /* Контейнер графика - не разрывать */
+        .gardner-chart-container {
+            display: block !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
+        /* Каждый ряд графика НЕ разрывается */
+        .gardner-row {
+            display: block !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            overflow: hidden !important;
+        }
+
+        /* Универсальное правило - все flex контейнеры с items-start не разрываются */
+        .flex.items-start {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        /* Все элементы внутри space-y-1 не разрываются */
+        .space-y-1 > * {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
     </style>
 </head>
 <body>
@@ -314,6 +437,30 @@ if (! function_exists('clean_git_conflicts')) {
         return trim($text);
     }
 }
+
+// Функция для склонения слова "год" в русском языке
+if (! function_exists('pluralize_years')) {
+    function pluralize_years(int $number): string
+    {
+        $absNumber = abs($number);
+        $lastTwo = $absNumber % 100;
+        $lastOne = $absNumber % 10;
+
+        if ($lastTwo >= 11 && $lastTwo <= 19) {
+            return $number . ' лет';
+        }
+
+        if ($lastOne === 1) {
+            return $number . ' год';
+        }
+
+        if ($lastOne >= 2 && $lastOne <= 4) {
+            return $number . ' года';
+        }
+
+        return $number . ' лет';
+    }
+}
 @endphp
 
     <div class="max-w-4xl mx-auto bg-white ">
@@ -341,6 +488,12 @@ if (! function_exists('clean_git_conflicts')) {
                         <div class="w-47 h-69 bg-gray-300 rounded border-2 border-gray-300 flex items-center justify-center">
                             <span class="text-gray-500 text-sm">Фото</span>
                         </div>
+                    @endif
+                    <!-- Дата заполнения под фото -->
+                    @if($isFullReport)
+                    <div style="text-align: center; margin-top: 8px;">
+                        <span style="color: #6b7280; font-size: 11px;">Дата заполнения: {{ $candidate->created_at->format('d.m.Y') }}</span>
+                    </div>
                     @endif
                 </div>
 
@@ -511,7 +664,7 @@ if (! function_exists('clean_git_conflicts')) {
         <!-- Main Content -->
         <div style="padding: 0 12px 12px 12px;">
             <!-- Опыт работы -->
-            <div class="mb-8">
+            <div class="mb-8 work-experience-section">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Опыт работы</h2>
                 @if($candidate->work_experience && count($candidate->work_experience) > 0)
                     @php
@@ -528,11 +681,11 @@ if (! function_exists('clean_git_conflicts')) {
 
                     @if($hasNewFields)
                         {{-- Новый дизайн для анкет с заполненными main_tasks/activity_sphere --}}
-                        <div style="display: flex; flex-direction: column;">
-                            @foreach($candidate->work_experience as $index => $experience)
-                                <div style="display: flex; gap: 24px; {{ !$loop->first ? 'margin-top: 16px;' : '' }} {{ !$loop->last ? 'padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }}">
+                        @foreach($candidate->work_experience as $index => $experience)
+                            <div class="work-experience-item" style="{{ !$loop->last ? 'margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;' : '' }}">
+                                <div class="flex items-start">
                                     {{-- Левая колонка: информация о месте работы --}}
-                                    <div style="flex: 1; min-width: 0;">
+                                    <div class="w-60" style="flex-shrink: 0; padding-right: 4px;">
                                         {{-- Дата --}}
                                         <div style="color: #234088; font-size: 14px; font-weight: 500; margin-bottom: 4px;">
                                             {{ $experience['years'] ?? '' }}
@@ -553,27 +706,24 @@ if (! function_exists('clean_git_conflicts')) {
                                         @endif
                                     </div>
                                     {{-- Правая колонка: основные обязанности --}}
-                                    @if(!empty($experience['main_tasks']) && is_array($experience['main_tasks']) && count(array_filter($experience['main_tasks'])) > 0)
-                                        <div style="flex: 1; min-width: 0; overflow: hidden;">
-                                            <ul style="margin: 0; padding: 0; list-style: none; width: 100%;">
-                                                @foreach(array_filter($experience['main_tasks']) as $task)
-                                                    <li style="display: flex; align-items: flex-start; margin-bottom: 4px; color: #000000; font-size: 14px; font-weight: 500;">
-                                                        <span style="color: #9ca3af; margin-right: 8px; flex-shrink: 0;">•</span>
-                                                        <span style="flex: 1; min-width: 0; word-wrap: break-word; overflow-wrap: break-word;">{{ mb_ucfirst($task) }}</span>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
+                                    <div class="flex-1">
+                                        @if(!empty($experience['main_tasks']) && is_array($experience['main_tasks']) && count(array_filter($experience['main_tasks'])) > 0)
+                                            @foreach(array_filter($experience['main_tasks']) as $task)
+                                                <div style="margin-bottom: 4px; color: #000000; font-size: 14px; font-weight: 500;">
+                                                    <span style="color: #9ca3af; margin-right: 8px;">•</span>{{ mb_ucfirst($task) }}
+                                                </div>
+                                            @endforeach
+                                        @endif
+                                    </div>
                                 </div>
-                            @endforeach
-                        </div>
+                            </div>
+                        @endforeach
 
                         {{-- Общий стаж и удовлетворённость --}}
-                        <div style="margin-top: 16px;">
+                        <div class="work-summary" style="margin-top: 16px;">
                             <div style="display: flex; align-items: center; margin-bottom: 4px;">
                                 <span style="color: #000000; font-size: 14px; font-weight: 500; margin-right: 8px;">Общий стаж:</span>
-                                <span style="color: #000000; font-weight: 500; font-size: 14px;">{{ $candidate->total_experience_years ?? 0 }} лет</span>
+                                <span style="color: #000000; font-weight: 500; font-size: 14px;">{{ pluralize_years($candidate->total_experience_years ?? 0) }}</span>
                             </div>
                             <div style="display: flex; align-items: center;">
                                 <span style="color: #000000; font-size: 14px; font-weight: 500; margin-right: 8px;">Удовлетворённость работой:</span>
@@ -583,7 +733,7 @@ if (! function_exists('clean_git_conflicts')) {
 
                         {{-- Награды и достижения --}}
                         @if($candidate->awards && is_array($candidate->awards) && count(array_filter($candidate->awards)) > 0)
-                            <div style="margin-top: 16px;">
+                            <div class="work-awards" style="margin-top: 16px;">
                                 <span style="color: #000000; font-weight: 700; font-size: 16px; display: block; margin-bottom: 8px;">Награды и достижения</span>
                                 <ul style="margin: 0; padding: 0; list-style: none;">
                                     @foreach(array_filter($candidate->awards) as $award)
@@ -633,7 +783,7 @@ if (! function_exists('clean_git_conflicts')) {
             </div>
 
             <!-- Интересы и развитие -->
-            <div class="mb-8">
+            <div class="mb-8 interests-section">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Интересы и развитие</h2>
                 <div class="space-y-1">
                     <!-- 1. Хобби -->
@@ -676,15 +826,28 @@ if (! function_exists('clean_git_conflicts')) {
                     <div class="flex items-start data-row">
                         <span class="w-60 text-base text-gray-600">Любимые виды спорта:</span>
                         <span class="text-base font-medium flex-1">
-                            @if($candidate->favorite_sports)
-                                @if(is_array($candidate->favorite_sports))
-                                    {{ implode(', ', mb_convert_case(trim($candidate->favorite_sports), MB_CASE_TITLE, 'UTF-8')) }}
-                                @else
-                                    {{ mb_convert_case(trim($candidate->favorite_sports), MB_CASE_TITLE, 'UTF-8') }}
-                                @endif
-                            @else
-                                Не указано
-                            @endif
+                            @php
+                                $sports = $candidate->favorite_sports ?? '';
+                                if (!empty($sports)) {
+                                    if (is_array($sports)) {
+                                        // Для каждого элемента массива: первая буква заглавная, остальные маленькие
+                                        $sports = implode(', ', array_map(function($s) {
+                                            $s = trim($s);
+                                            if ($s === '') return '';
+                                            $lower = mb_strtolower($s, 'UTF-8');
+                                            return mb_strtoupper(mb_substr($lower, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr($lower, 1, null, 'UTF-8');
+                                        }, $sports));
+                                    } else {
+                                        // Для строки: первая буква заглавная, остальные маленькие
+                                        $sports = trim($sports);
+                                        $lower = mb_strtolower($sports, 'UTF-8');
+                                        $sports = mb_strtoupper(mb_substr($lower, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr($lower, 1, null, 'UTF-8');
+                                    }
+                                } else {
+                                    $sports = 'Не указано';
+                                }
+                            @endphp
+                            {{ $sports }}
                         </span>
                     </div>
                     <!-- 4. Посещенные страны -->
@@ -799,26 +962,42 @@ if (! function_exists('clean_git_conflicts')) {
             </div>
 
             <!-- Компьютерные навыки -->
-            <div class="mb-8">
+            <div class="mb-8 computer-skills-section">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Компьютерные навыки</h2>
                 <p class="text-base font-medium">{{ $candidate->computer_skills ?: 'Не указано' }}</p>
             </div>
 
-            <!-- Дата заполнения -->
-            @if($isFullReport)
-            <div style="text-align: right; padding: 8px 0; margin-bottom: 16px;">
-                <span style="color: #9ca3af; font-size: 12px;">Дата заполнения: {{ $candidate->created_at->format('d.m.Y') }}</span>
-            </div>
-            @endif
-
             <!-- Психометрические данные -->
-            <div class="mb-8">
+            <div class="mb-8 psychometric-section" style="page-break-inside: avoid;">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Психометрические данные</h2>
-                <div class="flex data-row">
-                    <span class="text-base text-gray-600 w-60">Тип личности по MBTI:</span>
-                    <span class="text-base font-medium" style="color: #234088;">{{ $candidate->mbti_full_name ?: 'Не указано' }}</span>
+                <div class="mbti-row" style="page-break-inside: avoid; white-space: nowrap;">
+                    <span class="text-base text-gray-600" style="display: inline;">Тип личности по MBTI: </span>
+                    <span class="text-base font-medium" style="color: #234088; display: inline;">{{ $candidate->mbti_full_name ?: 'Не указано' }}</span>
                 </div>
             </div>
+
+            <!-- Полный отчёт с Gallup -->
+            @php
+                $dpsReport = $candidate->gallupReportByType('DPs');
+                $dptReport = $candidate->gallupReportByType('DPT');
+                $fmdReport = $candidate->gallupReportByType('FMD');
+                $hasAnyGallupReport = $dpsReport || $dptReport || $fmdReport;
+            @endphp
+            @if($hasAnyGallupReport)
+            <div class="mb-8 gallup-reports-section no-print" style="page-break-inside: avoid;">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Полный отчёт</h2>
+                <p class="text-gray-600 mb-4">Откройте полный отчёт с Gallup CliftonStrengths данными:</p>
+                <a href="{{ route('candidate.anketa.view', $candidate) }}"
+                   style="display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, #234088 0%, #1a3066 100%); color: white; padding: 14px 24px; border-radius: 10px; text-decoration: none; font-size: 16px; font-weight: 600; box-shadow: 0 4px 14px rgba(35, 64, 136, 0.35); transition: all 0.2s;"
+                   onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(35, 64, 136, 0.45)';"
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 14px rgba(35, 64, 136, 0.35)';">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                    </svg>
+                    Открыть полный отчёт ({{ $candidate->full_name }})
+                </a>
+            </div>
+            @endif
 
             <!-- Виды интеллектов Гарднера -->
             @if($candidate->user && $candidate->user->gardnerTestResult)
@@ -856,10 +1035,11 @@ if (! function_exists('clean_git_conflicts')) {
                     'Экзистенциальный интеллект',
                 ];
             @endphp
-            <div class="mb-4">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">Виды интеллектов Гарднера</h2>
-                <div class="bg-gray-100 rounded-lg p-6">
+            <div class="mb-4 gardner-section">
+                <h2 class="text-xl font-bold text-gray-800 mb-4" style="page-break-after: avoid !important;">Виды интеллектов Гарднера</h2>
+                <div class="bg-gray-100 rounded-lg p-6 gardner-chart-container">
                     <!-- Первый ряд -->
+                    <div class="gardner-row" style="page-break-inside: avoid; display: block; overflow: hidden;">
                     <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
                         <!-- Ось Y -->
                         <div style="width: 28px; height: 180px; position: relative; margin-right: 8px;">
@@ -907,8 +1087,10 @@ if (! function_exists('clean_git_conflicts')) {
                             </div>
                         @endforeach
                     </div>
+                    </div>
 
                     <!-- Второй ряд -->
+                    <div class="gardner-row" style="page-break-inside: avoid; display: block; overflow: hidden;">
                     <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
                         <!-- Ось Y -->
                         <div style="width: 28px; height: 180px; position: relative; margin-right: 8px;">
@@ -956,6 +1138,7 @@ if (! function_exists('clean_git_conflicts')) {
                             </div>
                         @endforeach
                     </div>
+                    </div>
                 </div>
             </div>
             @endif
@@ -965,6 +1148,34 @@ if (! function_exists('clean_git_conflicts')) {
         <div class="bg-gray-100 p-4 text-center text-xs text-gray-500 no-print">
             <p>Отчет сгенерирован {{ now()->format('d.m.Y в H:i') }}</p>
         </div>
+    </div>
+
+    <!-- Кнопка Save Resume -->
+    <div class="no-print" style="
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 999;
+        font-family: 'Montserrat', sans-serif;
+    ">
+        <a href="{{ route('candidate.anketa.download.public', $candidate) }}" style="
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #39761d;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 6px 20px rgba(57,118,29,0.5);
+            transition: transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+        " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+            Save Resume
+        </a>
     </div>
 </body>
 </html>

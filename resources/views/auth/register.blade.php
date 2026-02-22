@@ -1,10 +1,10 @@
 @extends('layouts.auth')
 
-@section('title', __('Registration') . ' - Divergents')
+@section('title', __('Registration') . ' - TalentsLab')
 
 @section('content')
 <h1>{{ __('Create account') }}</h1>
-<p>{{ __('Register in the Divergents learning management system') }}</p>
+<p>{{ __('Register in the TalentsLab learning management system') }}</p>
 
 <!-- Validation Errors -->
 @if ($errors->any())

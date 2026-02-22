@@ -88,6 +88,9 @@ class GallupController extends Controller
      */
     public function parseGallupFromCandidateFile(Candidate $candidate)
     {
+        // Увеличиваем лимит памяти для парсинга PDF (некоторые PDF требуют много памяти)
+        ini_set('memory_limit', '512M');
+
         // Шаг 1: Проверка файла
         $this->logStep($candidate, 'Проверка файла');
 
@@ -704,14 +707,13 @@ class GallupController extends Controller
         $mergedPath = $this->mergeCandidateReportPdfs($candidate, $version);
 
         // Создаем временный файл с уникальным именем
-        // Формат: {full_name} - TL{G/B}{YY}-{ID}
-        // TL - TalentsLab, G - girl, B - boy, YY - год рождения (2 цифры), ID - id с ведущими нулями
+        // Формат: {full_name} - TL{G/B}{YY}-{display_number}
+        // TL - TalentsLab, G - girl, B - boy, YY - год рождения (2 цифры), display_number - номер анкеты
         $genderCode = ($candidate->gender === 'Женский' || $candidate->gender === 'female') ? 'G' : 'B';
         $birthYear = $candidate->birth_date ? substr(date('Y', strtotime($candidate->birth_date)), -2) : '00';
-        $candidateId = str_pad($candidate->id, 4, '0', STR_PAD_LEFT);
-        $version_text = $version === 'full' ? 'полная' : 'урезанная';
+        $candidateNumber = str_pad($candidate->display_number, 4, '0', STR_PAD_LEFT);
 
-        $tempFileName = "{$candidate->full_name} - TL{$genderCode}{$birthYear}-{$candidateId}-{$version_text}.pdf";
+        $tempFileName = "{$candidate->full_name} - TL{$genderCode}{$birthYear}-{$candidateNumber}.pdf";
 
         $tempPath = "temp_anketas/{$tempFileName}";
 
@@ -782,14 +784,13 @@ class GallupController extends Controller
         $snappy->generateFromHtml($html, $tempHtmlPdf, $s_options, true);
 
         // Создаём имя файла
-        $languageNames = ['ru' => 'RU', 'en' => 'EN', 'ar' => 'AR'];
+        $languageNames = ['ru' => 'RU', 'en' => 'EN'];
         $langCode = $languageNames[$targetLanguage] ?? strtoupper($targetLanguage);
         $genderCode = ($candidate->gender === 'Женский' || $candidate->gender === 'female') ? 'G' : 'B';
         $birthYear = $candidate->birth_date ? substr(date('Y', strtotime($candidate->birth_date)), -2) : '00';
-        $candidateId = str_pad($candidate->id, 4, '0', STR_PAD_LEFT);
-        $versionText = $version === 'full' ? 'full' : 'reduced';
+        $candidateNumber = str_pad($candidate->display_number, 4, '0', STR_PAD_LEFT);
 
-        $tempFileName = "{$candidate->full_name} - TL{$genderCode}{$birthYear}-{$candidateId}-{$langCode}-{$versionText}.pdf";
+        $tempFileName = "{$candidate->full_name} - TL{$genderCode}{$birthYear}-{$candidateNumber}-{$langCode}.pdf";
         $tempPath = "temp_anketas/{$tempFileName}";
 
         $tempFullPath = Storage::disk('public')->path($tempPath);

@@ -1,7 +1,76 @@
 <?php
 // resources/views/livewire/candidate-form.blade.php
 ?>
-<div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+<div>
+    <!-- Loading Overlay для формирования отчётов -->
+    <div wire:loading.flex wire:target="submit"
+         class="fixed inset-0 z-[9999] items-center justify-center bg-gradient-to-br from-slate-800 via-blue-900 to-slate-900">
+        <div class="bg-white rounded-3xl shadow-2xl p-6 sm:p-10 mx-3 sm:mx-4 max-w-sm sm:max-w-md w-full text-center transform transition-all">
+
+            <!-- Большой анимированный спиннер -->
+            <div class="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-6 sm:mb-8">
+                <!-- Внешнее кольцо -->
+                <div class="absolute inset-0 rounded-full border-4 border-blue-100"></div>
+                <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-500 border-r-blue-500 animate-spin" style="animation-duration: 1.5s;"></div>
+
+                <!-- Среднее кольцо -->
+                <div class="absolute inset-3 sm:inset-4 rounded-full border-4 border-green-100"></div>
+                <div class="absolute inset-3 sm:inset-4 rounded-full border-4 border-transparent border-t-green-500 border-l-green-500 animate-spin" style="animation-duration: 1s; animation-direction: reverse;"></div>
+
+                <!-- Внутреннее кольцо -->
+                <div class="absolute inset-6 sm:inset-8 rounded-full border-4 border-purple-100"></div>
+                <div class="absolute inset-6 sm:inset-8 rounded-full border-4 border-transparent border-b-purple-500 border-r-purple-500 animate-spin" style="animation-duration: 0.75s;"></div>
+
+                <!-- Иконка документа в центре -->
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <svg class="w-8 h-8 sm:w-10 sm:h-10 text-blue-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Заголовок с градиентом -->
+            <h3 class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2 sm:mb-3">
+                {{ __('Generating your resume') }}
+            </h3>
+
+            <!-- Описание -->
+            <p class="text-gray-600 text-sm sm:text-base mb-5 sm:mb-6 px-2">
+                {{ __('Please wait, we are processing your data and creating reports...') }}
+            </p>
+
+            <!-- Прогресс бар с анимацией -->
+            <div class="w-full bg-gray-200 rounded-full h-2 mb-4 sm:mb-5 overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 h-2 rounded-full animate-pulse"
+                     style="width: 100%; background-size: 200% 100%; animation: shimmer 2s linear infinite;">
+                </div>
+            </div>
+
+            <!-- Анимированные точки -->
+            <div class="flex justify-center items-center space-x-1.5 sm:space-x-2 mb-4">
+                <span class="text-gray-500 text-sm">{{ __('Processing') }}</span>
+                <div class="flex space-x-1">
+                    <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0s;"></div>
+                    <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-purple-500 rounded-full animate-bounce" style="animation-delay: 0.15s;"></div>
+                    <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.3s;"></div>
+                </div>
+            </div>
+
+            <!-- Подсказка -->
+            <p class="text-xs sm:text-sm text-gray-400">
+                {{ __('This may take a few minutes') }}
+            </p>
+        </div>
+    </div>
+
+    <style>
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
     <div class="bg-white overflow-hidden shadow-xl rounded-lg">
         <!-- Step Navigation -->
         <div class="mb-6 px-3 sm:px-6 pt-6">
@@ -15,7 +84,7 @@
                         ['step' => 4, 'title' => __('Tests')]
                     ] as $stepInfo)
                     <button type="button" 
-                            wire:click="$set('currentStep', {{ $stepInfo['step'] }})"
+                            wire:click="goToStep({{ $stepInfo['step'] }})"
                             class="relative flex items-center p-3 rounded-lg border-2 transition-all duration-200 {{ $currentStep === $stepInfo['step'] ? 'border-blue-600 bg-blue-50' : 'border-gray-200 bg-white hover:border-gray-300' }} {{ $this->hasErrorsOnStep($stepInfo['step']) ? 'border-red-300 bg-red-50' : '' }}">
                         <!-- Индикатор ошибки -->
                         @if($this->hasErrorsOnStep($stepInfo['step']))
@@ -78,7 +147,7 @@
                                 @endif
                             </div>
                             <div class="ml-3">
-                                <button type="button" wire:click="$set('currentStep', {{ $stepInfo['step'] }})" class="text-sm font-medium {{ $currentStep >= $stepInfo['step'] ? 'text-blue-600' : 'text-gray-500' }} {{ $this->hasErrorsOnStep($stepInfo['step']) ? 'text-red-600' : '' }}">
+                                <button type="button" wire:click="goToStep({{ $stepInfo['step'] }})" class="text-sm font-medium {{ $currentStep >= $stepInfo['step'] ? 'text-blue-600' : 'text-gray-500' }} {{ $this->hasErrorsOnStep($stepInfo['step']) ? 'text-red-600' : '' }}">
                                     {{ $stepInfo['title'] }}
                                 </button>
                             </div>
@@ -114,8 +183,8 @@
                     @foreach($errorsByStep as $step => $errorKeys)
                         @if(!empty($errorKeys))
                             <div class="mb-3 last:mb-0">
-                                <button type="button" 
-                                        wire:click="$set('currentStep', {{ $step }})"
+                                <button type="button"
+                                        wire:click="goToStep({{ $step }})"
                                         class="inline-flex items-center px-3 py-1.5 mb-2 bg-red-100 hover:bg-red-200 text-red-800 font-medium rounded-lg transition-colors duration-200">
                                     <svg class="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
@@ -167,11 +236,24 @@
                 @else
                     <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                         <button type="submit"
-                                class="inline-flex items-center justify-center px-6 py-3 bg-green-600 border border-transparent rounded-md font-semibold text-sm text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:ring focus:ring-green-300 disabled:opacity-25 transition">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                            </svg>
-                            {{ __('Save and finish') }}
+                                wire:loading.attr="disabled"
+                                wire:target="submit"
+                                class="inline-flex items-center justify-center px-6 py-3 bg-green-600 border border-transparent rounded-md font-semibold text-sm text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:ring focus:ring-green-300 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                            <!-- Обычное состояние -->
+                            <span wire:loading.remove wire:target="submit" class="inline-flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                {{ __('Save and finish') }}
+                            </span>
+                            <!-- Состояние загрузки -->
+                            <span wire:loading wire:target="submit" class="inline-flex items-center">
+                                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                {{ __('Processing...') }}
+                            </span>
                         </button>
                         @if ($errors->any())
                             <div class="text-sm text-red-600 flex items-center">
@@ -183,6 +265,7 @@
             </div>
         </form>
     </div>
+</div>
 </div>
 
 @push('scripts')

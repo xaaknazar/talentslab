@@ -28,88 +28,125 @@ class GallupAnalyzerService
 
     /**
      * Словарь перевода русских названий талантов на английский
+     * Официальные переводы Gallup + альтернативные варианты написания
      */
     private array $russianToEnglish = [
-        // Исполнение (Executing)
+        // Официальные переводы Gallup (из RUSSIAN_TO_ENGLISH_TALENTS)
         'достижение' => 'Achiever',
-        'достигатор' => 'Achiever',
-        'упорядоченность' => 'Arranger',
+        'дисциплинированность' => 'Discipline',
         'организатор' => 'Arranger',
+        'сосредоточенность' => 'Focus',
+        'убеждение' => 'Belief',
+        'ответственность' => 'Responsibility',
+        'последовательность' => 'Consistency',
+        'восстановление' => 'Restorative',
+        'осмотрительность' => 'Deliberative',
+        'катализатор' => 'Activator',
+        'максимизатор' => 'Maximizer',
+        'распорядитель' => 'Command',
+        'уверенность' => 'Self-Assurance',
+        'коммуникация' => 'Communication',
+        'значимость' => 'Significance',
+        'конкуренция' => 'Competition',
+        'обаяние' => 'Woo',
+        'приспособляемость' => 'Adaptability',
+        'включенность' => 'Includer',
+        'взаимосвязанность' => 'Connectedness',
+        'индивидуализация' => 'Individualization',
+        'развитие' => 'Developer',
+        'позитивность' => 'Positivity',
+        'эмпатия' => 'Empathy',
+        'отношения' => 'Relator',
+        'гармония' => 'Harmony',
+        'аналитик' => 'Analytical',
+        'вклад' => 'Input',
+        'контекст' => 'Context',
+        'мышление' => 'Intellection',
+        'будущее' => 'Futuristic',
+        'ученик' => 'Learner',
+        'генератор идей' => 'Ideation',
+        'стратегия' => 'Strategic',
+
+        // Альтернативные варианты написания - Исполнение (Executing)
+        'достигатор' => 'Achiever',
+        'достиженец' => 'Achiever',
+        'упорядоченность' => 'Arranger',
         'аранжировщик' => 'Arranger',
         'вера' => 'Belief',
         'убеждённость' => 'Belief',
+        'убежденность' => 'Belief',
         'беспристрастность' => 'Consistency',
-        'последовательность' => 'Consistency',
-        'осмотрительность' => 'Deliberative',
+        'постоянство' => 'Consistency',
         'осторожность' => 'Deliberative',
+        'рассудительность' => 'Deliberative',
         'дисциплина' => 'Discipline',
-        'дисциплинированность' => 'Discipline',
         'сфокусированность' => 'Focus',
         'фокус' => 'Focus',
         'концентрация' => 'Focus',
-        'ответственность' => 'Responsibility',
-        'восстановление' => 'Restorative',
         'исправление' => 'Restorative',
+        'восстановитель' => 'Restorative',
 
-        // Влияние (Influencing)
+        // Альтернативные варианты - Влияние (Influencing)
         'активатор' => 'Activator',
         'командование' => 'Command',
-        'распорядитель' => 'Command',
-        'коммуникация' => 'Communication',
+        'руководство' => 'Command',
         'общение' => 'Communication',
+        'коммуникатор' => 'Communication',
         'соревновательность' => 'Competition',
-        'конкуренция' => 'Competition',
-        'максимизатор' => 'Maximizer',
-        'развиватель' => 'Maximizer',
-        'уверенность' => 'Self-Assurance',
+        'состязательность' => 'Competition',
+        'максимизация' => 'Maximizer',
         'самоуверенность' => 'Self-Assurance',
-        'значимость' => 'Significance',
-        'обаяние' => 'Woo',
+        'уверенность в себе' => 'Self-Assurance',
+        'значительность' => 'Significance',
         'очарование' => 'Woo',
         'располагающий' => 'Woo',
+        'завоеватель' => 'Woo',
 
-        // Построение отношений (Relationship Building)
+        // Альтернативные варианты - Построение отношений (Relationship Building)
         'адаптивность' => 'Adaptability',
         'гибкость' => 'Adaptability',
         'связанность' => 'Connectedness',
         'связность' => 'Connectedness',
-        'взаимосвязанность' => 'Connectedness',
-        'развитие' => 'Developer',
+        'единение' => 'Connectedness',
         'развитие других' => 'Developer',
-        'эмпатия' => 'Empathy',
+        'развиватель' => 'Developer',
+        'воспитатель' => 'Developer',
         'сопереживание' => 'Empathy',
-        'гармония' => 'Harmony',
+        'сочувствие' => 'Empathy',
+        'согласие' => 'Harmony',
         'включённость' => 'Includer',
-        'включенность' => 'Includer',
         'включающий' => 'Includer',
-        'индивидуализация' => 'Individualization',
-        'позитивность' => 'Positivity',
+        'принятие' => 'Includer',
+        'индивидуальность' => 'Individualization',
+        'индивидуальный подход' => 'Individualization',
         'позитив' => 'Positivity',
-        'отношения' => 'Relator',
+        'оптимизм' => 'Positivity',
         'общительность' => 'Relator',
+        'коммуникабельность' => 'Relator',
 
-        // Стратегическое мышление (Strategic Thinking)
-        'аналитик' => 'Analytical',
+        // Альтернативные варианты - Стратегическое мышление (Strategic Thinking)
         'аналитическое мышление' => 'Analytical',
-        'контекст' => 'Context',
+        'аналитичность' => 'Analytical',
         'прошлое' => 'Context',
-        'будущее' => 'Futuristic',
+        'история' => 'Context',
         'футуристичность' => 'Futuristic',
-        'генератор идей' => 'Ideation',
+        'провидец' => 'Futuristic',
         'идеи' => 'Ideation',
         'креативность' => 'Ideation',
+        'творчество' => 'Ideation',
         'коллекционер' => 'Input',
         'накопитель' => 'Input',
         'собиратель' => 'Input',
-        'мышление' => 'Intellection',
+        'ввод' => 'Input',
+        'информация' => 'Input',
         'интеллект' => 'Intellection',
         'размышления' => 'Intellection',
-        'ученик' => 'Learner',
+        'созерцание' => 'Intellection',
         'обучаемость' => 'Learner',
         'любознательность' => 'Learner',
+        'обучение' => 'Learner',
         'стратег' => 'Strategic',
         'стратегическое мышление' => 'Strategic',
-        'стратегия' => 'Strategic',
     ];
 
     /**
@@ -177,14 +214,6 @@ class GallupAnalyzerService
      */
     public function analyzeGallupFile(string $filePath, string $fileType = 'pdf'): array
     {
-        if (empty($this->apiKey)) {
-            return [
-                'success' => false,
-                'talents' => null,
-                'error' => 'API ключ OpenAI не настроен. Добавьте OPENAI_API_KEY в .env файл.',
-            ];
-        }
-
         if (!file_exists($filePath)) {
             return [
                 'success' => false,
@@ -194,14 +223,38 @@ class GallupAnalyzerService
         }
 
         try {
-            // Анализируем файл через GPT-4o
-            $rawTalents = $this->analyzeWithGpt4o($filePath, $fileType);
+            $rawTalents = [];
+
+            // Для PDF сначала пробуем regex-извлечение (быстро и бесплатно)
+            if ($fileType === 'pdf') {
+                Log::info('Пробуем извлечь таланты через regex...');
+                $rawTalents = $this->extractTalentsWithRegex($filePath);
+
+                if (count($rawTalents) >= 30) {
+                    Log::info('Regex извлечение успешно: ' . count($rawTalents) . ' талантов');
+                } else {
+                    Log::info('Regex нашёл только ' . count($rawTalents) . ' талантов, пробуем GPT-4o...');
+                    $rawTalents = [];
+                }
+            }
+
+            // Если regex не помог или это изображение - используем GPT-4o
+            if (empty($rawTalents) || count($rawTalents) < 30) {
+                if (empty($this->apiKey)) {
+                    return [
+                        'success' => false,
+                        'talents' => null,
+                        'error' => 'Не удалось извлечь таланты из PDF. API ключ OpenAI не настроен для fallback анализа.',
+                    ];
+                }
+                $rawTalents = $this->analyzeWithGpt4o($filePath, $fileType);
+            }
 
             if (empty($rawTalents)) {
                 return [
                     'success' => false,
                     'talents' => null,
-                    'error' => 'Не удалось извлечь таланты из файла. Попробуйте другой файл или изображение лучшего качества.',
+                    'error' => 'Загрузите правильный PDF-скриншот Gallup. Не удалось распознать таланты в загруженном файле.',
                 ];
             }
 
@@ -274,7 +327,19 @@ class GallupAnalyzerService
     private function analyzeWithGpt4o(string $filePath, string $fileType): array
     {
         if ($fileType === 'pdf') {
-            return $this->analyzePdfWithGpt4o($filePath);
+            // Сначала пробуем извлечь текст из PDF
+            $result = $this->analyzePdfWithGpt4o($filePath);
+
+            // Если текстовый анализ не дал результатов, пробуем анализ как изображение
+            if (empty($result) || count($result) < 20) {
+                Log::info('Текстовый анализ PDF не дал достаточно результатов, пробуем анализ как изображение');
+                $imageResult = $this->analyzePdfAsImage($filePath);
+                if (!empty($imageResult) && count($imageResult) > count($result)) {
+                    return $imageResult;
+                }
+            }
+
+            return $result;
         } else {
             return $this->analyzeImageWithGpt4oVision($filePath);
         }
@@ -304,16 +369,54 @@ class GallupAnalyzerService
         $talentList = implode(', ', $this->allTalentKeys);
 
         $systemPrompt = <<<PROMPT
-Найди в Gallup отчете все 34 таланта с номерами 1-34.
+Найди в Gallup/CliftonStrengths отчете все 34 таланта с их номерами (позициями от 1 до 34).
 
-СПИСОК ТАЛАНТОВ: {$talentList}
+СПИСОК АНГЛИЙСКИХ НАЗВАНИЙ ТАЛАНТОВ: {$talentList}
 
-ЗАДАЧА: Извлеки пары "талант:номер" из текста. Таланты могут быть на русском или английском языке.
+РУССКИЕ НАЗВАНИЯ ТАЛАНТОВ И ИХ ПЕРЕВОДЫ:
+- Достижение = Achiever
+- Активатор = Activator
+- Адаптивность = Adaptability
+- Аналитик = Analytical
+- Организатор = Arranger
+- Вера = Belief
+- Командование = Command
+- Коммуникация = Communication
+- Соревновательность = Competition
+- Связанность = Connectedness
+- Беспристрастность = Consistency
+- Контекст = Context
+- Осмотрительность = Deliberative
+- Развитие = Developer
+- Дисциплина = Discipline
+- Эмпатия = Empathy
+- Сфокусированность = Focus
+- Будущее = Futuristic
+- Гармония = Harmony
+- Генератор идей = Ideation
+- Включённость = Includer
+- Индивидуализация = Individualization
+- Коллекционер = Input
+- Мышление = Intellection
+- Ученик = Learner
+- Максимизатор = Maximizer
+- Позитивность = Positivity
+- Отношения = Relator
+- Ответственность = Responsibility
+- Восстановление = Restorative
+- Уверенность = Self-Assurance
+- Значимость = Significance
+- Стратег = Strategic
+- Обаяние = Woo
+
+ЗАДАЧА:
+1. Найди в тексте все упоминания талантов с их номерами/позициями
+2. Талант может быть указан в формате: "1. Achiever" или "Достижение - 1" или другом
+3. Переводи русские названия на английский
+4. Верни ТОЛЬКО JSON с парами "EnglishTalentName": number
+
 ФОРМАТ ОТВЕТА: только JSON без комментариев
-ПРИМЕР: {"Achiever": 1, "Activator": 2}
-
-Если талант на русском - переведи на английский.
-Если талант не найден - не включай в результат.
+ПРИМЕР: {"Achiever": 1, "Activator": 2, "Strategic": 3}
 PROMPT;
 
         Log::info('Отправляем запрос к GPT-4o для PDF...');
@@ -357,24 +460,37 @@ PROMPT;
         Log::info('Отправляем запрос к GPT-4o Vision для изображения...');
 
         $systemPrompt = <<<PROMPT
-Анализируй Gallup таблицу построчно, слева направо, сверху вниз.
+Анализируй изображение Gallup/CliftonStrengths и найди все 34 таланта с их номерами (позициями 1-34).
 
 МЕТОД ЧТЕНИЯ:
-1. Начни с верхнего левого угла
-2. Читай каждую ячейку: сначала НОМЕР (большая цифра), потом НАЗВАНИЕ под ним
-3. Переходи слева направо, затем на следующую строку
+1. Если это таблица - читай построчно, слева направо, сверху вниз
+2. В каждой ячейке: НОМЕР (большая цифра) + НАЗВАНИЕ таланта под ним
+3. Если это список - читай номер и название для каждого таланта
 4. Проверь, что нашел ровно 34 пары номер-талант
 
-СТРУКТУРА ТАБЛИЦЫ (4 колонки):
-[ИСПОЛНЕНИЕ] [ВЛИЯНИЕ] [ВЗАИМООТНОШЕНИЯ] [СТРАТЕГИЧЕСКОЕ МЫШЛЕНИЕ]
+СТРУКТУРА GALLUP ТАБЛИЦЫ (4 колонки если это таблица):
+[ИСПОЛНЕНИЕ/EXECUTING] [ВЛИЯНИЕ/INFLUENCING] [ВЗАИМООТНОШЕНИЯ/RELATIONSHIP] [СТРАТЕГИЧЕСКОЕ МЫШЛЕНИЕ/STRATEGIC THINKING]
 
-ПЕРЕВОДИ русские названия на английский:
-{$examplesText}
+РУССКИЕ НАЗВАНИЯ ТАЛАНТОВ -> АНГЛИЙСКИЙ ПЕРЕВОД:
+Достижение->Achiever, Дисциплинированность->Discipline, Организатор->Arranger, Сосредоточенность->Focus,
+Убеждение->Belief, Ответственность->Responsibility, Последовательность->Consistency, Восстановление->Restorative,
+Осмотрительность->Deliberative, Катализатор->Activator, Активатор->Activator, Максимизатор->Maximizer,
+Распорядитель->Command, Командование->Command, Уверенность->Self-Assurance, Коммуникация->Communication,
+Значимость->Significance, Конкуренция->Competition, Соревновательность->Competition, Обаяние->Woo,
+Приспособляемость->Adaptability, Адаптивность->Adaptability, Включенность->Includer, Включённость->Includer,
+Взаимосвязанность->Connectedness, Связанность->Connectedness, Индивидуализация->Individualization,
+Развитие->Developer, Позитивность->Positivity, Эмпатия->Empathy, Отношения->Relator, Гармония->Harmony,
+Аналитик->Analytical, Вклад->Input, Коллекционер->Input, Накопитель->Input, Контекст->Context,
+Мышление->Intellection, Будущее->Futuristic, Ученик->Learner, Генератор идей->Ideation, Стратегия->Strategic,
+Стратег->Strategic, Дисциплина->Discipline, Вера->Belief, Фокус->Focus
 
-ПРОВЕРКА: В итоге должны быть номера 1,2,3...34 (все разные)
+ВАЖНО:
+- Все номера должны быть разные (от 1 до 34)
+- Если талант на русском - переведи в английский
+- Верни ТОЛЬКО JSON без пояснений
 
-ФОРМАТ: {"talent_name": number}
-ТОЛЬКО JSON, без текста!
+ФОРМАТ: {"EnglishTalentName": number}
+ПРИМЕР: {"Achiever": 1, "Activator": 2, "Strategic": 34}
 PROMPT;
 
         $response = Http::timeout(120)
@@ -549,11 +665,257 @@ PROMPT;
                 }
             }
 
-            return trim($text);
+            $text = trim($text);
+
+            // Санитизация UTF-8 для корректной работы с русским текстом
+            $text = $this->sanitizeUtf8($text);
+
+            return $text;
         } catch (\Exception $e) {
             Log::error('Ошибка извлечения текста из PDF: ' . $e->getMessage());
             return null;
         }
+    }
+
+    /**
+     * Санитизирует текст для корректной кодировки UTF-8
+     * Исправляет проблемы с русским текстом из PDF файлов
+     */
+    private function sanitizeUtf8(string $text): string
+    {
+        // Удаляем BOM если есть
+        $text = preg_replace('/^\xEF\xBB\xBF/', '', $text);
+
+        // Пробуем определить и конвертировать кодировку
+        $encoding = mb_detect_encoding($text, ['UTF-8', 'Windows-1251', 'ISO-8859-1', 'KOI8-R', 'CP866'], true);
+
+        if ($encoding && $encoding !== 'UTF-8') {
+            $converted = @mb_convert_encoding($text, 'UTF-8', $encoding);
+            if ($converted !== false) {
+                $text = $converted;
+            }
+        }
+
+        // Удаляем невалидные UTF-8 символы
+        $text = mb_convert_encoding($text, 'UTF-8', 'UTF-8');
+
+        // Заменяем проблемные символы
+        $text = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $text);
+
+        // Финальная проверка - если json_encode все ещё падает, агрессивно чистим
+        if (json_encode($text) === false) {
+            // Удаляем все non-UTF8 байты через iconv
+            $text = @iconv('UTF-8', 'UTF-8//IGNORE', $text);
+            if ($text === false) {
+                $text = '';
+            }
+        }
+
+        return $text;
+    }
+
+    /**
+     * Извлекает таланты из PDF через regex (как в Python коде)
+     * Сначала ищет английские, потом русские названия
+     */
+    private function extractTalentsWithRegex(string $filePath): array
+    {
+        $text = $this->extractTextFromPdf($filePath);
+        if (empty($text)) {
+            return [];
+        }
+
+        // Очищаем текст
+        $text = $this->cleanText($text);
+
+        // Исправляем известные опечатки
+        $text = str_replace('SelfAssurance', 'Self-Assurance', $text);
+        $text = str_replace('SigniLcance', 'Significance', $text);
+
+        $talents = [];
+
+        // 1. Сначала ищем английские таланты: "1. Achiever" или "1 Achiever"
+        foreach ($this->allTalentKeys as $talent) {
+            // Паттерн: номер + точка/пробел + название таланта
+            $pattern = '/(\d{1,2})\s*\.?\s*' . preg_quote($talent, '/') . '/iu';
+            if (preg_match($pattern, $text, $match)) {
+                $number = (int)$match[1];
+                if ($number >= 1 && $number <= 34 && !in_array($number, $talents)) {
+                    $talents[$talent] = $number;
+                }
+            }
+        }
+
+        Log::info('Regex: найдено ' . count($talents) . ' английских талантов');
+
+        // Если нашли достаточно английских - возвращаем
+        if (count($talents) >= 30) {
+            return $talents;
+        }
+
+        // 2. Ищем русские таланты - расширенный список с альтернативами
+        // Официальные переводы + альтернативные варианты написания
+        $russianVariants = [
+            // Achiever
+            ['Достижение', 'Achiever'],
+            // Discipline
+            ['Дисциплинированность', 'Discipline'],
+            ['Дисциплина', 'Discipline'],
+            // Arranger
+            ['Организатор', 'Arranger'],
+            ['Упорядоченность', 'Arranger'],
+            // Focus
+            ['Сосредоточенность', 'Focus'],
+            ['Фокус', 'Focus'],
+            // Belief
+            ['Убеждение', 'Belief'],
+            ['Вера', 'Belief'],
+            ['Убеждённость', 'Belief'],
+            // Responsibility
+            ['Ответственность', 'Responsibility'],
+            // Consistency
+            ['Последовательность', 'Consistency'],
+            ['Беспристрастность', 'Consistency'],
+            // Restorative
+            ['Восстановление', 'Restorative'],
+            ['Восстановитель', 'Restorative'],
+            // Deliberative
+            ['Осмотрительность', 'Deliberative'],
+            ['Рассудительность', 'Deliberative'],
+            // Activator
+            ['Катализатор', 'Activator'],
+            ['Активатор', 'Activator'],
+            // Maximizer
+            ['Максимизатор', 'Maximizer'],
+            // Command
+            ['Распорядитель', 'Command'],
+            ['Командование', 'Command'],
+            // Self-Assurance
+            ['Уверенность', 'Self-Assurance'],
+            ['Уверенность в себе', 'Self-Assurance'],
+            ['Самоуверенность', 'Self-Assurance'],
+            // Communication
+            ['Коммуникация', 'Communication'],
+            ['Общение', 'Communication'],
+            // Significance
+            ['Значимость', 'Significance'],
+            ['Значительность', 'Significance'],
+            // Competition
+            ['Конкуренция', 'Competition'],
+            ['Соревновательность', 'Competition'],
+            // Woo
+            ['Обаяние', 'Woo'],
+            ['Очарование', 'Woo'],
+            // Adaptability
+            ['Приспособляемость', 'Adaptability'],
+            ['Адаптивность', 'Adaptability'],
+            // Includer
+            ['Включенность', 'Includer'],
+            ['Включённость', 'Includer'],
+            // Connectedness
+            ['Взаимосвязанность', 'Connectedness'],
+            ['Связанность', 'Connectedness'],
+            // Individualization
+            ['Индивидуализация', 'Individualization'],
+            ['Индивидуальный подход', 'Individualization'],
+            // Developer
+            ['Развитие', 'Developer'],
+            ['Развитие других', 'Developer'],
+            // Positivity
+            ['Позитивность', 'Positivity'],
+            ['Позитив', 'Positivity'],
+            // Empathy
+            ['Эмпатия', 'Empathy'],
+            ['Сопереживание', 'Empathy'],
+            // Relator
+            ['Отношения', 'Relator'],
+            // Harmony
+            ['Гармония', 'Harmony'],
+            // Analytical
+            ['Аналитик', 'Analytical'],
+            ['Аналитическое мышление', 'Analytical'],
+            // Input
+            ['Вклад', 'Input'],
+            ['Коллекционер', 'Input'],
+            ['Накопитель', 'Input'],
+            // Context
+            ['Контекст', 'Context'],
+            // Intellection
+            ['Мышление', 'Intellection'],
+            ['Интеллект', 'Intellection'],
+            ['Размышления', 'Intellection'],
+            // Futuristic
+            ['Будущее', 'Futuristic'],
+            ['Футуристичность', 'Futuristic'],
+            // Learner
+            ['Ученик', 'Learner'],
+            ['Обучаемость', 'Learner'],
+            // Ideation
+            ['Генератор идей', 'Ideation'],
+            ['Идеи', 'Ideation'],
+            ['Генерация идей', 'Ideation'],
+            // Strategic
+            ['Стратегия', 'Strategic'],
+            ['Стратег', 'Strategic'],
+            ['Стратегическое мышление', 'Strategic'],
+        ];
+
+        foreach ($russianVariants as [$russian, $english]) {
+            if (isset($talents[$english])) {
+                continue; // Уже найден
+            }
+
+            // Паттерн: номер + точка/пробел + русское название
+            $pattern = '/(\d{1,2})\s*\.?\s*' . preg_quote($russian, '/') . '/iu';
+            if (preg_match($pattern, $text, $match)) {
+                $number = (int)$match[1];
+                if ($number >= 1 && $number <= 34 && !in_array($number, $talents)) {
+                    $talents[$english] = $number;
+                    Log::debug("Regex найден: {$russian} -> {$english} = {$number}");
+                }
+            }
+        }
+
+        // 3. Если всё ещё мало - пробуем более гибкий поиск
+        if (count($talents) < 34) {
+            foreach ($russianVariants as [$russian, $english]) {
+                if (isset($talents[$english])) {
+                    continue;
+                }
+
+                // Более гибкий паттерн с разными разделителями
+                $pattern = '/(\d{1,2})\s*[.\-–—:)]*\s*' . preg_quote($russian, '/') . '/iu';
+                if (preg_match($pattern, $text, $match)) {
+                    $number = (int)$match[1];
+                    if ($number >= 1 && $number <= 34 && !in_array($number, $talents)) {
+                        $talents[$english] = $number;
+                        Log::debug("Regex гибкий найден: {$russian} -> {$english} = {$number}");
+                    }
+                }
+            }
+        }
+
+        // Логируем какие таланты НЕ найдены
+        $missingTalents = array_diff($this->allTalentKeys, array_keys($talents));
+        if (!empty($missingTalents)) {
+            Log::warning('Regex: не найдены таланты: ' . implode(', ', $missingTalents));
+        }
+
+        Log::info('Regex: итого найдено ' . count($talents) . ' талантов');
+
+        return $talents;
+    }
+
+    /**
+     * Очищает текст от переносов и лишних пробелов
+     */
+    private function cleanText(string $text): string
+    {
+        // Убираем переносы слов
+        $text = preg_replace('/(\w)-\s+(\w)/u', '$1$2', $text);
+        // Нормализуем пробелы
+        $text = preg_replace('/\s+/', ' ', $text);
+        return trim($text);
     }
 
     /**
@@ -589,7 +951,7 @@ PROMPT;
 
     /**
      * Проверяет, является ли файл валидным Gallup отчетом (быстрая проверка)
-     * Возвращает true для PDF с ключевыми признаками Gallup или для изображений
+     * Принимает все PDF и изображения - детальный анализ делает GPT-4o
      */
     public function isValidGallupFile(string $filePath): bool
     {
@@ -604,37 +966,55 @@ PROMPT;
             return true;
         }
 
-        // Для PDF проверяем базовые признаки
+        // Для PDF просто проверяем, что файл можно прочитать
+        // GPT-4o проанализирует содержимое позже
         try {
             $text = $this->extractTextFromPdf($filePath);
 
-            if (empty($text)) {
-                return false;
-            }
-
-            // Проверяем наличие хотя бы нескольких талантов (на русском или английском)
-            $talentPatterns = [
-                '/\b(Achiever|Activator|Analytical|Strategic|Learner|Ideation)\b/i',
-                '/\b(достижение|активатор|аналитик|стратег|ученик|генератор идей)\b/ui',
-                '/\b([1-9]|[1-2][0-9]|3[0-4])\.\s+\w+/u', // Нумерованный список талантов
-            ];
-
-            foreach ($talentPatterns as $pattern) {
-                if (preg_match($pattern, $text)) {
-                    return true;
-                }
-            }
-
-            // Проверяем наличие Gallup или CliftonStrengths
-            if (stripos($text, 'Gallup') !== false || stripos($text, 'CliftonStrengths') !== false) {
-                return true;
-            }
-
-            return false;
+            // Если текст извлечён - файл валиден
+            // Если текста нет (сканированный PDF) - тоже принимаем, GPT-4o Vision обработает
+            return true;
 
         } catch (\Exception $e) {
             Log::error('Ошибка проверки Gallup файла: ' . $e->getMessage());
-            return false;
+            // Даже при ошибке принимаем файл - возможно GPT-4o сможет обработать
+            return true;
+        }
+    }
+
+    /**
+     * Анализирует PDF как изображение через GPT-4o Vision
+     * Используется для сканированных PDF без текстового слоя
+     */
+    public function analyzePdfAsImage(string $filePath): array
+    {
+        try {
+            // Конвертируем первую страницу PDF в изображение
+            $imagick = new \Imagick();
+            $imagick->setResolution(150, 150); // Меньшее разрешение для экономии
+            $imagick->readImage($filePath . '[0]'); // Первая страница
+            $imagick->setImageFormat('jpg');
+            $imagick->setImageCompressionQuality(85);
+
+            $tempImagePath = sys_get_temp_dir() . '/gallup_' . uniqid() . '.jpg';
+            $imagick->writeImage($tempImagePath);
+            $imagick->clear();
+            $imagick->destroy();
+
+            // Анализируем как изображение
+            $result = $this->analyzeImageWithGpt4oVision($tempImagePath);
+
+            // Удаляем временный файл
+            @unlink($tempImagePath);
+
+            return $result;
+        } catch (\Exception $e) {
+            Log::error('Ошибка конвертации PDF в изображение', [
+                'message' => $e->getMessage(),
+                'file' => $filePath,
+                'hint' => 'Возможно, PDF повреждён или не является корректным Gallup отчётом'
+            ]);
+            return [];
         }
     }
 }

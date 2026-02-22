@@ -74,6 +74,9 @@ Route::post('/reset-password', function (Illuminate\Http\Request $request) {
 
 Route::get('/candidate/{candidate}/report', [CandidateReportController::class, 'showV2'])->name('candidate.report');
 Route::get('/candidate/{candidate}/report/{version}', [CandidateReportController::class, 'showV2'])->name('candidate.report.version');
+Route::get('/candidate/{candidate}/anketa', [CandidateReportController::class, 'viewAnketaPublic'])->name('candidate.anketa.view');
+Route::get('/candidate/{candidate}/downloadAnketa/public', [CandidateReportController::class, 'downloadAnketaPublic'])->name('candidate.anketa.download.public');
+Route::get('/candidate/{candidate}/gallup-report/{type}/download/public', [CandidateReportController::class, 'downloadGallupReportPublic'])->name('candidate.gallup-report.download.public');
 
 Route::middleware([
     'auth:sanctum',
@@ -120,6 +123,59 @@ Route::middleware([
     // Тестовый роут для создания Word документа
     Route::get('/candidate/{candidate}/test-word-document', [GallupController::class, 'testWordDocument'])->name('candidate.test-word-document');
 
+    // Экспорт всех кандидатов в Excel (только для админов)
+    Route::get('/export/candidates', function () {
+        if (!auth()->user()->is_admin) {
+            abort(403, 'Доступ запрещён');
+        }
+
+        $outputFile = 'candidates_' . date('Y-m-d_H-i-s') . '.xlsx';
+        $outputPath = storage_path('app/' . $outputFile);
+
+        // Запускаем команду экспорта
+        \Illuminate\Support\Facades\Artisan::call('candidates:export', [
+            '--output' => $outputFile
+        ]);
+
+        // Скачиваем файл
+        return response()->download($outputPath, $outputFile, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ])->deleteFileAfterSend(true);
+    })->name('export.candidates');
+
+    // Импорт кандидатов из Excel (только для админов)
+    Route::get('/import/candidates', function () {
+        if (!auth()->user()->is_admin) {
+            abort(403, 'Доступ запрещён');
+        }
+        return view('admin.import-candidates');
+    })->name('import.candidates.form');
+
+    Route::post('/import/candidates', function (\Illuminate\Http\Request $request) {
+        if (!auth()->user()->is_admin) {
+            abort(403, 'Доступ запрещён');
+        }
+
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls'
+        ]);
+
+        $file = $request->file('file');
+        $path = $file->store('imports');
+        $fullPath = storage_path('app/' . $path);
+
+        // Запускаем команду импорта
+        \Illuminate\Support\Facades\Artisan::call('candidates:import', [
+            'file' => $fullPath
+        ]);
+
+        $output = \Illuminate\Support\Facades\Artisan::output();
+
+        // Удаляем временный файл
+        \Illuminate\Support\Facades\Storage::delete($path);
+
+        return back()->with('success', 'Импорт завершён')->with('output', $output);
+    })->name('import.candidates');
 
 });
 

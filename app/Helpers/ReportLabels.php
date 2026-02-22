@@ -351,6 +351,6 @@ class ReportLabels
 
     public static function getDirection(string $language): string
     {
-        return $language === 'ar' ? 'rtl' : 'ltr';
+        return 'ltr';
     }
 }

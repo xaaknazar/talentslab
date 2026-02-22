@@ -108,7 +108,6 @@ class TranslationService
         $languageNames = [
             'ru' => 'Russian',
             'en' => 'English',
-            'ar' => 'Arabic',
         ];
 
         $targetLangName = $languageNames[$targetLanguage] ?? 'English';
@@ -226,10 +225,6 @@ JSON to translate:
         $text = $candidate->hobbies . ' ' . $candidate->interests . ' ' . $candidate->city;
 
         // Простая эвристика на основе символов
-        if (preg_match('/[\x{0600}-\x{06FF}]/u', $text)) {
-            return 'ar'; // Arabic
-        }
-
         if (preg_match('/[а-яА-ЯёЁ]/u', $text)) {
             return 'ru'; // Russian
         }
@@ -247,7 +242,6 @@ JSON to translate:
         $allLanguages = [
             'ru' => 'Русский',
             'en' => 'English',
-            'ar' => 'العربية',
         ];
 
         // Убираем исходный язык из списка

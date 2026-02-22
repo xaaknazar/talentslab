@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="ltr">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,7 +22,7 @@
             .lang-switch {
                 position: fixed;
                 top: 24px;
-                {{ app()->getLocale() == 'ar' ? 'left' : 'right' }}: 24px;
+                right: 24px;
                 z-index: 1000;
             }
 
@@ -66,7 +66,7 @@
             .lang-dropdown {
                 position: absolute;
                 top: calc(100% + 8px);
-                {{ app()->getLocale() == 'ar' ? 'left' : 'right' }}: 0;
+                right: 0;
                 min-width: 180px;
                 background: #fff;
                 border: 1px solid #e5e7eb;
@@ -138,7 +138,7 @@
             @media (max-width: 640px) {
                 .lang-switch {
                     top: 16px;
-                    {{ app()->getLocale() == 'ar' ? 'left' : 'right' }}: 16px;
+                    right: 16px;
                 }
 
                 .lang-switch-btn {
@@ -164,7 +164,6 @@
                 $languages = [
                     'ru' => ['name' => 'Русский', 'code' => 'RU'],
                     'en' => ['name' => 'English', 'code' => 'EN'],
-                    'ar' => ['name' => 'العربية', 'code' => 'AR']
                 ];
                 $currentLang = $languages[$currentLocale] ?? $languages['ru'];
             @endphp
@@ -206,7 +205,8 @@
                 <!-- Right Panel - Branding -->
                 <div class="right-panel">
                     <div class="logos-container">
-                        <img src="{{ asset('logos/divergents_logo.png') }}" alt="Divergents Logo" class="brand-logo brand-logo-left">
+                        <img src="{{ asset('logos/divergents_logo.png') }}" alt="Divergents Logo" class="brand-logo brand-logo-left" style="position: relative; top: 5px;">
+                        <span class="logos-separator">×</span>
                         <img src="{{ asset('logos/talents_lab_logo.png') }}" alt="Talents Lab Logo" class="brand-logo brand-logo-right">
                     </div>
                     <p class="brand-description">

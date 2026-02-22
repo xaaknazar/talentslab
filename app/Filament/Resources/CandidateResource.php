@@ -176,8 +176,12 @@ class CandidateResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query) => $query->with(['gallupReports', 'user.gardnerTestResult']))
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['gallupReports', 'user.gardnerTestResult'])->withCount('comments'))
             ->columns([
+                Tables\Columns\TextColumn::make('display_number')
+                    ->label('№')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('full_name')
                     ->label('Полное имя')
                     ->searchable()
@@ -238,7 +242,8 @@ class CandidateResource extends Resource
                     ->limit(30)
                     ->tooltip(fn (?string $state): string => $state ?? 'Не начат')
                     ->toggleable(isToggledHiddenByDefault: true)
-                    ->sortable(),
+                    ->sortable()
+                    ->visible(fn (): bool => auth()->user()->is_admin ?? false),
                 Tables\Columns\IconColumn::make('has_driving_license')
                     ->label('Вод. права')
                     ->boolean()
@@ -266,7 +271,8 @@ class CandidateResource extends Resource
                         str_contains($state, 'отчета') => 'warning',
                         default => 'gray',
                     })
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->visible(fn (): bool => auth()->user()->is_admin ?? false),
                 Tables\Columns\TextColumn::make('gardner_status')
                     ->label('Тест Гарднера')
                     ->getStateUsing(function (Candidate $record): string {
@@ -361,43 +367,52 @@ class CandidateResource extends Resource
                     ->hidden(), // Скрытый фильтр, но доступный при необходимости
             ])
             ->actions([
+                // Резюме - всегда доступны при step >= 4
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\Action::make('Резюме полное')
                         ->label('Резюме полное')
                         ->icon('heroicon-o-document-text')
                         ->color('success')
-                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'anketa']))
+                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->display_number, 'type' => 'anketa']))
                         ->modal(),
 
                     Tables\Actions\Action::make('Резюме урезанное')
                         ->label('Резюме урезанное')
                         ->icon('heroicon-o-document-text')
                         ->color('info')
-                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'anketa-reduced']))
+                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->display_number, 'type' => 'anketa-reduced']))
                         ->modal(),
+                ])
+                    ->label('Резюме')
+                    ->icon('heroicon-o-document-text')
+                    ->color('success')
+                    ->button()
+                    ->visible(fn (Candidate $record): bool => $record->step >= 4),
 
+                // Gallup отчёты
+                Tables\Actions\ActionGroup::make([
                     Tables\Actions\Action::make('downloadDPs')
                         ->label('DPs отчет')
                         ->icon('heroicon-o-document-text')
                         ->color('info')
-                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'DPs']))
+                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->display_number, 'type' => 'DPs']))
                         ->modal()
                         ->visible(fn (Candidate $record): bool => $record->gallupReports()->where('type', 'DPs')->exists()),
                     Tables\Actions\Action::make('downloadDPT')
                         ->label('DPT отчет')
                         ->icon('heroicon-o-document-text')
                         ->color('warning')
-                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'DPT']))
+                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->display_number, 'type' => 'DPT']))
                         ->modal()
                         ->visible(fn (Candidate $record): bool => $record->gallupReports()->where('type', 'DPT')->exists()),
                     Tables\Actions\Action::make('downloadFMD')
                         ->label('FMD отчет')
                         ->icon('heroicon-o-document-text')
                         ->color('danger')
-                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->id, 'type' => 'FMD']))
+                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->display_number, 'type' => 'FMD']))
                         ->modal()
                         ->visible(fn (Candidate $record): bool => $record->gallupReports()->where('type', 'FMD')->exists()),
-                    
+
                     Tables\Actions\Action::make('refresh_gallup_report')
                         ->label('Обновить gallup Отчет')
                         ->icon('heroicon-o-arrow-path')
@@ -418,27 +433,37 @@ class CandidateResource extends Resource
                                     ->send();
                             }
                         })
-                        ->visible(fn (Candidate $record): bool => 
+                        ->visible(fn (Candidate $record): bool =>
                             $record->gallup_pdf && Storage::disk('public')->exists($record->gallup_pdf)
                         ),
-                        
+
                 ])
                     ->label('Gallup')
                     ->icon('heroicon-o-document-arrow-down')
-                    ->color('success')
+                    ->color('warning')
                     ->button()
                     ->visible(fn (Candidate $record): bool =>
-                        ($record->gallup_pdf && Storage::disk('public')->exists($record->gallup_pdf)) || 
-                        $record->gallupReports()->exists()
+                        (auth()->user()->is_admin ?? false) &&
+                        (($record->gallup_pdf && Storage::disk('public')->exists($record->gallup_pdf)) ||
+                        $record->gallupReports()->exists())
                     ),
                     
+                // Заметки рекрутера
+                Tables\Actions\Action::make('comments')
+                    ->label('Заметки')
+                    ->icon('heroicon-o-chat-bubble-left-ellipsis')
+                    ->color('gray')
+                    ->badge(fn (Candidate $record): ?string => $record->comments_count ?: null)
+                    ->badgeColor('info')
+                    ->url(fn (Candidate $record): string => static::getUrl('edit', ['record' => $record]))
+                    ->visible(fn (): bool => auth()->user()->is_admin ?? false),
+
                 // Кнопка редактирования анкеты (доступна только администраторам)
-                // Перемещена на место кнопки "Удалить" для лучшей видимости
                 Tables\Actions\Action::make('edit_form')
                     ->label('Редактировать')
                     ->icon('heroicon-o-pencil')
                     ->color('primary')
-                    ->url(fn (Candidate $record): string => route('candidate.form', $record->id))
+                    ->url(fn (Candidate $record): string => route('candidate.form', $record->display_number))
                     ->openUrlInNewTab(false)
                     ->visible(fn (): bool => auth()->user()->is_admin ?? false),
                     
@@ -460,7 +485,7 @@ class CandidateResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\CommentsRelationManager::class,
         ];
     }
 
@@ -469,7 +494,7 @@ class CandidateResource extends Resource
         return [
             'index' => Pages\ListCandidates::route('/'),
             'create' => Pages\CreateCandidate::route('/create'),
-            // 'edit' => Pages\EditCandidate::route('/{record}/edit'), // Отключено - анкеты нельзя редактировать
+            'edit' => Pages\EditCandidate::route('/{record}/edit'),
         ];
     }
 }

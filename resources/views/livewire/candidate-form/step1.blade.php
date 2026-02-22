@@ -9,6 +9,14 @@
                 {{ __('Photo') }} <span class="text-red-500">*</span>
             </label>
 
+            <!-- Подсказка по загрузке фото -->
+            <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p class="text-sm text-blue-800">
+                    <strong>{{ __('Please upload a quality photo.') }}</strong><br>
+                    {{ __('The photo is used for initial review by employers and should correspond to a business format.') }}
+                </p>
+            </div>
+
             <!-- Предпросмотр фото -->
             <div id="photo-preview" class="mb-4 {{ $photoPreview ? '' : 'hidden' }}">
                 <div class="relative w-32 h-40 mx-auto">
@@ -114,7 +122,7 @@
                            id="first-name-input"
                            wire:model="first_name"
                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 capitalize"
-                           placeholder="{{ app()->getLocale() == 'ar' ? 'أحمد' : (app()->getLocale() == 'en' ? 'John' : 'Иван') }}">
+                           placeholder="{{ app()->getLocale() == 'en' ? 'John' : 'Иван' }}">
                     @error('first_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
 
@@ -127,7 +135,7 @@
                            id="last-name-input"
                            wire:model="last_name"
                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 capitalize"
-                           placeholder="{{ app()->getLocale() == 'ar' ? 'محمد' : (app()->getLocale() == 'en' ? 'Smith' : 'Иванов') }}">
+                           placeholder="{{ app()->getLocale() == 'en' ? 'Smith' : 'Иванов' }}">
                     @error('last_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
             </div>
@@ -160,13 +168,13 @@
         <!-- Телефон -->
         <div>
             <label class="block text-sm font-medium text-gray-700">
-                {{ __('Phone') }} <span class="text-red-500">*</span><span class="text-gray-500"> ({{ __('in format +77081992519') }})</span>
+                {{ __('Phone') }} <span class="text-red-500">*</span><span class="text-gray-500"> ({{ __('in format +77050102030') }})</span>
             </label>
             <input type="text"
                    wire:model.lazy="phone"
                    id="phone-input"
                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                   placeholder="+77081992519">
+                   placeholder="+77050102030">
             @error('phone') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
 
@@ -218,7 +226,7 @@
                    id="birth-place-input"
                    wire:model="birth_place"
                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 capitalize"
-                   placeholder="{{ app()->getLocale() == 'ar' ? 'الرياض' : (app()->getLocale() == 'en' ? 'New York' : 'Москва') }}">
+                   placeholder="{{ app()->getLocale() == 'en' ? 'New York' : 'Москва' }}">
             @error('birth_place') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
 
@@ -231,7 +239,7 @@
                    id="current-city-input"
                    wire:model="current_city"
                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 capitalize"
-                   placeholder="{{ app()->getLocale() == 'ar' ? 'دبي' : (app()->getLocale() == 'en' ? 'London' : 'Москва') }}">
+                   placeholder="{{ app()->getLocale() == 'en' ? 'London' : 'Москва' }}">
             @error('current_city') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
 
@@ -240,12 +248,21 @@
             <label class="block text-sm font-medium text-gray-700">
                 {{ __('Ready to Relocate') }}
             </label>
-            <div class="mt-2">
+            <div class="mt-2 space-y-2">
                 <label class="inline-flex items-center">
-                    <input type="checkbox"
+                    <input type="radio"
                            wire:model="ready_to_relocate"
-                           class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                           value="1"
+                           class="border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                     <span class="ml-2 text-sm text-gray-700">{{ __('Yes, ready to relocate') }}</span>
+                </label>
+                <br>
+                <label class="inline-flex items-center">
+                    <input type="radio"
+                           wire:model="ready_to_relocate"
+                           value="0"
+                           class="border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <span class="ml-2 text-sm text-gray-700">{{ __('No, not ready to relocate') }}</span>
                 </label>
             </div>
             @error('ready_to_relocate') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror

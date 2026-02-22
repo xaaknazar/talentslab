@@ -12,11 +12,37 @@ class Candidate extends Model
 {
     use HasFactory;
 
+    /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Автоматически присваиваем display_number при создании нового кандидата
+        static::creating(function ($candidate) {
+            if (is_null($candidate->display_number)) {
+                $maxNumber = static::max('display_number') ?? 0;
+                $candidate->display_number = $maxNumber + 1;
+            }
+        });
+    }
+
+    /**
+     * Get the route key for the model.
+     * Используем display_number для URL вместо id
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'display_number';
+    }
+
     protected $fillable = [
         // Basic Information
         'user_id',
         'step',
         'step_parse_gallup',
+        'display_number',
         'full_name',
         'email',
         'phone',
@@ -49,6 +75,7 @@ class Candidate extends Model
         'language_skills',
         'computer_skills',
         'work_experience',
+        'has_no_work_experience',
         'total_experience_years',
         'job_satisfaction',
         'desired_position',
@@ -78,6 +105,7 @@ class Candidate extends Model
         'language_skills' => 'array',
         'computer_skills' => 'string',
         'work_experience' => 'array',
+        'has_no_work_experience' => 'boolean',
         'desired_positions' => 'array',
         'awards' => 'array',
         'books_per_year' => 'string',
@@ -112,21 +140,21 @@ class Candidate extends Model
 
         $mbtiTypes = [
             'INTJ' => 'INTJ - Архитектор',
-            'INTP' => 'INTP - Мыслитель',
+            'INTP' => 'INTP - Логик',
             'ENTJ' => 'ENTJ - Командир',
             'ENTP' => 'ENTP - Полемист',
-            'INFJ' => 'INFJ - Активист',
+            'INFJ' => 'INFJ - Заступник',
             'INFP' => 'INFP - Посредник',
-            'ENFJ' => 'ENFJ - Тренер',
-            'ENFP' => 'ENFP - Борец',
+            'ENFJ' => 'ENFJ - Протагонист',
+            'ENFP' => 'ENFP - Активист',
             'ISTJ' => 'ISTJ - Логист',
             'ISFJ' => 'ISFJ - Защитник',
             'ESTJ' => 'ESTJ - Менеджер',
             'ESFJ' => 'ESFJ - Консул',
             'ISTP' => 'ISTP - Виртуоз',
             'ISFP' => 'ISFP - Авантюрист',
-            'ESTP' => 'ESTP - Делец',
-            'ESFP' => 'ESFP - Развлекатель',
+            'ESTP' => 'ESTP - Предприниматель',
+            'ESFP' => 'ESFP - Артист',
         ];
 
         return $mbtiTypes[$this->mbti_type] ?? $this->mbti_type;
@@ -273,8 +301,15 @@ class Candidate extends Model
     public function getFormattedParents()
     {
         $family = $this->getFamilyStructured();
+
+        // Проверяем флаг "нет родителей"
+        $familyData = $this->family_members ?? [];
+        if (is_array($familyData) && !empty($familyData['no_parents'])) {
+            return ['Нет родителей'];
+        }
+
         $formatted = [];
-        
+
         foreach ($family['parents'] as $parent) {
             $line = $parent['relation'] ?? 'Не указано';
             $line .= ' - ' . ($parent['birth_year'] ?? 'Не указано') . ' г.р.';
@@ -283,7 +318,7 @@ class Candidate extends Model
             }
             $formatted[] = $line;
         }
-        
+
         return $formatted;
     }
 
@@ -293,14 +328,26 @@ class Candidate extends Model
     public function getFormattedSiblings()
     {
         $family = $this->getFamilyStructured();
+
+        // Проверяем флаг "единственный ребенок"
+        $familyData = $this->family_members ?? [];
+        if (is_array($familyData) && !empty($familyData['only_child'])) {
+            return ['Единственный ребенок'];
+        }
+
         $formatted = [];
-        
+
         foreach ($family['siblings'] as $sibling) {
             $line = $sibling['relation'] ?? 'Не указано';
             $line .= ' - ' . ($sibling['birth_year'] ?? 'Не указано') . ' г.р.';
             $formatted[] = $line;
         }
-        
+
+        // Если нет братьев/сестёр и флаг не установлен, возвращаем "Не указано"
+        if (empty($formatted)) {
+            return ['Не указано'];
+        }
+
         return $formatted;
     }
 

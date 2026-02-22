@@ -1,21 +1,21 @@
 @extends('layouts.auth')
 
-@section('title', 'Восстановление пароля - Divergents')
+@section('title', __('Password Recovery') . ' - TalentsLab')
 
 @section('content')
-<h1>Восстановление пароля</h1>
+<h1>{{ __('Password Recovery') }}</h1>
 
 @if(!session('status'))
-<p>Введите ваш email адрес, и мы отправим вам ссылку для сброса пароля</p>
+<p>{{ __('Enter your email address and we will send you a password reset link') }}</p>
 @endif
 
 @session('status')
     <div class="success-message">
         {{ $value }}
     </div>
-    
+
     <div class="spam-notice">
-        <p><strong>Не нашли письмо?</strong> Проверьте папку "СПАМ" или "Нежелательная почта" - иногда письма попадают туда автоматически.</p>
+        <p><strong>{{ __('Did not find the email?') }}</strong> {{ __('Check your SPAM or Junk folder - sometimes emails end up there automatically.') }}</p>
     </div>
 @endsession
 
@@ -31,7 +31,7 @@
 <!-- Forgot Password Form -->
 <form method="POST" action="{{ route('password.email') }}">
     @csrf
-    
+
     @if(!session('status'))
     <div class="form-group">
         <input
@@ -39,7 +39,7 @@
             id="email"
             name="email"
             class="form-input"
-            placeholder="Email адрес"
+            placeholder="{{ __('Email address') }}"
             value="{{ old('email') }}"
             required
             autofocus
@@ -52,19 +52,19 @@
 
     @if(!session('status'))
     <button type="submit" class="btn-auth">
-        Отправить ссылку для сброса пароля
+        {{ __('Send password reset link') }}
     </button>
     @else
     <div class="resend-section">
-        <p class="resend-text">Хотите отправить ссылку повторно?</p>
+        <p class="resend-text">{{ __('Want to resend the link?') }}</p>
         <button type="submit" class="btn-auth btn-secondary">
-            Отправить повторно
+            {{ __('Resend') }}
         </button>
     </div>
     @endif
 </form>
 
 <div class="auth-footer">
-    <a href="{{ route('login') }}">← Вернуться к входу</a>
+    <a href="{{ route('login') }}">← {{ __('Back to login') }}</a>
 </div>
 @endsection

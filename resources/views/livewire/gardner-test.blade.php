@@ -119,68 +119,143 @@
                         </div>
                     @endif
 
-                    <div class="space-y-4">
-                        @php
-                            $descriptions = [
-                                'Лингвистический интеллект' => __('Linguistic Intelligence Description'),
-                                'Логико-математический интеллект' => __('Logical-Mathematical Intelligence Description'),
-                                'Пространственный интеллект' => __('Spatial Intelligence Description'),
-                                'Музыкальный интеллект' => __('Musical Intelligence Description'),
-                                'Телесно-кинестетический интеллект' => __('Bodily-Kinesthetic Intelligence Description'),
-                                'Внутриличностный интеллект' => __('Intrapersonal Intelligence Description'),
-                                'Межличностный интеллект' => __('Interpersonal Intelligence Description'),
-                                'Натуралистический интеллект' => __('Naturalistic Intelligence Description'),
-                                'Экзистенциальный интеллект' => __('Existential Intelligence Description')
-                            ];
+                    @php
+                        // Маппинг типов интеллекта на цвета и эмодзи
+                        $intelligenceConfig = [
+                            'Лингвистический интеллект' => ['color' => '#e06666', 'textColor' => 'black', 'emoji' => '㊗️'],
+                            'Логико-математический интеллект' => ['color' => '#ea9999', 'textColor' => 'black', 'emoji' => '🧠'],
+                            'Музыкальный интеллект' => ['color' => '#3c78d8', 'textColor' => 'white', 'emoji' => '🎶'],
+                            'Телесно-кинестетический интеллект' => ['color' => '#f6b26b', 'textColor' => 'black', 'emoji' => '✋🏻'],
+                            'Пространственный интеллект' => ['color' => '#38761d', 'textColor' => 'white', 'emoji' => '👁️'],
+                            'Межличностный интеллект' => ['color' => '#073763', 'textColor' => 'white', 'emoji' => '👥'],
+                            'Внутриличностный интеллект' => ['color' => '#a6bee7', 'textColor' => 'black', 'emoji' => '💭'],
+                            'Натуралистический интеллект' => ['color' => '#f1c232', 'textColor' => 'black', 'emoji' => '🌻'],
+                            'Экзистенциальный интеллект' => ['color' => '#6d9eeb', 'textColor' => 'black', 'emoji' => '🙏🏻'],
+                        ];
 
-                            $intelligenceNames = [
-                                'Лингвистический интеллект' => __('Linguistic Intelligence'),
-                                'Логико-математический интеллект' => __('Logical-Mathematical Intelligence'),
-                                'Пространственный интеллект' => __('Spatial Intelligence'),
-                                'Музыкальный интеллект' => __('Musical Intelligence'),
-                                'Телесно-кинестетический интеллект' => __('Bodily-Kinesthetic Intelligence'),
-                                'Внутриличностный интеллект' => __('Intrapersonal Intelligence'),
-                                'Межличностный интеллект' => __('Interpersonal Intelligence'),
-                                'Натуралистический интеллект' => __('Naturalistic Intelligence'),
-                                'Экзистенциальный интеллект' => __('Existential Intelligence')
-                            ];
+                        $intelligenceNames = [
+                            'Лингвистический интеллект' => __('Linguistic Intelligence'),
+                            'Логико-математический интеллект' => __('Logical-Mathematical Intelligence'),
+                            'Пространственный интеллект' => __('Spatial Intelligence'),
+                            'Музыкальный интеллект' => __('Musical Intelligence'),
+                            'Телесно-кинестетический интеллект' => __('Bodily-Kinesthetic Intelligence'),
+                            'Внутриличностный интеллект' => __('Intrapersonal Intelligence'),
+                            'Межличностный интеллект' => __('Interpersonal Intelligence'),
+                            'Натуралистический интеллект' => __('Naturalistic Intelligence'),
+                            'Экзистенциальный интеллект' => __('Existential Intelligence')
+                        ];
 
-                            $percentages = [];
-                            foreach($results as $name => $percentageStr) {
-                                $percentages[$name] = (int) str_replace('%', '', $percentageStr);
-                            }
-                            $maxPercentage = max($percentages);
-                        @endphp
+                        // Первый ряд (5 типов)
+                        $row1Types = [
+                            'Лингвистический интеллект',
+                            'Логико-математический интеллект',
+                            'Музыкальный интеллект',
+                            'Телесно-кинестетический интеллект',
+                            'Пространственный интеллект',
+                        ];
 
-                        @foreach($results as $name => $percentageStr)
-                            @php
-                                $percentage = (int) str_replace('%', '', $percentageStr);
-                                $isHighest = $percentage == $maxPercentage;
-                            @endphp
+                        // Второй ряд (4 типа)
+                        $row2Types = [
+                            'Межличностный интеллект',
+                            'Внутриличностный интеллект',
+                            'Натуралистический интеллект',
+                            'Экзистенциальный интеллект',
+                        ];
+                    @endphp
 
-                            <div class="bg-gray-50 p-4 rounded-lg {{ $isHighest ? 'ring-2 ring-green-500 bg-green-50' : '' }}">
-                                <div class="flex justify-between items-center mb-2">
-                                    <h3 class="font-semibold text-gray-900 {{ $isHighest ? 'text-green-900' : '' }}">
-                                        {{ $intelligenceNames[$name] ?? $name }}
-                                        @if($isHighest)
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 ml-2">
-                                                {{ __('Dominant') }}
-                                            </span>
-                                        @endif
-                                    </h3>
-                                    <span class="text-sm font-medium {{ $isHighest ? 'text-green-700' : 'text-gray-600' }}">
-                                        {{ $percentageStr }}
-                                    </span>
-                                </div>
-
-                                <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
-                                    <div class="h-2 rounded-full transition-all duration-300 {{ $isHighest ? 'bg-green-600' : 'bg-indigo-600' }}"
-                                         style="width: {{ $percentage }}%"></div>
-                                </div>
-
-                                <p class="text-sm text-gray-600">{{ $descriptions[$name] ?? __('Description not available') }}</p>
+                    <!-- Диаграмма интеллектов -->
+                    <div class="bg-gray-100 rounded-lg p-6 mb-6">
+                        <!-- Первый ряд -->
+                        <div style="display: flex; align-items: flex-end; height: 200px; margin-bottom: 8px;">
+                            <!-- Ось Y -->
+                            <div style="width: 32px; height: 200px; position: relative; margin-right: 8px;">
+                                @foreach([100, 75, 50, 25, 0] as $mark)
+                                    <div style="position: absolute; bottom: {{ $mark * 2 }}px; right: 0; transform: translateY(50%); font-size: 10px; color: #666; text-align: right; width: 28px;">{{ $mark }}</div>
+                                @endforeach
                             </div>
-                        @endforeach
+                            <!-- Столбцы первого ряда -->
+                            <div style="flex: 1; position: relative; height: 200px;">
+                                @foreach([100, 75, 50, 25, 0] as $mark)
+                                    <div style="position: absolute; bottom: {{ $mark * 2 }}px; left: 0; right: 0; border-bottom: 1px solid #d1d5db; z-index: 0;"></div>
+                                @endforeach
+                                <div style="display: flex; align-items: flex-end; justify-content: space-around; height: 200px; position: relative; z-index: 1;">
+                                    @foreach($row1Types as $type)
+                                        @php
+                                            $percentage = $results[$type] ?? '0%';
+                                            $numericValue = (int) str_replace('%', '', $percentage);
+                                            $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'textColor' => 'white', 'emoji' => '❓'];
+                                            $barHeight = max(round($numericValue * 2), 32);
+                                            $textColor = $config['textColor'] ?? 'white';
+                                            $textShadow = $textColor === 'white' ? '1px 1px 2px rgba(0,0,0,0.3)' : 'none';
+                                        @endphp
+                                        <div style="width: 80px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 40 ? '8' : '4' }}px;">
+                                            <span style="font-size: 20px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Подписи первого ряда -->
+                        <div style="display: flex; justify-content: space-around; margin-left: 40px; margin-bottom: 24px;">
+                            @foreach($row1Types as $type)
+                                @php
+                                    $shortName = str_replace(' интеллект', '', $type);
+                                    $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓'];
+                                @endphp
+                                <div style="width: 80px; display: flex; flex-direction: column; align-items: center;">
+                                    <div style="font-size: 20px; margin-bottom: 4px;">{{ $config['emoji'] }}</div>
+                                    <div style="text-align: center; font-size: 11px; font-weight: 600; color: #374151; line-height: 1.3;">
+                                        {{ $shortName }}<br>интеллект
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <!-- Второй ряд -->
+                        <div style="display: flex; align-items: flex-end; height: 200px; margin-bottom: 8px;">
+                            <!-- Ось Y -->
+                            <div style="width: 32px; height: 200px; position: relative; margin-right: 8px;">
+                                @foreach([100, 75, 50, 25, 0] as $mark)
+                                    <div style="position: absolute; bottom: {{ $mark * 2 }}px; right: 0; transform: translateY(50%); font-size: 10px; color: #666; text-align: right; width: 28px;">{{ $mark }}</div>
+                                @endforeach
+                            </div>
+                            <!-- Столбцы второго ряда -->
+                            <div style="flex: 1; position: relative; height: 200px;">
+                                @foreach([100, 75, 50, 25, 0] as $mark)
+                                    <div style="position: absolute; bottom: {{ $mark * 2 }}px; left: 0; right: 0; border-bottom: 1px solid #d1d5db; z-index: 0;"></div>
+                                @endforeach
+                                <div style="display: flex; align-items: flex-end; justify-content: space-around; height: 200px; position: relative; z-index: 1;">
+                                    @foreach($row2Types as $type)
+                                        @php
+                                            $percentage = $results[$type] ?? '0%';
+                                            $numericValue = (int) str_replace('%', '', $percentage);
+                                            $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'textColor' => 'white', 'emoji' => '❓'];
+                                            $barHeight = max(round($numericValue * 2), 32);
+                                            $textColor = $config['textColor'] ?? 'white';
+                                            $textShadow = $textColor === 'white' ? '1px 1px 2px rgba(0,0,0,0.3)' : 'none';
+                                        @endphp
+                                        <div style="width: 100px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 40 ? '8' : '4' }}px;">
+                                            <span style="font-size: 20px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Подписи второго ряда -->
+                        <div style="display: flex; justify-content: space-around; margin-left: 40px;">
+                            @foreach($row2Types as $type)
+                                @php
+                                    $shortName = str_replace(' интеллект', '', $type);
+                                    $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓'];
+                                @endphp
+                                <div style="width: 100px; display: flex; flex-direction: column; align-items: center;">
+                                    <div style="font-size: 20px; margin-bottom: 4px;">{{ $config['emoji'] }}</div>
+                                    <div style="text-align: center; font-size: 11px; font-weight: 600; color: #374151; line-height: 1.3;">
+                                        {{ $shortName }}<br>интеллект
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
 
                     <div class="mt-8 p-4 bg-blue-50 rounded-lg">

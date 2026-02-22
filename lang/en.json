@@ -45,6 +45,7 @@
     "Created.": "Created.",
     "Current Password": "Current Password",
     "Dashboard": "Dashboard",
+    "Candidates database": "Candidates database",
     "Delete": "Delete",
     "Delete Account": "Delete Account",
     "Delete API Token": "Delete API Token",
@@ -259,6 +260,9 @@
     "Current City": "Current City",
     "Ready to Relocate": "Ready to Relocate",
     "Yes, ready to relocate": "Yes, ready to relocate",
+    "No, not ready to relocate": "No, not ready to relocate",
+    "Please upload a quality photo.": "Please upload a quality photo.",
+    "The photo is used for initial review by employers and should correspond to a business format.": "The photo is used for initial review by employers and should correspond to a business format.",
 
     "Photo": "Photo",
     "Click to upload": "Click to upload",
@@ -292,6 +296,8 @@
     "Year of Birth": "Year of Birth",
     "Profession": "Profession",
     "Parent's Profession": "Parent's Profession",
+    "No parents": "No parents",
+    "Only child (no siblings)": "Only child (no siblings)",
 
     "Hobbies": "Hobbies",
     "Interests": "Interests",
@@ -325,6 +331,9 @@
     "Enter value from 0 to 4.0": "Enter value from 0 to 4.0",
 
     "Work Experience": "Work Experience",
+    "No work experience": "No work experience",
+    "Work experience section is skipped": "Work experience section is skipped",
+    "Add at least one work experience": "Add at least one work experience",
     "Work Period": "Work Period",
     "Select period": "Select period",
     "Start Date": "Start Date",
@@ -359,11 +368,12 @@
     "Language not found": "Language not found",
     "Level": "Level",
     "Select level": "Select level",
-    "Beginner": "Beginner",
-    "Intermediate": "Intermediate",
-    "Upper Intermediate": "Upper Intermediate",
-    "Advanced": "Advanced",
-    "Fluent": "Fluent",
+    "A1 - Beginner": "A1 - Beginner [I know the simplest words and phrases]",
+    "A2 - Basic": "A2 - Basic [I can explain myself in simple everyday situations]",
+    "B1 - Intermediate": "B1 - Intermediate [I can communicate on familiar topics, sometimes lack words]",
+    "B2 - Confident": "B2 - Confident [I speak freely at work and in life, understand most conversations and texts]",
+    "C1 - Very High": "C1 - Very High [I express myself confidently, can work, write and read in this language]",
+    "C2 - Advanced": "C2 - Advanced [I understand everything, speak and write / native and primary language]",
 
     "Field of Activity": "Field of Activity",
     "Select field of activity": "Select field of activity",
@@ -450,7 +460,7 @@
 
     "in format @username": "in format @username",
     "username (@ sign will be added automatically)": "username (@ sign will be added automatically)",
-    "in format +77081992519": "in format +77081992519",
+    "in format +77050102030": "in format +77050102030",
 
     "Ислам": "Islam",
     "Христианство": "Christianity",
@@ -504,6 +514,12 @@
     "Выше среднего": "Upper Intermediate",
     "Продвинутый": "Advanced",
     "В совершенстве": "Fluent",
+    "A1": "A1 - Beginner",
+    "A2": "A2 - Basic",
+    "B1": "B1 - Intermediate",
+    "B2": "B2 - Confident",
+    "C1": "C1 - Very High",
+    "C2": "C2 - Advanced",
 
     "Средне-специальное": "Vocational",
     "Бакалавр": "Bachelor",
@@ -551,6 +567,11 @@
     "Please fix the errors below:": "Please fix the errors below:",
     "Save and continue": "Save and continue",
     "Save and finish": "Save and finish",
+    "Processing...": "Processing...",
+    "Processing": "Processing",
+    "Generating your resume": "Generating your resume",
+    "Please wait, we are processing your data and creating reports...": "Please wait, we are processing your data and creating reports...",
+    "This may take a few minutes": "This may take a few minutes",
     "Check errors at the top of the form": "Check errors at the top of the form",
 
     "Psychometric Portrait": "Psychometric Profile",
@@ -633,6 +654,10 @@
 
     "Talents Lab is a modern online platform with a resume database reflecting a holistic psychometric portrait of personality.": "Talents Lab is a modern online platform with a resume database reflecting a holistic psychometric portrait of personality.",
     "By completing the questionnaire, you will create a resume and be able to find a vacancy that best matches your abilities and potential.": "By completing the questionnaire, you will create a resume and be able to find a vacancy that best matches your abilities and potential.",
+    "Resume Database": "Resume Database",
+    "A modern online platform with a resume database reflecting a holistic psychometric portrait of personality.": "A modern online platform with a resume database reflecting a holistic psychometric portrait of personality.",
+    "Find Your Vacancy": "Find Your Vacancy",
+    "Complete the questionnaire, create your resume and find a vacancy that best matches your abilities.": "Complete the questionnaire, create your resume and find a vacancy that best matches your abilities.",
 
     "Gardner Test - Multiple Intelligences": "Gardner Test - Multiple Intelligences",
     "Gardner Test - All Questions": "Gardner Test - All Questions",
@@ -808,7 +833,10 @@
     "Field of activity is required": "Field of activity is required",
     "Field of activity must not exceed 255 characters": "Field of activity must not exceed 255 characters",
     "Award must not exceed 500 characters": "Award must not exceed 500 characters",
+    "Main tasks are required": "Main tasks are required",
     "Add at least 3 main tasks": "Add at least 3 main tasks",
+    "Task description is required": "Task description is required",
+    "Task must be at least 3 characters": "Task must be at least 3 characters",
     "Task must not exceed 500 characters": "Task must not exceed 500 characters",
     "Instagram must not exceed 255 characters": "Instagram must not exceed 255 characters",
     "Hobbies are required": "Hobbies are required",
@@ -864,5 +892,21 @@
     "Award": "Award",
     "Salary From": "Salary From",
     "Salary To": "Salary To",
-    "MBTI Personality Type": "MBTI Personality Type"
+    "MBTI Personality Type": "MBTI Personality Type",
+
+    "Email Verification": "Email Verification",
+    "Before continuing, please verify your email address by clicking on the link we just sent you. If you did not receive the email, we will gladly send you another.": "Before continuing, please verify your email address by clicking on the link we just sent you. If you did not receive the email, we will gladly send you another.",
+    "Did not find the email?": "Did not find the email?",
+    "Check your SPAM or Junk folder - sometimes emails end up there automatically.": "Check your SPAM or Junk folder - sometimes emails end up there automatically.",
+    "We sent a new link to the email specified in your profile.": "We sent a new link to the email specified in your profile.",
+    "Resend email": "Resend email",
+
+    "Password Recovery": "Password Recovery",
+    "Enter your email address and we will send you a password reset link": "Enter your email address and we will send you a password reset link",
+    "Email address": "Email address",
+    "Send password reset link": "Send password reset link",
+    "Want to resend the link?": "Want to resend the link?",
+    "Resend": "Resend",
+    "Back to login": "Back to login",
+    "Your session has expired. Please try again.": "Your session has expired. Please try again."
 }
