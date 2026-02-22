@@ -13,6 +13,13 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <script>
+        // Автоматически перезагружаем страницу через 1 секунду
+        setTimeout(function() {
+            window.location.reload();
+        }, 1000);
+    </script>
 </head>
 <body class="font-sans antialiased">
     <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -27,43 +34,20 @@
                     Сессия истекла
                 </h2>
                 <p class="mt-2 text-sm text-gray-600">
-                    Страница устарела. Это может произойти если вы зашли с другого устройства или долго не обновляли страницу.
+                    Обновляем страницу...
                 </p>
+                <div class="mt-4">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                </div>
 
-                <div class="mt-8 space-y-4">
-                    <div class="text-left bg-blue-50 border border-blue-200 rounded-md p-4">
-                        <div class="flex">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <div class="ml-3">
-                                <h3 class="text-sm font-medium text-blue-800">
-                                    Что делать?
-                                </h3>
-                                <div class="mt-2 text-sm text-blue-700">
-                                    <p>Просто обновите страницу и попробуйте снова.</p>
-                                </div>
-                            </div>
-                        </div>
+                <noscript>
+                    <div class="mt-8">
+                        <a href="{{ route('login') }}"
+                           class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+                            Перейти на страницу входа
+                        </a>
                     </div>
-                </div>
-
-                <div class="mt-8 space-y-3">
-                    <button onclick="window.location.reload()"
-                            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
-                        Обновить страницу
-                    </button>
-
-                    <a href="{{ route('login') }}"
-                       class="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        Перейти на страницу входа
-                    </a>
-                </div>
+                </noscript>
             </div>
         </div>
     </div>
