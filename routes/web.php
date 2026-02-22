@@ -74,6 +74,7 @@ Route::post('/reset-password', function (Illuminate\Http\Request $request) {
 
 Route::get('/candidate/{candidate}/report', [CandidateReportController::class, 'showV2'])->name('candidate.report');
 Route::get('/candidate/{candidate}/report/{version}', [CandidateReportController::class, 'showV2'])->name('candidate.report.version');
+Route::get('/candidate/{candidate}/anketa', [CandidateReportController::class, 'viewAnketaPublic'])->name('candidate.anketa.view');
 Route::get('/candidate/{candidate}/downloadAnketa/public', [CandidateReportController::class, 'downloadAnketaPublic'])->name('candidate.anketa.download.public');
 Route::get('/candidate/{candidate}/gallup-report/{type}/download/public', [CandidateReportController::class, 'downloadGallupReportPublic'])->name('candidate.gallup-report.download.public');
 

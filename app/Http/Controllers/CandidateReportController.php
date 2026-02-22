@@ -135,6 +135,27 @@ class CandidateReportController extends Controller
     }
 
     /**
+     * Показывает полную анкету с Gallup отчётами для публичного просмотра
+     */
+    public function viewAnketaPublic(Candidate $candidate)
+    {
+        // Загружаем связанные данные
+        $candidate->load(['gallupTalents', 'gallupReports', 'user.gardnerTestResult']);
+
+        // Генерируем полную анкету с Gallup отчётами
+        $gallupController = app(\App\Http\Controllers\GallupController::class);
+        $pdfPath = $gallupController->generateAnketaPdfOnDemand($candidate);
+
+        // Получаем URL для отображения
+        $pdfUrl = Storage::disk('public')->url($pdfPath) . '?t=' . time();
+
+        // Формируем заголовок
+        $title = "{$candidate->full_name} — Полный отчёт";
+
+        return view('candidates.view-anketa', compact('candidate', 'pdfUrl', 'title'));
+    }
+
+    /**
      * Генерирует PDF только анкеты (без Gallup отчётов)
      */
     protected function generateAnketaOnlyPdf(Candidate $candidate): string

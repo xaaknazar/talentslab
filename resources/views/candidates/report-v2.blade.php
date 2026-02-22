@@ -976,7 +976,7 @@ if (! function_exists('pluralize_years')) {
                 </div>
             </div>
 
-            <!-- Gallup CliftonStrengths отчёты -->
+            <!-- Полный отчёт с Gallup -->
             @php
                 $dpsReport = $candidate->gallupReportByType('DPs');
                 $dptReport = $candidate->gallupReportByType('DPT');
@@ -984,41 +984,18 @@ if (! function_exists('pluralize_years')) {
                 $hasAnyGallupReport = $dpsReport || $dptReport || $fmdReport;
             @endphp
             @if($hasAnyGallupReport)
-            <div class="mb-8 gallup-reports-section no-print">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">Gallup CliftonStrengths отчёты</h2>
-
-                @if($dpsReport && \Illuminate\Support\Facades\Storage::disk('public')->exists($dpsReport->pdf_file))
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold text-gray-700 mb-2" style="color: #3b82f6;">DPs отчёт</h3>
-                    <iframe
-                        src="{{ \Illuminate\Support\Facades\Storage::url($dpsReport->pdf_file) }}"
-                        style="width: 100%; height: 800px; border: 1px solid #e5e7eb; border-radius: 8px;"
-                        title="DPs отчёт">
-                    </iframe>
-                </div>
-                @endif
-
-                @if($dptReport && \Illuminate\Support\Facades\Storage::disk('public')->exists($dptReport->pdf_file))
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold text-gray-700 mb-2" style="color: #f59e0b;">DPT отчёт</h3>
-                    <iframe
-                        src="{{ \Illuminate\Support\Facades\Storage::url($dptReport->pdf_file) }}"
-                        style="width: 100%; height: 800px; border: 1px solid #e5e7eb; border-radius: 8px;"
-                        title="DPT отчёт">
-                    </iframe>
-                </div>
-                @endif
-
-                @if($fmdReport && \Illuminate\Support\Facades\Storage::disk('public')->exists($fmdReport->pdf_file))
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold text-gray-700 mb-2" style="color: #ef4444;">FMD отчёт</h3>
-                    <iframe
-                        src="{{ \Illuminate\Support\Facades\Storage::url($fmdReport->pdf_file) }}"
-                        style="width: 100%; height: 800px; border: 1px solid #e5e7eb; border-radius: 8px;"
-                        title="FMD отчёт">
-                    </iframe>
-                </div>
-                @endif
+            <div class="mb-8 gallup-reports-section no-print" style="page-break-inside: avoid;">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Полный отчёт</h2>
+                <p class="text-gray-600 mb-4">Откройте полный отчёт с Gallup CliftonStrengths данными:</p>
+                <a href="{{ route('candidate.anketa.view', $candidate) }}"
+                   style="display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, #234088 0%, #1a3066 100%); color: white; padding: 14px 24px; border-radius: 10px; text-decoration: none; font-size: 16px; font-weight: 600; box-shadow: 0 4px 14px rgba(35, 64, 136, 0.35); transition: all 0.2s;"
+                   onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(35, 64, 136, 0.45)';"
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 14px rgba(35, 64, 136, 0.35)';">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                    </svg>
+                    Открыть полный отчёт ({{ $candidate->full_name }})
+                </a>
             </div>
             @endif
 
