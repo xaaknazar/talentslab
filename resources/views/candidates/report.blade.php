@@ -421,7 +421,11 @@ if (! function_exists('mb_ucfirst')) {
                         </div>
                     @endif
                 @else
-                    <p class="text-base text-gray-500">Опыт работы не указан</p>
+                    @if($candidate->has_no_work_experience)
+                        <p class="text-base text-gray-500">Без опыта работы</p>
+                    @else
+                        <p class="text-base text-gray-500">Опыт работы не указан</p>
+                    @endif
                 @endif
             </div>
 

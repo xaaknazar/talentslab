@@ -44,6 +44,7 @@ class ReportLabels
             // Sections
             'work_experience' => 'Опыт работы',
             'work_experience_not_specified' => 'Опыт работы не указан',
+            'no_work_experience' => 'Без опыта работы',
             'companies_positions' => 'Компании и должности',
             'total_experience' => 'Общий стаж',
             'total_experience_years' => 'Общий стаж работы (лет)',
