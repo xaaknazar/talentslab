@@ -424,9 +424,9 @@ class GallupController extends Controller
         if (file_exists($tempHtmlPdf)) {
             unlink($tempHtmlPdf);
         }
-        // 1️⃣ Сгенерировать PDF анкеты
+        // 1️⃣ Сгенерировать PDF анкеты (используем renderReportHtml чтобы избежать редиректа на PDF)
         $html = app(\App\Http\Controllers\CandidateReportController::class)
-            ->showV2($candidate, $version)
+            ->renderReportHtml($candidate, $version)
             ->render();
         $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
         if (!mb_check_encoding($html, 'UTF-8')) {
@@ -711,7 +711,7 @@ class GallupController extends Controller
         // TL - TalentsLab, G - girl, B - boy, YY - год рождения (2 цифры), display_number - номер анкеты
         $genderCode = ($candidate->gender === 'Женский' || $candidate->gender === 'female') ? 'G' : 'B';
         $birthYear = $candidate->birth_date ? substr(date('Y', strtotime($candidate->birth_date)), -2) : '00';
-        $candidateNumber = str_pad($candidate->display_number, 4, '0', STR_PAD_LEFT);
+        $candidateNumber = str_pad($candidate->display_number ?? $candidate->id, 4, '0', STR_PAD_LEFT);
 
         $tempFileName = "{$candidate->full_name} - TL{$genderCode}{$birthYear}-{$candidateNumber}.pdf";
 
@@ -788,7 +788,7 @@ class GallupController extends Controller
         $langCode = $languageNames[$targetLanguage] ?? strtoupper($targetLanguage);
         $genderCode = ($candidate->gender === 'Женский' || $candidate->gender === 'female') ? 'G' : 'B';
         $birthYear = $candidate->birth_date ? substr(date('Y', strtotime($candidate->birth_date)), -2) : '00';
-        $candidateNumber = str_pad($candidate->display_number, 4, '0', STR_PAD_LEFT);
+        $candidateNumber = str_pad($candidate->display_number ?? $candidate->id, 4, '0', STR_PAD_LEFT);
 
         $tempFileName = "{$candidate->full_name} - TL{$genderCode}{$birthYear}-{$candidateNumber}-{$langCode}.pdf";
         $tempPath = "temp_anketas/{$tempFileName}";

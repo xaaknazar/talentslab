@@ -31,11 +31,25 @@ class CandidateReportController extends Controller
         // Загружаем связанные данные
         $candidate->load(['gallupTalents', 'gallupReports', 'user.gardnerTestResult']);
 
-        // Если есть готовый anketa_pdf - показываем его сразу
+        // Если есть готовый anketa_pdf - показываем его сразу (только для публичного доступа)
         if ($candidate->anketa_pdf && Storage::disk('public')->exists($candidate->anketa_pdf)) {
             $pdfUrl = Storage::disk('public')->url($candidate->anketa_pdf) . '?t=' . time();
             $title = "{$candidate->full_name} — Полный отчёт";
             return view('candidates.view-anketa', compact('candidate', 'pdfUrl', 'title'));
+        }
+
+        // Если нет готового PDF - показываем HTML версию
+        return $this->renderReportHtml($candidate, $version);
+    }
+
+    /**
+     * Рендерит HTML версию отчёта (используется для генерации PDF и отображения)
+     */
+    public function renderReportHtml(Candidate $candidate, $version = null)
+    {
+        // Загружаем связанные данные если ещё не загружены
+        if (!$candidate->relationLoaded('gallupTalents')) {
+            $candidate->load(['gallupTalents', 'gallupReports', 'user.gardnerTestResult']);
         }
 
         // Подготавливаем URL фото

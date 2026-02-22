@@ -68,6 +68,11 @@ class GenerateAnketaPdf implements ShouldQueue
                     'candidate_id' => $this->candidate->id,
                     'path' => $permanentPath
                 ]);
+            } else {
+                Log::error('Anketa PDF file not found after generation', [
+                    'candidate_id' => $this->candidate->id,
+                    'expected_path' => $pdfPath
+                ]);
             }
 
         } catch (\Exception $e) {
