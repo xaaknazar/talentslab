@@ -92,7 +92,7 @@
         <div class="header">
             <h1>{{ $title }}</h1>
             <div class="header-actions">
-                <a href="{{ $pdfUrl }}" download class="btn btn-download">
+                <a href="{{ $pdfUrl }}" download="{{ $downloadFileName }}" class="btn btn-download">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
                     </svg>

@@ -35,7 +35,8 @@ class CandidateReportController extends Controller
         if ($candidate->anketa_pdf && Storage::disk('public')->exists($candidate->anketa_pdf)) {
             $pdfUrl = Storage::disk('public')->url($candidate->anketa_pdf) . '?t=' . time();
             $title = "{$candidate->full_name} — Полный отчёт";
-            return view('candidates.view-anketa', compact('candidate', 'pdfUrl', 'title'));
+            $downloadFileName = $this->generateDownloadFileName($candidate);
+            return view('candidates.view-anketa', compact('candidate', 'pdfUrl', 'title', 'downloadFileName'));
         }
 
         // Если нет готового PDF - показываем HTML версию
@@ -167,7 +168,8 @@ class CandidateReportController extends Controller
         if ($candidate->anketa_pdf && Storage::disk('public')->exists($candidate->anketa_pdf)) {
             $pdfUrl = Storage::disk('public')->url($candidate->anketa_pdf) . '?t=' . time();
             $title = "{$candidate->full_name} — Полный отчёт";
-            return view('candidates.view-anketa', compact('candidate', 'pdfUrl', 'title'));
+            $downloadFileName = $this->generateDownloadFileName($candidate);
+            return view('candidates.view-anketa', compact('candidate', 'pdfUrl', 'title', 'downloadFileName'));
         }
 
         // Если нет готовой анкеты - показываем обычную страницу
@@ -180,6 +182,17 @@ class CandidateReportController extends Controller
         $isReducedReport = false;
 
         return view('candidates.report-v2', compact('candidate', 'photoUrl', 'isFullReport', 'isReducedReport'));
+    }
+
+    /**
+     * Формирует имя файла для скачивания в формате: {ФИО} - TL{G/B}{YY}-{номер}.pdf
+     */
+    private function generateDownloadFileName(Candidate $candidate): string
+    {
+        $genderCode = ($candidate->gender === 'Женский' || $candidate->gender === 'female') ? 'G' : 'B';
+        $birthYear = $candidate->birth_date ? substr(date('Y', strtotime($candidate->birth_date)), -2) : '00';
+        $candidateNumber = str_pad($candidate->display_number ?? $candidate->id, 4, '0', STR_PAD_LEFT);
+        return "{$candidate->full_name} - TL{$genderCode}{$birthYear}-{$candidateNumber}.pdf";
     }
 
     /**
