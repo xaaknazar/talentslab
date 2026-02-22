@@ -7,6 +7,7 @@ use App\Models\CandidateFile;
 use App\Models\CandidateHistory;
 use App\Models\CandidateStatus;
 use App\Jobs\ProcessGallupFile;
+use App\Jobs\GenerateAnketaPdf;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
@@ -2290,6 +2291,7 @@ class CandidateForm extends Component
             ]);
 
             // Запускаем обработку Gallup файла синхронно (сразу обрабатывается)
+            // После обработки также генерируется anketa_pdf
             if ($this->candidate->gallup_pdf) {
                 try {
                     ProcessGallupFile::dispatchSync($this->candidate);
@@ -2305,6 +2307,9 @@ class CandidateForm extends Component
                     ]);
                 }
             }
+
+            // Генерируем полный PDF отчёт в фоне (чтобы не задерживать пользователя)
+            GenerateAnketaPdf::dispatch($this->candidate);
 
             session()->flash('message', 'Резюме успешно сохранено!');
 
