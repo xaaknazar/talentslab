@@ -254,7 +254,7 @@ class GallupAnalyzerService
                 return [
                     'success' => false,
                     'talents' => null,
-                    'error' => 'Не удалось извлечь таланты из файла. Попробуйте другой файл или изображение лучшего качества.',
+                    'error' => 'Загрузите правильный PDF-скриншот Gallup. Не удалось распознать таланты в загруженном файле.',
                 ];
             }
 
@@ -1009,7 +1009,11 @@ PROMPT;
 
             return $result;
         } catch (\Exception $e) {
-            Log::error('Ошибка конвертации PDF в изображение: ' . $e->getMessage());
+            Log::error('Ошибка конвертации PDF в изображение', [
+                'message' => $e->getMessage(),
+                'file' => $filePath,
+                'hint' => 'Возможно, PDF повреждён или не является корректным Gallup отчётом'
+            ]);
             return [];
         }
     }
