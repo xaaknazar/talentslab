@@ -984,34 +984,41 @@ if (! function_exists('pluralize_years')) {
                 $hasAnyGallupReport = $dpsReport || $dptReport || $fmdReport;
             @endphp
             @if($hasAnyGallupReport)
-            <div class="mb-8 gallup-reports-section no-print" style="page-break-inside: avoid;">
+            <div class="mb-8 gallup-reports-section no-print">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Gallup CliftonStrengths отчёты</h2>
-                <div style="display: flex; flex-wrap: wrap; gap: 12px;">
-                    @if($dpsReport && \Illuminate\Support\Facades\Storage::disk('public')->exists($dpsReport->pdf_file))
-                    <a href="{{ route('candidate.gallup-report.download.public', ['candidate' => $candidate, 'type' => 'DPs']) }}"
-                       style="display: inline-flex; align-items: center; gap: 8px; background: #3b82f6; color: white; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 500; transition: background 0.2s;"
-                       onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='#3b82f6'">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                        DPs отчёт
-                    </a>
-                    @endif
-                    @if($dptReport && \Illuminate\Support\Facades\Storage::disk('public')->exists($dptReport->pdf_file))
-                    <a href="{{ route('candidate.gallup-report.download.public', ['candidate' => $candidate, 'type' => 'DPT']) }}"
-                       style="display: inline-flex; align-items: center; gap: 8px; background: #f59e0b; color: white; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 500; transition: background 0.2s;"
-                       onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                        DPT отчёт
-                    </a>
-                    @endif
-                    @if($fmdReport && \Illuminate\Support\Facades\Storage::disk('public')->exists($fmdReport->pdf_file))
-                    <a href="{{ route('candidate.gallup-report.download.public', ['candidate' => $candidate, 'type' => 'FMD']) }}"
-                       style="display: inline-flex; align-items: center; gap: 8px; background: #ef4444; color: white; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 500; transition: background 0.2s;"
-                       onmouseover="this.style.background='#dc2626'" onmouseout="this.style.background='#ef4444'">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                        FMD отчёт
-                    </a>
-                    @endif
+
+                @if($dpsReport && \Illuminate\Support\Facades\Storage::disk('public')->exists($dpsReport->pdf_file))
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2" style="color: #3b82f6;">DPs отчёт</h3>
+                    <iframe
+                        src="{{ \Illuminate\Support\Facades\Storage::url($dpsReport->pdf_file) }}"
+                        style="width: 100%; height: 800px; border: 1px solid #e5e7eb; border-radius: 8px;"
+                        title="DPs отчёт">
+                    </iframe>
                 </div>
+                @endif
+
+                @if($dptReport && \Illuminate\Support\Facades\Storage::disk('public')->exists($dptReport->pdf_file))
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2" style="color: #f59e0b;">DPT отчёт</h3>
+                    <iframe
+                        src="{{ \Illuminate\Support\Facades\Storage::url($dptReport->pdf_file) }}"
+                        style="width: 100%; height: 800px; border: 1px solid #e5e7eb; border-radius: 8px;"
+                        title="DPT отчёт">
+                    </iframe>
+                </div>
+                @endif
+
+                @if($fmdReport && \Illuminate\Support\Facades\Storage::disk('public')->exists($fmdReport->pdf_file))
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2" style="color: #ef4444;">FMD отчёт</h3>
+                    <iframe
+                        src="{{ \Illuminate\Support\Facades\Storage::url($fmdReport->pdf_file) }}"
+                        style="width: 100%; height: 800px; border: 1px solid #e5e7eb; border-radius: 8px;"
+                        title="FMD отчёт">
+                    </iframe>
+                </div>
+                @endif
             </div>
             @endif
 
