@@ -151,12 +151,15 @@ class CandidateReportController extends Controller
         // Загружаем связанные данные
         $candidate->load(['gallupTalents', 'gallupReports', 'user.gardnerTestResult']);
 
-        // Генерируем полную анкету с Gallup отчётами
-        $gallupController = app(\App\Http\Controllers\GallupController::class);
-        $pdfPath = $gallupController->generateAnketaPdfOnDemand($candidate);
-
-        // Получаем URL для отображения
-        $pdfUrl = Storage::disk('public')->url($pdfPath) . '?t=' . time();
+        // Проверяем наличие готового anketa_pdf
+        if ($candidate->anketa_pdf && Storage::disk('public')->exists($candidate->anketa_pdf)) {
+            $pdfUrl = Storage::disk('public')->url($candidate->anketa_pdf) . '?t=' . time();
+        } else {
+            // Генерируем полную анкету с Gallup отчётами только если нет готовой
+            $gallupController = app(\App\Http\Controllers\GallupController::class);
+            $pdfPath = $gallupController->generateAnketaPdfOnDemand($candidate);
+            $pdfUrl = Storage::disk('public')->url($pdfPath) . '?t=' . time();
+        }
 
         // Формируем заголовок
         $title = "{$candidate->full_name} — Полный отчёт";
