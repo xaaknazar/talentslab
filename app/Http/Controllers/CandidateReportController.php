@@ -28,16 +28,14 @@ class CandidateReportController extends Controller
 
     public function showV2(Candidate $candidate, $version = null)
     {
-        // Если есть Gallup отчёты - показываем полную анкету
+        // Загружаем связанные данные
         $candidate->load(['gallupTalents', 'gallupReports', 'user.gardnerTestResult']);
 
-        $dpsReport = $candidate->gallupReportByType('DPs');
-        $dptReport = $candidate->gallupReportByType('DPT');
-        $fmdReport = $candidate->gallupReportByType('FMD');
-        $hasAnyGallupReport = $dpsReport || $dptReport || $fmdReport;
-
-        if ($hasAnyGallupReport) {
-            return $this->viewAnketaPublic($candidate);
+        // Если есть готовый anketa_pdf - показываем его сразу
+        if ($candidate->anketa_pdf && Storage::disk('public')->exists($candidate->anketa_pdf)) {
+            $pdfUrl = Storage::disk('public')->url($candidate->anketa_pdf) . '?t=' . time();
+            $title = "{$candidate->full_name} — Полный отчёт";
+            return view('candidates.view-anketa', compact('candidate', 'pdfUrl', 'title'));
         }
 
         // Подготавливаем URL фото
@@ -154,17 +152,20 @@ class CandidateReportController extends Controller
         // Проверяем наличие готового anketa_pdf
         if ($candidate->anketa_pdf && Storage::disk('public')->exists($candidate->anketa_pdf)) {
             $pdfUrl = Storage::disk('public')->url($candidate->anketa_pdf) . '?t=' . time();
-        } else {
-            // Генерируем полную анкету с Gallup отчётами только если нет готовой
-            $gallupController = app(\App\Http\Controllers\GallupController::class);
-            $pdfPath = $gallupController->generateAnketaPdfOnDemand($candidate);
-            $pdfUrl = Storage::disk('public')->url($pdfPath) . '?t=' . time();
+            $title = "{$candidate->full_name} — Полный отчёт";
+            return view('candidates.view-anketa', compact('candidate', 'pdfUrl', 'title'));
         }
 
-        // Формируем заголовок
-        $title = "{$candidate->full_name} — Полный отчёт";
+        // Если нет готовой анкеты - показываем обычную страницу
+        $photoUrl = null;
+        if ($candidate->photo && Storage::disk('public')->exists($candidate->photo)) {
+            $photoUrl = Storage::disk('public')->url($candidate->photo);
+        }
 
-        return view('candidates.view-anketa', compact('candidate', 'pdfUrl', 'title'));
+        $isFullReport = true;
+        $isReducedReport = false;
+
+        return view('candidates.report-v2', compact('candidate', 'photoUrl', 'isFullReport', 'isReducedReport'));
     }
 
     /**
