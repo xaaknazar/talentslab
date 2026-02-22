@@ -28,8 +28,17 @@ class CandidateReportController extends Controller
 
     public function showV2(Candidate $candidate, $version = null)
     {
-        // Загружаем связанные данные
+        // Если есть Gallup отчёты - показываем полную анкету
         $candidate->load(['gallupTalents', 'gallupReports', 'user.gardnerTestResult']);
+
+        $dpsReport = $candidate->gallupReportByType('DPs');
+        $dptReport = $candidate->gallupReportByType('DPT');
+        $fmdReport = $candidate->gallupReportByType('FMD');
+        $hasAnyGallupReport = $dpsReport || $dptReport || $fmdReport;
+
+        if ($hasAnyGallupReport) {
+            return $this->viewAnketaPublic($candidate);
+        }
 
         // Подготавливаем URL фото
         $photoUrl = null;
