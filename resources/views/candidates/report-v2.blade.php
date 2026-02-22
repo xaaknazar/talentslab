@@ -1154,36 +1154,6 @@ if (! function_exists('pluralize_years')) {
         </div>
     </div>
 
-    <!-- Кнопка Назад -->
-    @auth
-    <div class="no-print" style="
-        position: fixed;
-        bottom: 24px;
-        left: 24px;
-        z-index: 999;
-        font-family: 'Montserrat', sans-serif;
-    ">
-        <a href="{{ route('dashboard') }}" style="
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #4b5563;
-            color: white;
-            padding: 14px 24px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 600;
-            box-shadow: 0 6px 20px rgba(75,85,99,0.5);
-            transition: transform 0.2s, box-shadow 0.2s;
-            white-space: nowrap;
-        " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-            Назад
-        </a>
-    </div>
-    @endauth
-
     <!-- Кнопка Save Resume -->
     <div class="no-print" style="
         position: fixed;
