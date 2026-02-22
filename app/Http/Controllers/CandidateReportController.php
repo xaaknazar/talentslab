@@ -87,6 +87,27 @@ class CandidateReportController extends Controller
         return response()->download($filePath, $fileName);
     }
 
+    public function downloadGallupReportPublic(Candidate $candidate, string $type)
+    {
+        // Валидируем тип отчета
+        $validTypes = ['DPs', 'DPT', 'FMD'];
+        if (!in_array($type, $validTypes)) {
+            abort(404, 'Неверный тип отчета');
+        }
+
+        // Ищем отчет указанного типа для кандидата
+        $report = $candidate->gallupReports()->where('type', $type)->first();
+
+        if (!$report || !Storage::disk('public')->exists($report->pdf_file)) {
+            abort(404, "Отчет типа {$type} не найден");
+        }
+
+        $filePath = storage_path('app/public/' . $report->pdf_file);
+        $fileName = "gallup_report_{$type}_{$candidate->full_name}_{$candidate->id}.pdf";
+
+        return response()->download($filePath, $fileName);
+    }
+
     public function dowloadAnketaReport(Candidate $candidate){
         $filePath = storage_path("app/public/" . $candidate->anketa_pdf);
 
