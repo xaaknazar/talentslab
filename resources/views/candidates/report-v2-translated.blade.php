@@ -32,10 +32,35 @@
             .no-print { display: none; }
         }
 
-        /* Предотвращение разрыва текста между страницами */
-        .mb-8, .data-row, .flex.items-start, .space-y-1 > div {
-            page-break-inside: avoid;
-            break-inside: avoid;
+        /* Предотвращение разрыва текста между страницами.
+           Для wkhtmltopdf: display:table + overflow:hidden обязательны,
+           чтобы page-break-inside:avoid работал корректно.
+           display:table сохраняет горизонтальную раскладку (label: value). */
+        .data-row,
+        .flex.items-start,
+        .space-y-1 > div {
+            display: table !important;
+            width: 100% !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        /* Дочерние элементы в data-row ведут себя как ячейки таблицы */
+        .data-row > span,
+        .data-row > div,
+        .flex.items-start > span,
+        .flex.items-start > div,
+        .space-y-1 > div > span {
+            display: table-cell !important;
+            vertical-align: top !important;
+        }
+
+        /* Контроль вдов и сирот - минимум 3 строки на странице */
+        p, span, div {
+            orphans: 3;
+            widows: 3;
         }
 
         /* Не разрывать записи опыта работы */
@@ -277,18 +302,121 @@
             transition: opacity 0.3s ease-in-out;
         }
 
-        /* Правила для плавного перехода контента между страницами */
+        /* === ПРАВИЛА PAGE-BREAK ДЛЯ WKHTMLTOPDF === */
 
-        /* Заголовок не отрывается от первой строки */
+        /* Заголовок не отрывается от содержимого */
         h2 {
-            page-break-after: avoid;
-            break-after: avoid;
+            page-break-after: avoid !important;
+            break-after: avoid !important;
         }
 
-        /* Только одиночные строки данных не разрываются пополам */
+        /* Универсальное правило: все строки данных не разрываются пополам */
         .data-row {
-            page-break-inside: avoid;
-            break-inside: avoid;
+            display: table !important;
+            width: 100% !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        /* Секции - контент заполняет страницу, разрыв между элементами */
+        .interests-section,
+        .work-experience-section {
+            page-break-inside: auto !important;
+            break-inside: auto !important;
+        }
+
+        /* Каждая запись опыта работы - не разрывается */
+        .work-experience-section .work-experience-item {
+            display: block !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        /* Общий стаж и награды - не разрывать */
+        .work-experience-section .work-summary,
+        .work-experience-section .work-awards {
+            display: block !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        /* Психометрические данные */
+        .psychometric-section {
+            display: block !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        /* Компьютерные навыки */
+        .computer-skills-section {
+            display: block !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        /* Гарднер - целиком на страницу */
+        .gardner-section {
+            display: block !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        .gardner-chart-container {
+            display: block !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        .gardner-row {
+            display: block !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        /* Все flex контейнеры с items-start */
+        .flex.items-start {
+            display: table !important;
+            width: 100% !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        /* Все элементы внутри space-y-1 */
+        .space-y-1 > * {
+            display: table !important;
+            width: 100% !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+        }
+
+        /* Языковые навыки */
+        .space-y-1 .flex.text-base {
+            display: table !important;
+            width: 100% !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
         }
     </style>
 </head>
