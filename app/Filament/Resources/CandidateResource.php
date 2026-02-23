@@ -373,15 +373,13 @@ class CandidateResource extends Resource
                         ->label('Резюме полное')
                         ->icon('heroicon-o-document-text')
                         ->color('success')
-                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->display_number, 'type' => 'anketa']))
-                        ->modal(),
+                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->display_number, 'type' => 'anketa'])),
 
                     Tables\Actions\Action::make('Резюме урезанное')
                         ->label('Резюме урезанное')
                         ->icon('heroicon-o-document-text')
                         ->color('info')
-                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->display_number, 'type' => 'anketa-reduced']))
-                        ->modal(),
+                        ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->display_number, 'type' => 'anketa-reduced'])),
                 ])
                     ->label('Резюме')
                     ->icon('heroicon-o-document-text')
@@ -396,25 +394,22 @@ class CandidateResource extends Resource
                         ->icon('heroicon-o-document-text')
                         ->color('info')
                         ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->display_number, 'type' => 'DPs']))
-                        ->modal()
                         ->visible(fn (Candidate $record): bool => $record->gallupReports()->where('type', 'DPs')->exists()),
                     Tables\Actions\Action::make('downloadDPT')
                         ->label('DPT отчет')
                         ->icon('heroicon-o-document-text')
                         ->color('warning')
                         ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->display_number, 'type' => 'DPT']))
-                        ->modal()
                         ->visible(fn (Candidate $record): bool => $record->gallupReports()->where('type', 'DPT')->exists()),
                     Tables\Actions\Action::make('downloadFMD')
                         ->label('FMD отчет')
                         ->icon('heroicon-o-document-text')
                         ->color('danger')
                         ->url(fn (Candidate $record) => ViewCandidatePdf::getUrl(['candidate' => $record->display_number, 'type' => 'FMD']))
-                        ->modal()
                         ->visible(fn (Candidate $record): bool => $record->gallupReports()->where('type', 'FMD')->exists()),
 
                     Tables\Actions\Action::make('refresh_gallup_report')
-                        ->label('Обновить gallup Отчет')
+                        ->label('Обновить Gallup')
                         ->icon('heroicon-o-arrow-path')
                         ->color('primary')
                         ->requiresConfirmation()
@@ -436,7 +431,6 @@ class CandidateResource extends Resource
                         ->visible(fn (Candidate $record): bool =>
                             $record->gallup_pdf && Storage::disk('public')->exists($record->gallup_pdf)
                         ),
-
                 ])
                     ->label('Gallup')
                     ->icon('heroicon-o-document-arrow-down')
@@ -447,7 +441,7 @@ class CandidateResource extends Resource
                         (($record->gallup_pdf && Storage::disk('public')->exists($record->gallup_pdf)) ||
                         $record->gallupReports()->exists())
                     ),
-                    
+
                 // Заметки рекрутера
                 Tables\Actions\Action::make('comments')
                     ->label('Заметки')
@@ -458,7 +452,7 @@ class CandidateResource extends Resource
                     ->url(fn (Candidate $record): string => static::getUrl('edit', ['record' => $record]))
                     ->visible(fn (): bool => auth()->user()->is_admin ?? false),
 
-                // Кнопка редактирования анкеты (доступна только администраторам)
+                // Кнопка редактирования анкеты
                 Tables\Actions\Action::make('edit_form')
                     ->label('Редактировать')
                     ->icon('heroicon-o-pencil')
@@ -466,10 +460,6 @@ class CandidateResource extends Resource
                     ->url(fn (Candidate $record): string => route('candidate.form', $record->display_number))
                     ->openUrlInNewTab(false)
                     ->visible(fn (): bool => auth()->user()->is_admin ?? false),
-                    
-                // Кнопка удаления временно отключена
-                // Tables\Actions\DeleteAction::make()
-                //     ->label('Удалить'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -479,7 +469,8 @@ class CandidateResource extends Resource
                 ]),
             ])
             ->defaultSort('created_at', 'desc')
-            ->recordUrl(fn (Candidate $record): string => route('candidate.report', $record));
+            ->recordUrl(fn (Candidate $record): string => route('candidate.report', $record))
+            ->striped();
     }
 
     public static function getRelations(): array

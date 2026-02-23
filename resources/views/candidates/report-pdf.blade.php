@@ -343,7 +343,11 @@
                         </div>
                     @endif
                 @else
-                    <p class="text-xs text-gray-500">Опыт работы не указан</p>
+                    @if($candidate->has_no_work_experience)
+                        <p class="text-xs text-gray-500">Без опыта работы</p>
+                    @else
+                        <p class="text-xs text-gray-500">Опыт работы не указан</p>
+                    @endif
                 @endif
             </div>
 

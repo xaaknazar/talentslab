@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         @page {
-            margin: 10mm 0mm 10mm 0mm !important;
+            margin: 0;
         }
         body {
             /*padding-left: 10mm !important;*/
@@ -32,22 +32,35 @@
             .no-print { display: none; }
         }
 
-        /* Предотвращение разрыва текста между страницами */
-        .mb-8, .data-row, .flex.items-start, .space-y-1 > div {
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
-
-        /* Не разрывать записи опыта работы */
-        [style*="display: flex"][style*="gap: 24px"] {
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
-
         /* Заголовки секций не отрываются от содержимого */
         h2 {
             page-break-after: avoid;
             break-after: avoid;
+        }
+
+        /* Строки данных внутри main-content: блочная раскладка с float */
+        .main-content .data-row,
+        .main-content .flex.items-start,
+        .main-content .space-y-1 > div {
+            display: block !important;
+            overflow: hidden !important;
+        }
+
+        .main-content .data-row > span.w-60,
+        .main-content .flex.items-start > span.w-60,
+        .main-content .space-y-1 > div > span.w-60,
+        .main-content .data-row > .w-60,
+        .main-content .flex.items-start > .w-60 {
+            float: left !important;
+            display: block !important;
+        }
+
+        .main-content .data-row > span.flex-1,
+        .main-content .flex.items-start > span.flex-1,
+        .main-content .data-row > .flex-1,
+        .main-content .flex.items-start > .flex-1 {
+            display: block !important;
+            overflow: hidden !important;
         }
 
         .logo-header {
@@ -277,19 +290,28 @@
             transition: opacity 0.3s ease-in-out;
         }
 
-        /* Правила для плавного перехода контента между страницами */
-
-        /* Заголовок не отрывается от первой строки */
-        h2 {
-            page-break-after: avoid;
-            break-after: avoid;
+        /* Секции - контент заполняет страницу, разрыв между элементами */
+        .interests-section,
+        .work-experience-section {
+            page-break-inside: auto !important;
         }
 
-        /* Только одиночные строки данных не разрываются пополам */
-        .data-row {
-            page-break-inside: avoid;
-            break-inside: avoid;
+        /* Каждая запись опыта работы - не разрывается */
+        .work-experience-section .work-experience-item {
+            display: block !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
         }
+
+        .work-experience-section .work-summary,
+        .work-experience-section .work-awards {
+            display: block !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+        }
+
+        /* Гарднер: защищён HTML <table> обёрткой (см. HTML).
+           CSS page-break-inside НЕ работает с display:flex в wkhtmltopdf. */
     </style>
 </head>
 <body>
@@ -514,7 +536,7 @@ if (! function_exists('clean_git_conflicts')) {
         </div>
 
         <!-- Main Content -->
-        <div style="padding: 0 12px 12px 12px;">
+        <div class="main-content" style="padding: 0 12px 12px 12px;">
             <!-- Опыт работы -->
             <div class="mb-8">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">{{ $labels['work_experience'] }}</h2>
@@ -861,7 +883,9 @@ if (! function_exists('clean_git_conflicts')) {
                     'Экзистенциальный интеллект',
                 ];
             @endphp
-            <div class="mb-4">
+            {{-- <table> обёртка — wkhtmltopdf не разрывает ячейки таблиц --}}
+            <table style="width: 100%; border-collapse: collapse; page-break-inside: avoid; margin-bottom: 16px;"><tr><td style="padding: 0;">
+            <div>
                 <h2 class="text-xl font-bold text-gray-800 mb-4">{{ $labels['gardner_intelligence'] }}</h2>
                 <div class="bg-gray-100 rounded-lg p-6">
                     <!-- Первый ряд -->
@@ -963,6 +987,7 @@ if (! function_exists('clean_git_conflicts')) {
                     </div>
                 </div>
             </div>
+            </td></tr></table>
             @endif
         </div>
 

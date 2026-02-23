@@ -18,7 +18,7 @@
             </div>
         @endsession
 
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login') }}" id="login-form">
             @csrf
 
             <div>
@@ -50,5 +50,42 @@
                 </x-button>
             </div>
         </form>
+
+        <script>
+            // Обновляем CSRF токен перед отправкой формы
+            document.getElementById('login-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                try {
+                    // Получаем свежий CSRF токен
+                    const response = await fetch('/sanctum/csrf-cookie', {
+                        method: 'GET',
+                        credentials: 'same-origin'
+                    });
+
+                    // Обновляем токен в форме
+                    const tokenInput = this.querySelector('input[name="_token"]');
+                    const metaToken = document.querySelector('meta[name="csrf-token"]');
+                    if (metaToken) {
+                        tokenInput.value = metaToken.content;
+                    }
+                } catch (error) {
+                    // Если не удалось обновить - просто продолжаем
+                    console.log('CSRF refresh skipped');
+                }
+
+                // Отправляем форму
+                this.submit();
+            });
+
+            // При фокусе на странице - обновляем CSRF токен
+            document.addEventListener('visibilitychange', async function() {
+                if (document.visibilityState === 'visible') {
+                    try {
+                        await fetch('/sanctum/csrf-cookie', { credentials: 'same-origin' });
+                    } catch (e) {}
+                }
+            });
+        </script>
     </x-authentication-card>
 </x-guest-layout>

@@ -10,8 +10,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* @page margin: 0 — margins управляются ТОЛЬКО через wkhtmltopdf options.
+           Если тут поставить margin — он СКЛАДЫВАЕТСЯ с --margin-top из wkhtmltopdf,
+           давая двойные отступы. */
         @page {
-            margin: 10mm 0mm 10mm 0mm !important;
+            margin: 0;
         }
         html {
             -webkit-text-size-adjust: 100%;
@@ -37,22 +40,43 @@
             .no-print { display: none; }
         }
 
-        /* Предотвращение разрыва текста между страницами */
-        .mb-8, .data-row, .flex.items-start, .space-y-1 > div {
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
-
-        /* Не разрывать записи опыта работы */
-        [style*="display: flex"][style*="gap: 24px"] {
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
+        /* ===================================================
+           ПРАВИЛА PAGE-BREAK ДЛЯ WKHTMLTOPDF
+           display:block + overflow:hidden — обязательно
+           для page-break-inside:avoid в wkhtmltopdf.
+           =================================================== */
 
         /* Заголовки секций не отрываются от содержимого */
         h2 {
             page-break-after: avoid;
             break-after: avoid;
+        }
+
+        /* Строки данных внутри main-content: блочная раскладка с float */
+        .main-content .data-row,
+        .main-content .flex.items-start,
+        .main-content .space-y-1 > div {
+            display: block !important;
+            overflow: hidden !important;
+        }
+
+        /* Лейбл (левая колонка) - float для двухколоночной раскладки */
+        .main-content .data-row > span.w-60,
+        .main-content .flex.items-start > span.w-60,
+        .main-content .space-y-1 > div > span.w-60,
+        .main-content .data-row > .w-60,
+        .main-content .flex.items-start > .w-60 {
+            float: left !important;
+            display: block !important;
+        }
+
+        /* Значение (правая колонка) - overflow:hidden создаёт новый BFC */
+        .main-content .data-row > span.flex-1,
+        .main-content .flex.items-start > span.flex-1,
+        .main-content .data-row > .flex-1,
+        .main-content .flex.items-start > .flex-1 {
+            display: block !important;
+            overflow: hidden !important;
         }
 
         .logo-header {
@@ -282,44 +306,12 @@
             transition: opacity 0.3s ease-in-out;
         }
 
-        /* Правила для плавного перехода контента между страницами */
-
-        /* Заголовок не отрывается от первой строки */
-        h2 {
-            page-break-after: avoid;
-            break-after: avoid;
-        }
-
-        /* Только одиночные строки данных не разрываются пополам */
-        .data-row {
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
-
-        /* Секция "Интересы и развитие" - заполняет страницу */
-        .interests-section {
-            page-break-inside: auto;
-            break-inside: auto;
-        }
-
-        /* Каждая строка данных в секции интересов - НЕ разрывается между страницами */
-        .interests-section .data-row {
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
-        }
-
-        /* Универсальное правило для всех data-row - не разрывать пополам */
-        .data-row {
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
-        }
-
-        /* Секция "Опыт работы" - не разрывать записи пополам */
+        /* Секции - контент заполняет страницу, разрыв между элементами.
+           НЕ ставить page-break-inside:avoid на мелкие секции —
+           это создаёт пустое пространство внизу страниц. */
+        .interests-section,
         .work-experience-section {
-            page-break-inside: auto;
-            break-inside: auto;
+            page-break-inside: auto !important;
         }
 
         /* Каждая запись опыта работы - не разрывается */
@@ -327,86 +319,19 @@
             display: block !important;
             overflow: hidden !important;
             page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
         }
 
-        /* Общий стаж и награды - не разрывать */
+        /* Общий стаж и награды */
         .work-experience-section .work-summary,
         .work-experience-section .work-awards {
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
-        }
-
-        /* Старый формат опыта работы */
-        .work-experience-section .space-y-1 > div {
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
-        }
-
-        /* Секция "Психометрические данные" - не разрывать */
-        .psychometric-section {
             display: block !important;
             overflow: hidden !important;
             page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
         }
 
-        /* Строка MBTI не должна разрываться */
-        .mbti-row {
-            display: block !important;
-            white-space: nowrap !important;
-            page-break-inside: avoid !important;
-        }
-
-        /* Секция "Компьютерные навыки" - не разрывать */
-        .computer-skills-section {
-            display: block !important;
-            overflow: hidden !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
-        }
-
-        /* Секция "Виды интеллектов Гарднера" - НЕ разрывать вообще, целиком на следующую страницу */
-        .gardner-section {
-            display: block !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
-        }
-
-        /* Контейнер графика - не разрывать */
-        .gardner-chart-container {
-            display: block !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-        }
-
-        /* Каждый ряд графика НЕ разрывается */
-        .gardner-row {
-            display: block !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            overflow: hidden !important;
-        }
-
-        /* Универсальное правило - все flex контейнеры с items-start не разрываются */
-        .flex.items-start {
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
-        }
-
-        /* Все элементы внутри space-y-1 не разрываются */
-        .space-y-1 > * {
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
-        }
+        /* Гарднер: защищён HTML <table> обёрткой (см. HTML).
+           CSS page-break-inside НЕ работает с display:flex в wkhtmltopdf,
+           поэтому используем <table> — он гарантированно не разрывается. */
 
     </style>
 </head>
@@ -662,7 +587,7 @@ if (! function_exists('pluralize_years')) {
         </div>
 
         <!-- Main Content -->
-        <div style="padding: 0 12px 12px 12px;">
+        <div class="main-content" style="padding: 0 12px 12px 12px;">
             <!-- Опыт работы -->
             <div class="mb-8 work-experience-section">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Опыт работы</h2>
@@ -778,7 +703,11 @@ if (! function_exists('pluralize_years')) {
                         </div>
                     @endif
                 @else
-                    <p class="text-base text-gray-500">Опыт работы не указан</p>
+                    @if($candidate->has_no_work_experience)
+                        <p class="text-base text-gray-500">Без опыта работы</p>
+                    @else
+                        <p class="text-base text-gray-500">Опыт работы не указан</p>
+                    @endif
                 @endif
             </div>
 
@@ -1035,11 +964,15 @@ if (! function_exists('pluralize_years')) {
                     'Экзистенциальный интеллект',
                 ];
             @endphp
-            <div class="mb-4 gardner-section">
-                <h2 class="text-xl font-bold text-gray-800 mb-4" style="page-break-after: avoid !important;">Виды интеллектов Гарднера</h2>
+            {{-- Обёртка <table> — единственный надёжный способ запретить
+                 wkhtmltopdf разрывать содержимое между страницами.
+                 CSS page-break-inside:avoid НЕ работает с display:flex. --}}
+            <table style="width: 100%; border-collapse: collapse; page-break-inside: avoid; margin-bottom: 16px;"><tr><td style="padding: 0;">
+            <div class="gardner-section">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Виды интеллектов Гарднера</h2>
                 <div class="bg-gray-100 rounded-lg p-6 gardner-chart-container">
                     <!-- Первый ряд -->
-                    <div class="gardner-row" style="page-break-inside: avoid; display: block; overflow: hidden;">
+                    <div class="gardner-row">
                     <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
                         <!-- Ось Y -->
                         <div style="width: 28px; height: 180px; position: relative; margin-right: 8px;">
@@ -1090,7 +1023,7 @@ if (! function_exists('pluralize_years')) {
                     </div>
 
                     <!-- Второй ряд -->
-                    <div class="gardner-row" style="page-break-inside: avoid; display: block; overflow: hidden;">
+                    <div class="gardner-row">
                     <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
                         <!-- Ось Y -->
                         <div style="width: 28px; height: 180px; position: relative; margin-right: 8px;">
@@ -1141,6 +1074,7 @@ if (! function_exists('pluralize_years')) {
                     </div>
                 </div>
             </div>
+            </td></tr></table>
             @endif
         </div>
 

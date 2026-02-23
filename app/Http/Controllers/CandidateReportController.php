@@ -31,11 +31,26 @@ class CandidateReportController extends Controller
         // Загружаем связанные данные
         $candidate->load(['gallupTalents', 'gallupReports', 'user.gardnerTestResult']);
 
-        // Если есть готовый anketa_pdf - показываем его сразу
+        // Если есть готовый anketa_pdf - показываем его сразу (только для публичного доступа)
         if ($candidate->anketa_pdf && Storage::disk('public')->exists($candidate->anketa_pdf)) {
             $pdfUrl = Storage::disk('public')->url($candidate->anketa_pdf) . '?t=' . time();
             $title = "{$candidate->full_name} — Полный отчёт";
-            return view('candidates.view-anketa', compact('candidate', 'pdfUrl', 'title'));
+            $downloadFileName = $this->generateDownloadFileName($candidate);
+            return view('candidates.view-anketa', compact('candidate', 'pdfUrl', 'title', 'downloadFileName'));
+        }
+
+        // Если нет готового PDF - показываем HTML версию
+        return $this->renderReportHtml($candidate, $version);
+    }
+
+    /**
+     * Рендерит HTML версию отчёта (используется для генерации PDF и отображения)
+     */
+    public function renderReportHtml(Candidate $candidate, $version = null)
+    {
+        // Загружаем связанные данные если ещё не загружены
+        if (!$candidate->relationLoaded('gallupTalents')) {
+            $candidate->load(['gallupTalents', 'gallupReports', 'user.gardnerTestResult']);
         }
 
         // Подготавливаем URL фото
@@ -127,16 +142,18 @@ class CandidateReportController extends Controller
 
     public function downloadAnketaPublic(Candidate $candidate)
     {
-        // Генерируем PDF анкеты на лету (без Gallup отчётов)
-        $tempPath = $this->generateAnketaOnlyPdf($candidate);
-
-        $filePath = storage_path('app/public/' . $tempPath);
-
         // Формируем имя файла
-        $genderCode = ($candidate->gender === 'Женский' || $candidate->gender === 'female') ? 'G' : 'B';
-        $birthYear = $candidate->birth_date ? substr(date('Y', strtotime($candidate->birth_date)), -2) : '00';
-        $candidateNumber = str_pad($candidate->display_number ?? $candidate->id, 4, '0', STR_PAD_LEFT);
-        $fileName = "{$candidate->full_name} - TL{$genderCode}{$birthYear}-{$candidateNumber}.pdf";
+        $fileName = $this->generateDownloadFileName($candidate);
+
+        // Если есть готовый anketa_pdf (сгенерирован админом) — отдаём его напрямую
+        if ($candidate->anketa_pdf && Storage::disk('public')->exists($candidate->anketa_pdf)) {
+            $filePath = storage_path('app/public/' . $candidate->anketa_pdf);
+            return response()->download($filePath, $fileName);
+        }
+
+        // Иначе генерируем PDF анкеты на лету
+        $tempPath = $this->generateAnketaOnlyPdf($candidate);
+        $filePath = storage_path('app/public/' . $tempPath);
 
         return response()->download($filePath, $fileName)->deleteFileAfterSend(true);
     }
@@ -153,7 +170,8 @@ class CandidateReportController extends Controller
         if ($candidate->anketa_pdf && Storage::disk('public')->exists($candidate->anketa_pdf)) {
             $pdfUrl = Storage::disk('public')->url($candidate->anketa_pdf) . '?t=' . time();
             $title = "{$candidate->full_name} — Полный отчёт";
-            return view('candidates.view-anketa', compact('candidate', 'pdfUrl', 'title'));
+            $downloadFileName = $this->generateDownloadFileName($candidate);
+            return view('candidates.view-anketa', compact('candidate', 'pdfUrl', 'title', 'downloadFileName'));
         }
 
         // Если нет готовой анкеты - показываем обычную страницу
@@ -169,6 +187,17 @@ class CandidateReportController extends Controller
     }
 
     /**
+     * Формирует имя файла для скачивания в формате: {ФИО} - TL{G/B}{YY}-{номер}.pdf
+     */
+    private function generateDownloadFileName(Candidate $candidate): string
+    {
+        $genderCode = ($candidate->gender === 'Женский' || $candidate->gender === 'female') ? 'G' : 'B';
+        $birthYear = $candidate->birth_date ? substr(date('Y', strtotime($candidate->birth_date)), -2) : '00';
+        $candidateNumber = str_pad($candidate->display_number ?? $candidate->id, 4, '0', STR_PAD_LEFT);
+        return "{$candidate->full_name} - TL{$genderCode}{$birthYear}-{$candidateNumber}.pdf";
+    }
+
+    /**
      * Генерирует PDF только анкеты (без Gallup отчётов)
      */
     protected function generateAnketaOnlyPdf(Candidate $candidate): string
@@ -180,8 +209,9 @@ class CandidateReportController extends Controller
             unlink($tempPdfPath);
         }
 
-        // Генерируем HTML из view
-        $html = $this->showV2($candidate, 'full')->render();
+        // Генерируем HTML из view (renderReportHtml всегда отдаёт HTML отчёта,
+        // а не iframe-viewer как showV2 при наличии anketa_pdf)
+        $html = $this->renderReportHtml($candidate, 'full')->render();
         $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
         $html = $this->cleanHtmlForPdf($html);
         $html = $this->sanitizeUtf8($html);
@@ -191,8 +221,8 @@ class CandidateReportController extends Controller
         $options = [
             'encoding' => 'utf-8',
             'page-size' => 'A4',
-            'margin-top' => '10mm',
-            'margin-bottom' => '10mm',
+            'margin-top' => '5mm',
+            'margin-bottom' => '5mm',
             'margin-left' => '2mm',
             'margin-right' => '2mm',
             'zoom' => 1.30,
