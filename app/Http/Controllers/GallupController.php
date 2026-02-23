@@ -453,8 +453,8 @@ class GallupController extends Controller
         $s_options = [
             'encoding' => 'utf-8',
             'page-size' => 'A4',
-            'margin-top' => '10mm',
-            'margin-bottom' => '10mm',
+            'margin-top' => '5mm',
+            'margin-bottom' => '5mm',
             'margin-left' => '2mm',
             'margin-right' => '2mm',
             'zoom' => 1.30,
@@ -770,8 +770,8 @@ class GallupController extends Controller
         $s_options = [
             'encoding' => 'utf-8',
             'page-size' => 'A4',
-            'margin-top' => '10mm',
-            'margin-bottom' => '10mm',
+            'margin-top' => '5mm',
+            'margin-bottom' => '5mm',
             'margin-left' => '2mm',
             'margin-right' => '2mm',
             'zoom' => 1.30,

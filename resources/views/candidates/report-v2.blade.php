@@ -39,10 +39,8 @@
 
         /* ===================================================
            ПРАВИЛА PAGE-BREAK ДЛЯ WKHTMLTOPDF
-           Ключевой принцип: display:block + overflow:hidden
-           заставляет wkhtmltopdf уважать page-break-inside.
-           НЕ использовать display:table/flex для элементов
-           с page-break-inside:avoid.
+           display:block + overflow:hidden — обязательно
+           для page-break-inside:avoid в wkhtmltopdf.
            =================================================== */
 
         /* Заголовки секций не отрываются от содержимого */
@@ -51,22 +49,12 @@
             break-after: avoid;
         }
 
-        /* Контроль вдов и сирот */
-        p, span, div {
-            orphans: 3;
-            widows: 3;
-        }
-
-        /* Строки данных внутри main-content: блочная раскладка с float
-           вместо flex, чтобы page-break-inside работал в wkhtmltopdf */
+        /* Строки данных внутри main-content: блочная раскладка с float */
         .main-content .data-row,
         .main-content .flex.items-start,
         .main-content .space-y-1 > div {
             display: block !important;
             overflow: hidden !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
         }
 
         /* Лейбл (левая колонка) - float для двухколоночной раскладки */
@@ -359,8 +347,9 @@
             -webkit-column-break-inside: avoid !important;
         }
 
-        /* Гарднер: не разрывать внутри.
-           Если не помещается — перенесётся целиком */
+        /* Гарднер: page-break-inside ТОЛЬКО на внешнем контейнере.
+           Вложенные page-break-inside ломают wkhtmltopdf —
+           он начинает игнорировать все правила. */
         .gardner-section {
             display: block !important;
             overflow: hidden !important;
@@ -371,18 +360,12 @@
 
         .gardner-chart-container {
             display: block !important;
-            overflow: hidden !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
+            overflow: visible !important;
         }
 
         .gardner-row {
             display: block !important;
-            overflow: hidden !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
+            overflow: visible !important;
         }
 
         /* Языковые навыки */
@@ -1029,7 +1012,7 @@ if (! function_exists('pluralize_years')) {
                 <h2 class="text-xl font-bold text-gray-800 mb-4" style="page-break-after: avoid !important;">Виды интеллектов Гарднера</h2>
                 <div class="bg-gray-100 rounded-lg p-6 gardner-chart-container">
                     <!-- Первый ряд -->
-                    <div class="gardner-row" style="page-break-inside: avoid; display: block; overflow: hidden;">
+                    <div class="gardner-row">
                     <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
                         <!-- Ось Y -->
                         <div style="width: 28px; height: 180px; position: relative; margin-right: 8px;">
@@ -1080,7 +1063,7 @@ if (! function_exists('pluralize_years')) {
                     </div>
 
                     <!-- Второй ряд -->
-                    <div class="gardner-row" style="page-break-inside: avoid; display: block; overflow: hidden;">
+                    <div class="gardner-row">
                     <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
                         <!-- Ось Y -->
                         <div style="width: 28px; height: 180px; position: relative; margin-right: 8px;">

@@ -142,16 +142,18 @@ class CandidateReportController extends Controller
 
     public function downloadAnketaPublic(Candidate $candidate)
     {
-        // Генерируем PDF анкеты на лету (без Gallup отчётов)
-        $tempPath = $this->generateAnketaOnlyPdf($candidate);
-
-        $filePath = storage_path('app/public/' . $tempPath);
-
         // Формируем имя файла
-        $genderCode = ($candidate->gender === 'Женский' || $candidate->gender === 'female') ? 'G' : 'B';
-        $birthYear = $candidate->birth_date ? substr(date('Y', strtotime($candidate->birth_date)), -2) : '00';
-        $candidateNumber = str_pad($candidate->display_number ?? $candidate->id, 4, '0', STR_PAD_LEFT);
-        $fileName = "{$candidate->full_name} - TL{$genderCode}{$birthYear}-{$candidateNumber}.pdf";
+        $fileName = $this->generateDownloadFileName($candidate);
+
+        // Если есть готовый anketa_pdf (сгенерирован админом) — отдаём его напрямую
+        if ($candidate->anketa_pdf && Storage::disk('public')->exists($candidate->anketa_pdf)) {
+            $filePath = storage_path('app/public/' . $candidate->anketa_pdf);
+            return response()->download($filePath, $fileName);
+        }
+
+        // Иначе генерируем PDF анкеты на лету
+        $tempPath = $this->generateAnketaOnlyPdf($candidate);
+        $filePath = storage_path('app/public/' . $tempPath);
 
         return response()->download($filePath, $fileName)->deleteFileAfterSend(true);
     }
@@ -207,8 +209,9 @@ class CandidateReportController extends Controller
             unlink($tempPdfPath);
         }
 
-        // Генерируем HTML из view
-        $html = $this->showV2($candidate, 'full')->render();
+        // Генерируем HTML из view (renderReportHtml всегда отдаёт HTML отчёта,
+        // а не iframe-viewer как showV2 при наличии anketa_pdf)
+        $html = $this->renderReportHtml($candidate, 'full')->render();
         $html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
         $html = $this->cleanHtmlForPdf($html);
         $html = $this->sanitizeUtf8($html);
@@ -218,8 +221,8 @@ class CandidateReportController extends Controller
         $options = [
             'encoding' => 'utf-8',
             'page-size' => 'A4',
-            'margin-top' => '10mm',
-            'margin-bottom' => '10mm',
+            'margin-top' => '5mm',
+            'margin-bottom' => '5mm',
             'margin-left' => '2mm',
             'margin-right' => '2mm',
             'zoom' => 1.30,

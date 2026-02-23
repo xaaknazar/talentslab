@@ -38,21 +38,12 @@
             break-after: avoid;
         }
 
-        /* Контроль вдов и сирот */
-        p, span, div {
-            orphans: 3;
-            widows: 3;
-        }
-
         /* Строки данных внутри main-content: блочная раскладка с float */
         .main-content .data-row,
         .main-content .flex.items-start,
         .main-content .space-y-1 > div {
             display: block !important;
             overflow: hidden !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
         }
 
         .main-content .data-row > span.w-60,
@@ -340,8 +331,8 @@
             -webkit-column-break-inside: avoid !important;
         }
 
-        /* Гарднер: не разрывать внутри.
-           Если не помещается — перенесётся целиком */
+        /* Гарднер: page-break-inside ТОЛЬКО на внешнем контейнере.
+           Вложенные page-break-inside ломают wkhtmltopdf. */
         .gardner-section {
             display: block !important;
             overflow: hidden !important;
@@ -352,18 +343,12 @@
 
         .gardner-chart-container {
             display: block !important;
-            overflow: hidden !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
+            overflow: visible !important;
         }
 
         .gardner-row {
             display: block !important;
-            overflow: hidden !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
+            overflow: visible !important;
         }
 
         .main-content .space-y-1 .flex.text-base {
