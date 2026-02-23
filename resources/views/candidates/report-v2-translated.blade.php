@@ -340,11 +340,11 @@
             -webkit-column-break-inside: avoid !important;
         }
 
-        /* Гарднер: принудительно на новую страницу */
+        /* Гарднер: не разрывать внутри.
+           Если не помещается — перенесётся целиком */
         .gardner-section {
             display: block !important;
             overflow: hidden !important;
-            page-break-before: always !important;
             page-break-inside: avoid !important;
             break-inside: avoid !important;
             -webkit-column-break-inside: avoid !important;
