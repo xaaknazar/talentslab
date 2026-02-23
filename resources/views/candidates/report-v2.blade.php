@@ -329,7 +329,8 @@
             page-break-inside: avoid !important;
         }
 
-        /* Гарднер: защищён HTML <table> обёрткой (см. HTML).
+        /* Гарднер: каждый ряд в отдельном <table> с page-break-inside:avoid.
+           Два маленьких блока вместо одного большого = меньше пустого пространства.
            CSS page-break-inside НЕ работает с display:flex в wkhtmltopdf,
            поэтому используем <table> — он гарантированно не разрывается. */
 
@@ -897,7 +898,7 @@ if (! function_exists('pluralize_years')) {
             </div>
 
             <!-- Психометрические данные -->
-            <div class="mb-8 psychometric-section" style="page-break-inside: avoid;">
+            <div class="mb-8 psychometric-section">
                 <h2 class="text-xl font-bold text-gray-800 mb-2">Психометрические данные</h2>
                 <div class="mbti-row" style="page-break-inside: avoid; white-space: nowrap;">
                     <span class="text-base text-gray-600" style="display: inline;">Тип личности по MBTI: </span>
@@ -964,15 +965,17 @@ if (! function_exists('pluralize_years')) {
                     'Экзистенциальный интеллект',
                 ];
             @endphp
-            {{-- Обёртка <table> — единственный надёжный способ запретить
-                 wkhtmltopdf разрывать содержимое между страницами.
-                 CSS page-break-inside:avoid НЕ работает с display:flex. --}}
-            <table style="width: 100%; border-collapse: collapse; page-break-inside: avoid; margin-bottom: 16px;"><tr><td style="padding: 0;">
-            <div class="gardner-section">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">Виды интеллектов Гарднера</h2>
-                <div class="bg-gray-100 rounded-lg p-6 gardner-chart-container">
-                    <!-- Первый ряд -->
-                    <div class="gardner-row">
+            {{-- Каждый ряд графика Гарднера в отдельном <table> —
+                 wkhtmltopdf не разрывает ячейки таблиц.
+                 Два маленьких блока (~300px каждый) вместо одного большого (~600px)
+                 = меньше пустого пространства при переносе на следующую страницу. --}}
+
+            {{-- Заголовок секции --}}
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Виды интеллектов Гарднера</h2>
+
+            {{-- Первый ряд (5 типов) --}}
+            <table style="width: 100%; border-collapse: collapse; page-break-inside: avoid;"><tr><td style="padding: 0;">
+            <div class="bg-gray-100 rounded-lg" style="padding: 24px 24px 0 24px;">
                     <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
                         <!-- Ось Y -->
                         <div style="width: 28px; height: 180px; position: relative; margin-right: 8px;">
@@ -1003,7 +1006,7 @@ if (! function_exists('pluralize_years')) {
                         </div>
                     </div>
                     <!-- Подписи первого ряда -->
-                    <div style="display: flex; justify-content: center; margin-left: 36px; margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: center; margin-left: 36px; padding-bottom: 16px;">
                         @foreach($row1Types as $type)
                             @php
                                 $shortName = str_replace(' интеллект', '', $type);
@@ -1020,10 +1023,12 @@ if (! function_exists('pluralize_years')) {
                             </div>
                         @endforeach
                     </div>
-                    </div>
+            </div>
+            </td></tr></table>
 
-                    <!-- Второй ряд -->
-                    <div class="gardner-row">
+            {{-- Второй ряд (4 типа) --}}
+            <table style="width: 100%; border-collapse: collapse; page-break-inside: avoid; margin-bottom: 16px;"><tr><td style="padding: 0;">
+            <div class="bg-gray-100 rounded-lg" style="padding: 16px 24px 24px 24px;">
                     <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
                         <!-- Ось Y -->
                         <div style="width: 28px; height: 180px; position: relative; margin-right: 8px;">
@@ -1071,8 +1076,6 @@ if (! function_exists('pluralize_years')) {
                             </div>
                         @endforeach
                     </div>
-                    </div>
-                </div>
             </div>
             </td></tr></table>
             @endif

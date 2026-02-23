@@ -7,7 +7,7 @@
 <html lang="{{ $targetLanguage }}" dir="{{ $dir }}">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=900">
     <title>@if($isReducedReport){{ $labels['reduced_report'] }}@else{{ $labels['candidate_report'] }}@endif - {{ $candidate->full_name }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" href="{{ asset('mini-logo.png') }}">
@@ -883,12 +883,16 @@ if (! function_exists('clean_git_conflicts')) {
                     'Экзистенциальный интеллект',
                 ];
             @endphp
-            {{-- <table> обёртка — wkhtmltopdf не разрывает ячейки таблиц --}}
-            <table style="width: 100%; border-collapse: collapse; page-break-inside: avoid; margin-bottom: 16px;"><tr><td style="padding: 0;">
-            <div>
-                <h2 class="text-xl font-bold text-gray-800 mb-4">{{ $labels['gardner_intelligence'] }}</h2>
-                <div class="bg-gray-100 rounded-lg p-6">
-                    <!-- Первый ряд -->
+            {{-- Каждый ряд графика Гарднера в отдельном <table> —
+                 wkhtmltopdf не разрывает ячейки таблиц.
+                 Два маленьких блока вместо одного большого = меньше пустого пространства. --}}
+
+            {{-- Заголовок секции --}}
+            <h2 class="text-xl font-bold text-gray-800 mb-4">{{ $labels['gardner_intelligence'] }}</h2>
+
+            {{-- Первый ряд (5 типов) --}}
+            <table style="width: 100%; border-collapse: collapse; page-break-inside: avoid;"><tr><td style="padding: 0;">
+            <div class="bg-gray-100 rounded-lg" style="padding: 24px 24px 0 24px;">
                     <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
                         <!-- Ось Y -->
                         <div style="width: 28px; height: 180px; position: relative; margin-right: 8px;">
@@ -919,7 +923,7 @@ if (! function_exists('clean_git_conflicts')) {
                         </div>
                     </div>
                     <!-- Подписи первого ряда -->
-                    <div style="display: flex; justify-content: center; margin-left: 36px; margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: center; margin-left: 36px; padding-bottom: 16px;">
                         @foreach($row1Types as $type)
                             @php
                                 $shortName = str_replace(' интеллект', '', $type);
@@ -936,8 +940,12 @@ if (! function_exists('clean_git_conflicts')) {
                             </div>
                         @endforeach
                     </div>
+            </div>
+            </td></tr></table>
 
-                    <!-- Второй ряд -->
+            {{-- Второй ряд (4 типа) --}}
+            <table style="width: 100%; border-collapse: collapse; page-break-inside: avoid; margin-bottom: 16px;"><tr><td style="padding: 0;">
+            <div class="bg-gray-100 rounded-lg" style="padding: 16px 24px 24px 24px;">
                     <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
                         <!-- Ось Y -->
                         <div style="width: 28px; height: 180px; position: relative; margin-right: 8px;">
@@ -985,7 +993,6 @@ if (! function_exists('clean_git_conflicts')) {
                             </div>
                         @endforeach
                     </div>
-                </div>
             </div>
             </td></tr></table>
             @endif
