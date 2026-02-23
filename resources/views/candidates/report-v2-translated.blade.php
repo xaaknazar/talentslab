@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         @page {
-            margin: 5mm 2mm 5mm 2mm;
+            margin: 0;
         }
         body {
             /*padding-left: 10mm !important;*/

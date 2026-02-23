@@ -10,8 +10,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* @page margin: 0 — margins управляются ТОЛЬКО через wkhtmltopdf options.
+           Если тут поставить margin — он СКЛАДЫВАЕТСЯ с --margin-top из wkhtmltopdf,
+           давая двойные отступы. */
         @page {
-            margin: 5mm 2mm 5mm 2mm;
+            margin: 0;
         }
         html {
             -webkit-text-size-adjust: 100%;
