@@ -32,47 +32,44 @@
             .no-print { display: none; }
         }
 
-        /* Предотвращение разрыва текста между страницами.
-           Для wkhtmltopdf: display:table + overflow:hidden обязательны,
-           чтобы page-break-inside:avoid работал корректно.
-           display:table сохраняет горизонтальную раскладку (label: value). */
-        .data-row,
-        .flex.items-start,
-        .space-y-1 > div {
-            display: table !important;
-            width: 100% !important;
+        /* Заголовки секций не отрываются от содержимого */
+        h2 {
+            page-break-after: avoid;
+            break-after: avoid;
+        }
+
+        /* Контроль вдов и сирот */
+        p, span, div {
+            orphans: 3;
+            widows: 3;
+        }
+
+        /* Строки данных внутри main-content: блочная раскладка с float */
+        .main-content .data-row,
+        .main-content .flex.items-start,
+        .main-content .space-y-1 > div {
+            display: block !important;
             overflow: hidden !important;
             page-break-inside: avoid !important;
             break-inside: avoid !important;
             -webkit-column-break-inside: avoid !important;
         }
 
-        /* Дочерние элементы в data-row ведут себя как ячейки таблицы */
-        .data-row > span,
-        .data-row > div,
-        .flex.items-start > span,
-        .flex.items-start > div,
-        .space-y-1 > div > span {
-            display: table-cell !important;
-            vertical-align: top !important;
+        .main-content .data-row > span.w-60,
+        .main-content .flex.items-start > span.w-60,
+        .main-content .space-y-1 > div > span.w-60,
+        .main-content .data-row > .w-60,
+        .main-content .flex.items-start > .w-60 {
+            float: left !important;
+            display: block !important;
         }
 
-        /* Контроль вдов и сирот - минимум 3 строки на странице */
-        p, span, div {
-            orphans: 3;
-            widows: 3;
-        }
-
-        /* Не разрывать записи опыта работы */
-        [style*="display: flex"][style*="gap: 24px"] {
-            page-break-inside: avoid;
-            break-inside: avoid;
-        }
-
-        /* Заголовки секций не отрываются от содержимого */
-        h2 {
-            page-break-after: avoid;
-            break-after: avoid;
+        .main-content .data-row > span.flex-1,
+        .main-content .flex.items-start > span.flex-1,
+        .main-content .data-row > .flex-1,
+        .main-content .flex.items-start > .flex-1 {
+            display: block !important;
+            overflow: hidden !important;
         }
 
         .logo-header {
@@ -302,24 +299,6 @@
             transition: opacity 0.3s ease-in-out;
         }
 
-        /* === ПРАВИЛА PAGE-BREAK ДЛЯ WKHTMLTOPDF === */
-
-        /* Заголовок не отрывается от содержимого */
-        h2 {
-            page-break-after: avoid !important;
-            break-after: avoid !important;
-        }
-
-        /* Универсальное правило: все строки данных не разрываются пополам */
-        .data-row {
-            display: table !important;
-            width: 100% !important;
-            overflow: hidden !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
-        }
-
         /* Секции - контент заполняет страницу, разрыв между элементами */
         .interests-section,
         .work-experience-section {
@@ -327,7 +306,7 @@
             break-inside: auto !important;
         }
 
-        /* Каждая запись опыта работы - не разрывается */
+        /* Каждая запись опыта работы */
         .work-experience-section .work-experience-item {
             display: block !important;
             overflow: hidden !important;
@@ -336,7 +315,6 @@
             -webkit-column-break-inside: avoid !important;
         }
 
-        /* Общий стаж и награды - не разрывать */
         .work-experience-section .work-summary,
         .work-experience-section .work-awards {
             display: block !important;
@@ -346,7 +324,6 @@
             -webkit-column-break-inside: avoid !important;
         }
 
-        /* Психометрические данные */
         .psychometric-section {
             display: block !important;
             overflow: hidden !important;
@@ -355,7 +332,6 @@
             -webkit-column-break-inside: avoid !important;
         }
 
-        /* Компьютерные навыки */
         .computer-skills-section {
             display: block !important;
             overflow: hidden !important;
@@ -364,10 +340,11 @@
             -webkit-column-break-inside: avoid !important;
         }
 
-        /* Гарднер - целиком на страницу */
+        /* Гарднер: принудительно на новую страницу */
         .gardner-section {
             display: block !important;
             overflow: hidden !important;
+            page-break-before: always !important;
             page-break-inside: avoid !important;
             break-inside: avoid !important;
             -webkit-column-break-inside: avoid !important;
@@ -389,30 +366,8 @@
             -webkit-column-break-inside: avoid !important;
         }
 
-        /* Все flex контейнеры с items-start */
-        .flex.items-start {
-            display: table !important;
-            width: 100% !important;
-            overflow: hidden !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
-        }
-
-        /* Все элементы внутри space-y-1 */
-        .space-y-1 > * {
-            display: table !important;
-            width: 100% !important;
-            overflow: hidden !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
-        }
-
-        /* Языковые навыки */
-        .space-y-1 .flex.text-base {
-            display: table !important;
-            width: 100% !important;
+        .main-content .space-y-1 .flex.text-base {
+            display: block !important;
             overflow: hidden !important;
             page-break-inside: avoid !important;
             break-inside: avoid !important;
@@ -642,7 +597,7 @@ if (! function_exists('clean_git_conflicts')) {
         </div>
 
         <!-- Main Content -->
-        <div style="padding: 0 12px 12px 12px;">
+        <div class="main-content" style="padding: 0 12px 12px 12px;">
             <!-- Опыт работы -->
             <div class="mb-8">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">{{ $labels['work_experience'] }}</h2>
