@@ -303,11 +303,12 @@
             transition: opacity 0.3s ease-in-out;
         }
 
-        /* Секции - контент заполняет страницу, разрыв между элементами */
+        /* Секции - контент заполняет страницу, разрыв между элементами.
+           НЕ ставить page-break-inside:avoid на мелкие секции —
+           это создаёт пустое пространство внизу страниц. */
         .interests-section,
         .work-experience-section {
             page-break-inside: auto !important;
-            break-inside: auto !important;
         }
 
         /* Каждая запись опыта работы - не разрывается */
@@ -315,8 +316,6 @@
             display: block !important;
             overflow: hidden !important;
             page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
         }
 
         /* Общий стаж и награды */
@@ -325,57 +324,11 @@
             display: block !important;
             overflow: hidden !important;
             page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
         }
 
-        /* Психометрические данные */
-        .psychometric-section {
-            display: block !important;
-            overflow: hidden !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
-        }
-
-        /* Компьютерные навыки */
-        .computer-skills-section {
-            display: block !important;
-            overflow: hidden !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
-        }
-
-        /* Гарднер: page-break-inside ТОЛЬКО на внешнем контейнере.
-           Вложенные page-break-inside ломают wkhtmltopdf —
-           он начинает игнорировать все правила. */
-        .gardner-section {
-            display: block !important;
-            overflow: hidden !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
-        }
-
-        .gardner-chart-container {
-            display: block !important;
-            overflow: visible !important;
-        }
-
-        .gardner-row {
-            display: block !important;
-            overflow: visible !important;
-        }
-
-        /* Языковые навыки */
-        .main-content .space-y-1 .flex.text-base {
-            display: block !important;
-            overflow: hidden !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
-        }
+        /* Гарднер: защищён HTML <table> обёрткой (см. HTML).
+           CSS page-break-inside НЕ работает с display:flex в wkhtmltopdf,
+           поэтому используем <table> — он гарантированно не разрывается. */
 
     </style>
 </head>
@@ -1008,8 +961,12 @@ if (! function_exists('pluralize_years')) {
                     'Экзистенциальный интеллект',
                 ];
             @endphp
-            <div class="mb-4 gardner-section">
-                <h2 class="text-xl font-bold text-gray-800 mb-4" style="page-break-after: avoid !important;">Виды интеллектов Гарднера</h2>
+            {{-- Обёртка <table> — единственный надёжный способ запретить
+                 wkhtmltopdf разрывать содержимое между страницами.
+                 CSS page-break-inside:avoid НЕ работает с display:flex. --}}
+            <table style="width: 100%; border-collapse: collapse; page-break-inside: avoid; margin-bottom: 16px;"><tr><td style="padding: 0;">
+            <div class="gardner-section">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Виды интеллектов Гарднера</h2>
                 <div class="bg-gray-100 rounded-lg p-6 gardner-chart-container">
                     <!-- Первый ряд -->
                     <div class="gardner-row">
@@ -1114,6 +1071,7 @@ if (! function_exists('pluralize_years')) {
                     </div>
                 </div>
             </div>
+            </td></tr></table>
             @endif
         </div>
 

@@ -294,16 +294,13 @@
         .interests-section,
         .work-experience-section {
             page-break-inside: auto !important;
-            break-inside: auto !important;
         }
 
-        /* Каждая запись опыта работы */
+        /* Каждая запись опыта работы - не разрывается */
         .work-experience-section .work-experience-item {
             display: block !important;
             overflow: hidden !important;
             page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
         }
 
         .work-experience-section .work-summary,
@@ -311,53 +308,10 @@
             display: block !important;
             overflow: hidden !important;
             page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
         }
 
-        .psychometric-section {
-            display: block !important;
-            overflow: hidden !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
-        }
-
-        .computer-skills-section {
-            display: block !important;
-            overflow: hidden !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
-        }
-
-        /* Гарднер: page-break-inside ТОЛЬКО на внешнем контейнере.
-           Вложенные page-break-inside ломают wkhtmltopdf. */
-        .gardner-section {
-            display: block !important;
-            overflow: hidden !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
-        }
-
-        .gardner-chart-container {
-            display: block !important;
-            overflow: visible !important;
-        }
-
-        .gardner-row {
-            display: block !important;
-            overflow: visible !important;
-        }
-
-        .main-content .space-y-1 .flex.text-base {
-            display: block !important;
-            overflow: hidden !important;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-            -webkit-column-break-inside: avoid !important;
-        }
+        /* Гарднер: защищён HTML <table> обёрткой (см. HTML).
+           CSS page-break-inside НЕ работает с display:flex в wkhtmltopdf. */
     </style>
 </head>
 <body>
@@ -929,7 +883,9 @@ if (! function_exists('clean_git_conflicts')) {
                     'Экзистенциальный интеллект',
                 ];
             @endphp
-            <div class="mb-4">
+            {{-- <table> обёртка — wkhtmltopdf не разрывает ячейки таблиц --}}
+            <table style="width: 100%; border-collapse: collapse; page-break-inside: avoid; margin-bottom: 16px;"><tr><td style="padding: 0;">
+            <div>
                 <h2 class="text-xl font-bold text-gray-800 mb-4">{{ $labels['gardner_intelligence'] }}</h2>
                 <div class="bg-gray-100 rounded-lg p-6">
                     <!-- Первый ряд -->
@@ -1031,6 +987,7 @@ if (! function_exists('clean_git_conflicts')) {
                     </div>
                 </div>
             </div>
+            </td></tr></table>
             @endif
         </div>
 
