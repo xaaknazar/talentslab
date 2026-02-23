@@ -883,11 +883,15 @@ if (! function_exists('clean_git_conflicts')) {
                     'Экзистенциальный интеллект',
                 ];
             @endphp
-            {{-- <table> обёртка — wkhtmltopdf не разрывает ячейки таблиц --}}
-            <table style="width: 100%; border-collapse: collapse; page-break-inside: avoid; margin-bottom: 16px;"><tr><td style="padding: 0;">
+            {{-- Каждый ряд графика в отдельной <table> обёртке,
+                 чтобы wkhtmltopdf не разрывал ряд между страницами,
+                 но мог сделать разрыв МЕЖДУ рядами при необходимости. --}}
+
+            {{-- Ряд 1: заголовок + первые 5 типов интеллекта --}}
+            <table style="width: 100%; border-collapse: collapse; page-break-inside: avoid;"><tr><td style="padding: 0;">
             <div>
                 <h2 class="text-xl font-bold text-gray-800 mb-4">{{ $labels['gardner_intelligence'] }}</h2>
-                <div class="bg-gray-100 rounded-lg p-6">
+                <div class="bg-gray-100" style="border-radius: 8px 8px 0 0; padding: 24px 24px 0 24px;">
                     <!-- Первый ряд -->
                     <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
                         <!-- Ось Y -->
@@ -919,7 +923,7 @@ if (! function_exists('clean_git_conflicts')) {
                         </div>
                     </div>
                     <!-- Подписи первого ряда -->
-                    <div style="display: flex; justify-content: center; margin-left: 36px; margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: center; margin-left: 36px; padding-bottom: 24px;">
                         @foreach($row1Types as $type)
                             @php
                                 $shortName = str_replace(' интеллект', '', $type);
@@ -936,7 +940,14 @@ if (! function_exists('clean_git_conflicts')) {
                             </div>
                         @endforeach
                     </div>
+                </div>
+            </div>
+            </td></tr></table>
 
+            {{-- Ряд 2: последние 4 типа интеллекта --}}
+            <table style="width: 100%; border-collapse: collapse; page-break-inside: avoid; margin-bottom: 16px;"><tr><td style="padding: 0;">
+            <div>
+                <div class="bg-gray-100" style="border-radius: 0 0 8px 8px; padding: 0 24px 24px 24px;">
                     <!-- Второй ряд -->
                     <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
                         <!-- Ось Y -->
