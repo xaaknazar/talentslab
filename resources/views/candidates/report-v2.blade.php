@@ -36,7 +36,7 @@
             padding: 0;
         }
         @media print {
-            body { font-size: 15px; }
+            body { font-size: 19px; }
             .no-print { display: none; }
         }
 

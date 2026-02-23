@@ -225,7 +225,7 @@ class CandidateReportController extends Controller
             'margin-bottom' => '5mm',
             'margin-left' => '2mm',
             'margin-right' => '2mm',
-            'zoom' => 1.30,
+            'zoom' => 1.0,
             'disable-smart-shrinking' => true,
             'print-media-type' => true,
             'load-error-handling' => 'ignore',
