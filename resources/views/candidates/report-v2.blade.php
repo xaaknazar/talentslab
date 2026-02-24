@@ -68,9 +68,12 @@
         /* Лейбл (левая колонка) - float для двухколоночной раскладки */
         .main-content .data-row > span.w-60,
         .main-content .flex.items-start > span.w-60,
+        .main-content .flex.data-row > span.w-60,
+        .main-content .flex > span.w-60,
         .main-content .space-y-1 > div > span.w-60,
         .main-content .data-row > .w-60,
-        .main-content .flex.items-start > .w-60 {
+        .main-content .flex.items-start > .w-60,
+        .main-content .flex > .w-60 {
             float: left !important;
             display: block !important;
             margin-right: 8px !important;
