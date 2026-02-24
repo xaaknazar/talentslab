@@ -30,80 +30,80 @@
         @media print {
             body { font-size: 19px; }
             .no-print { display: none; }
-        }
 
-        /* ===================================================
-           ПРАВИЛА PAGE-BREAK ДЛЯ WKHTMLTOPDF
-           =================================================== */
+            /* ===================================================
+               ПРАВИЛА PAGE-BREAK ДЛЯ WKHTMLTOPDF
+               =================================================== */
 
-        /* Предотвращаем разрыв строк пополам (orphans/widows) */
-        p, div, span, li {
-            orphans: 3;
-            widows: 3;
-        }
+            /* Предотвращаем разрыв строк пополам (orphans/widows) */
+            p, div, span, li {
+                orphans: 3;
+                widows: 3;
+            }
 
-        /* Заголовки секций не отрываются от содержимого */
-        h2 {
-            page-break-after: avoid;
-            break-after: avoid;
-        }
+            /* Заголовки секций не отрываются от содержимого */
+            h2 {
+                page-break-after: avoid;
+                break-after: avoid;
+            }
 
-        /* Строки данных: block + overflow:hidden для page-break-inside:avoid */
-        .main-content .data-row,
-        .main-content .flex.items-start,
-        .main-content .space-y-1 > div {
-            display: block !important;
-            overflow: hidden !important;
-            page-break-inside: avoid !important;
-        }
+            /* Строки данных: block + overflow:hidden для page-break-inside:avoid */
+            .main-content .data-row,
+            .main-content .flex.items-start,
+            .main-content .space-y-1 > div {
+                display: block !important;
+                overflow: hidden !important;
+                page-break-inside: avoid !important;
+            }
 
-        .main-content .data-row > span.w-60,
-        .main-content .flex.items-start > span.w-60,
-        .main-content .space-y-1 > div > span.w-60,
-        .main-content .data-row > .w-60,
-        .main-content .flex.items-start > .w-60 {
-            float: left !important;
-            display: block !important;
-            margin-right: 12px !important;
-        }
+            .main-content .data-row > span.w-60,
+            .main-content .flex.items-start > span.w-60,
+            .main-content .space-y-1 > div > span.w-60,
+            .main-content .data-row > .w-60,
+            .main-content .flex.items-start > .w-60 {
+                float: left !important;
+                display: block !important;
+                margin-right: 12px !important;
+            }
 
-        .main-content .data-row > span.flex-1,
-        .main-content .flex.items-start > span.flex-1,
-        .main-content .data-row > .flex-1,
-        .main-content .flex.items-start > .flex-1 {
-            display: block !important;
-            overflow: hidden !important;
-            padding-left: 16px !important;
-        }
+            .main-content .data-row > span.flex-1,
+            .main-content .flex.items-start > span.flex-1,
+            .main-content .data-row > .flex-1,
+            .main-content .flex.items-start > .flex-1 {
+                display: block !important;
+                overflow: hidden !important;
+                padding-left: 16px !important;
+            }
 
-        /* Секции - контент заполняет страницу */
-        .interests-section,
-        .work-experience-section {
-            page-break-inside: auto !important;
-        }
+            /* Секции - контент заполняет страницу */
+            .interests-section,
+            .work-experience-section {
+                page-break-inside: auto !important;
+            }
 
-        /* Каждая запись опыта работы - не разрывается */
-        .work-experience-section .work-experience-item {
-            display: block !important;
-            overflow: hidden !important;
-            page-break-inside: avoid !important;
-        }
+            /* Каждая запись опыта работы - не разрывается */
+            .work-experience-section .work-experience-item {
+                display: block !important;
+                overflow: hidden !important;
+                page-break-inside: avoid !important;
+            }
 
-        /* Общий стаж и награды */
-        .work-experience-section .work-summary,
-        .work-experience-section .work-awards {
-            display: block !important;
-            overflow: hidden !important;
-            page-break-inside: avoid !important;
-        }
+            /* Общий стаж и награды */
+            .work-experience-section .work-summary,
+            .work-experience-section .work-awards {
+                display: block !important;
+                overflow: hidden !important;
+                page-break-inside: avoid !important;
+            }
 
-        /* Компактный стиль для графика Гарднера — не разрывается между страницами */
-        .gardner-compact {
-            page-break-inside: avoid !important;
-        }
+            /* Компактный стиль для графика Гарднера — не разрывается между страницами */
+            .gardner-compact {
+                page-break-inside: avoid !important;
+            }
 
-        .logo-header {
-            background: transparent;
+            .logo-header {
+                background: transparent;
+            }
         }
 
         /* Fallback TailwindCSS базовые стили если основные не загрузились */
