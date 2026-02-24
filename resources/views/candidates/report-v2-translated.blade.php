@@ -453,7 +453,7 @@ if (! function_exists('clean_git_conflicts')) {
                     <h2 class="text-xl font-bold text-gray-800 mb-2">{{ $labels['main_info'] }}</h2>
                      <!-- Основная информация -->
                      <div class="space-y-1">
-                        <div class="flex items-start">
+                        <div class="flex items-start data-row">
                             <span class="w-60 text-base text-gray-600">{{ $labels['desired_position'] }}:</span>
                             <span class="text-base font-medium flex-1">
                                 @if($candidate->desired_positions && is_array($candidate->desired_positions) && count(array_filter($candidate->desired_positions)) > 0)
@@ -465,25 +465,25 @@ if (! function_exists('clean_git_conflicts')) {
                                 @endif
                             </span>
                         </div>
-                         <div class="flex data-row">
+                         <div class="flex items-start data-row">
                              <span class="w-60 text-base text-gray-600">{{ $labels['expected_salary'] }}:</span>
-                             <span class="text-base font-medium">{{ $candidate->formatted_salary_range }}</span>
+                             <span class="text-base font-medium flex-1">{{ $candidate->formatted_salary_range }}</span>
                          </div>
-                         <div class="flex data-row">
+                         <div class="flex items-start data-row">
                              <span class="w-60 text-base text-gray-600">{{ $labels['birth_date'] }}:</span>
-                             <span class="text-base font-medium">{{ $candidate->birth_date?->format('d.m.Y') ?: $labels['not_specified'] }}</span>
+                             <span class="text-base font-medium flex-1">{{ $candidate->birth_date?->format('d.m.Y') ?: $labels['not_specified'] }}</span>
                          </div>
                          <div class="flex items-start data-row">
                              <span class="w-60 text-base text-gray-600">{{ $labels['birth_place'] }}:</span>
                              <span class="text-base font-medium flex-1">{{ $candidate->birth_place ?: $labels['not_specified'] }}</span>
                          </div>
-                         <div class="flex data-row">
+                         <div class="flex items-start data-row">
                              <span class="w-60 text-base text-gray-600">{{ $labels['gender'] }}:</span>
-                             <span class="text-base font-medium">{{ $candidate->gender ?: $labels['not_specified'] }}</span>
+                             <span class="text-base font-medium flex-1">{{ $candidate->gender ?: $labels['not_specified'] }}</span>
                          </div>
-                         <div class="flex data-row">
+                         <div class="flex items-start data-row">
                              <span class="w-60 text-base text-gray-600">{{ $labels['marital_status'] }}:</span>
-                             <span class="text-base font-medium">{{ $candidate->marital_status ?: $labels['not_specified'] }}</span>
+                             <span class="text-base font-medium flex-1">{{ $candidate->marital_status ?: $labels['not_specified'] }}</span>
                          </div>
                          @php
                              $family = $candidate->getFamilyStructured();
@@ -491,7 +491,7 @@ if (! function_exists('clean_git_conflicts')) {
 
                          @if($isFullReport)
                          <!-- Дети -->
-                         <div class="flex items-start">
+                         <div class="flex items-start data-row">
                              <span class="w-60 text-base text-gray-600">{{ $labels['children'] }}:</span>
                              <span class="text-base font-medium flex-1">
                                  @if(!empty($family['children']) && count($family['children']) > 0)
@@ -508,7 +508,7 @@ if (! function_exists('clean_git_conflicts')) {
 
                         @if($isFullReport)
                         <!-- Родители -->
-                        <div class="flex items-start">
+                        <div class="flex items-start data-row">
                             <span class="w-60 text-base text-gray-600">{{ $labels['parents'] }}:</span>
                             <span class="text-base font-medium flex-1">
                                 @if(!empty($family['parents']))
@@ -524,7 +524,7 @@ if (! function_exists('clean_git_conflicts')) {
 
                          @if($isFullReport)
                          <!-- Братья и сестры -->
-                         <div class="flex items-start">
+                         <div class="flex items-start data-row">
                              <span class="w-60 text-base text-gray-600">{{ $labels['siblings'] }}:</span>
                              <span class="text-base font-medium flex-1">
                                  @if(!empty($family['siblings']))
@@ -540,13 +540,13 @@ if (! function_exists('clean_git_conflicts')) {
                          @endif
 
                         <!-- Школа -->
-                         <div class="flex items-start">
+                         <div class="flex items-start data-row">
                              <span class="w-60 text-base text-gray-600">{{ $labels['school'] }}:</span>
                              <span class="text-base font-medium flex-1">{{ $candidate->school ?: $labels['not_specified'] }}</span>
                          </div>
 
                         <!-- Образование -->
-                        <div class="flex items-start">
+                        <div class="flex items-start data-row">
                              <span class="w-60 text-base text-gray-600">{{ $labels['professional_education'] }}:</span>
                              <span class="text-base font-medium flex-1">
                                 @if($candidate->universities && count($candidate->universities) > 0)

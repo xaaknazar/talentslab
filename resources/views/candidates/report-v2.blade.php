@@ -479,7 +479,7 @@ if (! function_exists('pluralize_years')) {
                     <h2 class="text-xl font-bold text-gray-800 mb-2">Основная информация</h2>
                      <!-- Основная информация -->
                      <div class="space-y-1">
-                        <div class="flex items-start">
+                        <div class="flex items-start data-row">
                             <span class="w-60 text-base text-gray-600">Желаемая должность:</span>
                             <span class="text-base font-medium flex-1">
                                 @if($candidate->desired_positions && is_array($candidate->desired_positions) && count(array_filter($candidate->desired_positions)) > 0)
@@ -491,25 +491,25 @@ if (! function_exists('pluralize_years')) {
                                 @endif
                             </span>
                         </div>
-                         <div class="flex data-row">
+                         <div class="flex items-start data-row">
                              <span class="w-60 text-base text-gray-600">Ожидаемая заработная плата:</span>
-                             <span class="text-base font-medium">{{ $candidate->formatted_salary_range }}</span>
+                             <span class="text-base font-medium flex-1">{{ $candidate->formatted_salary_range }}</span>
                          </div>
-                         <div class="flex data-row">
+                         <div class="flex items-start data-row">
                              <span class="w-60 text-base text-gray-600">Дата рождения:</span>
-                             <span class="text-base font-medium">{{ $candidate->birth_date?->format('d.m.Y') ?: 'Не указано' }}</span>
+                             <span class="text-base font-medium flex-1">{{ $candidate->birth_date?->format('d.m.Y') ?: 'Не указано' }}</span>
                          </div>
                          <div class="flex items-start data-row">
                              <span class="w-60 text-base text-gray-600">Место рождения:</span>
                              <span class="text-base font-medium flex-1">{{ $candidate->birth_place ?: 'Не указано' }}</span>
                          </div>
-                         <div class="flex data-row">
+                         <div class="flex items-start data-row">
                              <span class="w-60 text-base text-gray-600">Пол:</span>
-                             <span class="text-base font-medium">{{ $candidate->gender ?: 'Не указано' }}</span>
+                             <span class="text-base font-medium flex-1">{{ $candidate->gender ?: 'Не указано' }}</span>
                          </div>
-                         <div class="flex data-row">
+                         <div class="flex items-start data-row">
                              <span class="w-60 text-base text-gray-600">Семейное положение:</span>
-                             <span class="text-base font-medium">{{ $candidate->marital_status ?: 'Не указано' }}</span>
+                             <span class="text-base font-medium flex-1">{{ $candidate->marital_status ?: 'Не указано' }}</span>
                          </div>
                          @php
                              $family = $candidate->getFamilyStructured();
@@ -517,7 +517,7 @@ if (! function_exists('pluralize_years')) {
 
                          @if($isFullReport)
                          <!-- Дети -->
-                         <div class="flex items-start">
+                         <div class="flex items-start data-row">
                              <span class="w-60 text-base text-gray-600">Дети:</span>
                              <span class="text-base font-medium flex-1">
                                  @if(!empty($family['children']) && count($family['children']) > 0)
@@ -534,7 +534,7 @@ if (! function_exists('pluralize_years')) {
 
                         @if($isFullReport)
                         <!-- Родители -->
-                        <div class="flex items-start">
+                        <div class="flex items-start data-row">
                             <span class="w-60 text-base text-gray-600">Родители:</span>
                             <span class="text-base font-medium flex-1">
                                 @if(!empty($family['parents']))
@@ -550,7 +550,7 @@ if (! function_exists('pluralize_years')) {
 
                          @if($isFullReport)
                          <!-- Братья и сестры -->
-                         <div class="flex items-start">
+                         <div class="flex items-start data-row">
                              <span class="w-60 text-base text-gray-600">Кол-во братьев/сестер:</span>
                              <span class="text-base font-medium flex-1">
                                  @if(!empty($family['siblings']))
@@ -566,13 +566,13 @@ if (! function_exists('pluralize_years')) {
                          @endif
 
                         <!-- Школа -->
-                         <div class="flex items-start">
+                         <div class="flex items-start data-row">
                              <span class="w-60 text-base text-gray-600">Школа:</span>
                              <span class="text-base font-medium flex-1">{{ $candidate->school ?: 'Не указано' }}</span>
                          </div>
 
                         <!-- Образование -->
-                        <div class="flex items-start">
+                        <div class="flex items-start data-row">
                              <span class="w-60 text-base text-gray-600">Профессиональное образование:</span>
                              <span class="text-base font-medium flex-1">
                                 @if($candidate->universities && count($candidate->universities) > 0)
