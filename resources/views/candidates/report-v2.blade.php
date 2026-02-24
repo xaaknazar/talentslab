@@ -480,7 +480,7 @@ if (! function_exists('pluralize_years')) {
                      <!-- Основная информация -->
                      <div class="space-y-1">
                         <div class="flex items-start data-row">
-                            <span class="w-60 text-base text-gray-600">Желаемая должность:</span>
+                            <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Желаемая должность:</span>
                             <span class="text-base font-medium flex-1">
                                 @if($candidate->desired_positions && is_array($candidate->desired_positions) && count(array_filter($candidate->desired_positions)) > 0)
                                     {{ implode(' / ', array_filter($candidate->desired_positions)) }}
@@ -492,23 +492,23 @@ if (! function_exists('pluralize_years')) {
                             </span>
                         </div>
                          <div class="flex items-start data-row">
-                             <span class="w-60 text-base text-gray-600">Ожидаемая заработная плата:</span>
+                             <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Ожидаемая заработная плата:</span>
                              <span class="text-base font-medium flex-1">{{ $candidate->formatted_salary_range }}</span>
                          </div>
                          <div class="flex items-start data-row">
-                             <span class="w-60 text-base text-gray-600">Дата рождения:</span>
+                             <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Дата рождения:</span>
                              <span class="text-base font-medium flex-1">{{ $candidate->birth_date?->format('d.m.Y') ?: 'Не указано' }}</span>
                          </div>
                          <div class="flex items-start data-row">
-                             <span class="w-60 text-base text-gray-600">Место рождения:</span>
+                             <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Место рождения:</span>
                              <span class="text-base font-medium flex-1">{{ $candidate->birth_place ?: 'Не указано' }}</span>
                          </div>
                          <div class="flex items-start data-row">
-                             <span class="w-60 text-base text-gray-600">Пол:</span>
+                             <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Пол:</span>
                              <span class="text-base font-medium flex-1">{{ $candidate->gender ?: 'Не указано' }}</span>
                          </div>
                          <div class="flex items-start data-row">
-                             <span class="w-60 text-base text-gray-600">Семейное положение:</span>
+                             <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Семейное положение:</span>
                              <span class="text-base font-medium flex-1">{{ $candidate->marital_status ?: 'Не указано' }}</span>
                          </div>
                          @php
@@ -518,7 +518,7 @@ if (! function_exists('pluralize_years')) {
                          @if($isFullReport)
                          <!-- Дети -->
                          <div class="flex items-start data-row">
-                             <span class="w-60 text-base text-gray-600">Дети:</span>
+                             <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Дети:</span>
                              <span class="text-base font-medium flex-1">
                                  @if(!empty($family['children']) && count($family['children']) > 0)
                                      {{ count($family['children']) }}
@@ -535,7 +535,7 @@ if (! function_exists('pluralize_years')) {
                         @if($isFullReport)
                         <!-- Родители -->
                         <div class="flex items-start data-row">
-                            <span class="w-60 text-base text-gray-600">Родители:</span>
+                            <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Родители:</span>
                             <span class="text-base font-medium flex-1">
                                 @if(!empty($family['parents']))
                                     @foreach($family['parents'] as $parent)
@@ -551,7 +551,7 @@ if (! function_exists('pluralize_years')) {
                          @if($isFullReport)
                          <!-- Братья и сестры -->
                          <div class="flex items-start data-row">
-                             <span class="w-60 text-base text-gray-600">Кол-во братьев/сестер:</span>
+                             <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Кол-во братьев/сестер:</span>
                              <span class="text-base font-medium flex-1">
                                  @if(!empty($family['siblings']))
                                      {{ count($family['siblings']) }}
@@ -567,13 +567,13 @@ if (! function_exists('pluralize_years')) {
 
                         <!-- Школа -->
                          <div class="flex items-start data-row">
-                             <span class="w-60 text-base text-gray-600">Школа:</span>
+                             <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Школа:</span>
                              <span class="text-base font-medium flex-1">{{ $candidate->school ?: 'Не указано' }}</span>
                          </div>
 
                         <!-- Образование -->
                         <div class="flex items-start data-row">
-                             <span class="w-60 text-base text-gray-600">Профессиональное образование:</span>
+                             <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Профессиональное образование:</span>
                              <span class="text-base font-medium flex-1">
                                 @if($candidate->universities && count($candidate->universities) > 0)
                                     @foreach($candidate->universities as $index => $university)
