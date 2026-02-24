@@ -38,55 +38,54 @@
         @media print {
             body { font-size: 19px; }
             .no-print { display: none; }
+        }
 
-            /* ===================================================
-               ПРАВИЛА PAGE-BREAK ДЛЯ WKHTMLTOPDF
-               =================================================== */
+        /* ===================================================
+           ПРАВИЛА PAGE-BREAK ДЛЯ WKHTMLTOPDF
+           =================================================== */
 
-            /* Предотвращаем разрыв строк пополам (orphans/widows) */
-            p, div, span, li {
-                orphans: 3;
-                widows: 3;
-            }
+        /* Предотвращаем разрыв строк пополам (orphans/widows) */
+        p, div, span, li {
+            orphans: 3;
+            widows: 3;
+        }
 
-            /* Заголовки секций не отрываются от содержимого */
-            h2 {
-                page-break-after: avoid;
-                break-after: avoid;
-            }
+        /* Заголовки секций не отрываются от содержимого */
+        h2 {
+            page-break-after: avoid;
+            break-after: avoid;
+        }
 
-            /* Строки данных: block + overflow:hidden для page-break-inside:avoid */
-            .data-row,
-            .space-y-1 > .flex,
-            .space-y-1 > div.flex {
-                display: block !important;
-                overflow: hidden !important;
-                page-break-inside: avoid !important;
-            }
+        /* Строки данных: block + overflow:hidden для page-break-inside:avoid */
+        .main-content .data-row,
+        .main-content .flex.items-start,
+        .main-content .space-y-1 > div {
+            display: block !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+        }
 
-            /* Лейбл (левая колонка) - float для двухколоночной раскладки */
-            .space-y-1 .w-60,
-            .data-row > .w-60,
-            .flex > span.w-60,
-            .flex.items-start > span.w-60 {
-                float: left !important;
-                display: block !important;
-                margin-right: 16px !important;
-            }
+        /* Лейбл (левая колонка) - float для двухколоночной раскладки */
+        .main-content .data-row > span.w-60,
+        .main-content .flex.items-start > span.w-60,
+        .main-content .space-y-1 > div > span.w-60,
+        .main-content .data-row > .w-60,
+        .main-content .flex.items-start > .w-60 {
+            float: left !important;
+            display: block !important;
+        }
 
-            /* Значение (правая колонка) - overflow:hidden создаёт новый BFC */
-            .space-y-1 .flex-1,
-            .data-row > .flex-1,
-            .flex > span.flex-1,
-            .flex.items-start > span.flex-1 {
-                display: block !important;
-                overflow: hidden !important;
-                padding-left: 16px !important;
-            }
+        /* Значение (правая колонка) - overflow:hidden создаёт новый BFC */
+        .main-content .data-row > span.flex-1,
+        .main-content .flex.items-start > span.flex-1,
+        .main-content .data-row > .flex-1,
+        .main-content .flex.items-start > .flex-1 {
+            display: block !important;
+            overflow: hidden !important;
+        }
 
-            .logo-header {
-                background: transparent;
-            }
+        .logo-header {
+            background: transparent;
         }
 
         /* Fallback TailwindCSS базовые стили если основные не загрузились */
