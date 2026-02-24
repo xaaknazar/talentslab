@@ -64,9 +64,7 @@
         .main-content .flex.items-start > .w-60 {
             float: left !important;
             display: block !important;
-            word-wrap: break-word !important;
-            overflow-wrap: break-word !important;
-            white-space: normal !important;
+            margin-right: 8px !important;
         }
 
         .main-content .data-row > span.flex-1,
@@ -158,7 +156,7 @@
         .w-8 { width: 2rem; }
         .w-72 { width: 18rem; }
         .w-48 { width: 12rem; }
-        .w-60 { width: 10rem; }
+        .w-60 { width: 19rem; }
         .w-auto { width: auto; }
         .h-14 { height: 3.5rem; }
         .h-4 { height: 1.5rem; }
