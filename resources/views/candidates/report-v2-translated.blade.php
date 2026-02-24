@@ -73,6 +73,7 @@
         .main-content .flex.items-start > .flex-1 {
             display: block !important;
             overflow: hidden !important;
+            padding-left: 16px !important;
         }
 
         /* Секции - контент заполняет страницу */
