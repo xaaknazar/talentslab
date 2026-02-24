@@ -338,13 +338,7 @@
            CSS page-break-inside НЕ работает с display:flex в wkhtmltopdf,
            поэтому используем <table> — он гарантированно не разрывается. */
 
-        /* Принудительный разрыв страницы ПЕРЕД Гарднером, чтобы он начинался на новой странице */
-        .gardner-page-break {
-            page-break-before: always !important;
-            break-before: always !important;
-        }
-
-        /* Компактный стиль для графика Гарднера */
+        /* Компактный стиль для графика Гарднера — не разрывается между страницами */
         .gardner-compact {
             page-break-inside: avoid !important;
         }
@@ -980,9 +974,9 @@ if (! function_exists('pluralize_years')) {
                     'Экзистенциальный интеллект',
                 ];
             @endphp
-            {{-- Принудительный разрыв страницы ПЕРЕД графиком Гарднера,
-                 чтобы он гарантированно начинался на новой странице и не разрывался --}}
-            <div class="gardner-page-break"></div>
+            {{-- <table> обёртка — wkhtmltopdf не разрывает ячейки таблиц.
+                 Если график помещается на текущей странице — остаётся.
+                 Если нет — переносится на следующую целиком. --}}
             <table style="width: 100%; border-collapse: collapse; page-break-inside: avoid;"><tr><td style="padding: 0;">
             <div class="gardner-section gardner-compact">
                 <h2 class="text-xl font-bold text-gray-800 mb-3">Виды интеллектов Гарднера</h2>

@@ -95,13 +95,7 @@
             page-break-inside: avoid !important;
         }
 
-        /* Принудительный разрыв страницы ПЕРЕД Гарднером */
-        .gardner-page-break {
-            page-break-before: always !important;
-            break-before: always !important;
-        }
-
-        /* Компактный стиль для графика Гарднера */
+        /* Компактный стиль для графика Гарднера — не разрывается между страницами */
         .gardner-compact {
             page-break-inside: avoid !important;
         }
@@ -924,8 +918,8 @@ if (! function_exists('clean_git_conflicts')) {
                     'Экзистенциальный интеллект',
                 ];
             @endphp
-            {{-- Принудительный разрыв страницы ПЕРЕД графиком Гарднера --}}
-            <div class="gardner-page-break"></div>
+            {{-- <table> обёртка — wkhtmltopdf не разрывает ячейки таблиц.
+                 Если помещается — остаётся, нет — переносится целиком. --}}
             <table style="width: 100%; border-collapse: collapse; page-break-inside: avoid;"><tr><td style="padding: 0;">
             <div class="gardner-compact">
                 <h2 class="text-xl font-bold text-gray-800 mb-3">{{ $labels['gardner_intelligence'] }}</h2>

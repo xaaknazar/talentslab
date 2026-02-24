@@ -221,8 +221,8 @@ class CandidateReportController extends Controller
         $options = [
             'encoding' => 'utf-8',
             'page-size' => 'A4',
-            'margin-top' => '5mm',
-            'margin-bottom' => '5mm',
+            'margin-top' => '3mm',
+            'margin-bottom' => '2mm',
             'margin-left' => '2mm',
             'margin-right' => '2mm',
             'zoom' => 1.0,
