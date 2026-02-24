@@ -73,7 +73,7 @@
         .main-content .flex.items-start > .w-60 {
             float: left !important;
             display: block !important;
-            padding-right: 12px !important;
+            margin-right: 12px !important;
         }
 
         /* Значение (правая колонка) - overflow:hidden создаёт новый BFC */
