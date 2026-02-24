@@ -32,18 +32,29 @@
             .no-print { display: none; }
         }
 
+        /* ===================================================
+           ПРАВИЛА PAGE-BREAK ДЛЯ WKHTMLTOPDF
+           =================================================== */
+
+        /* Предотвращаем разрыв строк пополам (orphans/widows) */
+        p, div, span, li {
+            orphans: 3;
+            widows: 3;
+        }
+
         /* Заголовки секций не отрываются от содержимого */
         h2 {
             page-break-after: avoid;
             break-after: avoid;
         }
 
-        /* Строки данных внутри main-content: блочная раскладка с float */
+        /* Строки данных: block + overflow:hidden для page-break-inside:avoid */
         .main-content .data-row,
         .main-content .flex.items-start,
         .main-content .space-y-1 > div {
             display: block !important;
             overflow: hidden !important;
+            page-break-inside: avoid !important;
         }
 
         .main-content .data-row > span.w-60,
@@ -61,6 +72,38 @@
         .main-content .flex.items-start > .flex-1 {
             display: block !important;
             overflow: hidden !important;
+        }
+
+        /* Секции - контент заполняет страницу */
+        .interests-section,
+        .work-experience-section {
+            page-break-inside: auto !important;
+        }
+
+        /* Каждая запись опыта работы - не разрывается */
+        .work-experience-section .work-experience-item {
+            display: block !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+        }
+
+        /* Общий стаж и награды */
+        .work-experience-section .work-summary,
+        .work-experience-section .work-awards {
+            display: block !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+        }
+
+        /* Принудительный разрыв страницы ПЕРЕД Гарднером */
+        .gardner-page-break {
+            page-break-before: always !important;
+            break-before: always !important;
+        }
+
+        /* Компактный стиль для графика Гарднера */
+        .gardner-compact {
+            page-break-inside: avoid !important;
         }
 
         .logo-header {
@@ -310,8 +353,6 @@
             page-break-inside: avoid !important;
         }
 
-        /* Гарднер: защищён HTML <table> обёрткой (см. HTML).
-           CSS page-break-inside НЕ работает с display:flex в wkhtmltopdf. */
     </style>
 </head>
 <body>
@@ -883,104 +924,110 @@ if (! function_exists('clean_git_conflicts')) {
                     'Экзистенциальный интеллект',
                 ];
             @endphp
-            {{-- <table> обёртка — wkhtmltopdf не разрывает ячейки таблиц --}}
-            <table style="width: 100%; border-collapse: collapse; page-break-inside: avoid; margin-bottom: 16px;"><tr><td style="padding: 0;">
-            <div>
-                <h2 class="text-xl font-bold text-gray-800 mb-4">{{ $labels['gardner_intelligence'] }}</h2>
-                <div class="bg-gray-100 rounded-lg p-6">
-                    <!-- Первый ряд -->
-                    <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
+            {{-- Принудительный разрыв страницы ПЕРЕД графиком Гарднера --}}
+            <div class="gardner-page-break"></div>
+            <table style="width: 100%; border-collapse: collapse; page-break-inside: avoid;"><tr><td style="padding: 0;">
+            <div class="gardner-compact">
+                <h2 class="text-xl font-bold text-gray-800 mb-3">{{ $labels['gardner_intelligence'] }}</h2>
+                <div class="bg-gray-100 rounded-lg p-4">
+                    @php
+                        // Компактный коэффициент для высоты столбцов
+                        $heightCoef = 1.4;
+                        $chartHeight = 140; // px
+                    @endphp
+                    <!-- Первый ряд (5 типов) -->
+                    <div style="display: flex; align-items: flex-end; height: {{ $chartHeight }}px; margin-bottom: 6px;">
                         <!-- Ось Y -->
-                        <div style="width: 28px; height: 180px; position: relative; margin-right: 8px;">
+                        <div style="width: 24px; height: {{ $chartHeight }}px; position: relative; margin-right: 6px;">
                             @foreach([100, 75, 50, 25, 0] as $mark)
-                                <div style="position: absolute; bottom: {{ $mark * 1.8 }}px; right: 0; transform: translateY(50%); font-size: 8px; color: #666; text-align: right; width: 24px;">{{ $mark }}</div>
+                                <div style="position: absolute; bottom: {{ $mark * $heightCoef }}px; right: 0; transform: translateY(50%); font-size: 7px; color: #666; text-align: right; width: 20px;">{{ $mark }}</div>
                             @endforeach
                         </div>
                         <!-- Столбцы первого ряда -->
-                        <div style="flex: 1; position: relative; height: 180px;">
+                        <div style="flex: 1; position: relative; height: {{ $chartHeight }}px;">
                             @foreach([100, 75, 50, 25, 0] as $mark)
-                                <div style="position: absolute; bottom: {{ $mark * 1.8 }}px; left: 0; right: 0; border-bottom: 1px solid #d1d5db; z-index: 0;"></div>
+                                <div style="position: absolute; bottom: {{ $mark * $heightCoef }}px; left: 0; right: 0; border-bottom: 1px solid #d1d5db; z-index: 0;"></div>
                             @endforeach
-                            <div style="display: flex; align-items: flex-end; justify-content: center; height: 180px; position: relative; z-index: 1;">
+                            <div style="display: flex; align-items: flex-end; justify-content: center; height: {{ $chartHeight }}px; position: relative; z-index: 1;">
                                 @foreach($row1Types as $type)
                                     @php
                                         $percentage = $results[$type] ?? '0%';
                                         $numericValue = (int) str_replace('%', '', $percentage);
                                         $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'textColor' => 'white', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
-                                        $barHeight = max(round($numericValue * 1.8), 28);
+                                        $barHeight = max(round($numericValue * $heightCoef), 22);
                                         $textColor = $config['textColor'] ?? 'white';
                                         $textShadow = $textColor === 'white' ? '1px 1px 2px rgba(0,0,0,0.3)' : 'none';
                                     @endphp
-                                    <div style="width: 110px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px; margin: 0 24px;">
-                                        <span style="font-size: 26px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
+                                    <div style="width: 100px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 5px 5px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 28 ? '4' : '1' }}px; margin: 0 18px;">
+                                        <span style="font-size: 20px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
                                     </div>
                                 @endforeach
                             </div>
                         </div>
                     </div>
                     <!-- Подписи первого ряда -->
-                    <div style="display: flex; justify-content: center; margin-left: 36px; margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: center; margin-left: 30px; margin-bottom: 16px;">
                         @foreach($row1Types as $type)
                             @php
                                 $shortName = str_replace(' интеллект', '', $type);
                                 $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
                             @endphp
-                            <div style="width: 110px; display: flex; flex-direction: column; align-items: center; margin: 0 24px;">
-                                <div style="height: 28px; display: flex; align-items: center; justify-content: center;">
-                                    <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 24px; height: 24px;">
+                            <div style="width: 100px; display: flex; flex-direction: column; align-items: center; margin: 0 18px;">
+                                <div style="height: 22px; display: flex; align-items: center; justify-content: center;">
+                                    <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 20px; height: 20px;">
                                 </div>
                                 <div style="text-align: center;">
-                                    <div style="font-size: 15px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</div>
-                                    <div style="font-size: 15px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</div>
+                                    <div style="font-size: 12px; font-weight: bold; color: #374151; line-height: 1.1;">{{ $shortName }}</div>
+                                    <div style="font-size: 12px; font-weight: bold; color: #374151; line-height: 1.1;">интеллект</div>
                                 </div>
                             </div>
                         @endforeach
                     </div>
 
-                    <!-- Второй ряд -->
-                    <div style="display: flex; align-items: flex-end; height: 180px; margin-bottom: 8px;">
+                    <!-- Второй ряд (4 типа) -->
+                    <div style="display: flex; align-items: flex-end; height: {{ $chartHeight }}px; margin-bottom: 6px;">
                         <!-- Ось Y -->
-                        <div style="width: 28px; height: 180px; position: relative; margin-right: 8px;">
+                        <div style="width: 24px; height: {{ $chartHeight }}px; position: relative; margin-right: 6px;">
                             @foreach([100, 75, 50, 25, 0] as $mark)
-                                <div style="position: absolute; bottom: {{ $mark * 1.8 }}px; right: 0; transform: translateY(50%); font-size: 8px; color: #666; text-align: right; width: 24px;">{{ $mark }}</div>
+                                <div style="position: absolute; bottom: {{ $mark * $heightCoef }}px; right: 0; transform: translateY(50%); font-size: 7px; color: #666; text-align: right; width: 20px;">{{ $mark }}</div>
                             @endforeach
                         </div>
                         <!-- Столбцы второго ряда -->
-                        <div style="flex: 1; position: relative; height: 180px;">
+                        <div style="flex: 1; position: relative; height: {{ $chartHeight }}px;">
                             @foreach([100, 75, 50, 25, 0] as $mark)
-                                <div style="position: absolute; bottom: {{ $mark * 1.8 }}px; left: 0; right: 0; border-bottom: 1px solid #d1d5db; z-index: 0;"></div>
+                                <div style="position: absolute; bottom: {{ $mark * $heightCoef }}px; left: 0; right: 0; border-bottom: 1px solid #d1d5db; z-index: 0;"></div>
                             @endforeach
-                            <div style="display: flex; align-items: flex-end; justify-content: center; height: 180px; position: relative; z-index: 1;">
+                            <div style="display: flex; align-items: flex-end; justify-content: center; height: {{ $chartHeight }}px; position: relative; z-index: 1;">
                                 @foreach($row2Types as $type)
                                     @php
                                         $percentage = $results[$type] ?? '0%';
                                         $numericValue = (int) str_replace('%', '', $percentage);
                                         $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'textColor' => 'white', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
-                                        $barHeight = max(round($numericValue * 1.8), 28);
+                                        $barHeight = max(round($numericValue * $heightCoef), 22);
                                         $textColor = $config['textColor'] ?? 'white';
                                         $textShadow = $textColor === 'white' ? '1px 1px 2px rgba(0,0,0,0.3)' : 'none';
                                     @endphp
-                                    <div style="width: 110px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 6px 6px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 35 ? '6' : '2' }}px; margin: 0 36px;">
-                                        <span style="font-size: 26px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
+                                    <div style="width: 100px; height: {{ $barHeight }}px; background-color: {{ $config['color'] }}; border-radius: 5px 5px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: {{ $barHeight > 28 ? '4' : '1' }}px; margin: 0 28px;">
+                                        <span style="font-size: 20px; font-weight: bold; color: {{ $textColor }}; text-shadow: {{ $textShadow }};">{{ $numericValue }}%</span>
                                     </div>
                                 @endforeach
                             </div>
                         </div>
                     </div>
                     <!-- Подписи второго ряда -->
-                    <div style="display: flex; justify-content: center; margin-left: 36px;">
+                    <div style="display: flex; justify-content: center; margin-left: 30px;">
                         @foreach($row2Types as $type)
                             @php
                                 $shortName = str_replace(' интеллект', '', $type);
                                 $config = $intelligenceConfig[$type] ?? ['color' => '#cccccc', 'emoji' => '❓', 'img' => $twemojiBase . '2753.svg'];
                             @endphp
-                            <div style="width: 110px; display: flex; flex-direction: column; align-items: center; margin: 0 36px;">
-                                <div style="height: 28px; display: flex; align-items: center; justify-content: center;">
-                                    <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 24px; height: 24px;">
+                            <div style="width: 100px; display: flex; flex-direction: column; align-items: center; margin: 0 28px;">
+                                <div style="height: 22px; display: flex; align-items: center; justify-content: center;">
+                                    <img src="{{ $config['img'] }}" alt="{{ $config['emoji'] }}" style="width: 20px; height: 20px;">
                                 </div>
                                 <div style="text-align: center;">
-                                    <div style="font-size: 15px; font-weight: bold; color: #374151; line-height: 1.2;">{{ $shortName }}</div>
-                                    <div style="font-size: 15px; font-weight: bold; color: #374151; line-height: 1.2;">интеллект</div>
+                                    <div style="font-size: 12px; font-weight: bold; color: #374151; line-height: 1.1;">{{ $shortName }}</div>
+                                    <div style="font-size: 12px; font-weight: bold; color: #374151; line-height: 1.1;">интеллект</div>
                                 </div>
                             </div>
                         @endforeach
