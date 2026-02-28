@@ -282,6 +282,7 @@ class GallupAnalyzerService
 
     /**
      * Анализирует PDF через GPT-4o (извлекает текст и отправляет на анализ)
+     * Если текста мало (сканированный PDF), конвертирует в изображение и использует Vision
      */
     private function analyzePdfWithGpt4o(string $filePath): array
     {
@@ -289,7 +290,30 @@ class GallupAnalyzerService
         $extractedText = $this->extractTextFromPdf($filePath);
 
         if (empty($extractedText) || strlen($extractedText) < 100) {
-            Log::warning('Слишком мало текста извлечено из PDF', ['length' => strlen($extractedText ?? '')]);
+            Log::warning('Слишком мало текста извлечено из PDF, пробуем конвертировать в изображение', [
+                'length' => strlen($extractedText ?? '')
+            ]);
+
+            // Пробуем конвертировать PDF в изображение и проанализировать через Vision
+            $imagePath = $this->convertPdfToImage($filePath);
+
+            if ($imagePath) {
+                Log::info('PDF конвертирован в изображение, отправляем в GPT-4o Vision', [
+                    'image_path' => $imagePath
+                ]);
+
+                try {
+                    $result = $this->analyzeImageWithGpt4oVision($imagePath);
+                    return $result;
+                } finally {
+                    // Удаляем временное изображение
+                    if (file_exists($imagePath)) {
+                        unlink($imagePath);
+                    }
+                }
+            }
+
+            Log::warning('Не удалось конвертировать PDF в изображение');
             return [];
         }
 
@@ -533,6 +557,61 @@ PROMPT;
     }
 
     /**
+     * Конвертирует первую страницу PDF в изображение PNG
+     * Использует pdftoppm (poppler-utils) или Imagick как fallback
+     */
+    private function convertPdfToImage(string $filePath): ?string
+    {
+        $tempImagePath = sys_get_temp_dir() . '/gallup_pdf_' . uniqid() . '.png';
+
+        // Способ 1: pdftoppm (poppler-utils) — наиболее распространён на Linux
+        $pdftoppmPath = trim(shell_exec('which pdftoppm 2>/dev/null') ?? '');
+        if ($pdftoppmPath) {
+            $command = sprintf(
+                '%s -png -f 1 -l 1 -r 200 -singlefile %s %s',
+                escapeshellarg($pdftoppmPath),
+                escapeshellarg($filePath),
+                escapeshellarg(str_replace('.png', '', $tempImagePath))
+            );
+
+            exec($command . ' 2>&1', $output, $returnCode);
+
+            if ($returnCode === 0 && file_exists($tempImagePath)) {
+                Log::info('PDF конвертирован через pdftoppm');
+                return $tempImagePath;
+            }
+
+            Log::warning('pdftoppm не смог конвертировать PDF', [
+                'return_code' => $returnCode,
+                'output' => implode("\n", $output)
+            ]);
+        }
+
+        // Способ 2: Imagick (если установлен)
+        if (class_exists('Imagick')) {
+            try {
+                $imagick = new \Imagick();
+                $imagick->setResolution(200, 200);
+                $imagick->readImage($filePath . '[0]'); // Первая страница
+                $imagick->setImageFormat('png');
+                $imagick->writeImage($tempImagePath);
+                $imagick->clear();
+                $imagick->destroy();
+
+                if (file_exists($tempImagePath)) {
+                    Log::info('PDF конвертирован через Imagick');
+                    return $tempImagePath;
+                }
+            } catch (\Exception $e) {
+                Log::warning('Imagick не смог конвертировать PDF: ' . $e->getMessage());
+            }
+        }
+
+        Log::error('Не удалось конвертировать PDF в изображение: ни pdftoppm, ни Imagick не доступны');
+        return null;
+    }
+
+    /**
      * Извлекает текст из PDF файла
      */
     private function extractTextFromPdf(string $filePath): ?string
@@ -608,8 +687,11 @@ PROMPT;
         try {
             $text = $this->extractTextFromPdf($filePath);
 
+            // Если текста нет (сканированный PDF) — всё равно принимаем,
+            // GPT-4o Vision проанализирует его как изображение
             if (empty($text)) {
-                return false;
+                Log::info('PDF без текста (возможно сканированный), принимаем для анализа через Vision');
+                return true;
             }
 
             // Проверяем наличие хотя бы нескольких талантов (на русском или английском)
