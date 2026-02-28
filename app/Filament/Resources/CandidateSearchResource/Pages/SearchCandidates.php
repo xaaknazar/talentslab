@@ -15,6 +15,11 @@ class SearchCandidates extends ListRecords
 {
     protected static string $resource = CandidateSearchResource::class;
 
+    public function getMaxContentWidth(): ?string
+    {
+        return 'full';
+    }
+
     protected function getSearchFormSchema(): array
     {
         return [
