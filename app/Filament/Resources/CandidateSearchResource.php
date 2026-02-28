@@ -110,10 +110,10 @@ class CandidateSearchResource extends Resource
             })
             ->searchable(false)
             ->columns([
-                Tables\Columns\TextColumn::make('index')
-                    ->label('№')
-                    ->rowIndex()
-                    ->width('50px'),
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable()
+                    ->width('70px'),
 
                 Tables\Columns\TextColumn::make('full_name')
                     ->label('ФИО')
