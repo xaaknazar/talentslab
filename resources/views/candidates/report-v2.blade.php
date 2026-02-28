@@ -561,8 +561,8 @@ if (! function_exists('clean_git_conflicts')) {
                     <h2 class="text-xl font-bold text-gray-800 mb-2">Основная информация</h2>
                      <!-- Основная информация -->
                      <div class="space-y-1">
-                        <div class="flex items-start">
-                            <span class="w-60 text-base text-gray-600">Желаемая должность:</span>
+                        <div class="flex items-start data-row">
+                            <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Желаемая должность:</span>
                             <span class="text-base font-medium flex-1">
                                 @if($candidate->desired_positions && is_array($candidate->desired_positions) && count(array_filter($candidate->desired_positions)) > 0)
                                     {{ implode(' / ', array_filter($candidate->desired_positions)) }}
@@ -573,49 +573,49 @@ if (! function_exists('clean_git_conflicts')) {
                                 @endif
                             </span>
                         </div>
-                         <div class="flex data-row">
-                             <span class="w-60 text-base text-gray-600">Ожидаемая заработная плата:</span>
-                             <span class="text-base font-medium">{{ $candidate->formatted_salary_range }}</span>
-                         </div>
-                         <div class="flex data-row">
-                             <span class="w-60 text-base text-gray-600">Готовность к переезду:</span>
-                             <span class="text-base font-medium">{{ $candidate->ready_to_relocate ? 'Да' : 'Нет' }}</span>
-                         </div>
-                         <div class="flex data-row">
-                             <span class="w-60 text-base text-gray-600">Дата рождения:</span>
-                             <span class="text-base font-medium">{{ $candidate->birth_date?->format('d.m.Y') ?: 'Не указано' }}</span>
+                         <div class="flex items-start data-row">
+                             <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Ожидаемая заработная плата:</span>
+                             <span class="text-base font-medium flex-1">{{ $candidate->formatted_salary_range }}</span>
                          </div>
                          <div class="flex items-start data-row">
-                             <span class="w-60 text-base text-gray-600">Место рождения:</span>
+                             <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Готовность к переезду:</span>
+                             <span class="text-base font-medium flex-1">{{ $candidate->ready_to_relocate ? 'Да' : 'Нет' }}</span>
+                         </div>
+                         <div class="flex items-start data-row">
+                             <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Дата рождения:</span>
+                             <span class="text-base font-medium flex-1">{{ $candidate->birth_date?->format('d.m.Y') ?: 'Не указано' }}</span>
+                         </div>
+                         <div class="flex items-start data-row">
+                             <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Место рождения:</span>
                              <span class="text-base font-medium flex-1">{{ $candidate->birth_place ?: 'Не указано' }}</span>
                          </div>
                          @if($candidate->citizenship)
                          <div class="flex items-start data-row">
-                             <span class="w-60 text-base text-gray-600">Гражданство:</span>
+                             <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Гражданство:</span>
                              <span class="text-base font-medium flex-1">{{ $candidate->citizenship }}</span>
                          </div>
                          @endif
                          @if($candidate->work_permits && count($candidate->work_permits) > 0)
                          <div class="flex items-start data-row">
-                             <span class="w-60 text-base text-gray-600">Разрешение на работу:</span>
+                             <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Разрешение на работу:</span>
                              <span class="text-base font-medium flex-1">{{ implode(', ', $candidate->work_permits) }}</span>
                          </div>
                          @endif
-                         <div class="flex data-row">
-                             <span class="w-60 text-base text-gray-600">Пол:</span>
-                             <span class="text-base font-medium">{{ $candidate->gender ?: 'Не указано' }}</span>
+                         <div class="flex items-start data-row">
+                             <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Пол:</span>
+                             <span class="text-base font-medium flex-1">{{ $candidate->gender ?: 'Не указано' }}</span>
                          </div>
-                         <div class="flex data-row">
-                             <span class="w-60 text-base text-gray-600">Семейное положение:</span>
-                             <span class="text-base font-medium">@if($isFullReport){{ $candidate->marital_status ?: 'Не указано' }}@elseскрыто@endif</span>
+                         <div class="flex items-start data-row">
+                             <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Семейное положение:</span>
+                             <span class="text-base font-medium flex-1">@if($isFullReport){{ $candidate->marital_status ?: 'Не указано' }}@elseскрыто@endif</span>
                          </div>
                          @php
                              $family = $candidate->getFamilyStructured();
                          @endphp
 
                          <!-- Дети -->
-                         <div class="flex items-start">
-                             <span class="w-60 text-base text-gray-600">Дети:</span>
+                         <div class="flex items-start data-row">
+                             <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Дети:</span>
                              <span class="text-base font-medium flex-1">
                                  @if($isFullReport)
                                      @if(!empty($family['children']) && count($family['children']) > 0)
@@ -633,8 +633,8 @@ if (! function_exists('clean_git_conflicts')) {
                          </div>
 
                         <!-- Родители -->
-                        <div class="flex items-start">
-                            <span class="w-60 text-base text-gray-600">Родители:</span>
+                        <div class="flex items-start data-row">
+                            <span class="w-60 text-base text-gray-600" style="margin-right: 8px;">Родители:</span>
                             <span class="text-base font-medium flex-1">
                                 @if($isFullReport)
                                     @if(!empty($family['parents']))
