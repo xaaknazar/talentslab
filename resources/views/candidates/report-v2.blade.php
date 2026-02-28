@@ -76,7 +76,7 @@
         .main-content .flex > .w-60 {
             float: left !important;
             display: block !important;
-            margin-right: 8px !important;
+            margin-right: 9px !important;
         }
 
         /* Значение (правая колонка) - overflow:hidden создаёт новый BFC */
