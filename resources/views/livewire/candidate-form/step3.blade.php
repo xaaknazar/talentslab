@@ -223,7 +223,7 @@
                                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
                                                         onchange="updatePeriodDisplay({{ $index }})">
                                                     <option value="" selected disabled>{{ __('Year') }}</option>
-                                                    @for($year = 1990; $year <= 2025; $year++)
+                                                    @for($year = 1990; $year <= (int)date('Y'); $year++)
                                                         <option value="{{ $year }}">{{ $year }}</option>
                                                     @endfor
                                                 </select>
@@ -266,7 +266,7 @@
                                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
                                                         onchange="updatePeriodDisplay({{ $index }})">
                                                     <option value="" selected disabled>{{ __('Year') }}</option>
-                                                    @for($year = 1990; $year <= 2025; $year++)
+                                                    @for($year = 1990; $year <= (int)date('Y'); $year++)
                                                         <option value="{{ $year }}">{{ $year }}</option>
                                                     @endfor
                                                 </select>
